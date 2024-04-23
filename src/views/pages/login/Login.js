@@ -1,5 +1,5 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -17,6 +17,54 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
 const Login = () => {
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [emailError, setEmailError] = useState(false)
+  const [password, setPassword] = useState('')
+  const [passwordError, setPasswordError] = useState(false)
+  const [loginError, setLoginError] = useState(false)
+  const [loginErrorValue, setLoginErrorValue] = useState('')
+  const login = () => {
+    setEmailError(false)
+    setPasswordError(false)
+    setLoginError(false)
+    setLoginErrorValue('')
+
+    if (email === '') {
+      setEmailError(true)
+    }
+    if (password === '') {
+      setPasswordError(true)
+    }
+    console.log(email, password)
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      email: email,
+      password: password,
+    })
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    }
+
+    fetch('http://localhost:8000/user-login', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result)
+        if (result == 'Login successful') {
+          navigate('/admin')
+        } else {
+          setLoginError(true)
+          setLoginErrorValue(result)
+        }
+      })
+      .catch((error) => console.error(error))
+  }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -28,13 +76,22 @@ const Login = () => {
                   <CForm>
                     <h1>Login</h1>
                     <p className="text-body-secondary">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
+                    <CInputGroup className="mb-1">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Email"
+                        type="email"
+                        autoComplete="username"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
                     </CInputGroup>
-                    <CInputGroup className="mb-4">
+                    {emailError && (
+                      <span className="text-red-400 mb-3">Please enter valid email</span>
+                    )}
+                    <CInputGroup className="mb-1">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
@@ -42,11 +99,16 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                     </CInputGroup>
+                    {passwordError && (
+                      <span className="text-red-400 mb-3">Please enter valid password</span>
+                    )}
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" onClick={login}>
                           Login
                         </CButton>
                       </CCol>
@@ -56,6 +118,8 @@ const Login = () => {
                         </CButton>
                       </CCol> */}
                     </CRow>
+
+                    {loginError && <span className="text-red-400 mb-3">{loginErrorValue}</span>}
                   </CForm>
                 </CCardBody>
               </CCard>

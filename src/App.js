@@ -1,11 +1,14 @@
 import React, { Suspense, useEffect } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
+// import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
 import './index.css'
 import QuizLayout from './layout/QuizLayout'
+import AdminLayout from './layout/AdminLayout'
+import ManageQuiz from './views/pages/admin/ManageQuiz'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -44,12 +47,14 @@ const App = () => {
         }
       >
         <Routes>
-          <Route exact path="/login" name="Login Page" element={<Login />} />
-          <Route exact path="/register" name="Register Page" element={<Register />} />
-          <Route exact path="/404" name="Page 404" element={<Page404 />} />
-          <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          <Route exact path="/quiz" name="Quiz" element={<QuizLayout />} />
-          <Route path="*" name="Home" element={<DefaultLayout />} />
+          <Route exact path="*" name="User" element={<DefaultLayout />} />
+          <Route path="/login" name="Login Page" element={<Login />} />
+          <Route path="/register" name="Register Page" element={<Register />} />
+          <Route path="/404" name="Page 404" element={<Page404 />} />
+          <Route path="/500" name="Page 500" element={<Page500 />} />
+          <Route path="/quiz" name="Quiz" element={<QuizLayout />} />
+          <Route path="/admin" name="Admin Dashboard" element={<AdminLayout />} />
+          <Route path="/admin/quiz" name="Manage Quiz" element={<ManageQuiz />} />
         </Routes>
       </Suspense>
     </HashRouter>

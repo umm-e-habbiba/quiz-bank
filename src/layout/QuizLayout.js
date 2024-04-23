@@ -398,7 +398,13 @@ const QuizLayout = () => {
               <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
               <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
               <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
-              <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
+              <CFormCheck
+                type="radio"
+                name="q1"
+                id="q1"
+                label="Default radio"
+                className="line-through"
+              />
             </div>
             <CButton color="primary" className="mx-auto px-5 rounded-full">
               Submit

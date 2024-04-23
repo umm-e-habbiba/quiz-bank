@@ -1,19 +1,19 @@
 import React from 'react'
-import { AppContent, AppSidebar, AppFooter, AppHeader } from '../components/index'
+import { AppContent, AppHeader } from '../components/index'
+import AdminSidebar from 'src/components/admin/AdminSidebar'
 
-const DefaultLayout = ({ children }) => {
+const AdminLayout = () => {
   return (
     <div>
-      <AppSidebar />
+      <AdminSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
         <div className="body flex-grow-1">
           <AppContent />
         </div>
-        {/* <AppFooter /> */}
       </div>
     </div>
   )
 }
 
-export default DefaultLayout
+export default AdminLayout
