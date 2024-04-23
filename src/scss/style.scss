@@ -1,14 +1,70 @@
 // If you want to override variables do it here
-@import "variables";
+@import 'variables';
 
 // Import styles
-@import "@coreui/coreui/scss/coreui";
+@import '@coreui/coreui/scss/coreui';
 
 // Vendors
-@import "vendors/simplebar";
+@import 'vendors/simplebar';
 
 // Custom styles for this theme
-@import "theme";
+@import 'theme';
 
 // If you want to add custom CSS you can put it here
-@import "custom";
+@import 'custom';
+
+.sidebar-brand {
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+
+.quiz-header {
+  background-color: #212631;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffffde;
+}
+.quiz-icons {
+  color: #ffffffde;
+  font-size: 30px;
+}
+.quiz-footer {
+  background-color: #212631;
+  margin: 0;
+  padding: 20px;
+  color: #ffffffde;
+}
+
+// calculator styling
+.css-h2okw {
+  width: 300px !important;
+  height: 400px !important;
+}
+.css-hayew9 {
+  font-size: 6vmin !important;
+}
+.css-1txu9g8,
+.css-9iwzto,
+.css-166hzw5,
+.css-1iypx3a,
+.css-1uzr0i {
+  font-size: 4vmin !important;
+}
+
+// notes style
+.react-stickies-wrapper .add {
+  //   display: none !important;
+}
+.react-stickies-wrapper {
+  position: fixed !important;
+  right: 0;
+  bottom: 0;
+  width: 300px !important;
+  height: 300px !important;
+}
