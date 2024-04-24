@@ -1,30 +1,122 @@
-import { CButton, CFormCheck } from '@coreui/react'
-import React, { useState } from 'react'
+import { CButton, CForm, CFormCheck, CFormInput } from '@coreui/react'
+import React, { useState, useEffect } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
-
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 const QuizLayout = () => {
+  const navigate = useNavigate()
   const [intro, setIntro] = useState(true)
   const [steps, setSteps] = useState(false)
   const [step1, setStep1] = useState(false)
   const [step2, setStep2] = useState(false)
   const [step3, setStep3] = useState(false)
   const [showQues, setShowQues] = useState(false)
-  const [selectedTopic, setSelectedTopic] = useState('')
+  const [usmleCategory, setUsmleCategory] = useState('')
+  const [usmleStep, setUsmleStep] = useState('')
+  const [totalQues, setTotalQues] = useState('')
+  const [showTotal, setShowTotal] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [allQuestion, setAllQuestion] = useState([])
+  const [filteredQuestion, setFilteredQuestion] = useState([])
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [selectedOption, setSelectedOption] = useState('')
+  const [quizEnd, setQuizEnd] = useState(false)
+  const API_URL = 'http://localhost:8000/'
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      total: 1,
+    },
+  })
 
-  const setTopic = (value) => {
-    setSelectedTopic(value)
+  useEffect(() => {
+    getAllQuest()
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      setToken(getToken)
+    } else {
+      navigate('/login')
+    }
+  }, [])
+
+  const getAllQuest = () => {
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'mcqs', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setAllQuestion(result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const setQues = (data) => {
+    console.log(data)
     setShowQues(true)
     setIntro(false)
     setSteps(false)
     setStep1(false)
     setStep2(false)
     setStep3(false)
-    console.log(selectedTopic)
+    setShowTotal(false)
+    fetchQuestion()
   }
+
+  const setTopic = (value) => {
+    setUsmleCategory(value)
+    // setShowQues(true)
+    setIntro(false)
+    setSteps(false)
+    setStep1(false)
+    setStep2(false)
+    setStep3(false)
+    setShowTotal(true)
+    console.log(usmleCategory)
+  }
+
+  const fetchQuestion = () => {
+    const filterSteps = allQuestion.filter((ques) => ques.usmleStep == usmleStep)
+    const filterUsmle = filterSteps.filter((ques) => ques.USMLE == usmleCategory)
+    setFilteredQuestion(filterUsmle)
+    console.log('filtered steps array', filterSteps, filterUsmle)
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    checkAnswer()
+    handleNextQuestion()
+  }
+
+  const checkAnswer = () => {
+    if (selectedOption === filteredQuestion[currentQuestion].correct) {
+      // this.setState((prevState) => ({ score: prevState.score + 1 }));
+    }
+  }
+
+  const handleNextQuestion = () => {
+    if (currentQuestion + 1 < filteredQuestion.length) {
+      setCurrentQuestion(currentQuestion + 1)
+      setSelectedOption('')
+    } else {
+      setQuizEnd(true)
+    }
+  }
+
   return (
     <div>
-      <QuizHeader showQues={showQues} />
+      <QuizHeader showQues={showQues} totalQues={getValues('total')} />
       <div className="wrapper d-flex flex-column min-h-[77vh]">
         {/* tutorial */}
         {intro && (
@@ -66,6 +158,7 @@ const QuizLayout = () => {
                 setStep1(true)
                 setStep2(false)
                 setStep3(false)
+                setUsmleStep('1')
               }}
             >
               USMLE: <span className="font-bold">Step1</span>
@@ -79,6 +172,7 @@ const QuizLayout = () => {
                 setStep1(false)
                 setStep2(true)
                 setStep3(false)
+                setUsmleStep('2')
               }}
             >
               USMLE: <span className="font-bold">Step2</span>
@@ -92,6 +186,7 @@ const QuizLayout = () => {
                 setStep1(false)
                 setStep2(false)
                 setStep3(true)
+                setUsmleStep('3')
               }}
             >
               USMLE: <span className="font-bold">Step3</span>
@@ -107,84 +202,15 @@ const QuizLayout = () => {
               </CButton>
             </center>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div
-                className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
-                onClick={() => setTopic('Microbiology')}
-              >
-                Microbiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Immunology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Histology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Anatomy
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Physiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Embryology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Biochemistry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Genetics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                General Pathology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Genreal Pharmacology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Behavioral sciences
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Biostatistics and epidemiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ethics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Cardiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Musculoskeletal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Neurology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Psychiatry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Gastrointestinal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                OB/GYN
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Nephrology/Urology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Dermatology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Pulmonology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Hematology/Oncology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Endocrinology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ophthalmology
-              </div>
+              {step1Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => setTopic(category)}
+                >
+                  {category}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -197,93 +223,15 @@ const QuizLayout = () => {
               </CButton>
             </center>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Internal Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Surgery
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Pediatrics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Obstetrics and Gynecology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Psychiatry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Preventive Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Family Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Emergency Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Radiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Dermatology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ophthalmology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Otolaryngology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Orthopedics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Anesthesiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Geriatrics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ethics and Legal Issues in Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ethics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Cardiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Musculoskeletal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Neurology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Psychiatry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Gastrointestinal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                OB/GYN
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Nephrology/Urology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Dermatology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Pulmonology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Hematology/Oncology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Endocrinology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ophthalmology
-              </div>
+              {step2Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => setTopic(category)}
+                >
+                  {category}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -296,119 +244,61 @@ const QuizLayout = () => {
               </CButton>
             </center>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Internal Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Surgery
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Pediatrics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Obstetrics and Gynecology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Psychiatry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Preventive Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Family Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Emergency Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Radiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Dermatology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ophthalmology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Otolaryngology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Orthopedics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Anesthesiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Geriatrics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ethics and Legal Issues in Medicine
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ethics
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Cardiology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Musculoskeletal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Neurology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Psychiatry
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Gastrointestinal
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                OB/GYN
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Nephrology/Urology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Dermatology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Pulmonology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Hematology/Oncology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Endocrinology
-              </div>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer">
-                Ophthalmology
-              </div>
+              {step3Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => setTopic(category)}
+                >
+                  {category}
+                </div>
+              ))}
             </div>
+          </div>
+        )}
+        {/* Total Questions */}
+        {/* select steps */}
+        {showTotal && (
+          <div className="flex flex-col bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mx-auto mt-20 mb-10">
+            <h3 className="text-center text-3xl mb-3">Please enter number of questions</h3>
+            <CForm
+              onSubmit={handleSubmit(setQues)}
+              className="flex justify-center items-center flex-col"
+            >
+              <CFormInput
+                type="number"
+                placeholder="Enter number of questions"
+                {...register('total', { required: true, min: 0 })}
+                feedback="Please enter valid number of questions."
+                invalid={errors.total ? true : false}
+              />
+              <CButton color="primary" type="submit" className="mx-auto px-5 rounded-full mt-3">
+                Next
+              </CButton>
+            </CForm>
           </div>
         )}
         {/* Questions */}
         {showQues && (
           <div className="p-10">
-            <p className="mb-5">
-              In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to
-              demonstrate the visual form of a document or a typeface without relying on meaningful
-              content. Lorem ipsum may be used as a placeholder before the final copy is available.
-            </p>
-            <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-64">
-              <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
-              <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
-              <CFormCheck type="radio" name="q1" id="q1" label="Default radio" />
-              <CFormCheck
-                type="radio"
-                name="q1"
-                id="q1"
-                label="Default radio"
-                className="line-through"
-              />
-            </div>
-            <CButton color="primary" className="mx-auto px-5 rounded-full">
-              Submit
-            </CButton>
+            <p className="mb-5">{filteredQuestion[currentQuestion].question}</p>
+            <CForm onSubmit={handleFormSubmit}>
+              <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-64">
+                {filteredQuestion[currentQuestion].options.map((opt, idx) => (
+                  <CFormCheck
+                    type="radio"
+                    id={opt}
+                    name={currentQuestion}
+                    label={opt}
+                    key={idx}
+                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                  />
+                ))}
+              </div>
+              <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
+                Submit
+              </CButton>
+            </CForm>
           </div>
         )}
       </div>

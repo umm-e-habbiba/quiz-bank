@@ -18,7 +18,7 @@ import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 
-const QuizHeader = ({ showQues }) => {
+const QuizHeader = ({ showQues, totalQues }) => {
   const headerRef = useRef()
   const [fullscreen, setFullscreen] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
@@ -30,6 +30,7 @@ const QuizHeader = ({ showQues }) => {
       headerRef.current &&
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
     })
+    console.log(showQues, totalQues)
   }, [])
 
   const onChange = (notes) => {
@@ -79,7 +80,7 @@ const QuizHeader = ({ showQues }) => {
           <HiMenuAlt4 className="quiz-icons cursor-pointer mr-2" />
           {showQues && (
             <div className="flex justify-start items-center">
-              <h1 className="mr-5 text-2xl">Item 1 of 400</h1>
+              <h1 className="mr-5 text-2xl">Item 1 of {totalQues}</h1>
               <div className="flex flex-col justify-center items-center">
                 <div className="flex justify-center items-center">
                   <CFormCheck inline id="inlineCheckbox1" value="marked" label="" />

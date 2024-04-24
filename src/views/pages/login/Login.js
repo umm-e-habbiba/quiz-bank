@@ -12,37 +12,50 @@ import {
   CInputGroup,
   CInputGroupText,
   CRow,
+  CSpinner,
 } from '@coreui/react'
+import '../auth.css'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilUser } from '@coreui/icons'
-
+import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
+import { useForm } from 'react-hook-form'
+import img1 from '../../../assets/images/image-1.png'
+import img2 from '../../../assets/images/image-2.png'
 const Login = () => {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [emailError, setEmailError] = useState(false)
-  const [password, setPassword] = useState('')
-  const [passwordError, setPasswordError] = useState(false)
   const [loginError, setLoginError] = useState(false)
   const [loginErrorValue, setLoginErrorValue] = useState('')
-  const login = () => {
-    setEmailError(false)
-    setPasswordError(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  useEffect(() => {
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      setToken(getToken)
+      navigate('/')
+    }
+  }, [])
+
+  const login = (data) => {
     setLoginError(false)
     setLoginErrorValue('')
-
-    if (email === '') {
-      setEmailError(true)
-    }
-    if (password === '') {
-      setPasswordError(true)
-    }
-    console.log(email, password)
+    setIsLoading(true)
+    console.log(data)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
 
     const raw = JSON.stringify({
-      email: email,
-      password: password,
+      email: data.email,
+      password: data.password,
     })
 
     const requestOptions = {
@@ -53,30 +66,94 @@ const Login = () => {
     }
 
     fetch('http://localhost:8000/user-login', requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result == 'Login successful') {
-          navigate('/admin')
+        setIsLoading(false)
+        if (result.token) {
+          localStorage.setItem('token', result.token)
+          if (result.message === 'Login successful as user') {
+            navigate('/')
+          }
+          if (result.message === 'Login successful as admin') {
+            navigate('/admin')
+          }
         } else {
           setLoginError(true)
           setLoginErrorValue(result)
         }
       })
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+        setLoginError(true)
+        setLoginErrorValue('Something went wrong!')
+      })
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <CContainer>
+      <div className="auth-wrapper">
+        <div className="inner">
+          <img src={img1} alt="" className="image-1" />
+          <CForm onSubmit={handleSubmit(login)} className="form">
+            <h3>Login</h3>
+            <CInputGroup className="mb-3 form-holder">
+              <span className="lnr">
+                <CIcon icon={cilEnvelopeOpen} />
+              </span>
+              <CFormInput
+                placeholder="Email"
+                autoComplete="email"
+                type="email"
+                className="form-control"
+                {...register('email', { required: true })}
+                feedback="Please enter your email."
+                invalid={errors.email ? true : false}
+              />
+            </CInputGroup>
+            <CInputGroup className="mb-3 form-holder">
+              <span className="lnr">
+                <CIcon icon={cilLockLocked} />
+              </span>
+              <CFormInput
+                type="password"
+                placeholder="Password"
+                autoComplete="new-password"
+                {...register('password', { required: true, minLength: 8 })}
+                feedback="Please enter valid password and passowrd must contain atleast 8 characters."
+                invalid={errors.password ? true : false}
+              />
+            </CInputGroup>
+            <CButton color="link" className="px-0 ">
+              Forgot password?
+            </CButton>
+            <br />
+            {loginError && <span className="text-red-400 mt-3">{loginErrorValue}</span>}
+            <div className="d-grid">
+              <CButton type="submit" className="button">
+                <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Login'}</span>
+              </CButton>
+            </div>
+            <p className="mt-2 text-center text-xs">
+              Dont have an account?{' '}
+              <Link to="/register" className="font-bold">
+                Register
+              </Link>
+            </p>
+          </CForm>
+          <img src={img2} alt="" className="image-2" />
+        </div>
+      </div>
+      {/* <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <CForm onSubmit={handleSubmit(login)}>
                     <h1>Login</h1>
                     <p className="text-body-secondary">Sign In to your account</p>
-                    <CInputGroup className="mb-1">
+                    <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
@@ -84,14 +161,12 @@ const Login = () => {
                         placeholder="Email"
                         type="email"
                         autoComplete="username"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        {...register('email', { required: true })}
+                        feedback="Please enter your email."
+                        invalid={errors.email ? true : false}
                       />
                     </CInputGroup>
-                    {emailError && (
-                      <span className="text-red-400 mb-3">Please enter valid email</span>
-                    )}
-                    <CInputGroup className="mb-1">
+                    <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
@@ -99,27 +174,25 @@ const Login = () => {
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        {...register('password', { required: true, minLength: 8 })}
+                        feedback="Please enter valid password and passowrd must contain atleast 8 characters."
+                        invalid={errors.password ? true : false}
                       />
                     </CInputGroup>
-                    {passwordError && (
-                      <span className="text-red-400 mb-3">Please enter valid password</span>
-                    )}
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4" onClick={login}>
+                        <CButton color="primary" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
-                      {/* <CCol xs={6} className="text-right">
+                      <CCol xs={6} className="text-right">
                         <CButton color="link" className="px-0">
                           Forgot password?
                         </CButton>
-                      </CCol> */}
+                      </CCol> 
                     </CRow>
 
-                    {loginError && <span className="text-red-400 mb-3">{loginErrorValue}</span>}
+                    {loginError && <span className="text-red-400 mt-3">{loginErrorValue}</span>}
                   </CForm>
                 </CCardBody>
               </CCard>
@@ -139,7 +212,7 @@ const Login = () => {
             </CCardGroup>
           </CCol>
         </CRow>
-      </CContainer>
+      </CContainer> */}
     </div>
   )
 }

@@ -16,6 +16,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
+  cilAccountLogout,
   cilBell,
   cilContrast,
   cilEnvelopeOpen,
