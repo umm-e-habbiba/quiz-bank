@@ -135,11 +135,7 @@ const QuizHeader = ({ showQues, totalQues }) => {
           <ReactCalculator />
         </div>
       )}
-      {showNotes && (
-        // <div className="fixed bottom-0 right-0">
-        <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />
-        // </div>
-      )}
+      {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}
     </>
   )
 }

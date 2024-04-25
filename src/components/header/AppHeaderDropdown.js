@@ -29,6 +29,7 @@ const AppHeaderDropdown = () => {
 
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('score')
     navigate('/login')
   }
   return (
@@ -37,7 +38,7 @@ const AppHeaderDropdown = () => {
         <CAvatar color="secondary" size="md" />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownItem onClick={logout}>
+        <CDropdownItem onClick={logout} className="cursor-pointer">
           <CIcon icon={cilAccountLogout} className="me-2" />
           Logout
         </CDropdownItem>

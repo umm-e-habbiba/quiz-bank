@@ -124,9 +124,9 @@ const Login = () => {
                 invalid={errors.password ? true : false}
               />
             </CInputGroup>
-            <CButton color="link" className="px-0 ">
+            <Link to="/forget-password" className="px-0">
               Forgot password?
-            </CButton>
+            </Link>
             <br />
             {loginError && <span className="text-red-400 mt-3">{loginErrorValue}</span>}
             <div className="d-grid">
