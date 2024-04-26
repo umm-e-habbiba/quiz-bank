@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardGroup,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-  CSpinner,
-} from '@coreui/react'
+import { CButton, CForm, CFormInput, CInputGroup, CSpinner } from '@coreui/react'
 import '../auth.css'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
@@ -105,7 +92,7 @@ const Login = () => {
                 placeholder="Email"
                 autoComplete="email"
                 type="email"
-                className="form-control"
+                className="form-input"
                 {...register('email', { required: true })}
                 feedback="Please enter your email."
                 invalid={errors.email ? true : false}
@@ -119,6 +106,7 @@ const Login = () => {
                 type="password"
                 placeholder="Password"
                 autoComplete="new-password"
+                className="form-input"
                 {...register('password', { required: true, minLength: 8 })}
                 feedback="Please enter valid password and passowrd must contain atleast 8 characters."
                 invalid={errors.password ? true : false}

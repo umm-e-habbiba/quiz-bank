@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { AppContent, AppHeader, AppSidebar } from 'src/components/index'
-import AdminSidebar from 'src/components/admin/AdminSidebar'
-import { json, useNavigate } from 'react-router-dom'
-import { CCard, CCardBody, CCardHeader, CProgress } from '@coreui/react'
+import { AppHeader, AppSidebar } from 'src/components/index'
+import { Link, useNavigate } from 'react-router-dom'
+import { CCard, CCardBody, CCardHeader, CProgress, CRow, CCol, CButton } from '@coreui/react'
 const QuizPerformance = () => {
   const navigate = useNavigate()
   const [token, setToken] = useState(localStorage.getItem('token') || '')
@@ -36,20 +35,27 @@ const QuizPerformance = () => {
             <CCard className="mb-4 mx-4">
               <CCardHeader className="flex justify-between items-center">
                 <strong>Your Performance</strong>
+                <CButton color="success" onClick={() => navigate('/review-quiz')}>
+                  Review
+                </CButton>
               </CCardHeader>
               <CCardBody>
-                <div className="progress-group">
-                  <div className="progress-group-header">
-                    <span>Your Score</span>
-                    <span className="ms-auto fw-semibold">
-                      {marks}
-                      <span className="text-body-secondary small">({percent}%)</span>
-                    </span>
-                  </div>
-                  <div className="progress-group-bars">
-                    <CProgress thin color="success" value={percent} />
-                  </div>
-                </div>
+                <CRow>
+                  <CCol mg={6}>
+                    <div className="progress-group">
+                      <div className="progress-group-header">
+                        <span>Your Score</span>
+                        <span className="ms-auto fw-semibold">
+                          {marks}
+                          <span className="text-body-secondary small">({percent}%)</span>
+                        </span>
+                      </div>
+                      <div className="progress-group-bars">
+                        <CProgress thin color="success" value={Number(percent)} />
+                      </div>
+                    </div>
+                  </CCol>
+                </CRow>
               </CCardBody>
             </CCard>
           </div>

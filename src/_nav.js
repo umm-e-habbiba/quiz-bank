@@ -1,21 +1,13 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDescription,
-  cilDrop,
   cilNotes,
   cilPencil,
-  cilPuzzle,
   cilSpeedometer,
   cilListFilter,
   cilBarChart,
   cilMagnifyingGlass,
   cilBook,
-  cilStar,
   cilCreditCard,
   cilCommentBubble,
 } from '@coreui/icons'

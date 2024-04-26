@@ -1,20 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCardGroup,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-  CSpinner,
-  CAlert,
-} from '@coreui/react'
+import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import '../auth.css'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle, cilLockUnlocked } from '@coreui/icons'
@@ -156,6 +142,7 @@ const ForgetPassword = () => {
                     type="password"
                     placeholder="Password"
                     autoComplete="new-password"
+                    className="form-input"
                     {...register('password', { required: true, minLength: 8 })}
                     feedback="Please enter valid password and passowrd must contain atleast 8 characters."
                     invalid={errors.password ? true : false}
@@ -169,6 +156,7 @@ const ForgetPassword = () => {
                     type="password"
                     placeholder="Repeat Password"
                     autoComplete="new-password"
+                    className="form-input"
                     {...register('repeatPassword', { required: true, minLength: 8 })}
                     feedback="Please enter valid password and passowrd must contain atleast 8 characters."
                     invalid={errors.repeatPassword ? true : false}
@@ -207,8 +195,8 @@ const ForgetPassword = () => {
                     <CFormInput
                       placeholder="Email"
                       autoComplete="email"
+                      className="form-input"
                       type="email"
-                      className="form-control"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />

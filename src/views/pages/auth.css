@@ -94,7 +94,7 @@ h3 {
   left: 2px;
 }
 
-.form-control {
+.form-input {
   border: none;
   border-bottom: 1px solid #e6e6e6;
   display: block;
@@ -106,34 +106,34 @@ h3 {
   font-family: 'Muli-SemiBold';
   font-size: 16px;
 }
-.form-control::-webkit-input-placeholder {
+.form-input::-webkit-input-placeholder {
   font-size: 14px;
   color: #999;
   transform: translateY(1px);
 }
-.form-control::-moz-placeholder {
+.form-input::-moz-placeholder {
   font-size: 14px;
   color: #999;
   transform: translateY(1px);
 }
-.form-control:-ms-input-placeholder {
+.form-input:-ms-input-placeholder {
   font-size: 14px;
   color: #999;
   transform: translateY(1px);
 }
-.form-control:-moz-placeholder {
+.form-input:-moz-placeholder {
   font-size: 14px;
   color: #999;
   transform: translateY(1px);
 }
-.form-control:focus {
+.form-input:focus {
   border-bottom: 3px solid #accffe;
   margin-left: 0 !important;
   background-color: transparent;
   box-shadow: none;
   border-radius: 0;
 }
-.form-control:focus .is-invalid {
+.form-input:focus .is-invalid {
   box-shadow: none;
 }
 

@@ -118,6 +118,7 @@ const Register = () => {
                 placeholder="First Name"
                 autoComplete="firstname"
                 type="text"
+                className="form-input"
                 {...register('firstname', { required: true })}
                 feedback="Please enter your firstname"
                 invalid={errors.firstname ? true : false}
@@ -131,6 +132,7 @@ const Register = () => {
                 placeholder="Last Name"
                 autoComplete="lastname"
                 type="text"
+                className="form-input"
                 {...register('lastname', { required: true })}
                 feedback="Please enter your lastname"
                 invalid={errors.lastname ? true : false}
@@ -144,6 +146,7 @@ const Register = () => {
                 placeholder="Email"
                 autoComplete="email"
                 type="email"
+                className="form-input"
                 {...register('email', { required: true })}
                 feedback="Please enter your email."
                 invalid={errors.email ? true : false}
@@ -157,6 +160,7 @@ const Register = () => {
                 type="password"
                 placeholder="Password"
                 autoComplete="new-password"
+                className="form-input"
                 {...register('password', { required: true, minLength: 8 })}
                 feedback="Please enter valid password and passowrd must contain atleast 8 characters."
                 invalid={errors.password ? true : false}
@@ -170,6 +174,7 @@ const Register = () => {
                 type="password"
                 placeholder="Repeat password"
                 autoComplete="new-password"
+                className="form-input"
                 {...register('repeatPassword', { required: true, minLength: 8 })}
                 feedback="Please enter valid password and passowrd must contain atleast 8 characters."
                 invalid={errors.repeatPassword ? true : false}

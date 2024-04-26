@@ -17,7 +17,6 @@ import {
   CTableRow,
   CModal,
   CModalBody,
-  CModalContent,
   CModalFooter,
   CModalHeader,
   CModalTitle,
@@ -27,32 +26,64 @@ import {
   CFormInput,
   CFormSelect,
   CSpinner,
+  CFormTextarea,
 } from '@coreui/react'
-import { DocsExample } from 'src/components'
 import CIcon from '@coreui/icons-react'
-import { cilDelete, cilPencil, cilTrash } from '@coreui/icons'
+import { cilPencil, cilTrash } from '@coreui/icons'
+import { API_URL } from 'src/store'
+import { useForm } from 'react-hook-form'
 const ManageQuiz = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
-  const [editModal, seteditModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
-  const [usmleStep, setUsmleStep] = useState('')
-  const [usmleCategory, setUsmleCategory] = useState('')
-  const [question, setQuestion] = useState('')
   const [questionId, setQuestionId] = useState('')
-  const [op1, setOp1] = useState('')
-  const [op2, setOp2] = useState('')
-  const [op3, setOp3] = useState('')
-  const [op4, setOp4] = useState('')
-  const [correct, setCorrect] = useState('')
+  const [image, setImage] = useState('')
+  // const [usmleStep, setUsmleStep] = useState('')
+  // const [usmleCategory, setUsmleCategory] = useState('')
+  // const [question, setQuestion] = useState('')
+  // const [op1, setOp1] = useState('')
+  // const [op2, setOp2] = useState('')
+  // const [op3, setOp3] = useState('')
+  // const [op4, setOp4] = useState('')
+  // const [correct, setCorrect] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
 
-  const API_URL = 'http://localhost:8000/'
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    watch,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      usmleStep: '',
+      usmleCategory: '',
+      question: '',
+      op1: '',
+      op2: '',
+      op3: '',
+      op4: '',
+      correct: '',
+      explaination: '',
+      op1Explain: '',
+      op2Explain: '',
+      op3Explain: '',
+      op4Explain: '',
+    },
+  })
+
+  const stepSelected = watch('usmleStep')
+  const option1 = watch('op1')
+  const option2 = watch('op2')
+  const option3 = watch('op3')
+  const option4 = watch('op4')
 
   useEffect(() => {
     getAllQuest()
@@ -86,22 +117,32 @@ const ManageQuiz = () => {
         setLoader(false)
       })
   }
-  const addQuestion = () => {
+  const addQuestion = (data) => {
+    console.log('add function called', data, '...', stepSelected)
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    console.log(usmleStep, usmleCategory, question, correct, op1)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
 
     const raw = JSON.stringify({
-      usmleStep: usmleStep,
-      USMLE: usmleCategory,
-      question: question,
-      options: [op1, op2, op3, op4],
-      correctAnswer: correct,
+      usmleStep: data.usmleStep,
+      USMLE: data.usmleCategory,
+      question: data.question,
+      options: [data.op1, data.op2, data.op3, data.op4],
+      correctAnswer: data.correct,
     })
-
+    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
+    let formData = new FormData()
+    formData.append('usmleStep', data.usmleStep)
+    formData.append('USMLE', data.usmleCategory)
+    formData.append('question', data.question)
+    // for (var i = 0; i < optionsArray.length; i++) {
+    //   formData.append('options', optionsArray[i])
+    // }
+    formData.append('options', optionsArray)
+    formData.append('correctAnswer', data.correct)
+    console.log(...formData)
     const requestOptions = {
       method: 'POST',
       headers: myHeaders,
@@ -109,18 +150,19 @@ const ManageQuiz = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'add-mcqs', requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result)
-        setAddModal(false)
-        setIsLoading(false)
-        getAllQuest()
-      })
-      .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      })
+    // fetch(API_URL + 'add-mcqs', requestOptions)
+    //   .then((response) => response.text())
+    //   .then((result) => {
+    //     console.log(result)
+    //     setAddModal(false)
+    //     setIsLoading(false)
+    //     getAllQuest()
+    //     reset({})
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //     setIsLoading(false)
+    //   })
   }
   const getQuestion = () => {
     var requestOptions = {
@@ -131,14 +173,15 @@ const ManageQuiz = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log('ques detail', result)
-        setQuestion(result.question)
-        setUsmleStep(result.usmleStep)
-        setUsmleCategory(result.USMLE)
-        setCorrect(result.correctAnswer)
-        setOp1(result.options[0])
-        setOp2(result.options[1])
-        setOp3(result.options[2])
-        setOp4(result.options[3])
+        setValue('usmleStep', result.usmleStep)
+        setValue('usmleCategory', result.USMLE)
+        setValue('question', result.question)
+        setValue('explaination', result.explaination)
+        setValue('op1', result.options[0])
+        setValue('op2', result.options[1])
+        setValue('op3', result.options[2])
+        setValue('op4', result.options[3])
+        setValue('correct', result.correctAnswer)
       })
       .catch((error) => console.log('error', error))
   }
@@ -170,7 +213,8 @@ const ManageQuiz = () => {
       })
       .catch((error) => console.log('error', error))
   }
-  const editQuestion = () => {
+  const editQuestion = (data) => {
+    console.log('edit function called', data)
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
@@ -178,11 +222,11 @@ const ManageQuiz = () => {
     myHeaders.append('Content-Type', 'application/json')
 
     const raw = JSON.stringify({
-      usmleStep: usmleStep,
-      USMLE: usmleCategory,
-      question: question,
-      options: [op1, op2, op3, op4],
-      correctAnswer: correct,
+      usmleStep: data.usmleStep,
+      USMLE: data.usmleCategory,
+      question: data.question,
+      options: [data.op1, data.op2, data.op3, data.op4],
+      correctAnswer: data.correct,
     })
 
     const requestOptions = {
@@ -200,6 +244,7 @@ const ManageQuiz = () => {
         setIsLoading(false)
         getAllQuest()
         setQuestionId('')
+        reset({})
       })
       .catch((error) => {
         console.error(error)
@@ -221,6 +266,7 @@ const ManageQuiz = () => {
                 onClick={() => {
                   setAddModal(true)
                   setIsLoading(false)
+                  reset({})
                 }}
               >
                 Add Question
@@ -296,7 +342,7 @@ const ManageQuiz = () => {
         visible={addModal}
         onClose={() => setAddModal(false)}
         aria-labelledby="VerticallyCenteredExample"
-        scrollable={true}
+        // scrollable={true}
         size="lg"
       >
         <CModalHeader>
@@ -304,171 +350,289 @@ const ManageQuiz = () => {
             {questionId ? 'Edit' : 'Add'} Question
           </CModalTitle>
         </CModalHeader>
-        <CModalBody>
-          <CForm>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <CFormSelect
-                  label="USMLE Step"
-                  aria-label="usmle step"
-                  id="usmleStep"
-                  defaultValue={usmleStep}
-                  options={[
-                    'Select USMLE Step',
-                    { label: 'Step 1', value: '1' },
-                    { label: 'Step 2', value: '2' },
-                    { label: 'Step 3', value: '3' },
-                  ]}
-                  onChange={(e) => setUsmleStep(e.target.value)}
-                />
-              </CCol>
-            </CRow>
-            {usmleStep ? (
+        <CForm onSubmit={questionId ? handleSubmit(editQuestion) : handleSubmit(addQuestion)}>
+          <CModalBody>
+            <CForm>
               <CRow className="mb-3">
                 <CCol md={12}>
-                  {usmleStep == '1' ? (
-                    <CFormSelect
-                      label="USMLE Category"
-                      aria-label="usmle category"
-                      id="usmleCategory"
-                      defaultValue={usmleCategory}
-                      options={[
-                        'Select USMLE Category',
-                        { label: 'Microbiology', value: 'Microbiology' },
-                        { label: 'Immunology', value: 'Immunology' },
-                        { label: 'Histology', value: 'Histology' },
-                        { label: 'Anatomy', value: 'Anatomy' },
-                        { label: 'Physiology', value: 'Physiology' },
-                        { label: 'Embryology', value: 'Embryology' },
-                        { label: 'Biochemistry', value: 'Biochemistry' },
-                      ]}
-                      onChange={(e) => setUsmleCategory(e.target.value)}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  {usmleStep == '2' ? (
-                    <CFormSelect
-                      label="USMLE Category"
-                      aria-label="usmle category"
-                      id="usmleCategory"
-                      defaultValue={usmleCategory}
-                      options={[
-                        'Select USMLE Category',
-                        { label: 'Internal Medicine', value: 'Internal Medicine' },
-                        { label: 'Surgery', value: 'Surgery' },
-                        { label: 'Pediatrics', value: 'Pediatrics' },
-                        { label: 'Obstetrics and Gynecology', value: 'Obstetrics and Gynecology' },
-                        { label: 'Psychiatry', value: 'Psychiatry' },
-                        { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                        { label: 'Family Medicine', value: 'Family Medicine' },
-                      ]}
-                      onChange={(e) => setUsmleCategory(e.target.value)}
-                    />
-                  ) : (
-                    ''
-                  )}
-                  {usmleStep == '3' ? (
-                    <CFormSelect
-                      label="USMLE Category"
-                      aria-label="usmle category"
-                      id="usmleCategory"
-                      defaultValue={usmleCategory}
-                      options={[
-                        'Select USMLE Category',
-                        { label: 'Internal Medicine', value: 'Internal Medicine' },
-                        { label: 'Surgery', value: 'Surgery' },
-                        { label: 'Pediatrics', value: 'Pediatrics' },
-                        { label: 'Obstetrics and Gynecology', value: 'Obstetrics and Gynecology' },
-                        { label: 'Psychiatry', value: 'Psychiatry' },
-                        { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                        { label: 'Family Medicine', value: 'Family Medicine' },
-                      ]}
-                      onChange={(e) => setUsmleCategory(e.target.value)}
-                    />
-                  ) : (
-                    ''
-                  )}
+                  <CFormSelect
+                    label="USMLE Step"
+                    aria-label="usmle step"
+                    id="usmleStep"
+                    options={[
+                      { label: 'Select USMLE Step', value: '' },
+                      { label: 'Step 1', value: '1' },
+                      { label: 'Step 2', value: '2' },
+                      { label: 'Step 3', value: '3' },
+                    ]}
+                    {...register('usmleStep', { required: true })}
+                    feedback="Please select USMLE Step"
+                    invalid={errors.usmleStep ? true : false}
+                    defaultValue={getValues('usmleStep')}
+                    // onChange={(e) => setUsmleStep(e.target.value)}
+                  />
                 </CCol>
               </CRow>
+              {Number(getValues('usmleStep')) > 0 ? (
+                <CRow className="mb-3">
+                  <CCol md={12}>
+                    {getValues('usmleStep') == '1' ? (
+                      <CFormSelect
+                        label="USMLE Category"
+                        aria-label="usmle category"
+                        id="usmleCategory"
+                        defaultValue={getValues('usmleCategory')}
+                        options={[
+                          { label: 'Select USMLE Category', value: '' },
+                          { label: 'Microbiology', value: 'Microbiology' },
+                          { label: 'Immunology', value: 'Immunology' },
+                          { label: 'Histology', value: 'Histology' },
+                          { label: 'Anatomy', value: 'Anatomy' },
+                          { label: 'Physiology', value: 'Physiology' },
+                          { label: 'Embryology', value: 'Embryology' },
+                          { label: 'Biochemistry', value: 'Biochemistry' },
+                        ]}
+                        {...register('usmleCategory', { required: true })}
+                        feedback="Please select USMLE Category."
+                        invalid={errors.usmleCategory ? true : false}
+                        // onChange={(e) => setUsmleCategory(e.target.value)}
+                      />
+                    ) : (
+                      ''
+                    )}
+                    {getValues('usmleStep') == '2' ? (
+                      <CFormSelect
+                        label="USMLE Category"
+                        aria-label="usmle category"
+                        id="usmleCategory"
+                        defaultValue={getValues('usmleCategory')}
+                        options={[
+                          { label: 'Select USMLE Category', value: '' },
+                          { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          { label: 'Surgery', value: 'Surgery' },
+                          { label: 'Pediatrics', value: 'Pediatrics' },
+                          {
+                            label: 'Obstetrics and Gynecology',
+                            value: 'Obstetrics and Gynecology',
+                          },
+                          { label: 'Psychiatry', value: 'Psychiatry' },
+                          { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          { label: 'Family Medicine', value: 'Family Medicine' },
+                        ]}
+                        // onChange={(e) => setUsmleCategory(e.target.value)}
+                        {...register('usmleCategory', { required: true })}
+                        feedback="Please select USMLE Category."
+                        invalid={errors.usmleCategory ? true : false}
+                      />
+                    ) : (
+                      ''
+                    )}
+                    {getValues('usmleStep') == '3' ? (
+                      <CFormSelect
+                        label="USMLE Category"
+                        aria-label="usmle category"
+                        id="usmleCategory"
+                        defaultValue={getValues('usmleCategory')}
+                        options={[
+                          { label: 'Select USMLE Category', value: '' },
+                          { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          { label: 'Surgery', value: 'Surgery' },
+                          { label: 'Pediatrics', value: 'Pediatrics' },
+                          {
+                            label: 'Obstetrics and Gynecology',
+                            value: 'Obstetrics and Gynecology',
+                          },
+                          { label: 'Psychiatry', value: 'Psychiatry' },
+                          { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          { label: 'Family Medicine', value: 'Family Medicine' },
+                        ]}
+                        // onChange={(e) => setUsmleCategory(e.target.value)}
+                        {...register('usmleCategory', { required: true })}
+                        feedback="Please select USMLE Category."
+                        invalid={errors.usmleCategory ? true : false}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </CCol>
+                </CRow>
+              ) : (
+                ''
+              )}
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormInput
+                    label="Question"
+                    type="text"
+                    id="ques"
+                    placeholder="Enter Question"
+                    // value={question}
+                    // onChange={(e) => setQuestion(e.target.value)}
+                    {...register('question', { required: true })}
+                    feedback="Question is required"
+                    invalid={errors.question ? true : false}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormTextarea
+                    label="Explaination"
+                    type="text"
+                    id="explain"
+                    rows={4}
+                    placeholder="Explain question"
+                    {...register('explaination', { required: true })}
+                    feedback="Explaination is required"
+                    invalid={errors.explaination ? true : false}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormLabel htmlFor="options">Options</CFormLabel>
+                  <CRow>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="First option"
+                        type="text"
+                        // onChange={(e) => setOp1(e.target.value)}
+                        // value={op1}
+                        {...register('op1', { required: true })}
+                        feedback="Option 1 is required"
+                        invalid={errors.op1 ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="First option explaination"
+                        type="text"
+                        {...register('op1Explain', { required: true })}
+                        feedback="Explaination of Option 1 is required"
+                        invalid={errors.op1Explain ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="Second option"
+                        type="text"
+                        {...register('op2', { required: true })}
+                        feedback="Option 2 is required"
+                        invalid={errors.op2 ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="Second option explaination"
+                        type="text"
+                        {...register('op2Explain', { required: true })}
+                        feedback="Explaination of Option 2 is required"
+                        invalid={errors.op2Explain ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="Third option"
+                        type="text"
+                        {...register('op3', { required: true })}
+                        feedback="Option 3 is required"
+                        invalid={errors.op3 ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="Third option explaination"
+                        type="text"
+                        {...register('op3Explain', { required: true })}
+                        feedback="Explaination of Option 3 is required"
+                        invalid={errors.op3Explain ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="First option"
+                        type="text"
+                        // onChange={(e) => setOp1(e.target.value)}
+                        // value={op1}
+                        {...register('op4', { required: true })}
+                        feedback="Option 4 is required"
+                        invalid={errors.op4 ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                    <CCol md={6}>
+                      <CFormInput
+                        placeholder="First option explaination"
+                        type="text"
+                        {...register('op4Explain', { required: true })}
+                        feedback="Explaination of Option 4 is required"
+                        invalid={errors.op4Explain ? true : false}
+                        className="mb-2"
+                      />
+                    </CCol>
+                  </CRow>
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormSelect
+                    label="Correct Option"
+                    aria-label="correct option"
+                    id="correct"
+                    defaultValue={getValues('correct')}
+                    options={[
+                      { label: 'Select Correct Option', value: '' },
+                      { label: getValues('op1'), value: option1 },
+                      { label: getValues('op2'), value: option2 },
+                      { label: getValues('op3'), value: option3 },
+                      { label: getValues('op4'), value: option4 },
+                    ]}
+                    // onChange={(e) => setCorrect(e.target.value)}
+                    {...register('correct', { required: true })}
+                    feedback="Please select correct option"
+                    invalid={errors.correct ? true : false}
+                  />
+                </CCol>
+              </CRow>
+              <CRow className="mb-3">
+                <CCol md={12}>
+                  <CFormInput
+                    type="file"
+                    id="formFile"
+                    label="Image"
+                    onChange={(e) => setImage(e.target.files[0])}
+                  />
+                </CCol>
+              </CRow>
+            </CForm>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => setAddModal(false)}>
+              Close
+            </CButton>
+            {questionId ? (
+              <CButton color="primary" type="submit" disabled={loading ? true : false}>
+                {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
+              </CButton>
             ) : (
-              ''
+              <CButton color="primary" type="submit" disabled={loading ? true : false}>
+                {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
+              </CButton>
             )}
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <CFormInput
-                  label="Question"
-                  type="text"
-                  id="ques"
-                  value={question}
-                  placeholder="Enter Question"
-                  onChange={(e) => setQuestion(e.target.value)}
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <CFormLabel htmlFor="options">Options</CFormLabel>
-                <CFormInput
-                  type="text"
-                  value={op1}
-                  onChange={(e) => setOp1(e.target.value)}
-                  className="mb-2"
-                />
-                <CFormInput
-                  type="text"
-                  value={op2}
-                  onChange={(e) => setOp2(e.target.value)}
-                  className="mb-2"
-                />
-                <CFormInput
-                  type="text"
-                  value={op3}
-                  onChange={(e) => setOp3(e.target.value)}
-                  className="mb-2"
-                />
-                <CFormInput
-                  type="text"
-                  value={op4}
-                  onChange={(e) => setOp4(e.target.value)}
-                  className="mb-2"
-                />
-              </CCol>
-            </CRow>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <CFormSelect
-                  label="Correct Option"
-                  aria-label="correct option"
-                  id="correctOpt"
-                  defaultValue={correct}
-                  options={[
-                    'Select Correct Option',
-                    { label: op1, value: op1 },
-                    { label: op2, value: op2 },
-                    { label: op3, value: op3 },
-                    { label: op4, value: op4 },
-                  ]}
-                  onChange={(e) => setCorrect(e.target.value)}
-                />
-              </CCol>
-            </CRow>
-          </CForm>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setAddModal(false)}>
-            Close
-          </CButton>
-          {questionId ? (
-            <CButton color="primary" onClick={editQuestion} disabled={loading ? true : false}>
-              {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
-            </CButton>
-          ) : (
-            <CButton color="primary" onClick={addQuestion} disabled={loading ? true : false}>
-              {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
-            </CButton>
-          )}
-        </CModalFooter>
+          </CModalFooter>
+        </CForm>
       </CModal>
       {/* delete modal */}
       <CModal
@@ -486,10 +650,10 @@ const ManageQuiz = () => {
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setDeleteModal(false)}>
-            Close
+            No
           </CButton>
           <CButton color="primary" onClick={deleteQuestion} disabled={loading ? true : false}>
-            {loading ? <CSpinner color="light" size="sm" /> : 'Delete'}
+            {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
           </CButton>
         </CModalFooter>
       </CModal>

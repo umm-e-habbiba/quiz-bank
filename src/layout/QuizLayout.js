@@ -1,45 +1,10 @@
-import {
-  CButton,
-  CForm,
-  CFormCheck,
-  CFormInput,
-  CHeader,
-  CHeaderNav,
-  CNavLink,
-  CNavItem,
-  CModal,
-  CModalBody,
-  CModalContent,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CFormLabel,
-  CSpinner,
-  CRow,
-  CCol,
-  CAlert,
-} from '@coreui/react'
+import { CButton, CForm, CFormCheck, CFormInput, CAlert } from '@coreui/react'
 import React, { useState, useEffect } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
 import { useNavigate, NavLink } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
-import { HiMenuAlt4 } from 'react-icons/hi'
-import {
-  BiLeftArrow,
-  BiRightArrow,
-  BiFullscreen,
-  BiExitFullscreen,
-  BiSolidHelpCircle,
-  BiZoomIn,
-} from 'react-icons/bi'
-import { FcCalculator } from 'react-icons/fc'
-import { FiSettings } from 'react-icons/fi'
-import noteIcon from '../assets/images/post-it.png'
-import markIcon from '../assets/images/mark-flag.png'
-import { ReactCalculator } from 'simple-react-calculator'
-import ReactStickies from 'react-stickies'
 
 const QuizLayout = () => {
   const navigate = useNavigate()
@@ -51,7 +16,6 @@ const QuizLayout = () => {
   const [showQues, setShowQues] = useState(false)
   const [usmleCategory, setUsmleCategory] = useState('')
   const [usmleStep, setUsmleStep] = useState('')
-  const [totalQues, setTotalQues] = useState('')
   const [showTotal, setShowTotal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [allQuestion, setAllQuestion] = useState([])
@@ -59,18 +23,6 @@ const QuizLayout = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedOption, setSelectedOption] = useState('')
   const [quizEnd, setQuizEnd] = useState(false)
-  const [fullscreen, setFullscreen] = useState(false)
-  const [showCalculator, setShowCalculator] = useState(false)
-  const [showNotes, setShowNotes] = useState(false)
-  const [notes, setNotes] = useState([])
-  const [marked, setMarked] = useState(false)
-  const [questionId, setQuestionId] = useState('')
-  const [commentModal, setCommentModal] = useState(false)
-  const [loading, setIsLoading] = useState(false)
-  const [commentValue, setCommentValue] = useState('')
-  const [commentError, setCommentError] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [successMsg, setSuccessMsg] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [quizScore, setQuizScore] = useState(0)
@@ -86,10 +38,6 @@ const QuizLayout = () => {
       total: 1,
     },
   })
-
-  useEffect(() => {
-    console.log('quiz score', quizScore)
-  }, [quizScore])
 
   useEffect(() => {
     getAllQuest()
@@ -111,46 +59,6 @@ const QuizLayout = () => {
       localStorage.setItem('score', JSON.stringify(score))
     }
   }, [quizEnd])
-
-  const onChange = (notes) => {
-    setNotes(notes)
-  }
-
-  const onSave = () => {
-    // Make sure to delete the editorState before saving to backend
-    console.log('save function called', notes)
-    const notes = notes
-    notes.map((note) => {
-      delete note.editorState
-    })
-    // Make service call to save notes
-    // Code goes here...
-  }
-  const toggleFullscreen = () => {
-    setFullscreen((prevCheck) => !prevCheck)
-    if (
-      !document.fullscreenElement &&
-      /* alternative standard method */ !document.mozFullScreenElement &&
-      !document.webkitFullscreenElement
-    ) {
-      // current working methods
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen()
-      } else if (document.documentElement.mozRequestFullScreen) {
-        document.documentElement.mozRequestFullScreen()
-      } else if (document.documentElement.webkitRequestFullscreen) {
-        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT)
-      }
-    } else {
-      if (document.cancelFullScreen) {
-        document.cancelFullScreen()
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen()
-      } else if (document.webkitCancelFullScreen) {
-        document.webkitCancelFullScreen()
-      }
-    }
-  }
 
   const getAllQuest = () => {
     const requestOptions = {
@@ -253,15 +161,6 @@ const QuizLayout = () => {
     }
   }
 
-  const handlePrevQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1)
-      setSelectedOption('')
-    }
-    setMarked(false)
-    setQuestionId('')
-    setCommentValue('')
-  }
   const handleNextQuestion = () => {
     if (currentQuestion + 1 < getValues('total')) {
       setCurrentQuestion(currentQuestion + 1)
@@ -269,137 +168,16 @@ const QuizLayout = () => {
     } else {
       setQuizEnd(true)
     }
-    setMarked(false)
-    setQuestionId('')
-    setCommentValue('')
-  }
-
-  const toggleMarked = (e) => {
-    setMarked((prevCheck) => !prevCheck)
-    if (e.target.checked) {
-      setQuestionId(e.target.id)
-      setCommentModal(true)
-      console.log('checked', e.target.id)
-    } else {
-      console.log('unchecked')
-      setQuestionId('')
-    }
-  }
-
-  const addComment = () => {
-    console.log('comment', commentValue, 'ques id', questionId)
-    setIsLoading(true)
-    if (commentValue == '') {
-      setCommentError('Please enter your comment')
-      setIsLoading(false)
-    } else {
-      const myHeaders = new Headers()
-      myHeaders.append('Content-Type', 'application/json')
-
-      const raw = JSON.stringify({
-        commentText: commentValue,
-      })
-
-      const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow',
-      }
-
-      fetch(API_URL + 'add-comment/' + questionId, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result)
-          setCommentModal(false)
-          setIsLoading(false)
-          setSuccess(true)
-          setSuccessMsg('Comment sent successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
-        })
-        .catch((error) => {
-          console.error(error)
-          setIsLoading(false)
-        })
-    }
   }
   return (
     <div>
-      {/* <QuizHeader showQues={showQues} totalQues={getValues('total')} /> */}
-      {/* header */}
-      <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4">
-        <div className="flex justify-start items-center">
-          <HiMenuAlt4 className="quiz-icons cursor-pointer mr-2" />
-          {showQues && (
-            <div className="flex justify-start items-center">
-              <h1 className="mr-5 text-2xl">
-                Item {currentQuestion + 1} of {getValues('total')}
-              </h1>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex justify-center items-center">
-                  <CFormCheck
-                    inline
-                    id={filteredQuestion[currentQuestion]._id}
-                    value={marked}
-                    checked={marked ? true : false}
-                    label=""
-                    onChange={(e) => toggleMarked(e)}
-                  />
-                  <img src={markIcon} alt="mark icon" className="cursor-pointer w-5 h-5" />
-                </div>
-                <span className="text-xs">Mark</span>
-              </div>
-            </div>
-          )}
-        </div>
-        <CHeaderNav className="d-md-flex">
-          <CNavItem>
-            <CNavLink
-              as={NavLink}
-              className={`flex flex-col justify-center items-center mr-2 ${showQues && currentQuestion >= 1 ? '' : 'opacity-30'}`}
-              disabled={showQues && currentQuestion >= 1 ? false : true}
-              onClick={handlePrevQuestion}
-            >
-              <BiLeftArrow className="quiz-icons" />
-              <span className="text-[#ffffffde]">Previous</span>
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink
-              as={NavLink}
-              className={`flex flex-col justify-center items-center ${showQues && currentQuestion + 1 != getValues('total') ? '' : 'opacity-30'}`}
-              disabled={showQues && currentQuestion + 1 != getValues('total') ? false : true}
-              onClick={handleNextQuestion}
-            >
-              <BiRightArrow className="quiz-icons" />
-              <span className="text-[#ffffffde]">Next</span>
-            </CNavLink>
-          </CNavItem>
-        </CHeaderNav>
-        <CHeaderNav className="d-md-flex mr-2">
-          {fullscreen ? (
-            <BiExitFullscreen
-              className="quiz-icons mr-2 cursor-pointer"
-              onClick={toggleFullscreen}
-            />
-          ) : (
-            <BiFullscreen className="quiz-icons mr-2 cursor-pointer" onClick={toggleFullscreen} />
-          )}
-          <BiSolidHelpCircle className="quiz-icons mr-2 cursor-pointer" />
-          <div onClick={() => setShowNotes((prevCheck) => !prevCheck)}>
-            <img src={noteIcon} alt="notes icon" className="mr-2 cursor-pointer" />
-          </div>
-          <FcCalculator
-            className="quiz-icons mr-2 cursor-pointer"
-            onClick={() => setShowCalculator((prevCheck) => !prevCheck)}
-          />
-          <BiZoomIn className="quiz-icons mr-2 cursor-pointer" />
-          <FiSettings className="quiz-icons cursor-pointer" />
-        </CHeaderNav>
-      </CHeader>
+      <QuizHeader
+        currentQuestion={currentQuestion}
+        setCurrentQuestion={setCurrentQuestion}
+        showQues={showQues}
+        totalQues={getValues('total')}
+        filteredArray={filteredQuestion}
+      />
       <div className="wrapper d-flex flex-column min-h-[77vh]">
         {/* tutorial */}
         {intro && (
@@ -570,57 +348,13 @@ const QuizLayout = () => {
           </div>
         )}
       </div>
-      <QuizFooter showQues={showQues} quizEnd={quizEnd} step={usmleStep} category={usmleCategory} />
-      \{/* calculator */}
-      {showCalculator && (
-        <div className="fixed bottom-0 right-0">
-          <ReactCalculator />
-        </div>
-      )}
-      {/* notes */}
-      {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}
-      {/* comment modal */}
-      <CModal
-        alignment="center"
-        visible={commentModal}
-        onClose={() => setCommentModal(false)}
-        aria-labelledby="VerticallyCenteredExample"
-      >
-        <CModalHeader>
-          <CModalTitle id="VerticallyCenteredExample">Add Comment</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <CForm>
-            <CRow className="mb-3">
-              <CCol md={12}>
-                <CFormInput
-                  label="Comment"
-                  type="text"
-                  id="comment"
-                  value={commentValue}
-                  placeholder="Add your comment"
-                  onChange={(e) => setCommentValue(e.target.value)}
-                />
-              </CCol>
-            </CRow>
-            <p className="text-xs mt-3 text-red-700">{commentError}</p>
-          </CForm>
-        </CModalBody>
-        <CModalFooter>
-          <CButton color="secondary" onClick={() => setCommentModal(false)}>
-            Close
-          </CButton>
-          <CButton color="primary" onClick={addComment} disabled={loading ? true : false}>
-            {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
-          </CButton>
-        </CModalFooter>
-      </CModal>
-      {/* success alert */}
-      {success && (
-        <CAlert color="success" className="success-alert">
-          {successMsg}
-        </CAlert>
-      )}
+      <QuizFooter
+        showQues={showQues}
+        totalQues={getValues('total')}
+        step={usmleStep}
+        category={usmleCategory}
+        score={quizScore}
+      />
       {/* error alert */}
       {error && (
         <CAlert color="danger" className="success-alert">

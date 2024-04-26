@@ -1,7 +1,24 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { CHeader, CHeaderNav, CNavLink, CNavItem, useColorModes, CFormCheck } from '@coreui/react'
+import {
+  CHeader,
+  CHeaderNav,
+  CNavLink,
+  CNavItem,
+  CFormCheck,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CForm,
+  CRow,
+  CCol,
+  CFormInput,
+  CModalFooter,
+  CButton,
+  CSpinner,
+  CAlert,
+} from '@coreui/react'
 import { HiMenuAlt4 } from 'react-icons/hi'
 import {
   BiLeftArrow,
@@ -17,13 +34,31 @@ import noteIcon from '../../assets/images/post-it.png'
 import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
-
-const QuizHeader = ({ showQues, totalQues }) => {
+import { API_URL } from 'src/store'
+const QuizHeader = ({
+  currentQuestion,
+  setCurrentQuestion,
+  showQues,
+  totalQues,
+  filteredArray,
+}) => {
   const headerRef = useRef()
   const [fullscreen, setFullscreen] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
   const [notes, setNotes] = useState([])
+  const [selectedOption, setSelectedOption] = useState('')
+  const [marked, setMarked] = useState(false)
+  const [loading, setIsLoading] = useState(false)
+  const [commentValue, setCommentValue] = useState('')
+  const [commentError, setCommentError] = useState('')
+  const [commentModal, setCommentModal] = useState(false)
+  const [questionId, setQuestionId] = useState('')
+  const [quizEnd, setQuizEnd] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [error, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -73,17 +108,99 @@ const QuizHeader = ({ showQues, totalQues }) => {
       }
     }
   }
+
+  const handlePrevQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1)
+      setSelectedOption('')
+    }
+    setMarked(false)
+    setQuestionId('')
+    setCommentValue('')
+  }
+  const handleNextQuestion = () => {
+    if (currentQuestion + 1 < totalQues) {
+      setCurrentQuestion(currentQuestion + 1)
+      setSelectedOption('')
+    } else {
+      setQuizEnd(true)
+    }
+    setMarked(false)
+    setQuestionId('')
+    setCommentValue('')
+  }
+
+  const toggleMarked = (e) => {
+    setMarked((prevCheck) => !prevCheck)
+    if (e.target.checked) {
+      setQuestionId(e.target.id)
+      setCommentModal(true)
+      console.log('checked', e.target.id)
+    } else {
+      console.log('unchecked')
+      setQuestionId('')
+    }
+  }
+  const addComment = () => {
+    console.log('comment', commentValue, 'ques id', questionId)
+    setIsLoading(true)
+    if (commentValue == '') {
+      setCommentError('Please enter your comment')
+      setIsLoading(false)
+    } else {
+      const myHeaders = new Headers()
+      myHeaders.append('Content-Type', 'application/json')
+
+      const raw = JSON.stringify({
+        commentText: commentValue,
+      })
+
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+      }
+
+      fetch(API_URL + 'add-comment/' + questionId, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log(result)
+          setCommentModal(false)
+          setIsLoading(false)
+          setSuccess(true)
+          setSuccessMsg('Comment sent successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        })
+        .catch((error) => {
+          console.error(error)
+          setIsLoading(false)
+        })
+    }
+  }
   return (
     <>
-      <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4" ref={headerRef}>
+      <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
           <HiMenuAlt4 className="quiz-icons cursor-pointer mr-2" />
           {showQues && (
             <div className="flex justify-start items-center">
-              <h1 className="mr-5 text-2xl">Item 1 of {totalQues}</h1>
+              <h1 className="mr-5 text-2xl">
+                Item {currentQuestion + 1} of {totalQues}
+              </h1>
               <div className="flex flex-col justify-center items-center">
                 <div className="flex justify-center items-center">
-                  <CFormCheck inline id="inlineCheckbox1" value="marked" label="" />
+                  <CFormCheck
+                    inline
+                    id={filteredArray[currentQuestion]._id}
+                    value={marked}
+                    checked={marked ? true : false}
+                    label=""
+                    onChange={(e) => toggleMarked(e)}
+                  />
                   <img src={markIcon} alt="mark icon" className="cursor-pointer w-5 h-5" />
                 </div>
                 <span className="text-xs">Mark</span>
@@ -94,16 +211,22 @@ const QuizHeader = ({ showQues, totalQues }) => {
         <CHeaderNav className="d-md-flex">
           <CNavItem>
             <CNavLink
-              to="/"
               as={NavLink}
-              className="flex flex-col justify-center items-center mr-2"
+              className={`flex flex-col justify-center items-center mr-2 ${showQues && currentQuestion >= 1 ? '' : 'opacity-30'}`}
+              disabled={showQues && currentQuestion >= 1 ? false : true}
+              onClick={handlePrevQuestion}
             >
               <BiLeftArrow className="quiz-icons" />
               <span className="text-[#ffffffde]">Previous</span>
             </CNavLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink to="/" as={NavLink} className="flex flex-col justify-center items-center">
+            <CNavLink
+              as={NavLink}
+              className={`flex flex-col justify-center items-center ${showQues && currentQuestion + 1 != totalQues ? '' : 'opacity-30'}`}
+              disabled={showQues && currentQuestion + 1 != totalQues ? false : true}
+              onClick={handleNextQuestion}
+            >
               <BiRightArrow className="quiz-icons" />
               <span className="text-[#ffffffde]">Next</span>
             </CNavLink>
@@ -129,13 +252,61 @@ const QuizHeader = ({ showQues, totalQues }) => {
           <BiZoomIn className="quiz-icons mr-2 cursor-pointer" />
           <FiSettings className="quiz-icons cursor-pointer" />
         </CHeaderNav>
-      </CHeader>
+      </CHeader>{' '}
       {showCalculator && (
         <div className="fixed bottom-0 right-0">
           <ReactCalculator />
         </div>
       )}
       {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}
+      {/* comment modal */}
+      <CModal
+        alignment="center"
+        visible={commentModal}
+        onClose={() => setCommentModal(false)}
+        aria-labelledby="VerticallyCenteredExample"
+      >
+        <CModalHeader>
+          <CModalTitle id="VerticallyCenteredExample">Add Comment</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CForm>
+            <CRow className="mb-3">
+              <CCol md={12}>
+                <CFormInput
+                  label="Comment"
+                  type="text"
+                  id="comment"
+                  value={commentValue}
+                  placeholder="Add your comment"
+                  onChange={(e) => setCommentValue(e.target.value)}
+                />
+              </CCol>
+            </CRow>
+            <p className="text-xs mt-3 text-red-700">{commentError}</p>
+          </CForm>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setCommentModal(false)}>
+            Close
+          </CButton>
+          <CButton color="primary" onClick={addComment} disabled={loading ? true : false}>
+            {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      {/* success alert */}
+      {success && (
+        <CAlert color="success" className="success-alert">
+          {successMsg}
+        </CAlert>
+      )}
+      {/* error alert */}
+      {error && (
+        <CAlert color="danger" className="success-alert">
+          {errorMsg}
+        </CAlert>
+      )}
     </>
   )
 }
