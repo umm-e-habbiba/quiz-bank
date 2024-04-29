@@ -7,6 +7,7 @@ import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
 import { useForm } from 'react-hook-form'
 import img1 from '../../../assets/images/image-1.png'
 import img2 from '../../../assets/images/image-2.png'
+import { API_URL } from 'src/store'
 const Login = () => {
   const navigate = useNavigate()
   const [loginError, setLoginError] = useState(false)
@@ -52,7 +53,7 @@ const Login = () => {
       redirect: 'follow',
     }
 
-    fetch('http://localhost:8000/user-login', requestOptions)
+    fetch(API_URL + 'user-login', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -61,9 +62,11 @@ const Login = () => {
           localStorage.setItem('token', result.token)
           if (result.message === 'Login successful as user') {
             navigate('/')
+            localStorage.setItem('user', 'user')
           }
           if (result.message === 'Login successful as admin') {
             navigate('/admin')
+            localStorage.setItem('user', 'admin')
           }
         } else {
           setLoginError(true)

@@ -18,6 +18,7 @@ import {
   CButton,
   CSpinner,
   CAlert,
+  CPopover,
 } from '@coreui/react'
 import { HiMenuAlt4 } from 'react-icons/hi'
 import {
@@ -41,6 +42,8 @@ const QuizHeader = ({
   showQues,
   totalQues,
   filteredArray,
+  fontSize,
+  setFontSize,
 }) => {
   const headerRef = useRef()
   const [fullscreen, setFullscreen] = useState(false)
@@ -241,7 +244,11 @@ const QuizHeader = ({
           ) : (
             <BiFullscreen className="quiz-icons mr-2 cursor-pointer" onClick={toggleFullscreen} />
           )}
-          <BiSolidHelpCircle className="quiz-icons mr-2 cursor-pointer" />
+          <CPopover content="Please email test@gmail.com" placement="bottom">
+            <CButton color="link p-0">
+              <BiSolidHelpCircle className="quiz-icons mr-2 cursor-pointer" />
+            </CButton>
+          </CPopover>
           <div onClick={() => setShowNotes((prevCheck) => !prevCheck)}>
             <img src={noteIcon} alt="notes icon" className="mr-2 cursor-pointer" />
           </div>
@@ -249,7 +256,10 @@ const QuizHeader = ({
             className="quiz-icons mr-2 cursor-pointer"
             onClick={() => setShowCalculator((prevCheck) => !prevCheck)}
           />
-          <BiZoomIn className="quiz-icons mr-2 cursor-pointer" />
+          <BiZoomIn
+            className="quiz-icons mr-2 cursor-pointer"
+            onClick={() => setFontSize(fontSize + 1)}
+          />
           <FiSettings className="quiz-icons cursor-pointer" />
         </CHeaderNav>
       </CHeader>{' '}

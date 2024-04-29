@@ -27,6 +27,7 @@ import { useForm } from 'react-hook-form'
 import '../auth.css'
 import img1 from '../../../assets/images/image-1.png'
 import img2 from '../../../assets/images/image-2.png'
+import { API_URL } from 'src/store'
 const Register = () => {
   const navigate = useNavigate()
   const [registerError, setRegisterError] = useState(false)
@@ -80,7 +81,7 @@ const Register = () => {
         redirect: 'follow',
       }
 
-      fetch('http://localhost:8000/user-signup', requestOptions)
+      fetch(API_URL + 'user-signup', requestOptions)
         .then((response) => response.text())
         .then((result) => {
           console.log(result)

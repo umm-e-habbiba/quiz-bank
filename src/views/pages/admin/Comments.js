@@ -31,7 +31,7 @@ import { cilPencil, cilTrash } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
-const ManageQuiz = () => {
+const Comments = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
@@ -104,7 +104,7 @@ const ManageQuiz = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'mcqs', requestOptions)
+    fetch(API_URL + 'mcqs-with-comments', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -255,18 +255,7 @@ const ManageQuiz = () => {
       <>
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
-            <strong>Manage Questions</strong>
-            <CButton
-              color="success"
-              className="text-white"
-              onClick={() => {
-                setAddModal(true)
-                setIsLoading(false)
-                reset({})
-              }}
-            >
-              Add Question
-            </CButton>
+            <strong>Comments</strong>
           </CCardHeader>
           <CCardBody>
             {loader ? (
@@ -655,4 +644,4 @@ const ManageQuiz = () => {
     </AdminLayout>
   )
 }
-export default ManageQuiz
+export default Comments

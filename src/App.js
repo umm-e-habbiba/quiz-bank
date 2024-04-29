@@ -1,6 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
-// import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom'
+import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
@@ -12,6 +11,8 @@ import ManageQuiz from './views/pages/admin/ManageQuiz'
 import QuizPerformance from './views/pages/dashboard/QuizPerformance'
 import ForgetPassword from './views/pages/login/ForgetPassword'
 import ReviewQuiz from './views/pages/dashboard/ReviewQuiz'
+import Comments from './views/pages/admin/Comments'
+import Admin from './views/pages/admin/Admin'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -41,7 +42,7 @@ const App = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <HashRouter>
+    <Router>
       <Suspense
         fallback={
           <div className="pt-3 text-center">
@@ -50,14 +51,15 @@ const App = () => {
         }
       >
         <Routes>
-          <Route exact path="*" name="User" element={<DefaultLayout />} />
+          <Route exact path="/" name="User" element={<DefaultLayout />} />
           <Route path="/login" name="Login Page" element={<Login />} />
           <Route path="/register" name="Register Page" element={<Register />} />
-          <Route path="/404" name="Page 404" element={<Page404 />} />
+          <Route path="*" name="Page 404" element={<Page404 />} />
           <Route path="/500" name="Page 500" element={<Page500 />} />
           <Route path="/quiz" name="Quiz" element={<QuizLayout />} />
-          <Route path="/admin" name="Admin Dashboard" element={<AdminLayout />} />
+          <Route path="/admin" name="Admin Dashboard" element={<Admin />} />
           <Route path="/admin/quiz" name="Manage Quiz" element={<ManageQuiz />} />
+          <Route path="/admin/comments" name="Comments" element={<Comments />} />
           <Route path="/quiz-performance" name="Quiz Performance" element={<QuizPerformance />} />
           <Route path="/review-quiz" name="Review Quiz" element={<ReviewQuiz />} />
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
@@ -68,7 +70,7 @@ const App = () => {
           />
         </Routes>
       </Suspense>
-    </HashRouter>
+    </Router>
   )
 }
 

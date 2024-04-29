@@ -18,6 +18,8 @@ import {
   cilStar,
   cilCreditCard,
   cilCommentBubble,
+  cilCommentSquare,
+  cilListRich,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -32,13 +34,13 @@ const _admin_nav = [
     component: CNavItem,
     name: 'Manage Quiz',
     to: '/admin/quiz',
-    icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilListRich} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Comments',
     to: '/admin/comments',
-    icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
   },
 ]
 

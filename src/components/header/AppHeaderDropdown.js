@@ -9,6 +9,7 @@ const AppHeaderDropdown = () => {
 
   const logout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
     localStorage.removeItem('score')
     navigate('/login')
   }

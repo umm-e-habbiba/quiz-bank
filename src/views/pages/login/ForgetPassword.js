@@ -7,6 +7,8 @@ import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle, cilLockUnlocked } from 
 import { useForm } from 'react-hook-form'
 import img1 from '../../../assets/images/image-1.png'
 import img2 from '../../../assets/images/image-2.png'
+import { API_URL } from 'src/store'
+
 const ForgetPassword = () => {
   const navigate = useNavigate()
   let getParams = useParams()
@@ -18,7 +20,7 @@ const ForgetPassword = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [emailSent, setEmailSent] = useState(false)
-  const [usertoken, setUserToken] = useState(localStorage.getItem('token') || '')
+
   const {
     register,
     handleSubmit,
@@ -54,7 +56,7 @@ const ForgetPassword = () => {
         redirect: 'follow',
       }
 
-      fetch('http://localhost:8000/forgot-password', requestOptions)
+      fetch(API_URL + 'forgot-password', requestOptions)
         .then((response) => response.json())
         .then((result) => {
           console.log(result)
@@ -97,7 +99,7 @@ const ForgetPassword = () => {
         redirect: 'follow',
       }
 
-      fetch('http://localhost:8000/reset-password/' + userId + '/' + token, requestOptions)
+      fetch(API_URL + 'reset-password/' + userId + '/' + token, requestOptions)
         .then((response) => response.json())
         .then((result) => {
           console.log(result)

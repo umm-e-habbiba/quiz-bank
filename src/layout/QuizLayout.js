@@ -5,6 +5,8 @@ import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
 import { useNavigate, NavLink } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
+import { API_URL } from 'src/store'
+import Highlighter from 'react-highlight-words'
 
 const QuizLayout = () => {
   const navigate = useNavigate()
@@ -26,8 +28,9 @@ const QuizLayout = () => {
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [quizScore, setQuizScore] = useState(0)
+  const [highlightedText, setHighlightedText] = useState([])
+  const [fontSize, setFontSize] = useState(16)
 
-  const API_URL = 'http://localhost:8000/'
   const {
     register,
     handleSubmit,
@@ -48,6 +51,10 @@ const QuizLayout = () => {
       navigate('/login')
     }
   }, [])
+
+  // useEffect(() => {
+  //   setHighlightedText(highlightedText)
+  // }, [highlightedText])
 
   useEffect(() => {
     if (quizEnd) {
@@ -169,6 +176,13 @@ const QuizLayout = () => {
       setQuizEnd(true)
     }
   }
+
+  const handleHighlight = () => {
+    const selectedText = window.getSelection().toString()
+    setHighlightedText((prevText) => [...prevText, selectedText])
+    console.log(selectedText, '   ', highlightedText)
+  }
+
   return (
     <div>
       <QuizHeader
@@ -177,6 +191,8 @@ const QuizLayout = () => {
         showQues={showQues}
         totalQues={getValues('total')}
         filteredArray={filteredQuestion}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
       />
       <div className="wrapper d-flex flex-column min-h-[77vh]">
         {/* tutorial */}
@@ -326,10 +342,18 @@ const QuizLayout = () => {
         )}
         {/* Questions */}
         {showQues && (
-          <div className="p-10">
-            <p className="mb-5">{filteredQuestion[currentQuestion].question}</p>
+          <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
+            <div className="mb-5">
+              <Highlighter
+                highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
+                searchWords={highlightedText.length > 0 ? highlightedText : []}
+                autoEscape={true}
+                textToHighlight={filteredQuestion[currentQuestion].question}
+                onMouseUp={handleHighlight}
+              />
+            </div>
             <CForm onSubmit={handleFormSubmit}>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-64">
+              <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-fit">
                 {filteredQuestion[currentQuestion].options.map((opt, idx) => (
                   <CFormCheck
                     type="radio"

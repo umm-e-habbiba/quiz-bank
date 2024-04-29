@@ -7,6 +7,7 @@ import { useNavigate, NavLink } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import CIcon from '@coreui/icons-react'
 import { cilBarChart, cilCalendar, cilClock } from '@coreui/icons'
+import { API_URL } from 'src/store'
 
 const ReviewQuiz = () => {
   const navigate = useNavigate()
@@ -29,7 +30,6 @@ const ReviewQuiz = () => {
   const [errorMsg, setErrorMsg] = useState('')
   const [quizScore, setQuizScore] = useState(0)
 
-  const API_URL = 'http://localhost:8000/'
   const {
     register,
     handleSubmit,
