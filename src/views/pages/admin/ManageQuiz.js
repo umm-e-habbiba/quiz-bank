@@ -25,6 +25,7 @@ import {
   CFormSelect,
   CSpinner,
   CFormTextarea,
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash } from '@coreui/icons'
@@ -50,6 +51,8 @@ const ManageQuiz = () => {
   // const [correct, setCorrect] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
   const {
@@ -130,18 +133,24 @@ const ManageQuiz = () => {
       question: data.question,
       options: [data.op1, data.op2, data.op3, data.op4],
       correctAnswer: data.correct,
+      explaination: [
+        {
+          questionExplanation: data.explaination,
+          optionExplainations: [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain],
+        },
+      ],
     })
-    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
-    let formData = new FormData()
-    formData.append('usmleStep', data.usmleStep)
-    formData.append('USMLE', data.usmleCategory)
-    formData.append('question', data.question)
-    // for (var i = 0; i < optionsArray.length; i++) {
-    //   formData.append('options', optionsArray[i])
-    // }
-    formData.append('options', optionsArray)
-    formData.append('correctAnswer', data.correct)
-    console.log(...formData)
+    // const optionsArray = [data.op1, data.op2, data.op3, data.op4]
+    // let formData = new FormData()
+    // formData.append('usmleStep', data.usmleStep)
+    // formData.append('USMLE', data.usmleCategory)
+    // formData.append('question', data.question)
+    // // for (var i = 0; i < optionsArray.length; i++) {
+    // //   formData.append('options', optionsArray[i])
+    // // }
+    // formData.append('options', optionsArray)
+    // formData.append('correctAnswer', data.correct)
+    // console.log(...formData)
     const requestOptions = {
       method: 'POST',
       headers: myHeaders,
@@ -149,19 +158,25 @@ const ManageQuiz = () => {
       redirect: 'follow',
     }
 
-    // fetch(API_URL + 'add-mcqs', requestOptions)
-    //   .then((response) => response.text())
-    //   .then((result) => {
-    //     console.log(result)
-    //     setAddModal(false)
-    //     setIsLoading(false)
-    //     getAllQuest()
-    //     reset({})
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     setIsLoading(false)
-    //   })
+    fetch(API_URL + 'add-mcqs', requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log(result)
+        setAddModal(false)
+        setIsLoading(false)
+        getAllQuest()
+        reset({})
+        setSuccess(true)
+        setSuccessMsg('Question added successfully')
+        setTimeout(() => {
+          setSuccess(false)
+          setSuccessMsg('')
+        }, 3000)
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
   }
   const getQuestion = () => {
     var requestOptions = {
@@ -205,6 +220,12 @@ const ManageQuiz = () => {
         if (result === 'MCQ deleted successfully') {
           setDeleteModal(false)
           getAllQuest()
+          setSuccess(true)
+          setSuccessMsg('Question deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
         } else {
           setError(true)
           setErrorMsg(result)
@@ -244,6 +265,12 @@ const ManageQuiz = () => {
         getAllQuest()
         setQuestionId('')
         reset({})
+        setSuccess(true)
+        setSuccessMsg('Question updated successfully')
+        setTimeout(() => {
+          setSuccess(false)
+          setSuccessMsg('')
+        }, 3000)
       })
       .catch((error) => {
         console.error(error)
@@ -651,6 +678,12 @@ const ManageQuiz = () => {
             </CButton>
           </CModalFooter>
         </CModal>
+        {/* success alert */}
+        {success && (
+          <CAlert color="success" className="success-alert">
+            {successMsg}
+          </CAlert>
+        )}
       </>
     </AdminLayout>
   )
