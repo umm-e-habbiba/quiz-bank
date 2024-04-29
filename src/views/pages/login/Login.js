@@ -63,6 +63,7 @@ const Login = () => {
           if (result.message === 'Login successful as user') {
             navigate('/')
             localStorage.setItem('user', 'user')
+            localStorage.setItem('userId', result.userId)
           }
           if (result.message === 'Login successful as admin') {
             navigate('/admin')

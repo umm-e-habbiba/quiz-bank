@@ -34,7 +34,7 @@ import AdminLayout from 'src/layout/AdminLayout'
 const Comments = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
-  const [addModal, setAddModal] = useState(false)
+  const [editModal, setEditModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -116,53 +116,6 @@ const Comments = () => {
         setLoader(false)
       })
   }
-  const addQuestion = (data) => {
-    console.log('add function called', data, '...', stepSelected)
-    setIsLoading(true)
-    setError(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
-
-    const raw = JSON.stringify({
-      usmleStep: data.usmleStep,
-      USMLE: data.usmleCategory,
-      question: data.question,
-      options: [data.op1, data.op2, data.op3, data.op4],
-      correctAnswer: data.correct,
-    })
-    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
-    let formData = new FormData()
-    formData.append('usmleStep', data.usmleStep)
-    formData.append('USMLE', data.usmleCategory)
-    formData.append('question', data.question)
-    // for (var i = 0; i < optionsArray.length; i++) {
-    //   formData.append('options', optionsArray[i])
-    // }
-    formData.append('options', optionsArray)
-    formData.append('correctAnswer', data.correct)
-    console.log(...formData)
-    const requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow',
-    }
-
-    // fetch(API_URL + 'add-mcqs', requestOptions)
-    //   .then((response) => response.text())
-    //   .then((result) => {
-    //     console.log(result)
-    //     setAddModal(false)
-    //     setIsLoading(false)
-    //     getAllQuest()
-    //     reset({})
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     setIsLoading(false)
-    //   })
-  }
   const getQuestion = () => {
     var requestOptions = {
       method: 'GET',
@@ -239,7 +192,7 @@ const Comments = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAddModal(false)
+        setEditModal(false)
         setIsLoading(false)
         getAllQuest()
         setQuestionId('')
@@ -287,7 +240,7 @@ const Comments = () => {
                             className="text-white mr-3"
                             id={q._id}
                             onClick={(e) => {
-                              setAddModal(true)
+                              setEditModal(true)
                               setQuestionId(e.currentTarget.id)
                             }}
                           >
@@ -322,18 +275,16 @@ const Comments = () => {
         {/* add / edit modal */}
         <CModal
           alignment="center"
-          visible={addModal}
-          onClose={() => setAddModal(false)}
+          visible={editModal}
+          onClose={() => setEditModal(false)}
           aria-labelledby="VerticallyCenteredExample"
           // scrollable={true}
           size="lg"
         >
           <CModalHeader>
-            <CModalTitle id="VerticallyCenteredExample">
-              {questionId ? 'Edit' : 'Add'} Question
-            </CModalTitle>
+            <CModalTitle id="VerticallyCenteredExample">Edit Question</CModalTitle>
           </CModalHeader>
-          <CForm onSubmit={questionId ? handleSubmit(editQuestion) : handleSubmit(addQuestion)}>
+          <CForm onSubmit={handleSubmit(editQuestion)}>
             <CModalBody>
               <CForm>
                 <CRow className="mb-3">
@@ -602,7 +553,7 @@ const Comments = () => {
               </CForm>
             </CModalBody>
             <CModalFooter>
-              <CButton color="secondary" onClick={() => setAddModal(false)}>
+              <CButton color="secondary" onClick={() => setEditModal(false)}>
                 Close
               </CButton>
               {questionId ? (

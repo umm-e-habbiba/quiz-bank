@@ -29,7 +29,7 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Previous Tests',
-    to: '/',
+    to: '/previous-tests',
     icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
   },
   {
@@ -46,43 +46,43 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Reports',
-        to: '/',
+        to: '/reports',
       },
       {
         component: CNavItem,
         name: 'Graphs',
-        to: '/',
+        to: '/graphs',
       },
     ],
   },
   {
     component: CNavItem,
     name: 'Search',
-    to: '/',
+    to: '/search',
     icon: <CIcon icon={cilMagnifyingGlass} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Notes',
-    to: '/',
+    to: '/notes',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'FlashCards',
-    to: '/',
+    to: '/flashcards',
     icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'My Notebook',
-    to: '/',
+    to: '/my-notebook',
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Help',
-    to: '/',
+    to: '/help',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
   },
 ]

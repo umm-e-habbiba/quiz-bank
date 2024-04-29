@@ -33,13 +33,13 @@ const _admin_nav = [
   {
     component: CNavItem,
     name: 'Manage Quiz',
-    to: '/admin/quiz',
+    to: '/manage-quiz',
     icon: <CIcon icon={cilListRich} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Comments',
-    to: '/admin/comments',
+    to: '/comments',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
   },
 ]

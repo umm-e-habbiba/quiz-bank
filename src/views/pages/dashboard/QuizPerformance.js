@@ -22,7 +22,7 @@ const QuizPerformance = () => {
   }, [])
 
   const percentage = (partialValue, totalValue) => {
-    return (100 * partialValue) / totalValue
+    return Math.round((100 * partialValue) / totalValue)
   }
 
   return (

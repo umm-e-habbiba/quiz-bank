@@ -11,6 +11,7 @@ const AppHeaderDropdown = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     localStorage.removeItem('score')
+    localStorage.removeItem('userId')
     navigate('/login')
   }
   return (

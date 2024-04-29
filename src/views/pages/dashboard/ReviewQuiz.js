@@ -21,6 +21,7 @@ const ReviewQuiz = () => {
   const [usmleStep, setUsmleStep] = useState('')
   const [showTotal, setShowTotal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
   const [filteredQuestion, setFilteredQuestion] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -46,6 +47,8 @@ const ReviewQuiz = () => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
+      const getUserId = localStorage.getItem('userId')
+      setUSerID(getUserId)
     } else {
       navigate('/login')
     }
@@ -68,11 +71,11 @@ const ReviewQuiz = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'mcqs', requestOptions)
-      .then((response) => response.json())
+    fetch(API_URL + 'user-quizzes/' + userID, requestOptions)
+      .then((response) => response.text())
       .then((result) => {
         console.log(result)
-        setAllQuestion(result)
+        // setAllQuestion(result)
       })
       .catch((error) => {
         console.error(error)

@@ -13,6 +13,7 @@ import ForgetPassword from './views/pages/login/ForgetPassword'
 import ReviewQuiz from './views/pages/dashboard/ReviewQuiz'
 import Comments from './views/pages/admin/Comments'
 import Admin from './views/pages/admin/Admin'
+import PreviousTests from './views/pages/dashboard/PreviousTests'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -58,10 +59,11 @@ const App = () => {
           <Route path="/500" name="Page 500" element={<Page500 />} />
           <Route path="/quiz" name="Quiz" element={<QuizLayout />} />
           <Route path="/admin" name="Admin Dashboard" element={<Admin />} />
-          <Route path="/admin/quiz" name="Manage Quiz" element={<ManageQuiz />} />
-          <Route path="/admin/comments" name="Comments" element={<Comments />} />
+          <Route path="/manage-quiz" name="Manage Quiz" element={<ManageQuiz />} />
+          <Route path="/comments" name="Comments" element={<Comments />} />
           <Route path="/quiz-performance" name="Quiz Performance" element={<QuizPerformance />} />
           <Route path="/review-quiz" name="Review Quiz" element={<ReviewQuiz />} />
+          <Route path="/previous-tests" name="Previous Tests" element={<PreviousTests />} />
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
           <Route
             path="/forget-password/:id/:token"

@@ -1,4 +1,4 @@
-import { CButton, CForm, CFormCheck, CFormInput, CAlert } from '@coreui/react'
+import { CButton, CForm, CFormCheck, CFormInput, CAlert, CRow, CCol } from '@coreui/react'
 import React, { useState, useEffect } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
@@ -7,7 +7,7 @@ import { useNavigate, NavLink } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import { API_URL } from 'src/store'
 import Highlighter from 'react-highlight-words'
-
+import image from '../assets/images/angular.jpg'
 const QuizLayout = () => {
   const navigate = useNavigate()
   const [intro, setIntro] = useState(true)
@@ -20,6 +20,7 @@ const QuizLayout = () => {
   const [usmleStep, setUsmleStep] = useState('')
   const [showTotal, setShowTotal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
   const [filteredQuestion, setFilteredQuestion] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -30,6 +31,7 @@ const QuizLayout = () => {
   const [quizScore, setQuizScore] = useState(0)
   const [highlightedText, setHighlightedText] = useState([])
   const [fontSize, setFontSize] = useState(16)
+  const [saveQuestionArray, setSaveQuestionArray] = useState([])
 
   const {
     register,
@@ -47,6 +49,8 @@ const QuizLayout = () => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
+      const getUserId = localStorage.getItem('userId')
+      setUSerID(getUserId)
     } else {
       navigate('/login')
     }
@@ -64,6 +68,7 @@ const QuizLayout = () => {
         obt: quizScore,
       }
       localStorage.setItem('score', JSON.stringify(score))
+      saveQuiz()
     }
   }, [quizEnd])
 
@@ -156,10 +161,18 @@ const QuizLayout = () => {
     }
   }
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e, id) => {
     e.preventDefault()
     checkAnswer()
     handleNextQuestion()
+    const questionObj = {
+      questionId: id,
+      selectedOption: selectedOption,
+    }
+    setSaveQuestionArray((prevQues) => [...prevQues, questionObj])
+    setSelectedOption('')
+    console.log('save question array', saveQuestionArray)
+    // saveQuiz(id)
   }
 
   const checkAnswer = () => {
@@ -171,7 +184,6 @@ const QuizLayout = () => {
   const handleNextQuestion = () => {
     if (currentQuestion + 1 < getValues('total')) {
       setCurrentQuestion(currentQuestion + 1)
-      setSelectedOption('')
     } else {
       setQuizEnd(true)
     }
@@ -183,6 +195,36 @@ const QuizLayout = () => {
     console.log(selectedText, '   ', highlightedText)
   }
 
+  const saveQuiz = () => {
+    console.log('user id', userID, 'selected option', selectedOption)
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      userId: userID,
+      quizzes: [
+        {
+          questions: saveQuestionArray,
+        },
+      ],
+    })
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'save-quizzes', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
   return (
     <div>
       <QuizHeader
@@ -343,17 +385,42 @@ const QuizLayout = () => {
         {/* Questions */}
         {showQues && (
           <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
-            <div className="mb-5">
-              <Highlighter
-                highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
-                searchWords={highlightedText.length > 0 ? highlightedText : []}
-                autoEscape={true}
-                textToHighlight={filteredQuestion[currentQuestion].question}
-                onMouseUp={handleHighlight}
-              />
-            </div>
-            <CForm onSubmit={handleFormSubmit}>
-              <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-fit">
+            {filteredQuestion[currentQuestion].image ? (
+              <CRow className="mb-5">
+                <CCol md={8}>
+                  <Highlighter
+                    highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
+                    searchWords={highlightedText.length > 0 ? highlightedText : []}
+                    autoEscape={true}
+                    textToHighlight={filteredQuestion[currentQuestion].question}
+                    onMouseUp={handleHighlight}
+                  />
+                </CCol>
+                <CCol md={4}>
+                  <img
+                    src={image}
+                    // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                    alt="question image"
+                    className="w-96 h-64"
+                  />
+                </CCol>
+              </CRow>
+            ) : (
+              <CRow className="mb-5">
+                <CCol md={12}>
+                  <Highlighter
+                    highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
+                    searchWords={highlightedText.length > 0 ? highlightedText : []}
+                    autoEscape={true}
+                    textToHighlight={filteredQuestion[currentQuestion].question}
+                    onMouseUp={handleHighlight}
+                  />
+                </CCol>
+              </CRow>
+            )}
+            <div></div>
+            <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}>
+              <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
                 {filteredQuestion[currentQuestion].options.map((opt, idx) => (
                   <CFormCheck
                     type="radio"
@@ -361,6 +428,7 @@ const QuizLayout = () => {
                     name={currentQuestion}
                     label={opt}
                     key={idx}
+                    value={opt}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                   />
                 ))}

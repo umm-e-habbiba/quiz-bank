@@ -124,37 +124,40 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
 
-    const raw = JSON.stringify({
-      usmleStep: data.usmleStep,
-      USMLE: data.usmleCategory,
-      question: data.question,
-      options: [data.op1, data.op2, data.op3, data.op4],
-      correctAnswer: data.correct,
-      explaination: [
-        {
-          questionExplanation: data.explaination,
-          optionExplainations: [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain],
-        },
-      ],
-    })
-    // const optionsArray = [data.op1, data.op2, data.op3, data.op4]
-    // let formData = new FormData()
-    // formData.append('usmleStep', data.usmleStep)
-    // formData.append('USMLE', data.usmleCategory)
-    // formData.append('question', data.question)
-    // // for (var i = 0; i < optionsArray.length; i++) {
-    // //   formData.append('options', optionsArray[i])
-    // // }
-    // formData.append('options', optionsArray)
-    // formData.append('correctAnswer', data.correct)
-    // console.log(...formData)
+    // const raw = JSON.stringify({
+    //   usmleStep: data.usmleStep,
+    //   USMLE: data.usmleCategory,
+    //   question: data.question,
+    //   options: [data.op1, data.op2, data.op3, data.op4],
+    //   correctAnswer: data.correct,
+    //   explaination: [
+    //     {
+    //       questionExplanation: data.explaination,
+    //       optionExplainations: [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain],
+    //     },
+    //   ],
+    // })
+    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
+    const explainedOptions = [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain]
+
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('question', data.question)
+    formdata.append('options', [data.op1, data.op2, data.op3, data.op4])
+    formdata.append('correctAnswer', data.correct)
+    formdata.append('questionExplanation', data.explaination)
+    formdata.append('image', image)
+    formdata.append('optionExplanations', [
+      data.op1Explain,
+      data.op2Explain,
+      data.op3Explain,
+      data.op4Explain,
+    ])
     const requestOptions = {
       method: 'POST',
-      headers: myHeaders,
-      body: raw,
+      body: formdata,
       redirect: 'follow',
     }
 
@@ -190,15 +193,21 @@ const ManageQuiz = () => {
         setValue('usmleStep', result.usmleStep)
         setValue('usmleCategory', result.USMLE)
         setValue('question', result.question)
-        setValue('explaination', result.explaination)
+        setValue('explaination', result.questionExplanation)
         setValue('op1', result.options[0])
         setValue('op2', result.options[1])
         setValue('op3', result.options[2])
         setValue('op4', result.options[3])
         setValue('correct', result.correctAnswer)
+        setValue('op1Explain', result.optionExplanations[0])
+        setValue('op2Explain', result.optionExplanations[1])
+        setValue('op3Explain', result.optionExplanations[2])
+        setValue('op4Explain', result.optionExplanations[3])
+        setImage(result.image)
       })
       .catch((error) => console.log('error', error))
   }
+
   const deleteQuestion = () => {
     setIsLoading(true)
     setError(false)
