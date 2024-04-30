@@ -9,16 +9,34 @@ import {
   CButton,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
-const QuizFooter = ({ showQues, step, category, totalQues, score }) => {
+import { API_URL } from 'src/store'
+const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionArray }) => {
   const navigate = useNavigate()
   const [endModal, setEndModal] = useState(false)
   // const [totalSeconds, setTotalSeconds] = useState(0)
   const [totalSeconds, setTotalSeconds] = useState(0)
   const [timeLeft, setTimeLeft] = useState('00:00')
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
+
+  useEffect(() => {
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      setToken(getToken)
+      const getUserId = localStorage.getItem('userId')
+      setUSerID(getUserId)
+    } else {
+      navigate('/login')
+    }
+  }, [])
 
   useEffect(() => {
     setTotalSeconds(Number(totalQues) * 90)
   }, [totalQues])
+
+  useEffect(() => {
+    console.log(saveQuestionArray)
+  }, [saveQuestionArray])
 
   useEffect(() => {
     //Implementing the setInterval method
@@ -47,6 +65,41 @@ const QuizFooter = ({ showQues, step, category, totalQues, score }) => {
   const endQuiz = () => {
     navigate('/quiz-performance')
     setTimeLeft('00:00')
+    saveQuiz()
+  }
+
+  const saveQuiz = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      userId: userID,
+      attemptedQuizzes: [
+        {
+          questions: saveQuestionArray,
+          totalScore: totalQues,
+          obtainedScore: score,
+          usmleSteps: step,
+          USMLE: category,
+        },
+      ],
+    })
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'save-quizzes', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   const convertSeconds = (seconds) => {

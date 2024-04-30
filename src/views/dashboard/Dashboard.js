@@ -12,6 +12,7 @@ import {
   CCardHeader,
   CCol,
   CProgress,
+  CProgressBar,
   CRow,
   CTable,
   CTableBody,
@@ -232,22 +233,34 @@ const Dashboard = () => {
                   <hr className="mt-0" />
                   <div className="pt-3">
                     {allQuiz && allQuiz.length > 0 ? (
-                      allQuiz.slice(Math.max(allQuiz.length - 5, 0)).map((quiz, idx) => (
-                        <div className="progress-group mb-4" key={idx}>
-                          <div className="progress-group-prepend">
-                            <span className="text-body-secondary small mr-2">
-                              {moment(quiz.createdAt).format('DD MMMM YYYY')}
-                            </span>
-                          </div>
-                          <div className="progress-group-bars">
-                            <CProgress
-                              thin
+                      <>
+                        <h4 className="my-2">Last attempted quizzes</h4>
+                        {allQuiz.slice(Math.max(allQuiz.length - 5, 0)).map((quiz, idx) => (
+                          <div className="progress-group mb-4" key={idx}>
+                            <div className="progress-group-prepend">
+                              <span className="text-body-secondary small mr-2">
+                                {moment(quiz.createdAt).format('DD MMMM YYYY')}
+                              </span>
+                            </div>
+                            <div className="progress-group-bars">
+                              <CProgress
+                                height={10}
+                                color="info"
+                                value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
+                              >
+                                <CProgressBar>
+                                  {Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%
+                                </CProgressBar>
+                              </CProgress>
+                              {/* <CProgress
+                              height={10}
                               color="info"
                               value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
-                            />
+                            /> */}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        ))}
+                      </>
                     ) : (
                       <CProgress thin color="info" value={0} />
                     )}

@@ -27,14 +27,16 @@ import {
   CFormTextarea,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPencil, cilTrash } from '@coreui/icons'
+import { cilPencil, cilTrash, cilCommentBubble } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
+import moment from 'moment'
 const Comments = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [editModal, setEditModal] = useState(false)
+  const [commentModal, setCommentModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -50,6 +52,7 @@ const Comments = () => {
   // const [correct, setCorrect] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [comments, setComments] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
   const {
@@ -128,12 +131,17 @@ const Comments = () => {
         setValue('usmleStep', result.usmleStep)
         setValue('usmleCategory', result.USMLE)
         setValue('question', result.question)
-        setValue('explaination', result.explaination)
-        setValue('op1', result.options[0])
-        setValue('op2', result.options[1])
-        setValue('op3', result.options[2])
-        setValue('op4', result.options[3])
+        setValue('explaination', result.questionExplanation)
+        setValue('op1', result.optionOne)
+        setValue('op2', result.optionTwo)
+        setValue('op3', result.optionThree)
+        setValue('op4', result.optionFour)
         setValue('correct', result.correctAnswer)
+        setValue('op1Explain', result.optionOneExplanation)
+        setValue('op2Explain', result.optionTwoExplanation)
+        setValue('op3Explain', result.optionThreeExplanation)
+        setValue('op4Explain', result.optionFourExplanation)
+        setImage(result.image)
       })
       .catch((error) => console.log('error', error))
   }
@@ -230,30 +238,48 @@ const Comments = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell scope="row">{q.question}</CTableHeaderCell>
+                        <CTableHeaderCell scope="row">
+                          {q.question.length > 100
+                            ? q.question.substring(0, 100) + '...'
+                            : q.question}
+                        </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell>
+                        <CTableDataCell className="flex">
+                          <CButton
+                            color="success"
+                            className="text-white mr-1 my-2"
+                            id={q._id}
+                            onClick={(e) => {
+                              setCommentModal(true)
+                              setComments(q.comments)
+                            }}
+                            title="View Comments"
+                          >
+                            <CIcon icon={cilCommentBubble} />
+                          </CButton>
                           <CButton
                             color="info"
-                            className="text-white mr-3"
+                            className="text-white mr-1 my-2"
                             id={q._id}
                             onClick={(e) => {
                               setEditModal(true)
                               setQuestionId(e.currentTarget.id)
                             }}
+                            title="Edit Question"
                           >
                             <CIcon icon={cilPencil} />
                           </CButton>
                           <CButton
                             color="danger"
-                            className="text-white"
+                            className="text-white my-2"
                             id={q._id}
                             onClick={(e) => {
                               setDeleteModal(true)
                               setQuestionId(e.currentTarget.id)
                             }}
+                            title="Delete Question"
                           >
                             <CIcon icon={cilTrash} />
                           </CButton>
@@ -541,13 +567,22 @@ const Comments = () => {
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
-                  <CCol md={12}>
+                  <CCol md={6}>
                     <CFormInput
                       type="file"
                       id="formFile"
-                      label="Image"
+                      label="Change Image"
                       onChange={(e) => setImage(e.target.files[0])}
                     />
+                  </CCol>
+                  <CCol md={6}>
+                    <center>
+                      <img
+                        src={`${API_URL}uploads/${image}`}
+                        alt="image"
+                        className="w-52 h-36 rounded-full"
+                      />
+                    </center>
                   </CCol>
                 </CRow>
               </CForm>
@@ -590,6 +625,41 @@ const Comments = () => {
               {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
             </CButton>
           </CModalFooter>
+        </CModal>
+        {/* comment Modal */}
+        <CModal
+          alignment="center"
+          visible={commentModal}
+          onClose={() => {
+            setCommentModal(false)
+            setComments([])
+          }}
+          aria-labelledby="VerticallyCenteredExample"
+        >
+          <CModalHeader>
+            <CModalTitle id="VerticallyCenteredExample">Comments</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Comments received for this question
+            <ul className="mt-2">
+              {comments && comments.length > 0
+                ? comments.map((c, i) => (
+                    <>
+                      <li className="flex justify-between items-center py-2" key={i}>
+                        <span>{c.commentText}</span>
+                        <strong>{moment(c.createdAt).format('MMMM Do YYYY')}</strong>
+                      </li>
+                      <hr />
+                    </>
+                  ))
+                : ''}
+            </ul>
+          </CModalBody>
+          {/* <CModalFooter>
+            <CButton color="secondary" onClick={() => setCommentModal(false)}>
+              Close
+            </CButton>
+          </CModalFooter> */}
         </CModal>
       </>
     </AdminLayout>

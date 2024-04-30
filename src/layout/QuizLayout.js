@@ -32,6 +32,10 @@ const QuizLayout = () => {
   const [highlightedText, setHighlightedText] = useState([])
   const [fontSize, setFontSize] = useState(16)
   const [saveQuestionArray, setSaveQuestionArray] = useState([])
+  const [opt1Marked, setOpt1Marked] = useState(false)
+  const [opt2Marked, setOpt2Marked] = useState(false)
+  const [opt3Marked, setOpt3Marked] = useState(false)
+  const [opt4Marked, setOpt4Marked] = useState(false)
 
   const {
     register,
@@ -158,6 +162,10 @@ const QuizLayout = () => {
 
   const handleFormSubmit = (e, id) => {
     e.preventDefault()
+    setOpt1Marked(false)
+    setOpt2Marked(false)
+    setOpt3Marked(false)
+    setOpt4Marked(false)
     checkAnswer()
     handleNextQuestion()
     const questionObj = {
@@ -420,7 +428,71 @@ const QuizLayout = () => {
             <div></div>
             <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}>
               <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
-                <CFormCheck
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    id={filteredQuestion[currentQuestion].optionOne}
+                    name={currentQuestion}
+                    value={filteredQuestion[currentQuestion].optionOne}
+                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                    className="form-check-input"
+                  />
+                  <label
+                    className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
+                    onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
+                  >
+                    {filteredQuestion[currentQuestion].optionOne}
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    id={filteredQuestion[currentQuestion].optionTwo}
+                    name={currentQuestion}
+                    value={filteredQuestion[currentQuestion].optionTwo}
+                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                    className="form-check-input"
+                  />
+                  <label
+                    className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
+                    onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
+                  >
+                    {filteredQuestion[currentQuestion].optionTwo}
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    id={filteredQuestion[currentQuestion].optionThree}
+                    name={currentQuestion}
+                    value={filteredQuestion[currentQuestion].optionThree}
+                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                    className="form-check-input"
+                  />
+                  <label
+                    className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
+                    onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
+                  >
+                    {filteredQuestion[currentQuestion].optionThree}
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    type="radio"
+                    id={filteredQuestion[currentQuestion].optionFour}
+                    name={currentQuestion}
+                    value={filteredQuestion[currentQuestion].optionFour}
+                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                    className="form-check-input"
+                  />
+                  <label
+                    className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
+                    onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
+                  >
+                    {filteredQuestion[currentQuestion].optionFour}
+                  </label>
+                </div>
+                {/*<CFormCheck
                   type="radio"
                   id={filteredQuestion[currentQuestion].optionOne}
                   name={currentQuestion}
@@ -428,7 +500,7 @@ const QuizLayout = () => {
                   value={filteredQuestion[currentQuestion].optionOne}
                   onChange={(e) => setSelectedOption(e.currentTarget.id)}
                 />
-                <CFormCheck
+                 <CFormCheck
                   type="radio"
                   id={filteredQuestion[currentQuestion].optionTwo}
                   name={currentQuestion}
@@ -451,7 +523,7 @@ const QuizLayout = () => {
                   label={filteredQuestion[currentQuestion].optionFour}
                   value={filteredQuestion[currentQuestion].optionFour}
                   onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                />
+                />*/}
               </div>
               <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
                 {currentQuestion + 1 != getValues('total') ? 'Next' : 'Submit'}
@@ -466,6 +538,7 @@ const QuizLayout = () => {
         step={usmleStep}
         category={usmleCategory}
         score={quizScore}
+        saveQuestionArray={saveQuestionArray}
       />
       {/* error alert */}
       {error && (

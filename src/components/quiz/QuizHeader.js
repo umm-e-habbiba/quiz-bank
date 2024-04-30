@@ -198,8 +198,22 @@ const QuizHeader = ({
                 <div className="flex justify-center items-center">
                   <CFormCheck
                     inline
-                    id="1"
-                    // id={filteredArray[currentQuestion]._id}
+                    // id="1"
+                    id={
+                      filteredArray[currentQuestion] && filteredArray[currentQuestion].questionId
+                        ? filteredArray[currentQuestion].questionId._id
+                        : filteredArray[currentQuestion] && filteredArray[currentQuestion]._id
+                          ? filteredArray[currentQuestion]._id
+                          : ''
+                    }
+                    // id={
+                    //   filteredArray[currentQuestion] && filteredArray[currentQuestion]._id
+                    //     ? filteredArray[currentQuestion]._id
+                    //     : filteredArray[currentQuestion] &&
+                    //         filteredArray[currentQuestion].questionId
+                    //       ? filteredArray[currentQuestion].questionId._id
+                    //       : ''
+                    // }
                     value={marked}
                     checked={marked ? true : false}
                     label=""

@@ -130,7 +130,7 @@ const ReviewQuiz = () => {
                 </p>
               )}
               <CForm onSubmit={handleFormSubmit}>
-                <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 w-64">
+                <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
                   <CFormCheck
                     type="radio"
                     id={
@@ -248,7 +248,7 @@ const ReviewQuiz = () => {
                   <CRow
                     className={`py-2 px-1 border-l-4 border-solid ${allQuestion[currentQuestion].questionId.correctAnswer == allQuestion[currentQuestion].selectedOption ? 'border-green-600' : 'border-red-600'}  answer-stat-box bg-gray-200`}
                   >
-                    <CCol md={4} className="flex justify-start flex-col">
+                    <CCol md={12} className="flex justify-start flex-col">
                       {allQuestion[currentQuestion].questionId.correctAnswer ==
                       allQuestion[currentQuestion].selectedOption ? (
                         <p className="text-green-600">Correct</p>

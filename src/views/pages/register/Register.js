@@ -90,7 +90,7 @@ const Register = () => {
             navigate('/login')
           } else {
             setRegisterError(true)
-            setRegisterErrorValue(result)
+            setRegisterErrorValue('Something went wrong!')
           }
         })
         .catch((error) => {

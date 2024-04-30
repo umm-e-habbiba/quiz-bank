@@ -639,16 +639,38 @@ const ManageQuiz = () => {
                     />
                   </CCol>
                 </CRow>
-                <CRow className="mb-3">
-                  <CCol md={12}>
-                    <CFormInput
-                      type="file"
-                      id="formFile"
-                      label="Image"
-                      onChange={(e) => setImage(e.target.files[0])}
-                    />
-                  </CCol>
-                </CRow>
+                {questionId ? (
+                  <CRow className="mb-3">
+                    <CCol md={6}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Change Image"
+                        onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                    <CCol md={6}>
+                      <center>
+                        <img
+                          src={`${API_URL}uploads/${image}`}
+                          alt="image"
+                          className="w-52 h-36 rounded-full"
+                        />
+                      </center>
+                    </CCol>
+                  </CRow>
+                ) : (
+                  <CRow className="mb-3">
+                    <CCol md={12}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Image"
+                        onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                  </CRow>
+                )}
               </CForm>
             </CModalBody>
             <CModalFooter>
