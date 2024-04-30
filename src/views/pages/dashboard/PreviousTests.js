@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 import {
   CCard,
   CCardBody,
@@ -41,7 +42,7 @@ const PreviousTests = () => {
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
-  const [questionId, setQuestionId] = useState('')
+  const [quizId, setQuizId] = useState('')
   const [image, setImage] = useState('')
   // const [usmleStep, setUsmleStep] = useState('')
   // const [usmleCategory, setUsmleCategory] = useState('')
@@ -100,9 +101,6 @@ const PreviousTests = () => {
       navigate('/login')
     }
   }, [])
-  //   useEffect(() => {
-  //     getQuestion()
-  //   }, [questionId])
 
   const getAllQuiz = () => {
     setLoader(true)
@@ -123,100 +121,12 @@ const PreviousTests = () => {
         setLoader(false)
       })
   }
-  const addQuestion = (data) => {
-    console.log('add function called', data, '...', stepSelected)
+
+  const deleteQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-
-    // const raw = JSON.stringify({
-    //   usmleStep: data.usmleStep,
-    //   USMLE: data.usmleCategory,
-    //   question: data.question,
-    //   options: [data.op1, data.op2, data.op3, data.op4],
-    //   correctAnswer: data.correct,
-    //   explaination: [
-    //     {
-    //       questionExplanation: data.explaination,
-    //       optionExplainations: [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain],
-    //     },
-    //   ],
-    // })
-    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
-    const explainedOptions = [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain]
-
-    const formdata = new FormData()
-    formdata.append('usmleStep', data.usmleStep)
-    formdata.append('USMLE', data.usmleCategory)
-    formdata.append('question', data.question)
-    formdata.append('options', [data.op1, data.op2, data.op3, data.op4])
-    formdata.append('correctAnswer', data.correct)
-    formdata.append('questionExplanation', data.explaination)
-    formdata.append('image', image)
-    formdata.append('optionExplanations', [
-      data.op1Explain,
-      data.op2Explain,
-      data.op3Explain,
-      data.op4Explain,
-    ])
-    const requestOptions = {
-      method: 'POST',
-      body: formdata,
-      redirect: 'follow',
-    }
-
-    fetch(API_URL + 'add-mcqs', requestOptions)
-      .then((response) => response.text())
-      .then((result) => {
-        console.log(result)
-        setAddModal(false)
-        setIsLoading(false)
-        getAllQuiz()
-        reset({})
-        setSuccess(true)
-        setSuccessMsg('Question added successfully')
-        setTimeout(() => {
-          setSuccess(false)
-          setSuccessMsg('')
-        }, 3000)
-      })
-      .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      })
-  }
-  const getQuestion = () => {
-    var requestOptions = {
-      method: 'GET',
-    }
-
-    fetch(API_URL + 'mcq/' + questionId, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('ques detail', result)
-        setValue('usmleStep', result.usmleStep)
-        setValue('usmleCategory', result.USMLE)
-        setValue('question', result.question)
-        setValue('explaination', result.questionExplanation)
-        setValue('op1', result.options[0])
-        setValue('op2', result.options[1])
-        setValue('op3', result.options[2])
-        setValue('op4', result.options[3])
-        setValue('correct', result.correctAnswer)
-        setValue('op1Explain', result.optionExplanations[0])
-        setValue('op2Explain', result.optionExplanations[1])
-        setValue('op3Explain', result.optionExplanations[2])
-        setValue('op4Explain', result.optionExplanations[3])
-        setImage(result.image)
-      })
-      .catch((error) => console.log('error', error))
-  }
-
-  const deleteQuestion = () => {
-    setIsLoading(true)
-    setError(false)
-    setErrorMsg('')
-    console.log(questionId)
+    console.log(quizId)
     // var myHeaders = new Headers();
     // myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -225,16 +135,17 @@ const PreviousTests = () => {
       // headers: myHeaders,
     }
 
-    fetch(API_URL + 'delete-mcq/' + questionId, requestOptions)
+    fetch(API_URL + 'delete-quiz/' + userID + '/' + quizId, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log(result)
         setIsLoading(false)
-        if (result === 'MCQ deleted successfully') {
+        if (result === 'Quiz deleted successfully') {
           setDeleteModal(false)
+          setQuizId('')
           getAllQuiz()
           setSuccess(true)
-          setSuccessMsg('Question deleted successfully')
+          setSuccessMsg('Quiz deleted successfully')
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
@@ -245,50 +156,6 @@ const PreviousTests = () => {
         }
       })
       .catch((error) => console.log('error', error))
-  }
-  const editQuestion = (data) => {
-    console.log('edit function called', data)
-    setIsLoading(true)
-    setError(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
-
-    const raw = JSON.stringify({
-      usmleStep: data.usmleStep,
-      USMLE: data.usmleCategory,
-      question: data.question,
-      options: [data.op1, data.op2, data.op3, data.op4],
-      correctAnswer: data.correct,
-    })
-
-    const requestOptions = {
-      method: 'PUT',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow',
-    }
-
-    fetch(API_URL + 'edit-mcq/' + questionId, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result)
-        setAddModal(false)
-        setIsLoading(false)
-        getAllQuiz()
-        setQuestionId('')
-        reset({})
-        setSuccess(true)
-        setSuccessMsg('Question updated successfully')
-        setTimeout(() => {
-          setSuccess(false)
-          setSuccessMsg('')
-        }, 3000)
-      })
-      .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      })
   }
   return (
     <div>
@@ -322,6 +189,8 @@ const PreviousTests = () => {
                     <CTableRow>
                       <CTableHeaderCell scope="col">Obt Score</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Total Score</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Usmle Step</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">USMLE</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                       {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
@@ -331,9 +200,13 @@ const PreviousTests = () => {
                     {allQuiz && allQuiz.length > 0 ? (
                       allQuiz.map((q, idx) => (
                         <CTableRow key={idx}>
-                          <CTableHeaderCell scope="row">{10}</CTableHeaderCell>
-                          <CTableDataCell>{100}</CTableDataCell>
-                          <CTableDataCell>{q.createdAt}</CTableDataCell>
+                          <CTableHeaderCell scope="row">{q.obtainedScore}</CTableHeaderCell>
+                          <CTableDataCell>{q.totalScore}</CTableDataCell>
+                          <CTableDataCell>{q.usmleSteps}</CTableDataCell>
+                          <CTableDataCell>{q.USMLE}</CTableDataCell>
+                          <CTableDataCell>
+                            {moment(q.createdAt).format('MMMM Do YYYY')}
+                          </CTableDataCell>
                           <CTableDataCell>
                             <CButton
                               color="danger"
@@ -341,7 +214,7 @@ const PreviousTests = () => {
                               id={q._id}
                               onClick={(e) => {
                                 setDeleteModal(true)
-                                setQuestionId(e.currentTarget.id)
+                                setQuizId(e.currentTarget.id)
                               }}
                             >
                               <CIcon icon={cilTrash} />
@@ -351,7 +224,7 @@ const PreviousTests = () => {
                       ))
                     ) : (
                       <CTableRow>
-                        <CTableDataCell className="text-center" colSpan={5}>
+                        <CTableDataCell className="text-center" colSpan={6}>
                           No quiz attempted yet
                         </CTableDataCell>
                       </CTableRow>
@@ -369,17 +242,17 @@ const PreviousTests = () => {
             aria-labelledby="VerticallyCenteredExample"
           >
             <CModalHeader>
-              <CModalTitle id="VerticallyCenteredExample">Delete Question</CModalTitle>
+              <CModalTitle id="VerticallyCenteredExample">Delete Quiz</CModalTitle>
             </CModalHeader>
             <CModalBody>
-              Are you sure to delete this question?
+              Are you sure to delete this quiz?
               {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => setDeleteModal(false)}>
                 No
               </CButton>
-              <CButton color="primary" onClick={deleteQuestion} disabled={loading ? true : false}>
+              <CButton color="primary" onClick={deleteQuiz} disabled={loading ? true : false}>
                 {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
               </CButton>
             </CModalFooter>

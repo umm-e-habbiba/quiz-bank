@@ -1,25 +1,58 @@
 import React, { useEffect, useState } from 'react'
 import { AppHeader, AppSidebar } from 'src/components/index'
 import { Link, useNavigate } from 'react-router-dom'
-import { CCard, CCardBody, CCardHeader, CProgress, CRow, CCol, CButton } from '@coreui/react'
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CProgress,
+  CRow,
+  CCol,
+  CButton,
+  CSpinner,
+} from '@coreui/react'
+import { API_URL } from 'src/store'
 const QuizPerformance = () => {
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [percent, setPercent] = useState('')
   const [marks, setMarks] = useState('')
+  const [total, setTotal] = useState('')
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
-      const getScore = localStorage.getItem('score')
-      const score = JSON.parse(getScore)
-      setMarks(score.obt)
-      setPercent(percentage(score.obt, score.total))
+      const getUserId = localStorage.getItem('userId')
+      setUSerID(getUserId)
+      getAllQuest()
     } else {
       navigate('/login')
     }
   }, [])
+
+  const getAllQuest = () => {
+    setLoading(true)
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'latest-quiz/' + userID, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('latest quiz', result)
+        setMarks(result.obtainedScore)
+        setTotal(result.totalScore)
+        setPercent(percentage(result.obtainedScore, result.totalScore))
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
   const percentage = (partialValue, totalValue) => {
     return Math.round((100 * partialValue) / totalValue)
@@ -41,20 +74,28 @@ const QuizPerformance = () => {
               </CCardHeader>
               <CCardBody>
                 <CRow>
-                  <CCol mg={6}>
-                    <div className="progress-group">
-                      <div className="progress-group-header">
-                        <span>Your Score</span>
-                        <span className="ms-auto fw-semibold">
-                          {marks}
-                          <span className="text-body-secondary small">({percent}%)</span>
-                        </span>
+                  {loading ? (
+                    <CCol md={12}>
+                      <center>
+                        <CSpinner color="success" variant="grow" />
+                      </center>
+                    </CCol>
+                  ) : (
+                    <CCol md={6}>
+                      <div className="progress-group">
+                        <div className="progress-group-header">
+                          <span>Your Score</span>
+                          <span className="ms-auto fw-semibold">
+                            {marks} out of {total}
+                            <span className="text-body-secondary small"> ({percent}%)</span>
+                          </span>
+                        </div>
+                        <div className="progress-group-bars">
+                          <CProgress color="success" height={20} value={Number(percent)} />
+                        </div>
                       </div>
-                      <div className="progress-group-bars">
-                        <CProgress thin color="success" value={Number(percent)} />
-                      </div>
-                    </div>
-                  </CCol>
+                    </CCol>
+                  )}
                 </CRow>
               </CCardBody>
             </CCard>

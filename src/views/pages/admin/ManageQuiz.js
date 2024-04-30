@@ -124,37 +124,21 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-
-    // const raw = JSON.stringify({
-    //   usmleStep: data.usmleStep,
-    //   USMLE: data.usmleCategory,
-    //   question: data.question,
-    //   options: [data.op1, data.op2, data.op3, data.op4],
-    //   correctAnswer: data.correct,
-    //   explaination: [
-    //     {
-    //       questionExplanation: data.explaination,
-    //       optionExplainations: [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain],
-    //     },
-    //   ],
-    // })
-    const optionsArray = [data.op1, data.op2, data.op3, data.op4]
-    const explainedOptions = [data.op1Explain, data.op2Explain, data.op3Explain, data.op4Explain]
-
     const formdata = new FormData()
     formdata.append('usmleStep', data.usmleStep)
     formdata.append('USMLE', data.usmleCategory)
     formdata.append('question', data.question)
-    formdata.append('options', [data.op1, data.op2, data.op3, data.op4])
+    formdata.append('optionOne', data.op1)
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
     formdata.append('image', image)
-    formdata.append('optionExplanations', [
-      data.op1Explain,
-      data.op2Explain,
-      data.op3Explain,
-      data.op4Explain,
-    ])
+    formdata.append('optionTwo', data.op2)
+    formdata.append('optionThree', data.op3)
+    formdata.append('optionFour', data.op4)
+    formdata.append('optionOneExplanation', data.op1Explain)
+    formdata.append('optionTwoExplanation', data.op2Explain)
+    formdata.append('optionThreeExplanation', data.op3Explain)
+    formdata.append('optionFourExplanation', data.op4Explain)
     const requestOptions = {
       method: 'POST',
       body: formdata,
@@ -169,6 +153,7 @@ const ManageQuiz = () => {
         setIsLoading(false)
         getAllQuest()
         reset({})
+        setImage('')
         setSuccess(true)
         setSuccessMsg('Question added successfully')
         setTimeout(() => {
@@ -194,15 +179,15 @@ const ManageQuiz = () => {
         setValue('usmleCategory', result.USMLE)
         setValue('question', result.question)
         setValue('explaination', result.questionExplanation)
-        setValue('op1', result.options[0])
-        setValue('op2', result.options[1])
-        setValue('op3', result.options[2])
-        setValue('op4', result.options[3])
+        setValue('op1', result.optionOne)
+        setValue('op2', result.optionTwo)
+        setValue('op3', result.optionThree)
+        setValue('op4', result.optionFour)
         setValue('correct', result.correctAnswer)
-        setValue('op1Explain', result.optionExplanations[0])
-        setValue('op2Explain', result.optionExplanations[1])
-        setValue('op3Explain', result.optionExplanations[2])
-        setValue('op4Explain', result.optionExplanations[3])
+        setValue('op1Explain', result.optionOneExplanation)
+        setValue('op2Explain', result.optionTwoExplanation)
+        setValue('op3Explain', result.optionThreeExplanation)
+        setValue('op4Explain', result.optionFourExplanation)
         setImage(result.image)
       })
       .catch((error) => console.log('error', error))
@@ -247,21 +232,24 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
-
-    const raw = JSON.stringify({
-      usmleStep: data.usmleStep,
-      USMLE: data.usmleCategory,
-      question: data.question,
-      options: [data.op1, data.op2, data.op3, data.op4],
-      correctAnswer: data.correct,
-    })
-
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('question', data.question)
+    formdata.append('optionOne', data.op1)
+    formdata.append('correctAnswer', data.correct)
+    formdata.append('questionExplanation', data.explaination)
+    formdata.append('image', image)
+    formdata.append('optionTwo', data.op2)
+    formdata.append('optionThree', data.op3)
+    formdata.append('optionFour', data.op4)
+    formdata.append('optionOneExplanation', data.op1Explain)
+    formdata.append('optionTwoExplanation', data.op2Explain)
+    formdata.append('optionThreeExplanation', data.op3Explain)
+    formdata.append('optionFourExplanation', data.op4Explain)
     const requestOptions = {
       method: 'PUT',
-      headers: myHeaders,
-      body: raw,
+      body: formdata,
       redirect: 'follow',
     }
 
@@ -269,17 +257,19 @@ const ManageQuiz = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAddModal(false)
-        setIsLoading(false)
-        getAllQuest()
-        setQuestionId('')
-        reset({})
-        setSuccess(true)
-        setSuccessMsg('Question updated successfully')
-        setTimeout(() => {
-          setSuccess(false)
-          setSuccessMsg('')
-        }, 3000)
+        if (result.status == 'success') {
+          setAddModal(false)
+          setIsLoading(false)
+          getAllQuest()
+          setQuestionId('')
+          reset({})
+          setSuccess(true)
+          setSuccessMsg('Question updated successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -299,6 +289,7 @@ const ManageQuiz = () => {
                 setAddModal(true)
                 setIsLoading(false)
                 reset({})
+                setQuestionId('')
               }}
             >
               Add Question
@@ -316,6 +307,7 @@ const ManageQuiz = () => {
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Image</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                   </CTableRow>
@@ -324,9 +316,20 @@ const ManageQuiz = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell scope="row">{q.question}</CTableHeaderCell>
+                        <CTableHeaderCell>
+                          {q.question.length > 100
+                            ? q.question.substring(0, 100) + '...'
+                            : q.question}
+                        </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
+                        <CTableDataCell>
+                          <img
+                            src={`${API_URL}uploads/${q.image}`}
+                            alt="mcq img"
+                            className="w-6 h-6 rounded-full"
+                          />
+                        </CTableDataCell>
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                         <CTableDataCell>
                           <CButton

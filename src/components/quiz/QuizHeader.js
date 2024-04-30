@@ -198,7 +198,8 @@ const QuizHeader = ({
                 <div className="flex justify-center items-center">
                   <CFormCheck
                     inline
-                    id={filteredArray[currentQuestion]._id}
+                    id="1"
+                    // id={filteredArray[currentQuestion]._id}
                     value={marked}
                     checked={marked ? true : false}
                     label=""

@@ -47,11 +47,6 @@ const QuizFooter = ({ showQues, step, category, totalQues, score }) => {
   const endQuiz = () => {
     navigate('/quiz-performance')
     setTimeLeft('00:00')
-    const scoreObj = {
-      total: totalQues,
-      obt: score,
-    }
-    localStorage.setItem('score', JSON.stringify(scoreObj))
   }
 
   const convertSeconds = (seconds) => {

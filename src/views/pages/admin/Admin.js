@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import AdminLayout from 'src/layout/AdminLayout'
 import classNames from 'classnames'
-
+import { API_URL } from 'src/store'
 import {
   CAvatar,
   CButton,
@@ -19,7 +19,10 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CWidgetStatsA,
 } from '@coreui/react'
+import { getStyle } from '@coreui/utils'
+import { CChartBar, CChartLine } from '@coreui/react-chartjs'
 import CIcon from '@coreui/icons-react'
 import {
   cibCcAmex,
@@ -42,6 +45,9 @@ import {
   cilPeople,
   cilUser,
   cilUserFemale,
+  cilArrowBottom,
+  cilArrowTop,
+  cilOptions,
 } from '@coreui/icons'
 
 import avatar1 from 'src/assets/images/avatars/1.jpg'
@@ -55,6 +61,45 @@ import WidgetsBrand from 'src/views/widgets/WidgetsBrand'
 import WidgetsDropdown from 'src/views/widgets/WidgetsDropdown'
 import MainChart from 'src/views/dashboard/MainChart'
 const Admin = () => {
+  const [allUsers, setAllUsers] = useState([])
+  const widgetChartRef1 = useRef(null)
+  const widgetChartRef2 = useRef(null)
+  useEffect(() => {
+    getAllUsers()
+  }, [])
+  useEffect(() => {
+    document.documentElement.addEventListener('ColorSchemeChange', () => {
+      if (widgetChartRef1.current) {
+        setTimeout(() => {
+          widgetChartRef1.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-primary')
+          widgetChartRef1.current.update()
+        })
+      }
+
+      if (widgetChartRef2.current) {
+        setTimeout(() => {
+          widgetChartRef2.current.data.datasets[0].pointBackgroundColor = getStyle('--cui-info')
+          widgetChartRef2.current.update()
+        })
+      }
+    })
+  }, [widgetChartRef1, widgetChartRef2])
+  const getAllUsers = () => {
+    const requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'users', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setAllUsers(result)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -178,151 +223,83 @@ const Admin = () => {
   return (
     <AdminLayout>
       <div className="mx-4">
-        <WidgetsDropdown className="mb-4" />
-        <CCard className="mb-4">
-          <CCardBody>
-            <CRow>
-              <CCol sm={5}>
-                <h4 id="traffic" className="card-title mb-0">
-                  Users
-                </h4>
-                <div className="small text-body-secondary">January - July 2023</div>
-              </CCol>
-              <CCol sm={7} className="d-none d-md-block">
-                <CButton color="primary" className="float-end">
-                  <CIcon icon={cilCloudDownload} />
-                </CButton>
-                <CButtonGroup className="float-end me-3">
-                  {['Day', 'Month', 'Year'].map((value) => (
-                    <CButton
-                      color="outline-secondary"
-                      key={value}
-                      className="mx-0"
-                      active={value === 'Month'}
-                    >
-                      {value}
-                    </CButton>
-                  ))}
-                </CButtonGroup>
-              </CCol>
-            </CRow>
-            <MainChart />
-          </CCardBody>
-          <CCardFooter>
-            <CRow
-              xs={{ cols: 1, gutter: 4 }}
-              sm={{ cols: 2 }}
-              lg={{ cols: 4 }}
-              xl={{ cols: 5 }}
-              className="mb-2 text-center"
-            >
-              {progressExample.map((item, index, items) => (
-                <CCol
-                  className={classNames({
-                    'd-none d-xl-block': index + 1 === items.length,
-                  })}
-                  key={index}
-                >
-                  <div className="text-body-secondary">{item.title}</div>
-                  <div className="fw-semibold text-truncate">
-                    {item.value} ({item.percent}%)
-                  </div>
-                  <CProgress thin className="mt-2" color={item.color} value={item.percent} />
-                </CCol>
-              ))}
-            </CRow>
-          </CCardFooter>
-        </CCard>
-        <WidgetsBrand className="mb-4" withCharts />
+        <CRow className="mb-4" xs={{ gutter: 4 }}>
+          <CCol sm={6} xl={4} xxl={3}>
+            <CWidgetStatsA
+              color="primary"
+              value={<>{allUsers.length}</>}
+              title="Users"
+              chart={
+                <CChartLine
+                  ref={widgetChartRef1}
+                  className="mt-3 mx-3"
+                  style={{ height: '70px' }}
+                  data={{
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                    datasets: [
+                      {
+                        label: 'My First dataset',
+                        backgroundColor: 'transparent',
+                        borderColor: 'rgba(255,255,255,.55)',
+                        pointBackgroundColor: getStyle('--cui-primary'),
+                        data: [65, 59, 84, 84, 51, 55, 40],
+                      },
+                    ],
+                  }}
+                  options={{
+                    plugins: {
+                      legend: {
+                        display: false,
+                      },
+                    },
+                    maintainAspectRatio: false,
+                    scales: {
+                      x: {
+                        border: {
+                          display: false,
+                        },
+                        grid: {
+                          display: false,
+                          drawBorder: false,
+                        },
+                        ticks: {
+                          display: false,
+                        },
+                      },
+                      y: {
+                        min: 30,
+                        max: 89,
+                        display: false,
+                        grid: {
+                          display: false,
+                        },
+                        ticks: {
+                          display: false,
+                        },
+                      },
+                    },
+                    elements: {
+                      line: {
+                        borderWidth: 1,
+                        tension: 0.4,
+                      },
+                      point: {
+                        radius: 4,
+                        hitRadius: 10,
+                        hoverRadius: 4,
+                      },
+                    },
+                  }}
+                />
+              }
+            />
+          </CCol>
+        </CRow>
         <CRow>
           <CCol xs>
             <CCard className="mb-4">
-              <CCardHeader>Traffic {' & '} Sales</CCardHeader>
+              <CCardHeader>Users</CCardHeader>
               <CCardBody>
-                <CRow>
-                  <CCol xs={12} md={6} xl={6}>
-                    <CRow>
-                      <CCol xs={6}>
-                        <div className="border-start border-start-4 border-start-info py-1 px-3">
-                          <div className="text-body-secondary text-truncate small">New Clients</div>
-                          <div className="fs-5 fw-semibold">9,123</div>
-                        </div>
-                      </CCol>
-                      <CCol xs={6}>
-                        <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
-                          <div className="text-body-secondary text-truncate small">
-                            Recurring Clients
-                          </div>
-                          <div className="fs-5 fw-semibold">22,643</div>
-                        </div>
-                      </CCol>
-                    </CRow>
-                    <hr className="mt-0" />
-                    {progressGroupExample1.map((item, index) => (
-                      <div className="progress-group mb-4" key={index}>
-                        <div className="progress-group-prepend">
-                          <span className="text-body-secondary small">{item.title}</span>
-                        </div>
-                        <div className="progress-group-bars">
-                          <CProgress thin color="info" value={item.value1} />
-                          <CProgress thin color="danger" value={item.value2} />
-                        </div>
-                      </div>
-                    ))}
-                  </CCol>
-                  <CCol xs={12} md={6} xl={6}>
-                    <CRow>
-                      <CCol xs={6}>
-                        <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
-                          <div className="text-body-secondary text-truncate small">Pageviews</div>
-                          <div className="fs-5 fw-semibold">78,623</div>
-                        </div>
-                      </CCol>
-                      <CCol xs={6}>
-                        <div className="border-start border-start-4 border-start-success py-1 px-3 mb-3">
-                          <div className="text-body-secondary text-truncate small">Organic</div>
-                          <div className="fs-5 fw-semibold">49,123</div>
-                        </div>
-                      </CCol>
-                    </CRow>
-
-                    <hr className="mt-0" />
-
-                    {progressGroupExample2.map((item, index) => (
-                      <div className="progress-group mb-4" key={index}>
-                        <div className="progress-group-header">
-                          <CIcon className="me-2" icon={item.icon} size="lg" />
-                          <span>{item.title}</span>
-                          <span className="ms-auto fw-semibold">{item.value}%</span>
-                        </div>
-                        <div className="progress-group-bars">
-                          <CProgress thin color="warning" value={item.value} />
-                        </div>
-                      </div>
-                    ))}
-
-                    <div className="mb-5"></div>
-
-                    {progressGroupExample3.map((item, index) => (
-                      <div className="progress-group" key={index}>
-                        <div className="progress-group-header">
-                          <CIcon className="me-2" icon={item.icon} size="lg" />
-                          <span>{item.title}</span>
-                          <span className="ms-auto fw-semibold">
-                            {item.value}{' '}
-                            <span className="text-body-secondary small">({item.percent}%)</span>
-                          </span>
-                        </div>
-                        <div className="progress-group-bars">
-                          <CProgress thin color="success" value={item.percent} />
-                        </div>
-                      </div>
-                    ))}
-                  </CCol>
-                </CRow>
-
-                <br />
-
                 <CTable align="middle" className="mb-0 border" hover responsive>
                   <CTableHead className="text-nowrap">
                     <CTableRow>
@@ -330,18 +307,13 @@ const Admin = () => {
                         <CIcon icon={cilPeople} />
                       </CTableHeaderCell>
                       <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary text-center">
-                        Country
+                      <CTableHeaderCell className="bg-body-tertiary">
+                        Quiz Attempted
                       </CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary">Usage</CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary text-center">
-                        Payment Method
-                      </CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {tableExample.map((item, index) => (
+                    {/* {tableExample.map((item, index) => (
                       <CTableRow v-for="item in tableItems" key={index}>
                         <CTableDataCell className="text-center">
                           <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
@@ -373,7 +345,33 @@ const Admin = () => {
                           <div className="fw-semibold text-nowrap">{item.activity}</div>
                         </CTableDataCell>
                       </CTableRow>
-                    ))}
+                    ))} */}
+                    {allUsers && allUsers.length > 0
+                      ? allUsers.map((user, index) => (
+                          <CTableRow v-for="item in tableItems" key={index}>
+                            <CTableDataCell className="text-center">
+                              <CAvatar size="md" color="primary" textColor="white">
+                                {user.firstName.substring(0, 2)}
+                              </CAvatar>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <div>{user.firstName + user.lastName}</div>
+                              <div className="small text-body-secondary text-nowrap">
+                                {user.email}
+                              </div>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <div className="d-flex justify-content-between text-nowrap">
+                                <div className="fw-semibold">{user.attemptedQuizzes.length}</div>
+                                {/* <div className="ms-3">
+                           <small className="text-body-secondary">{item.usage.period}</small>
+                         </div> */}
+                              </div>
+                              <CProgress thin color="info" value={user.attemptedQuizzes.length} />
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))
+                      : 'No users registered yet'}
                   </CTableBody>
                 </CTable>
               </CCardBody>

@@ -56,18 +56,13 @@ const QuizLayout = () => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   setHighlightedText(highlightedText)
-  // }, [highlightedText])
+  useEffect(() => {
+    console.log(saveQuestionArray)
+  }, [saveQuestionArray])
 
   useEffect(() => {
     if (quizEnd) {
       navigate('/quiz-performance')
-      const score = {
-        total: getValues('total'),
-        obt: quizScore,
-      }
-      localStorage.setItem('score', JSON.stringify(score))
       saveQuiz()
     }
   }, [quizEnd])
@@ -202,9 +197,13 @@ const QuizLayout = () => {
 
     const raw = JSON.stringify({
       userId: userID,
-      quizzes: [
+      attemptedQuizzes: [
         {
           questions: saveQuestionArray,
+          totalScore: getValues('total'),
+          obtainedScore: quizScore,
+          usmleSteps: usmleStep,
+          USMLE: usmleCategory,
         },
       ],
     })
@@ -398,8 +397,8 @@ const QuizLayout = () => {
                 </CCol>
                 <CCol md={4}>
                   <img
-                    src={image}
-                    // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                    // src={image}
+                    src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
                     alt="question image"
                     className="w-96 h-64"
                   />
@@ -421,17 +420,38 @@ const QuizLayout = () => {
             <div></div>
             <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}>
               <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
-                {filteredQuestion[currentQuestion].options.map((opt, idx) => (
-                  <CFormCheck
-                    type="radio"
-                    id={opt}
-                    name={currentQuestion}
-                    label={opt}
-                    key={idx}
-                    value={opt}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                  />
-                ))}
+                <CFormCheck
+                  type="radio"
+                  id={filteredQuestion[currentQuestion].optionOne}
+                  name={currentQuestion}
+                  label={filteredQuestion[currentQuestion].optionOne}
+                  value={filteredQuestion[currentQuestion].optionOne}
+                  onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                />
+                <CFormCheck
+                  type="radio"
+                  id={filteredQuestion[currentQuestion].optionTwo}
+                  name={currentQuestion}
+                  label={filteredQuestion[currentQuestion].optionTwo}
+                  value={filteredQuestion[currentQuestion].optionTwo}
+                  onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                />
+                <CFormCheck
+                  type="radio"
+                  id={filteredQuestion[currentQuestion].optionThree}
+                  name={currentQuestion}
+                  label={filteredQuestion[currentQuestion].optionThree}
+                  value={filteredQuestion[currentQuestion].optionThree}
+                  onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                />
+                <CFormCheck
+                  type="radio"
+                  id={filteredQuestion[currentQuestion].optionFour}
+                  name={currentQuestion}
+                  label={filteredQuestion[currentQuestion].optionFour}
+                  value={filteredQuestion[currentQuestion].optionFour}
+                  onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                />
               </div>
               <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
                 {currentQuestion + 1 != getValues('total') ? 'Next' : 'Submit'}
