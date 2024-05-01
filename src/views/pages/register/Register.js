@@ -1,26 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import {
-  CButton,
-  CCard,
-  CCardBody,
-  CCol,
-  CContainer,
-  CForm,
-  CFormInput,
-  CInputGroup,
-  CInputGroupText,
-  CRow,
-  CSpinner,
-} from '@coreui/react'
+import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
   cilEnvelopeOpen,
   cilLockLocked,
   cilLockUnlocked,
   cilUser,
-  cilUserFollow,
   cilUserPlus,
-  cilUserUnfollow,
 } from '@coreui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
@@ -31,6 +17,7 @@ import { API_URL } from 'src/store'
 const Register = () => {
   const navigate = useNavigate()
   const [registerError, setRegisterError] = useState(false)
+  const [success, setSuccess] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [registerErrorValue, setRegisterErrorValue] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
@@ -82,15 +69,20 @@ const Register = () => {
       }
 
       fetch(API_URL + 'user-signup', requestOptions)
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((result) => {
           console.log(result)
           setIsLoading(false)
-          if (result == 'User created successfully') {
-            navigate('/login')
-          } else {
+          if (result.success) {
+            setSuccess(true)
+            setTimeout(() => {
+              navigate('/login')
+              setSuccess(false)
+            }, 2000)
+          }
+          if (result.error) {
             setRegisterError(true)
-            setRegisterErrorValue('Something went wrong!')
+            setRegisterErrorValue(result.message)
           }
         })
         .catch((error) => {
@@ -197,6 +189,11 @@ const Register = () => {
           <img src={img2} alt="" className="image-2" />
         </div>
       </div>
+      {success && (
+        <CAlert color="success" className="success-alert uppercase">
+          User Registration Successful! Please Login.
+        </CAlert>
+      )}
     </div>
   )
 }

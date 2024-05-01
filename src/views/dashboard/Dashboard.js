@@ -64,6 +64,7 @@ const Dashboard = () => {
     getAllQuiz()
     const getToken = localStorage.getItem('token')
     if (getToken) {
+      getAllQuiz()
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUSerID(getUserId)
@@ -73,8 +74,11 @@ const Dashboard = () => {
   }, [])
 
   const getAllQuiz = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -82,8 +86,10 @@ const Dashboard = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAllQuiz(result)
-        setLastQuiz(result.slice(Math.max(result.length - 5, 0)))
+        if (result.success) {
+          setAllQuiz(result.data)
+          setLastQuiz(result.data.slice(Math.max(result.data.length - 5, 0)))
+        }
       })
       .catch((error) => {
         console.error(error)

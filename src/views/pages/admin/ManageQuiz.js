@@ -53,6 +53,8 @@ const ManageQuiz = () => {
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
+  const [op6, setOp6] = useState('')
+  const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
   const {
@@ -72,12 +74,14 @@ const ManageQuiz = () => {
       op2: '',
       op3: '',
       op4: '',
+      op5: '',
       correct: '',
       explaination: '',
       op1Explain: '',
       op2Explain: '',
       op3Explain: '',
       op4Explain: '',
+      op5Explain: '',
     },
   })
 
@@ -86,6 +90,8 @@ const ManageQuiz = () => {
   const option2 = watch('op2')
   const option3 = watch('op3')
   const option4 = watch('op4')
+  const option5 = watch('op5')
+  const option6 = op6
 
   useEffect(() => {
     getAllQuest()
@@ -102,8 +108,11 @@ const ManageQuiz = () => {
 
   const getAllQuest = () => {
     setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -111,8 +120,10 @@ const ManageQuiz = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAllQuestion(result)
         setLoader(false)
+        if (result.success) {
+          setAllQuestion(result.data)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -124,6 +135,9 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
     const formdata = new FormData()
     formdata.append('usmleStep', data.usmleStep)
     formdata.append('USMLE', data.usmleCategory)
@@ -135,31 +149,47 @@ const ManageQuiz = () => {
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
+    formdata.append('optionFive', data.op5)
+    if (op6) {
+      formdata.append('optionSix', op6)
+    }
     formdata.append('optionOneExplanation', data.op1Explain)
     formdata.append('optionTwoExplanation', data.op2Explain)
     formdata.append('optionThreeExplanation', data.op3Explain)
     formdata.append('optionFourExplanation', data.op4Explain)
+    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op6Exp) {
+      formdata.append('optionSixExplanation', op6Exp)
+    }
     const requestOptions = {
       method: 'POST',
       body: formdata,
+      headers: myHeaders,
       redirect: 'follow',
     }
 
     fetch(API_URL + 'add-mcqs', requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAddModal(false)
         setIsLoading(false)
-        getAllQuest()
-        reset({})
-        setImage('')
-        setSuccess(true)
-        setSuccessMsg('Question added successfully')
-        setTimeout(() => {
-          setSuccess(false)
-          setSuccessMsg('')
-        }, 3000)
+        if (result.success) {
+          setAddModal(false)
+          getAllQuest()
+          reset({})
+          setImage('')
+          setOp6('')
+          setOp6Exp('')
+          setSuccess(true)
+          setSuccessMsg('Question added successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -167,28 +197,38 @@ const ManageQuiz = () => {
       })
   }
   const getQuestion = () => {
-    var requestOptions = {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
     }
 
     fetch(API_URL + 'mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log('ques detail', result)
-        setValue('usmleStep', result.usmleStep)
-        setValue('usmleCategory', result.USMLE)
-        setValue('question', result.question)
-        setValue('explaination', result.questionExplanation)
-        setValue('op1', result.optionOne)
-        setValue('op2', result.optionTwo)
-        setValue('op3', result.optionThree)
-        setValue('op4', result.optionFour)
-        setValue('correct', result.correctAnswer)
-        setValue('op1Explain', result.optionOneExplanation)
-        setValue('op2Explain', result.optionTwoExplanation)
-        setValue('op3Explain', result.optionThreeExplanation)
-        setValue('op4Explain', result.optionFourExplanation)
-        setImage(result.image)
+        if (result.success) {
+          setValue('usmleStep', result.data.usmleStep)
+          setValue('usmleCategory', result.data.USMLE)
+          setValue('question', result.data.question)
+          setValue('explaination', result.data.questionExplanation)
+          setValue('op1', result.data.optionOne)
+          setValue('op2', result.data.optionTwo)
+          setValue('op3', result.data.optionThree)
+          setValue('op4', result.data.optionFour)
+          setValue('op5', result.data.optionFive)
+          setOp6(result.data.optionSix)
+          setValue('correct', result.data.correctAnswer)
+          setValue('op1Explain', result.data.optionOneExplanation)
+          setValue('op2Explain', result.data.optionTwoExplanation)
+          setValue('op3Explain', result.data.optionThreeExplanation)
+          setValue('op4Explain', result.data.optionFourExplanation)
+          setValue('op5Explain', result.data.optionFiveExplanation)
+          setOp6Exp(result.data.optionSixExplanation)
+          setImage(result.data.image)
+        }
       })
       .catch((error) => console.log('error', error))
   }
@@ -198,20 +238,20 @@ const ManageQuiz = () => {
     setError(false)
     setErrorMsg('')
     console.log(questionId)
-    // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", `Bearer ${token}`);
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
 
     var requestOptions = {
       method: 'DELETE',
-      // headers: myHeaders,
+      headers: myHeaders,
     }
 
     fetch(API_URL + 'delete-mcq/' + questionId, requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         console.log(result)
         setIsLoading(false)
-        if (result === 'MCQ deleted successfully') {
+        if (result.success) {
           setDeleteModal(false)
           getAllQuest()
           setSuccess(true)
@@ -222,7 +262,7 @@ const ManageQuiz = () => {
           }, 3000)
         } else {
           setError(true)
-          setErrorMsg(result)
+          setErrorMsg(result.message)
         }
       })
       .catch((error) => console.log('error', error))
@@ -232,6 +272,9 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
     const formdata = new FormData()
     formdata.append('usmleStep', data.usmleStep)
     formdata.append('USMLE', data.usmleCategory)
@@ -243,25 +286,37 @@ const ManageQuiz = () => {
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
+    formdata.append('optionFive', data.op5)
+    if (op6) {
+      formdata.append('optionSix', op6)
+    }
     formdata.append('optionOneExplanation', data.op1Explain)
     formdata.append('optionTwoExplanation', data.op2Explain)
     formdata.append('optionThreeExplanation', data.op3Explain)
     formdata.append('optionFourExplanation', data.op4Explain)
+    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op6Exp) {
+      formdata.append('optionSixExplanation', op6Exp)
+    }
     const requestOptions = {
       method: 'PUT',
       body: formdata,
+      headers: myHeaders,
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'edit-mcq/' + questionId, requestOptions)
+    fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.status == 'success') {
+        if (result.success) {
           setAddModal(false)
           setIsLoading(false)
           getAllQuest()
           setQuestionId('')
+          setImage('')
+          setOp6('')
+          setOp6Exp('')
           reset({})
           setSuccess(true)
           setSuccessMsg('Question updated successfully')
@@ -269,6 +324,9 @@ const ManageQuiz = () => {
             setSuccess(false)
             setSuccessMsg('')
           }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
         }
       })
       .catch((error) => {
@@ -290,6 +348,8 @@ const ManageQuiz = () => {
                 setIsLoading(false)
                 reset({})
                 setQuestionId('')
+                setError(false)
+                setErrorMsg('')
               }}
             >
               Add Question
@@ -307,7 +367,7 @@ const ManageQuiz = () => {
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Image</CTableHeaderCell>
+                    {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
                     <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                   </CTableRow>
@@ -323,33 +383,37 @@ const ManageQuiz = () => {
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
-                        <CTableDataCell>
+                        {/* <CTableDataCell>
                           <img
                             src={`${API_URL}uploads/${q.image}`}
                             alt="mcq img"
                             className="w-6 h-6 rounded-full"
                           />
-                        </CTableDataCell>
+                        </CTableDataCell> */}
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell>
+                        <CTableDataCell className="flex justify-center items-center">
                           <CButton
                             color="info"
-                            className="text-white mr-3"
+                            className="text-white mr-3 my-2"
                             id={q._id}
                             onClick={(e) => {
                               setAddModal(true)
                               setQuestionId(e.currentTarget.id)
+                              setError(false)
+                              setErrorMsg('')
                             }}
                           >
                             <CIcon icon={cilPencil} />
                           </CButton>
                           <CButton
                             color="danger"
-                            className="text-white"
+                            className="text-white my-2"
                             id={q._id}
                             onClick={(e) => {
                               setDeleteModal(true)
                               setQuestionId(e.currentTarget.id)
+                              setError(false)
+                              setErrorMsg('')
                             }}
                           >
                             <CIcon icon={cilTrash} />
@@ -595,7 +659,7 @@ const ManageQuiz = () => {
                     <CRow>
                       <CCol md={6}>
                         <CFormInput
-                          placeholder="First option"
+                          placeholder="Forth option"
                           type="text"
                           // onChange={(e) => setOp1(e.target.value)}
                           // value={op1}
@@ -607,11 +671,55 @@ const ManageQuiz = () => {
                       </CCol>
                       <CCol md={6}>
                         <CFormInput
-                          placeholder="First option explaination"
+                          placeholder="Forth option explaination"
                           type="text"
                           {...register('op4Explain', { required: true })}
                           feedback="Explaination of Option 4 is required"
                           invalid={errors.op4Explain ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Fifth option"
+                          type="text"
+                          // onChange={(e) => setOp1(e.target.value)}
+                          // value={op1}
+                          {...register('op5', { required: true })}
+                          feedback="Option 5 is required"
+                          invalid={errors.op5 ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Fifth option explaination"
+                          type="text"
+                          {...register('op5Explain', { required: true })}
+                          feedback="Explaination of Option 5 is required"
+                          invalid={errors.op5Explain ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Sixth option"
+                          type="text"
+                          onChange={(e) => setOp6(e.target.value)}
+                          value={op6}
+                          className="mb-2"
+                        />
+                      </CCol>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Sixth option explaination"
+                          type="text"
+                          onChange={(e) => setOp6Exp(e.target.value)}
+                          value={op6Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -625,13 +733,26 @@ const ManageQuiz = () => {
                       aria-label="correct option"
                       id="correct"
                       defaultValue={getValues('correct')}
-                      options={[
-                        { label: 'Select Correct Option', value: '' },
-                        { label: getValues('op1'), value: option1 },
-                        { label: getValues('op2'), value: option2 },
-                        { label: getValues('op3'), value: option3 },
-                        { label: getValues('op4'), value: option4 },
-                      ]}
+                      options={
+                        op6
+                          ? [
+                              { label: 'Select Correct Option', value: '' },
+                              { label: getValues('op1'), value: option1 },
+                              { label: getValues('op2'), value: option2 },
+                              { label: getValues('op3'), value: option3 },
+                              { label: getValues('op4'), value: option4 },
+                              { label: getValues('op5'), value: option5 },
+                              { label: op6, value: op6 },
+                            ]
+                          : [
+                              { label: 'Select Correct Option', value: '' },
+                              { label: getValues('op1'), value: option1 },
+                              { label: getValues('op2'), value: option2 },
+                              { label: getValues('op3'), value: option3 },
+                              { label: getValues('op4'), value: option4 },
+                              { label: getValues('op5'), value: option5 },
+                            ]
+                      }
                       // onChange={(e) => setCorrect(e.target.value)}
                       {...register('correct', { required: true })}
                       feedback="Please select correct option"
@@ -672,6 +793,7 @@ const ManageQuiz = () => {
                   </CRow>
                 )}
               </CForm>
+              {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>
             <CModalFooter>
               <CButton color="secondary" onClick={() => setAddModal(false)}>

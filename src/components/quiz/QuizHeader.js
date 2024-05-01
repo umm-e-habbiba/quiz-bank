@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   CHeader,
   CHeaderNav,
@@ -46,6 +46,7 @@ const QuizHeader = ({
   setFontSize,
 }) => {
   const headerRef = useRef()
+  const navigate = useNavigate()
   const [fullscreen, setFullscreen] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
@@ -62,6 +63,16 @@ const QuizHeader = ({
   const [successMsg, setSuccessMsg] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+
+  useEffect(() => {
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      setToken(getToken)
+    } else {
+      navigate('/login')
+    }
+  }, [])
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -138,6 +149,8 @@ const QuizHeader = ({
     if (e.target.checked) {
       setQuestionId(e.target.id)
       setCommentModal(true)
+      setError(false)
+      setErrorMsg('')
       console.log('checked', e.target.id)
     } else {
       console.log('unchecked')
@@ -152,6 +165,7 @@ const QuizHeader = ({
       setIsLoading(false)
     } else {
       const myHeaders = new Headers()
+      myHeaders.append('Authorization', token)
       myHeaders.append('Content-Type', 'application/json')
 
       const raw = JSON.stringify({
@@ -169,14 +183,19 @@ const QuizHeader = ({
         .then((response) => response.json())
         .then((result) => {
           console.log(result)
-          setCommentModal(false)
-          setIsLoading(false)
-          setSuccess(true)
-          setSuccessMsg('Comment sent successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
+          if (result.success) {
+            setCommentModal(false)
+            setIsLoading(false)
+            setSuccess(true)
+            setSuccessMsg('Comment sent successfully')
+            setTimeout(() => {
+              setSuccess(false)
+              setSuccessMsg('')
+            }, 3000)
+          } else {
+            setError(true)
+            setErrorMsg(result.message)
+          }
         })
         .catch((error) => {
           console.error(error)
@@ -308,8 +327,9 @@ const QuizHeader = ({
                 />
               </CCol>
             </CRow>
-            <p className="text-xs mt-3 text-red-700">{commentError}</p>
+            <p className="text-xs mt-3 text-red-400">{commentError}</p>
           </CForm>
+          {error && <span className="text-red-400 my-3">{errorMsg}</span>}
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setCommentModal(false)}>
@@ -324,12 +344,6 @@ const QuizHeader = ({
       {success && (
         <CAlert color="success" className="success-alert">
           {successMsg}
-        </CAlert>
-      )}
-      {/* error alert */}
-      {error && (
-        <CAlert color="danger" className="success-alert">
-          {errorMsg}
         </CAlert>
       )}
     </>

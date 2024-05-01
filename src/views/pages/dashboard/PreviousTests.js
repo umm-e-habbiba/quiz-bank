@@ -104,8 +104,11 @@ const PreviousTests = () => {
 
   const getAllQuiz = () => {
     setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -113,7 +116,9 @@ const PreviousTests = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAllQuiz(result)
+        if (result.success) {
+          setAllQuiz(result.data)
+        }
         setLoader(false)
       })
       .catch((error) => {
@@ -127,20 +132,20 @@ const PreviousTests = () => {
     setError(false)
     setErrorMsg('')
     console.log(quizId)
-    // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", `Bearer ${token}`);
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
 
     var requestOptions = {
       method: 'DELETE',
-      // headers: myHeaders,
+      headers: myHeaders,
     }
 
     fetch(API_URL + 'delete-quiz/' + userID + '/' + quizId, requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         console.log(result)
         setIsLoading(false)
-        if (result === 'Quiz deleted successfully') {
+        if (result.success) {
           setDeleteModal(false)
           setQuizId('')
           getAllQuiz()
@@ -152,7 +157,7 @@ const PreviousTests = () => {
           }, 3000)
         } else {
           setError(true)
-          setErrorMsg(result)
+          setErrorMsg(result.message)
         }
       })
       .catch((error) => console.log('error', error))
@@ -207,7 +212,7 @@ const PreviousTests = () => {
                           <CTableDataCell>
                             {moment(q.createdAt).format('MMMM Do YYYY')}
                           </CTableDataCell>
-                          <CTableDataCell>
+                          <CTableDataCell className="flex justify-center items-center" scope="row">
                             <CButton
                               color="danger"
                               className="text-white"

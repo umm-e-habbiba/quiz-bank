@@ -61,11 +61,11 @@ const ForgetPassword = () => {
         .then((result) => {
           console.log(result)
           setIsLoading(false)
-          if (result.Status == 'Email Sent Check Mails !!!') {
+          if (result.success) {
             setEmailSent(true)
           } else {
             setError(true)
-            setErrorValue(result.Status)
+            setErrorValue(result.message)
           }
         })
         .catch((error) => {
@@ -104,7 +104,7 @@ const ForgetPassword = () => {
         .then((result) => {
           console.log(result)
           setIsLoading(false)
-          if (result.Status == 'Success password reseted') {
+          if (result.success) {
             setSuccess(true)
             setTimeout(() => {
               setSuccess(false)
@@ -112,7 +112,7 @@ const ForgetPassword = () => {
             }, 2000)
           } else {
             setError(true)
-            setErrorValue(result.Status)
+            setErrorValue(result.message)
           }
         })
         .catch((error) => {

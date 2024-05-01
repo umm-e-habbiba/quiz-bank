@@ -15,6 +15,7 @@ import { API_URL } from 'src/store'
 const QuizPerformance = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [noQuiz, setNoQuiz] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [percent, setPercent] = useState('')
@@ -35,8 +36,11 @@ const QuizPerformance = () => {
 
   const getAllQuest = () => {
     setLoading(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -44,13 +48,20 @@ const QuizPerformance = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log('latest quiz', result)
-        setMarks(result.obtainedScore)
-        setTotal(result.totalScore)
-        setPercent(percentage(result.obtainedScore, result.totalScore))
         setLoading(false)
+        if (result.success) {
+          if (result.message == 'User has not attempted any quiz') {
+            setNoQuiz(true)
+          } else {
+            setMarks(result.data.obtainedScore)
+            setTotal(result.data.totalScore)
+            setPercent(percentage(result.data.obtainedScore, result.data.totalScore))
+          }
+        }
       })
       .catch((error) => {
         console.error(error)
+        setLoading(false)
       })
   }
 
@@ -68,7 +79,11 @@ const QuizPerformance = () => {
             <CCard className="mb-4 mx-4">
               <CCardHeader className="flex justify-between items-center">
                 <strong>Your Performance</strong>
-                <CButton color="success" onClick={() => navigate('/review-quiz')}>
+                <CButton
+                  color="success"
+                  onClick={() => navigate('/review-quiz')}
+                  disabled={noQuiz ? true : false}
+                >
                   Review
                 </CButton>
               </CCardHeader>
@@ -82,18 +97,22 @@ const QuizPerformance = () => {
                     </CCol>
                   ) : (
                     <CCol md={6}>
-                      <div className="progress-group">
-                        <div className="progress-group-header">
-                          <span>Your Score</span>
-                          <span className="ms-auto fw-semibold">
-                            {marks} out of {total}
-                            <span className="text-body-secondary small"> ({percent}%)</span>
-                          </span>
+                      {noQuiz ? (
+                        <div>No quizzes attempted yet</div>
+                      ) : (
+                        <div className="progress-group">
+                          <div className="progress-group-header">
+                            <span>Your Score</span>
+                            <span className="ms-auto fw-semibold">
+                              {marks} out of {total}
+                              <span className="text-body-secondary small"> ({percent}%)</span>
+                            </span>
+                          </div>
+                          <div className="progress-group-bars">
+                            <CProgress color="success" height={20} value={Number(percent)} />
+                          </div>
                         </div>
-                        <div className="progress-group-bars">
-                          <CProgress color="success" height={20} value={Number(percent)} />
-                        </div>
-                      </div>
+                      )}
                     </CCol>
                   )}
                 </CRow>

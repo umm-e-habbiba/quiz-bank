@@ -64,8 +64,11 @@ const ReviewQuiz = () => {
   }, [quizEnd])
 
   const getAllQuest = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -73,10 +76,17 @@ const ReviewQuiz = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAllQuestion(result.questions)
-        setUsmleStep(result.usmleSteps)
-        setUsmleCategory(result.USMLE)
-        console.log('all questions ', result.questions, 'current', allQuestion[currentQuestion])
+        if (result.success) {
+          setAllQuestion(result.data.questions)
+          setUsmleStep(result.data.usmleSteps)
+          setUsmleCategory(result.data.USMLE)
+          console.log(
+            'all questions ',
+            result.data.questions,
+            'current',
+            allQuestion[currentQuestion],
+          )
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -104,9 +114,9 @@ const ReviewQuiz = () => {
         totalQues={allQuestion.length}
         filteredArray={allQuestion}
       />
-      <div className="wrapper d-flex flex-column min-h-[77vh]">
+      <div className="wrapper d-flex flex-column min-h-[77vh] overflow-x-hidden">
         {/* Questions */}
-        <CRow className="overflow-x-hidden">
+        <CRow>
           <CCol md={6} className="border-r-2 border-solid">
             <div className="p-10">
               {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
@@ -140,7 +150,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? allQuestion[currentQuestion].questionId.optionOne
+                        ? 'A: ' + allQuestion[currentQuestion].questionId.optionOne
                         : ''
                     }
                     value={
@@ -168,7 +178,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? allQuestion[currentQuestion].questionId.optionTwo
+                        ? 'B: ' + allQuestion[currentQuestion].questionId.optionTwo
                         : ''
                     }
                     value={
@@ -196,7 +206,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? allQuestion[currentQuestion].questionId.optionThree
+                        ? 'C: ' + allQuestion[currentQuestion].questionId.optionThree
                         : ''
                     }
                     value={
@@ -224,7 +234,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? allQuestion[currentQuestion].questionId.optionFour
+                        ? 'D: ' + allQuestion[currentQuestion].questionId.optionFour
                         : ''
                     }
                     value={
@@ -243,6 +253,67 @@ const ReviewQuiz = () => {
                         : false
                     }
                   />
+                  <CFormCheck
+                    type="radio"
+                    id={
+                      allQuestion[currentQuestion]
+                        ? allQuestion[currentQuestion].questionId.optionFive
+                        : ''
+                    }
+                    label={
+                      allQuestion[currentQuestion]
+                        ? 'E: ' + allQuestion[currentQuestion].questionId.optionFive
+                        : ''
+                    }
+                    value={
+                      allQuestion[currentQuestion]
+                        ? allQuestion[currentQuestion].questionId.optionFive
+                        : ''
+                    }
+                    name={currentQuestion}
+                    disabled={true}
+                    checked={
+                      allQuestion[currentQuestion]
+                        ? allQuestion[currentQuestion].selectedOption ==
+                          allQuestion[currentQuestion].questionId.optionFive
+                          ? true
+                          : false
+                        : false
+                    }
+                  />
+                  {allQuestion[currentQuestion] &&
+                  allQuestion[currentQuestion].questionId.optionSix ? (
+                    <CFormCheck
+                      type="radio"
+                      id={
+                        allQuestion[currentQuestion]
+                          ? allQuestion[currentQuestion].questionId.optionSix
+                          : ''
+                      }
+                      label={
+                        allQuestion[currentQuestion]
+                          ? 'F: ' + allQuestion[currentQuestion].questionId.optionSix
+                          : ''
+                      }
+                      value={
+                        allQuestion[currentQuestion]
+                          ? allQuestion[currentQuestion].questionId.optionSix
+                          : ''
+                      }
+                      name={currentQuestion}
+                      disabled={true}
+                      checked={
+                        allQuestion[currentQuestion]
+                          ? allQuestion[currentQuestion].selectedOption ==
+                            allQuestion[currentQuestion].questionId.optionSix
+                            ? true
+                            : false
+                          : false
+                      }
+                    />
+                  ) : (
+                    ''
+                  )}
                 </div>
                 {allQuestion.length > 0 && allQuestion[currentQuestion] ? (
                   <CRow
@@ -331,6 +402,23 @@ const ReviewQuiz = () => {
                   ? allQuestion[currentQuestion].questionId.optionFourExplanation
                   : ''}
               </p>
+              <p className="mb-3">
+                <span className="font-bold">(Choise E)</span>{' '}
+                {allQuestion[currentQuestion]
+                  ? allQuestion[currentQuestion].questionId.optionFiveExplanation
+                  : ''}
+              </p>
+              {allQuestion[currentQuestion] &&
+              allQuestion[currentQuestion].questionId.optionSixExplanation ? (
+                <p className="mb-3">
+                  <span className="font-bold">(Choise F)</span>{' '}
+                  {allQuestion[currentQuestion]
+                    ? allQuestion[currentQuestion].questionId.optionSixExplanation
+                    : ''}
+                </p>
+              ) : (
+                ''
+              )}
               <hr />
               <CRow className="mt-3">
                 <CCol md={4} className="d-flex justify-start flex-col">

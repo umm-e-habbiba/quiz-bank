@@ -25,6 +25,7 @@ import {
   CFormSelect,
   CSpinner,
   CFormTextarea,
+  CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash, cilCommentBubble } from '@coreui/icons'
@@ -35,8 +36,7 @@ import moment from 'moment'
 const Comments = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
-  const [editModal, setEditModal] = useState(false)
-  const [commentModal, setCommentModal] = useState(false)
+  const [addModal, setAddModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -52,8 +52,13 @@ const Comments = () => {
   // const [correct, setCorrect] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [comments, setComments] = useState([])
+  const [success, setSuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [op6, setOp6] = useState('')
+  const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [comments, setComments] = useState([])
+  const [commentModal, setCommentModal] = useState(false)
   const role = localStorage.getItem('user') || ''
   const {
     register,
@@ -72,12 +77,14 @@ const Comments = () => {
       op2: '',
       op3: '',
       op4: '',
+      op5: '',
       correct: '',
       explaination: '',
       op1Explain: '',
       op2Explain: '',
       op3Explain: '',
       op4Explain: '',
+      op5Explain: '',
     },
   })
 
@@ -86,6 +93,8 @@ const Comments = () => {
   const option2 = watch('op2')
   const option3 = watch('op3')
   const option4 = watch('op4')
+  const option5 = watch('op5')
+  const option6 = op6
 
   useEffect(() => {
     getAllQuest()
@@ -102,8 +111,11 @@ const Comments = () => {
 
   const getAllQuest = () => {
     setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
       redirect: 'follow',
     }
 
@@ -111,8 +123,10 @@ const Comments = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setAllQuestion(result)
         setLoader(false)
+        if (result.success) {
+          setAllQuestion(result.data)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -120,28 +134,38 @@ const Comments = () => {
       })
   }
   const getQuestion = () => {
-    var requestOptions = {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
       method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
     }
 
     fetch(API_URL + 'mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log('ques detail', result)
-        setValue('usmleStep', result.usmleStep)
-        setValue('usmleCategory', result.USMLE)
-        setValue('question', result.question)
-        setValue('explaination', result.questionExplanation)
-        setValue('op1', result.optionOne)
-        setValue('op2', result.optionTwo)
-        setValue('op3', result.optionThree)
-        setValue('op4', result.optionFour)
-        setValue('correct', result.correctAnswer)
-        setValue('op1Explain', result.optionOneExplanation)
-        setValue('op2Explain', result.optionTwoExplanation)
-        setValue('op3Explain', result.optionThreeExplanation)
-        setValue('op4Explain', result.optionFourExplanation)
-        setImage(result.image)
+        if (result.success) {
+          setValue('usmleStep', result.data.usmleStep)
+          setValue('usmleCategory', result.data.USMLE)
+          setValue('question', result.data.question)
+          setValue('explaination', result.data.questionExplanation)
+          setValue('op1', result.data.optionOne)
+          setValue('op2', result.data.optionTwo)
+          setValue('op3', result.data.optionThree)
+          setValue('op4', result.data.optionFour)
+          setValue('op5', result.data.optionFive)
+          setOp6(result.data.optionSix)
+          setValue('correct', result.data.correctAnswer)
+          setValue('op1Explain', result.data.optionOneExplanation)
+          setValue('op2Explain', result.data.optionTwoExplanation)
+          setValue('op3Explain', result.data.optionThreeExplanation)
+          setValue('op4Explain', result.data.optionFourExplanation)
+          setValue('op5Explain', result.data.optionFiveExplanation)
+          setOp6Exp(result.data.optionSixExplanation)
+          setImage(result.data.image)
+        }
       })
       .catch((error) => console.log('error', error))
   }
@@ -150,25 +174,31 @@ const Comments = () => {
     setError(false)
     setErrorMsg('')
     console.log(questionId)
-    // var myHeaders = new Headers();
-    // myHeaders.append("Authorization", `Bearer ${token}`);
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
 
     var requestOptions = {
       method: 'DELETE',
-      // headers: myHeaders,
+      headers: myHeaders,
     }
 
     fetch(API_URL + 'delete-mcq/' + questionId, requestOptions)
-      .then((response) => response.text())
+      .then((response) => response.json())
       .then((result) => {
         console.log(result)
         setIsLoading(false)
-        if (result === 'MCQ deleted successfully') {
+        if (result.success) {
           setDeleteModal(false)
           getAllQuest()
+          setSuccess(true)
+          setSuccessMsg('Question deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
         } else {
           setError(true)
-          setErrorMsg(result)
+          setErrorMsg(result.message)
         }
       })
       .catch((error) => console.log('error', error))
@@ -179,32 +209,61 @@ const Comments = () => {
     setError(false)
     setErrorMsg('')
     const myHeaders = new Headers()
-    myHeaders.append('Content-Type', 'application/json')
+    myHeaders.append('Authorization', token)
 
-    const raw = JSON.stringify({
-      usmleStep: data.usmleStep,
-      USMLE: data.usmleCategory,
-      question: data.question,
-      options: [data.op1, data.op2, data.op3, data.op4],
-      correctAnswer: data.correct,
-    })
-
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('question', data.question)
+    formdata.append('optionOne', data.op1)
+    formdata.append('correctAnswer', data.correct)
+    formdata.append('questionExplanation', data.explaination)
+    formdata.append('image', image)
+    formdata.append('optionTwo', data.op2)
+    formdata.append('optionThree', data.op3)
+    formdata.append('optionFour', data.op4)
+    formdata.append('optionFive', data.op5)
+    if (op6) {
+      formdata.append('optionSix', op6)
+    }
+    formdata.append('optionOneExplanation', data.op1Explain)
+    formdata.append('optionTwoExplanation', data.op2Explain)
+    formdata.append('optionThreeExplanation', data.op3Explain)
+    formdata.append('optionFourExplanation', data.op4Explain)
+    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op6Exp) {
+      formdata.append('optionSixExplanation', op6Exp)
+    }
     const requestOptions = {
       method: 'PUT',
+      body: formdata,
       headers: myHeaders,
-      body: raw,
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'edit-mcq/' + questionId, requestOptions)
+    fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setEditModal(false)
-        setIsLoading(false)
-        getAllQuest()
-        setQuestionId('')
-        reset({})
+        if (result.success) {
+          setAddModal(false)
+          setIsLoading(false)
+          getAllQuest()
+          setQuestionId('')
+          setImage('')
+          setOp6('')
+          setOp6Exp('')
+          reset({})
+          setSuccess(true)
+          setSuccessMsg('Question updated successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -216,7 +275,7 @@ const Comments = () => {
       <>
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
-            <strong>Comments</strong>
+            <strong>Manage Questions</strong>
           </CCardHeader>
           <CCardBody>
             {loader ? (
@@ -230,6 +289,7 @@ const Comments = () => {
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                    {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
                     <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                   </CTableRow>
@@ -238,15 +298,22 @@ const Comments = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell scope="row">
+                        <CTableHeaderCell>
                           {q.question.length > 100
                             ? q.question.substring(0, 100) + '...'
                             : q.question}
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
+                        {/* <CTableDataCell>
+                          <img
+                            src={`${API_URL}uploads/${q.image}`}
+                            alt="mcq img"
+                            className="w-6 h-6 rounded-full"
+                          />
+                        </CTableDataCell> */}
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell className="flex">
+                        <CTableDataCell className="flex justify-center items-center">
                           <CButton
                             color="success"
                             className="text-white mr-1 my-2"
@@ -261,13 +328,14 @@ const Comments = () => {
                           </CButton>
                           <CButton
                             color="info"
-                            className="text-white mr-1 my-2"
+                            className="text-white mr-3 my-2"
                             id={q._id}
                             onClick={(e) => {
-                              setEditModal(true)
+                              setAddModal(true)
                               setQuestionId(e.currentTarget.id)
+                              setError(false)
+                              setErrorMsg('')
                             }}
-                            title="Edit Question"
                           >
                             <CIcon icon={cilPencil} />
                           </CButton>
@@ -278,8 +346,9 @@ const Comments = () => {
                             onClick={(e) => {
                               setDeleteModal(true)
                               setQuestionId(e.currentTarget.id)
+                              setError(false)
+                              setErrorMsg('')
                             }}
-                            title="Delete Question"
                           >
                             <CIcon icon={cilTrash} />
                           </CButton>
@@ -301,8 +370,8 @@ const Comments = () => {
         {/* add / edit modal */}
         <CModal
           alignment="center"
-          visible={editModal}
-          onClose={() => setEditModal(false)}
+          visible={addModal}
+          onClose={() => setAddModal(false)}
           aria-labelledby="VerticallyCenteredExample"
           // scrollable={true}
           size="lg"
@@ -522,7 +591,7 @@ const Comments = () => {
                     <CRow>
                       <CCol md={6}>
                         <CFormInput
-                          placeholder="First option"
+                          placeholder="Forth option"
                           type="text"
                           // onChange={(e) => setOp1(e.target.value)}
                           // value={op1}
@@ -534,11 +603,55 @@ const Comments = () => {
                       </CCol>
                       <CCol md={6}>
                         <CFormInput
-                          placeholder="First option explaination"
+                          placeholder="Forth option explaination"
                           type="text"
                           {...register('op4Explain', { required: true })}
                           feedback="Explaination of Option 4 is required"
                           invalid={errors.op4Explain ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Fifth option"
+                          type="text"
+                          // onChange={(e) => setOp1(e.target.value)}
+                          // value={op1}
+                          {...register('op5', { required: true })}
+                          feedback="Option 5 is required"
+                          invalid={errors.op5 ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Fifth option explaination"
+                          type="text"
+                          {...register('op5Explain', { required: true })}
+                          feedback="Explaination of Option 5 is required"
+                          invalid={errors.op5Explain ? true : false}
+                          className="mb-2"
+                        />
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Sixth option"
+                          type="text"
+                          onChange={(e) => setOp6(e.target.value)}
+                          value={op6}
+                          className="mb-2"
+                        />
+                      </CCol>
+                      <CCol md={6}>
+                        <CFormInput
+                          placeholder="Sixth option explaination"
+                          type="text"
+                          onChange={(e) => setOp6Exp(e.target.value)}
+                          value={op6Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -552,13 +665,26 @@ const Comments = () => {
                       aria-label="correct option"
                       id="correct"
                       defaultValue={getValues('correct')}
-                      options={[
-                        { label: 'Select Correct Option', value: '' },
-                        { label: getValues('op1'), value: option1 },
-                        { label: getValues('op2'), value: option2 },
-                        { label: getValues('op3'), value: option3 },
-                        { label: getValues('op4'), value: option4 },
-                      ]}
+                      options={
+                        op6
+                          ? [
+                              { label: 'Select Correct Option', value: '' },
+                              { label: getValues('op1'), value: option1 },
+                              { label: getValues('op2'), value: option2 },
+                              { label: getValues('op3'), value: option3 },
+                              { label: getValues('op4'), value: option4 },
+                              { label: getValues('op5'), value: option5 },
+                              { label: op6, value: op6 },
+                            ]
+                          : [
+                              { label: 'Select Correct Option', value: '' },
+                              { label: getValues('op1'), value: option1 },
+                              { label: getValues('op2'), value: option2 },
+                              { label: getValues('op3'), value: option3 },
+                              { label: getValues('op4'), value: option4 },
+                              { label: getValues('op5'), value: option5 },
+                            ]
+                      }
                       // onChange={(e) => setCorrect(e.target.value)}
                       {...register('correct', { required: true })}
                       feedback="Please select correct option"
@@ -566,40 +692,48 @@ const Comments = () => {
                     />
                   </CCol>
                 </CRow>
-                <CRow className="mb-3">
-                  <CCol md={6}>
-                    <CFormInput
-                      type="file"
-                      id="formFile"
-                      label="Change Image"
-                      onChange={(e) => setImage(e.target.files[0])}
-                    />
-                  </CCol>
-                  <CCol md={6}>
-                    <center>
-                      <img
-                        src={`${API_URL}uploads/${image}`}
-                        alt="image"
-                        className="w-52 h-36 rounded-full"
+                {image ? (
+                  <CRow className="mb-3">
+                    <CCol md={6}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Change Image"
+                        onChange={(e) => setImage(e.target.files[0])}
                       />
-                    </center>
-                  </CCol>
-                </CRow>
+                    </CCol>
+                    <CCol md={6}>
+                      <center>
+                        <img
+                          src={`${API_URL}uploads/${image}`}
+                          alt="image"
+                          className="w-52 h-36 rounded-full"
+                        />
+                      </center>
+                    </CCol>
+                  </CRow>
+                ) : (
+                  <CRow className="mb-3">
+                    <CCol md={12}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Image"
+                        onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                  </CRow>
+                )}
               </CForm>
+              {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>
             <CModalFooter>
-              <CButton color="secondary" onClick={() => setEditModal(false)}>
+              <CButton color="secondary" onClick={() => setAddModal(false)}>
                 Close
               </CButton>
-              {questionId ? (
-                <CButton color="primary" type="submit" disabled={loading ? true : false}>
-                  {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
-                </CButton>
-              ) : (
-                <CButton color="primary" type="submit" disabled={loading ? true : false}>
-                  {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
-                </CButton>
-              )}
+              <CButton color="primary" type="submit" disabled={loading ? true : false}>
+                {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
+              </CButton>
             </CModalFooter>
           </CForm>
         </CModal>
@@ -661,6 +795,12 @@ const Comments = () => {
             </CButton>
           </CModalFooter> */}
         </CModal>
+        {/* success alert */}
+        {success && (
+          <CAlert color="success" className="success-alert">
+            {successMsg}
+          </CAlert>
+        )}
       </>
     </AdminLayout>
   )

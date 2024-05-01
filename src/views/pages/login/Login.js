@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CButton, CForm, CFormInput, CInputGroup, CSpinner } from '@coreui/react'
+import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import '../auth.css'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
@@ -13,10 +13,14 @@ const Login = () => {
   const [loginError, setLoginError] = useState(false)
   const [loginErrorValue, setLoginErrorValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
+  const [verifyEmail, setVerifyEmail] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -37,6 +41,7 @@ const Login = () => {
     setLoginError(false)
     setLoginErrorValue('')
     setIsLoading(true)
+    setVerifyEmail(false)
     console.log(data)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
@@ -61,25 +66,39 @@ const Login = () => {
         if (result.token) {
           localStorage.setItem('token', result.token)
           if (result.message === 'Login successful as user') {
-            navigate('/')
+            setSuccess(true)
+            setTimeout(() => {
+              setSuccess(false)
+              navigate('/')
+            }, 2000)
             localStorage.setItem('user', 'user')
             localStorage.setItem('userId', result.userId)
           }
           if (result.message === 'Login successful as admin') {
-            navigate('/admin')
             localStorage.setItem('user', 'admin')
+            setSuccess(true)
+            setTimeout(() => {
+              setSuccess(false)
+              navigate('/admin')
+            }, 2000)
           }
-        } else {
-          setLoginError(true)
-          setLoginErrorValue(result)
+        }
+        if (result.error) {
+          if (result.message == 'Email not verified. Please verify your email to login.') {
+            setVerifyEmail(true)
+          } else {
+            setLoginError(true)
+            setLoginErrorValue(result.message)
+          }
         }
       })
       .catch((error) => {
         console.error(error)
         setIsLoading(false)
-        setLoginError(true)
-        setLoginErrorValue('Something went wrong!')
       })
+  }
+  const emailVerify = () => {
+    console.log(getValues('email'))
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
@@ -120,7 +139,16 @@ const Login = () => {
               Forgot password?
             </Link>
             <br />
-            {loginError && <span className="text-red-400 mt-3">{loginErrorValue}</span>}
+            {loginError && <span className="text-red-400 my-3">{loginErrorValue}</span>}
+            {verifyEmail && (
+              <span className="text-red-400 mt-3">
+                Email not verified.
+                <CButton color="link" className="p-1" onClick={emailVerify}>
+                  Click here
+                </CButton>{' '}
+                to verify your email.
+              </span>
+            )}
             <div className="d-grid">
               <CButton type="submit" className="button">
                 <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Login'}</span>
@@ -136,75 +164,11 @@ const Login = () => {
           <img src={img2} alt="" className="image-2" />
         </div>
       </div>
-      {/* <CContainer>
-        <CRow className="justify-content-center">
-          <CCol md={8}>
-            <CCardGroup>
-              <CCard className="p-4">
-                <CCardBody>
-                  <CForm onSubmit={handleSubmit(login)}>
-                    <h1>Login</h1>
-                    <p className="text-body-secondary">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cilUser} />
-                      </CInputGroupText>
-                      <CFormInput
-                        placeholder="Email"
-                        type="email"
-                        autoComplete="username"
-                        {...register('email', { required: true })}
-                        feedback="Please enter your email."
-                        invalid={errors.email ? true : false}
-                      />
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        type="password"
-                        placeholder="Password"
-                        autoComplete="current-password"
-                        {...register('password', { required: true, minLength: 8 })}
-                        feedback="Please enter valid password and passowrd must contain atleast 8 characters."
-                        invalid={errors.password ? true : false}
-                      />
-                    </CInputGroup>
-                    <CRow>
-                      <CCol xs={6}>
-                        <CButton color="primary" className="px-4" type="submit">
-                          Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton color="link" className="px-0">
-                          Forgot password?
-                        </CButton>
-                      </CCol> 
-                    </CRow>
-
-                    {loginError && <span className="text-red-400 mt-3">{loginErrorValue}</span>}
-                  </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>Sign up for your new account</p>
-                    <Link to="/register">
-                      <CButton color="primary" className="mt-3" active tabIndex={-1}>
-                        Register Now!
-                      </CButton>
-                    </Link>
-                  </div>
-                </CCardBody>
-              </CCard>
-            </CCardGroup>
-          </CCol>
-        </CRow>
-      </CContainer> */}
+      {success && (
+        <CAlert color="success" className="success-alert uppercase">
+          Login successful!
+        </CAlert>
+      )}
     </div>
   )
 }

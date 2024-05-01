@@ -70,6 +70,7 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
 
   const saveQuiz = () => {
     const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
 
     const raw = JSON.stringify({
