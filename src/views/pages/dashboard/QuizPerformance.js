@@ -23,9 +23,9 @@ const QuizPerformance = () => {
   const [total, setTotal] = useState('')
 
   useEffect(() => {
-    getAllQuest()
     const getToken = localStorage.getItem('token')
     if (getToken) {
+      getAllQuest()
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUSerID(getUserId)

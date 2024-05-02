@@ -124,7 +124,7 @@ const Comments = () => {
       .then((result) => {
         console.log(result)
         setLoader(false)
-        if (result.success) {
+        if (result.data) {
           setAllQuestion(result.data)
         }
       })
@@ -146,7 +146,7 @@ const Comments = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log('ques detail', result)
-        if (result.success) {
+        if (result.data) {
           setValue('usmleStep', result.data.usmleStep)
           setValue('usmleCategory', result.data.USMLE)
           setValue('question', result.data.question)

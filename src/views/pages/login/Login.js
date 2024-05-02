@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import '../auth.css'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilEnvelopeOpen } from '@coreui/icons'
+import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle } from '@coreui/icons'
 import { useForm } from 'react-hook-form'
 import img1 from '../../../assets/images/image-1.png'
 import img2 from '../../../assets/images/image-2.png'
 import { API_URL } from 'src/store'
 const Login = () => {
   const navigate = useNavigate()
+  const [queryParameters] = useSearchParams()
+  let getParams = useParams()
+  let emailVerified = queryParameters.get('emailVerified')
   const [loginError, setLoginError] = useState(false)
   const [loginErrorValue, setLoginErrorValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -84,12 +87,12 @@ const Login = () => {
           }
         }
         if (result.error) {
-          if (result.message == 'Email not verified. Please verify your email to login.') {
-            setVerifyEmail(true)
-          } else {
-            setLoginError(true)
-            setLoginErrorValue(result.message)
-          }
+          // if (result.message == 'Email not verified. Please verify your email to login.') {
+          //   setVerifyEmail(true)
+          // } else {
+          setLoginError(true)
+          setLoginErrorValue(result.message)
+          // }
         }
       })
       .catch((error) => {
@@ -97,15 +100,24 @@ const Login = () => {
         setIsLoading(false)
       })
   }
-  const emailVerify = () => {
-    console.log(getValues('email'))
-  }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <div className="auth-wrapper">
         <div className="inner">
           <img src={img1} alt="" className="image-1" />
           <CForm onSubmit={handleSubmit(login)} className="form">
+            {emailVerified && (
+              <CAlert color="success" className="d-flex align-items-center">
+                <CIcon
+                  icon={cilCheckCircle}
+                  className="flex-shrink-0 me-2"
+                  width={24}
+                  height={24}
+                />
+                <div>Email verification Successful! Please Login.</div>
+              </CAlert>
+            )}
+
             <h3>Login</h3>
             <CInputGroup className="mb-3 form-holder">
               <span className="lnr">
@@ -140,15 +152,15 @@ const Login = () => {
             </Link>
             <br />
             {loginError && <span className="text-red-400 my-3">{loginErrorValue}</span>}
-            {verifyEmail && (
+            {/* {verifyEmail && (
               <span className="text-red-400 mt-3">
                 Email not verified.
-                <CButton color="link" className="p-1" onClick={emailVerify}>
+                <CButton color="link" className="p-1 -mt-1 no-underline" onClick={emailVerify}>
                   Click here
                 </CButton>{' '}
                 to verify your email.
               </span>
-            )}
+            )} */}
             <div className="d-grid">
               <CButton type="submit" className="button">
                 <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Login'}</span>

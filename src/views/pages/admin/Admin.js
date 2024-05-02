@@ -104,7 +104,7 @@ const Admin = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.success) {
+        if (result.data) {
           setAllUsers(result.data)
         }
       })

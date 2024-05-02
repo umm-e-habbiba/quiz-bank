@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
+  cilCheckCircle,
   cilEnvelopeOpen,
   cilLockLocked,
   cilLockUnlocked,
@@ -75,10 +76,10 @@ const Register = () => {
           setIsLoading(false)
           if (result.success) {
             setSuccess(true)
-            setTimeout(() => {
-              navigate('/login')
-              setSuccess(false)
-            }, 2000)
+            // setTimeout(() => {
+            //   navigate('/login')
+            //   setSuccess(false)
+            // }, 2000)
           }
           if (result.error) {
             setRegisterError(true)
@@ -174,6 +175,17 @@ const Register = () => {
               />
             </CInputGroup>
             {registerError && <span className="text-red-400">{registerErrorValue}</span>}
+            {success && (
+              <CAlert color="success" className="d-flex align-items-center">
+                <CIcon
+                  icon={cilCheckCircle}
+                  className="flex-shrink-0 me-2"
+                  width={24}
+                  height={24}
+                />
+                <div>We’ve sent you an email with instructions.</div>
+              </CAlert>
+            )}
             <div className="d-grid">
               <CButton type="submit" className="button">
                 <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Create Account'}</span>
@@ -189,11 +201,11 @@ const Register = () => {
           <img src={img2} alt="" className="image-2" />
         </div>
       </div>
-      {success && (
+      {/* {success && (
         <CAlert color="success" className="success-alert uppercase">
           User Registration Successful! Please Login.
         </CAlert>
-      )}
+      )} */}
     </div>
   )
 }

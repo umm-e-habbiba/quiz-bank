@@ -86,7 +86,7 @@ const Dashboard = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.success) {
+        if (result.data) {
           setAllQuiz(result.data)
           setLastQuiz(result.data.slice(Math.max(result.data.length - 5, 0)))
         }

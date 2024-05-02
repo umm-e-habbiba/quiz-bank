@@ -86,7 +86,7 @@ const QuizLayout = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.success) {
+        if (result.data) {
           setAllQuestion(result.data)
         }
       })

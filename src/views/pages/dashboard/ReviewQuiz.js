@@ -76,7 +76,7 @@ const ReviewQuiz = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.success) {
+        if (result.data) {
           setAllQuestion(result.data.questions)
           setUsmleStep(result.data.usmleSteps)
           setUsmleCategory(result.data.USMLE)

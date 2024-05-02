@@ -116,7 +116,7 @@ const PreviousTests = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        if (result.success) {
+        if (result.data) {
           setAllQuiz(result.data)
         }
         setLoader(false)
