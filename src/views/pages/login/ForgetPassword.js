@@ -86,6 +86,7 @@ const ForgetPassword = () => {
     if (data.password == data.repeatPassword) {
       const myHeaders = new Headers()
       myHeaders.append('Content-Type', 'application/json')
+      myHeaders.append('Authorization', token)
 
       const raw = JSON.stringify({
         password: data.password,

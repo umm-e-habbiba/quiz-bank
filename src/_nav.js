@@ -43,48 +43,48 @@ const _nav = [
         name: 'Overall',
         to: '/quiz-performance',
       },
-      {
-        component: CNavItem,
-        name: 'Reports',
-        to: '/reports',
-      },
-      {
-        component: CNavItem,
-        name: 'Graphs',
-        to: '/graphs',
-      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Reports',
+      //   to: '/reports',
+      // },
+      // {
+      //   component: CNavItem,
+      //   name: 'Graphs',
+      //   to: '/graphs',
+      // },
     ],
   },
-  {
-    component: CNavItem,
-    name: 'Search',
-    to: '/search',
-    icon: <CIcon icon={cilMagnifyingGlass} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Notes',
-    to: '/notes',
-    icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'FlashCards',
-    to: '/flashcards',
-    icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'My Notebook',
-    to: '/my-notebook',
-    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Help',
-    to: '/help',
-    icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Search',
+  //   to: '/search',
+  //   icon: <CIcon icon={cilMagnifyingGlass} customClassName="nav-icon" />,
+  // },
+  // {
+  //   component: CNavItem,
+  //   name: 'Notes',
+  //   to: '/notes',
+  //   icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
+  // },
+  // {
+  //   component: CNavItem,
+  //   name: 'FlashCards',
+  //   to: '/flashcards',
+  //   icon: <CIcon icon={cilCreditCard} customClassName="nav-icon" />,
+  // },
+  // {
+  //   component: CNavItem,
+  //   name: 'My Notebook',
+  //   to: '/my-notebook',
+  //   icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+  // },
+  // {
+  //   component: CNavItem,
+  //   name: 'Help',
+  //   to: '/help',
+  //   icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
+  // },
 ]
 
 export default _nav
