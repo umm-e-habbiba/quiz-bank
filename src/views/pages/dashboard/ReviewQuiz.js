@@ -29,6 +29,7 @@ const ReviewQuiz = () => {
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [quizScore, setQuizScore] = useState(0)
+  const [fontSize, setFontSize] = useState(16)
 
   const {
     register,
@@ -113,6 +114,8 @@ const ReviewQuiz = () => {
         showQues={showQues}
         totalQues={allQuestion.length}
         filteredArray={allQuestion}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
       />
       <div className="wrapper relative d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
         <Link to="/previous-tests" className="fixed right-5 top-20 z-10">
@@ -121,7 +124,7 @@ const ReviewQuiz = () => {
         {/* Questions */}
         <CRow>
           <CCol md={6} className="border-r-2 border-solid">
-            <div className="p-10">
+            <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
               {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <div className="mb-5">
                   <p className="mb-1">
@@ -365,7 +368,7 @@ const ReviewQuiz = () => {
             </div>
           </CCol>
           <CCol md={6}>
-            <div className="p-10">
+            <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
               <h5 className="mb-1">Explaination</h5>
               <p className="mb-1">
                 {allQuestion[currentQuestion]
