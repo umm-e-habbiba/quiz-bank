@@ -102,28 +102,28 @@ h3 {
   height: 38px;
   background: none;
   padding: 3px 42px 0px;
-  color: #666;
+  color: #333 !important;
   font-family: 'Muli-SemiBold';
   font-size: 16px;
 }
 .form-input::-webkit-input-placeholder {
   font-size: 14px;
-  color: #999;
+  color: #333 !important;
   transform: translateY(1px);
 }
 .form-input::-moz-placeholder {
   font-size: 14px;
-  color: #999;
+  color: #333 !important;
   transform: translateY(1px);
 }
 .form-input:-ms-input-placeholder {
   font-size: 14px;
-  color: #999;
+  color: #333 !important;
   transform: translateY(1px);
 }
 .form-input:-moz-placeholder {
   font-size: 14px;
-  color: #999;
+  color: #333 !important;
   transform: translateY(1px);
 }
 .form-input:focus {

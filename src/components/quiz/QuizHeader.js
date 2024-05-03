@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import {
   CHeader,
   CHeaderNav,
@@ -20,7 +20,7 @@ import {
   CAlert,
   CPopover,
 } from '@coreui/react'
-import { HiMenuAlt4 } from 'react-icons/hi'
+import { HiMenuAlt4, HiHome } from 'react-icons/hi'
 import {
   BiLeftArrow,
   BiRightArrow,
@@ -207,7 +207,10 @@ const QuizHeader = ({
     <>
       <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
-          <HiMenuAlt4 className="quiz-icons cursor-pointer mr-2" />
+          <Link to="/">
+            <HiHome className="quiz-icons cursor-pointer mr-2" />
+          </Link>
+
           {showQues && (
             <div className="flex justify-start items-center">
               <h1 className="mr-5 text-2xl">
@@ -298,11 +301,13 @@ const QuizHeader = ({
         </CHeaderNav>
       </CHeader>{' '}
       {showCalculator && (
-        <div className="fixed bottom-0 right-0">
+        <div className="fixed bottom-0 right-0 calculator-index">
           <ReactCalculator />
         </div>
       )}
-      {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}
+      {showNotes && (
+        <ReactStickies notes={notes} onChange={onChange} onSave={onSave} className="z-20" />
+      )}
       {/* comment modal */}
       <CModal
         alignment="center"

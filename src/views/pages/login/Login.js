@@ -147,7 +147,7 @@ const Login = () => {
                 invalid={errors.password ? true : false}
               />
             </CInputGroup>
-            <Link to="/forget-password" className="px-0">
+            <Link to="/forget-password" className="px-0 text-black">
               Forgot password?
             </Link>
             <br />
@@ -166,7 +166,7 @@ const Login = () => {
                 <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Login'}</span>
               </CButton>
             </div>
-            <p className="mt-2 text-center text-xs">
+            <p className="mt-2 text-center text-xs text-black">
               Dont have an account?{' '}
               <Link to="/register" className="font-bold">
                 Register

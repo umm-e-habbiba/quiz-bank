@@ -183,7 +183,7 @@ const Register = () => {
                   width={24}
                   height={24}
                 />
-                <div>We’ve sent you an email with instructions.</div>
+                <div>We’ve sent you an email with instructions. Kindly check your email.</div>
               </CAlert>
             )}
             <div className="d-grid">

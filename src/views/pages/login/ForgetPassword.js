@@ -177,7 +177,7 @@ const ForgetPassword = () => {
               </>
             ) : (
               <>
-                <p className="text-center my-2 text-base">
+                <p className="text-center my-2 text-base text-black">
                   If the account exist, we will email you instructions to reset the password.
                 </p>
                 {emailSent ? (
@@ -188,7 +188,7 @@ const ForgetPassword = () => {
                       width={24}
                       height={24}
                     />
-                    <div>We’ve sent you an email with instructions.</div>
+                    <div>We’ve sent you an email with instructions. Kindly check your email.</div>
                   </CAlert>
                 ) : (
                   <CInputGroup className="mb-3 form-holder">
@@ -215,7 +215,7 @@ const ForgetPassword = () => {
                 </div>
               </>
             )}
-            <p className="mt-2 text-center text-xs">
+            <p className="mt-2 text-center text-xs text-black">
               Return to{' '}
               <Link to="/login" className="font-bold">
                 Login

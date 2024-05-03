@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
-import { useNavigate, NavLink } from 'react-router-dom'
+import { useNavigate, NavLink, Link } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import CIcon from '@coreui/icons-react'
 import { cilBarChart, cilCalendar, cilClock } from '@coreui/icons'
@@ -114,7 +114,10 @@ const ReviewQuiz = () => {
         totalQues={allQuestion.length}
         filteredArray={allQuestion}
       />
-      <div className="wrapper d-flex flex-column min-h-[77vh] overflow-x-hidden">
+      <div className="wrapper relative d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
+        <Link to="/previous-tests" className="fixed right-5 top-20 z-10">
+          <CButton color="danger">End Review</CButton>
+        </Link>
         {/* Questions */}
         <CRow>
           <CCol md={6} className="border-r-2 border-solid">
@@ -326,7 +329,7 @@ const ReviewQuiz = () => {
                       ) : (
                         <>
                           <p className="text-red-600">Incorrect</p>
-                          <p className="text-xs">Correct answer</p>
+                          <p className="text-xs text-black">Correct answer</p>
                           <p className="text-black">
                             {allQuestion[currentQuestion].questionId.correctAnswer}
                           </p>
@@ -422,12 +425,12 @@ const ReviewQuiz = () => {
               <hr />
               <CRow className="mt-3">
                 <CCol md={4} className="d-flex justify-start flex-col">
-                  <p className="text-black font-bold">Usmle Step</p>
-                  <p className="text-gray-800 text-xs">{usmleStep}</p>
+                  <p className="font-bold">Usmle Step</p>
+                  <p className="text-xs">{usmleStep}</p>
                 </CCol>
                 <CCol md={4} className="d-flex justify-start flex-col">
-                  <p className="text-black font-bold">Usmle Category</p>
-                  <p className="text-gray-800 text-xs">{usmleCategory}</p>
+                  <p className="font-bold">Usmle Category</p>
+                  <p className="text-xs">{usmleCategory}</p>
                 </CCol>
               </CRow>
             </div>

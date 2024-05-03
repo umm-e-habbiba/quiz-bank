@@ -13,6 +13,9 @@
 // If you want to add custom CSS you can put it here
 @import 'custom';
 
+.quiz-wrapper {
+  height: calc(100vh - 80px - 80px);
+}
 .sidebar-brand {
   font-size: 20px;
   display: flex;
@@ -43,9 +46,16 @@
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 
 // calculator styling
+.calculator-index {
+  z-index: 10 !important;
+}
+
 .css-h2okw {
   width: 300px !important;
   height: 400px !important;
@@ -63,6 +73,9 @@
 }
 
 // notes style
+.react-stickies-wrapper {
+  z-index: 20;
+}
 .react-stickies-wrapper .add {
   //   display: none !important;
 }

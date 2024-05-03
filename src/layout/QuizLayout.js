@@ -8,6 +8,8 @@ import { step1Categories, step2Categories, step3Categories } from 'src/usmleData
 import { API_URL } from 'src/store'
 import Highlighter from 'react-highlight-words'
 import image from '../assets/images/angular.jpg'
+import CIcon from '@coreui/icons-react'
+import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
 const QuizLayout = () => {
   const navigate = useNavigate()
   const [intro, setIntro] = useState(true)
@@ -182,7 +184,6 @@ const QuizLayout = () => {
       selectedOption: selectedOption,
     }
     setSaveQuestionArray((prevQues) => [...prevQues, questionObj])
-    setSelectedOption('')
     console.log('save question array', saveQuestionArray)
     // saveQuiz(id)
   }
@@ -237,10 +238,23 @@ const QuizLayout = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
+        setSelectedOption('')
       })
       .catch((error) => {
         console.error(error)
       })
+  }
+  const gotoselectedstep = () => {
+    setShowTotal(false)
+    if (usmleStep == '1') {
+      setStep1(true)
+    }
+    if (usmleStep == '2') {
+      setStep2(true)
+    }
+    if (usmleStep == '3') {
+      setStep3(true)
+    }
   }
   return (
     <div>
@@ -253,13 +267,13 @@ const QuizLayout = () => {
         fontSize={fontSize}
         setFontSize={setFontSize}
       />
-      <div className="wrapper d-flex flex-column min-h-[77vh]">
+      <div className="wrapper d-flex flex-column quiz-wrapper overflow-y-auto">
         {/* tutorial */}
         {intro && (
           <div className="flex flex-col">
             <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mx-auto mt-20 mb-10">
               <h3 className="font-bold text-center text-3xl mb-3">Tutorial</h3>
-              <p className="text-center leading-6">
+              <p className="text-center leading-6 ">
                 Welcome to the USMLE Practice Question Bank Tutorial!
                 <br />
                 This tutorial will guide you through the features and
@@ -322,7 +336,7 @@ const QuizLayout = () => {
                 USMLE: <span className="font-bold">Step1</span>
               </CButton>
             </center>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
               {step1Categories.map((category, idx) => (
                 <div
                   key={idx}
@@ -333,6 +347,17 @@ const QuizLayout = () => {
                 </div>
               ))}
             </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep1(false)
+                setSteps(true)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
           </div>
         )}
         {/* USMLE STEP 2 */}
@@ -354,6 +379,17 @@ const QuizLayout = () => {
                 </div>
               ))}
             </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep1(true)
+                setStep2(false)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
           </div>
         )}
         {/* USMLE STEP 3 */}
@@ -375,6 +411,17 @@ const QuizLayout = () => {
                 </div>
               ))}
             </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep3(false)
+                setStep2(true)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
           </div>
         )}
         {/* Total Questions */}
@@ -393,9 +440,18 @@ const QuizLayout = () => {
                 feedback="Please enter number between 1 and 100"
                 invalid={errors.total ? true : false}
               />
-              <CButton color="primary" type="submit" className="mx-auto px-5 rounded-full mt-3">
-                Next
-              </CButton>
+              <div className="flex justify-center items-center mt-3">
+                <CButton
+                  color="secondary"
+                  className="px-5 rounded-full mr-3"
+                  onClick={gotoselectedstep}
+                >
+                  Back
+                </CButton>
+                <CButton color="primary" type="submit" className="px-5 rounded-full">
+                  Next
+                </CButton>
+              </div>
             </CForm>
           </div>
         )}
@@ -446,6 +502,9 @@ const QuizLayout = () => {
                     value={filteredQuestion[currentQuestion].optionOne}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                     className="form-check-input"
+                    checked={
+                      filteredQuestion[currentQuestion].optionOne == selectedOption ? true : false
+                    }
                   />
                   <label
                     className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
@@ -462,6 +521,9 @@ const QuizLayout = () => {
                     value={filteredQuestion[currentQuestion].optionTwo}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                     className="form-check-input"
+                    checked={
+                      filteredQuestion[currentQuestion].optionTwo == selectedOption ? true : false
+                    }
                   />
                   <label
                     className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
@@ -478,6 +540,9 @@ const QuizLayout = () => {
                     value={filteredQuestion[currentQuestion].optionThree}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                     className="form-check-input"
+                    checked={
+                      filteredQuestion[currentQuestion].optionThree == selectedOption ? true : false
+                    }
                   />
                   <label
                     className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
@@ -494,6 +559,9 @@ const QuizLayout = () => {
                     value={filteredQuestion[currentQuestion].optionFour}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                     className="form-check-input"
+                    checked={
+                      filteredQuestion[currentQuestion].optionFour == selectedOption ? true : false
+                    }
                   />
                   <label
                     className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
@@ -510,6 +578,9 @@ const QuizLayout = () => {
                     value={filteredQuestion[currentQuestion].optionFive}
                     onChange={(e) => setSelectedOption(e.currentTarget.id)}
                     className="form-check-input"
+                    checked={
+                      filteredQuestion[currentQuestion].optionFive == selectedOption ? true : false
+                    }
                   />
                   <label
                     className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
@@ -527,6 +598,9 @@ const QuizLayout = () => {
                       value={filteredQuestion[currentQuestion].optionSix}
                       onChange={(e) => setSelectedOption(e.currentTarget.id)}
                       className="form-check-input"
+                      checked={
+                        filteredQuestion[currentQuestion].optionSix == selectedOption ? true : false
+                      }
                     />
                     <label
                       className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
