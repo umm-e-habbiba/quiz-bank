@@ -53,6 +53,10 @@ const QuizLayout = () => {
   })
 
   useEffect(() => {
+    console.log(highlightedText)
+    handleHighlight()
+  }, [highlightedText])
+  useEffect(() => {
     getAllQuest()
     const getToken = localStorage.getItem('token')
     if (getToken) {
@@ -215,19 +219,12 @@ const QuizLayout = () => {
 
   const handleHighlight = () => {
     const selectedText = window.getSelection().toString()
-    // if (!highlightedText.includes(selectedText)) {
-    //   setHighlightedText((prevText) => [...prevText, selectedText]) //adding to array because value doesnt exists
-    //   console.log('text highlighted')
-    // } else {
-    //   highlightedText.splice(highlightedText.indexOf(selectedText), 1) //deleting
-    //   console.log('text already highlighted')
-    // }
     if (highlightedText.includes(selectedText)) {
       highlightedText.splice(highlightedText.indexOf(selectedText), 1)
+      setHighlightedText(highlightedText)
       return
     }
     setHighlightedText((prevText) => [...prevText, selectedText])
-    // setHighlightedText((prevText) => [...prevText, selectedText])
     console.log(selectedText, '  ', highlightedText)
   }
 
@@ -490,6 +487,7 @@ const QuizLayout = () => {
                     autoEscape={true}
                     textToHighlight={filteredQuestion[currentQuestion].question}
                     onMouseUp={handleHighlight}
+                    onMouseOut={handleHighlight}
                   />
                 </CCol>
                 <CCol md={4}>
@@ -514,6 +512,7 @@ const QuizLayout = () => {
                         : ''
                     }
                     onMouseUp={handleHighlight}
+                    onMouseOut={handleHighlight}
                   />
                 </CCol>
               </CRow>
