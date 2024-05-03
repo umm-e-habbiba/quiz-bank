@@ -36,6 +36,7 @@ const ManageQuiz = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
+  const [detailModal, setDetailModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -376,10 +377,18 @@ const ManageQuiz = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell>
-                          {q.question.length > 100
-                            ? q.question.substring(0, 100) + '...'
-                            : q.question}
+                        <CTableHeaderCell className="cursor-pointer">
+                          <span
+                            id={q._id}
+                            onClick={(e) => {
+                              setDetailModal(true)
+                              setQuestionId(e.currentTarget.id)
+                            }}
+                          >
+                            {q.question.length > 100
+                              ? q.question.substring(0, 100) + '...'
+                              : q.question}
+                          </span>
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
@@ -831,6 +840,138 @@ const ManageQuiz = () => {
             </CButton>
             <CButton color="primary" onClick={deleteQuestion} disabled={loading ? true : false}>
               {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
+            </CButton>
+          </CModalFooter>
+        </CModal>
+        {/* quiz detail modal */}
+        <CModal
+          alignment="center"
+          visible={detailModal}
+          onClose={() => {
+            setDetailModal(false)
+            reset({})
+            setImage('')
+            setOp6('')
+            setOp6Exp('')
+          }}
+          aria-labelledby="VerticallyCenteredExample"
+          size="lg"
+        >
+          <CModalHeader>
+            <CModalTitle id="VerticallyCenteredExample">Question Details</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Question</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('question')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Options</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>A: {getValues('op1')}</span>
+                <br />
+                <span>B: {getValues('op2')}</span>
+                <br />
+                <span>C: {getValues('op3')}</span>
+                <br />
+                <span>D: {getValues('op4')}</span>
+                <br />
+                <span>E: {getValues('op5')}</span>
+                {op6 && (
+                  <>
+                    <br />
+                    <span>F: {op6}</span>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Step</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('usmleStep')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Category</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('usmleCategory')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Explanation</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('explaination')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Explained Options</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>A: {getValues('op1Explain')}</span>
+                <br />
+                <span>B: {getValues('op2Explain')}</span>
+                <br />
+                <span>C: {getValues('op3Explain')}</span>
+                <br />
+                <span>D: {getValues('op4Explain')}</span>
+                <br />
+                <span>E: {getValues('op5Explain')}</span>
+                {op6Exp && (
+                  <>
+                    <br />
+                    <span>F: {op6Exp}</span>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Answer</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('correct')}</span>
+              </CCol>
+            </CRow>
+            {image && (
+              <CRow>
+                <CCol md={2}>
+                  <strong>Image</strong>
+                </CCol>
+                <CCol md={10}>
+                  <img
+                    src={`${API_URL}uploads/${image}`}
+                    alt="image"
+                    className="w-52 h-36 rounded-full"
+                  />
+                </CCol>
+              </CRow>
+            )}
+          </CModalBody>
+          <CModalFooter>
+            <CButton
+              color="secondary"
+              onClick={() => {
+                setDetailModal(false)
+                reset({})
+                setImage('')
+                setOp6('')
+                setOp6Exp('')
+              }}
+            >
+              Close
             </CButton>
           </CModalFooter>
         </CModal>

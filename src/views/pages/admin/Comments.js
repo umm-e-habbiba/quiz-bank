@@ -38,6 +38,7 @@ const Comments = () => {
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [detailModal, setDetailModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [questionId, setQuestionId] = useState('')
@@ -58,7 +59,6 @@ const Comments = () => {
   const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [comments, setComments] = useState([])
-  const [commentModal, setCommentModal] = useState(false)
   const role = localStorage.getItem('user') || ''
   const {
     register,
@@ -298,10 +298,19 @@ const Comments = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell>
-                          {q.question.length > 100
-                            ? q.question.substring(0, 100) + '...'
-                            : q.question}
+                        <CTableHeaderCell className="cursor-pointer">
+                          <span
+                            id={q._id}
+                            onClick={(e) => {
+                              setDetailModal(true)
+                              setComments(q.comments)
+                              setQuestionId(e.currentTarget.id)
+                            }}
+                          >
+                            {q.question.length > 100
+                              ? q.question.substring(0, 100) + '...'
+                              : q.question}
+                          </span>
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
                         <CTableDataCell>{q.USMLE}</CTableDataCell>
@@ -315,20 +324,8 @@ const Comments = () => {
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                         <CTableDataCell className="flex justify-center items-center">
                           <CButton
-                            color="success"
-                            className="text-white mr-1 my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setCommentModal(true)
-                              setComments(q.comments)
-                            }}
-                            title="View Comments"
-                          >
-                            <CIcon icon={cilCommentBubble} />
-                          </CButton>
-                          <CButton
                             color="info"
-                            className="text-white mr-3 my-2"
+                            className="text-white mr-1 my-2"
                             id={q._id}
                             onClick={(e) => {
                               setAddModal(true)
@@ -760,40 +757,154 @@ const Comments = () => {
             </CButton>
           </CModalFooter>
         </CModal>
-        {/* comment Modal */}
+        {/* quiz detail modal */}
         <CModal
           alignment="center"
-          visible={commentModal}
+          visible={detailModal}
           onClose={() => {
-            setCommentModal(false)
+            setDetailModal(false)
+            reset({})
+            setImage('')
+            setOp6('')
+            setOp6Exp('')
             setComments([])
           }}
           aria-labelledby="VerticallyCenteredExample"
+          size="lg"
         >
           <CModalHeader>
-            <CModalTitle id="VerticallyCenteredExample">Comments</CModalTitle>
+            <CModalTitle id="VerticallyCenteredExample">Question Details</CModalTitle>
           </CModalHeader>
           <CModalBody>
-            Comments received for this question
-            <ul className="mt-2">
-              {comments && comments.length > 0
-                ? comments.map((c, i) => (
-                    <>
-                      <li className="flex justify-between items-center py-2" key={i}>
-                        <span>{c.commentText}</span>
-                        <strong>{moment(c.createdAt).format('MMMM Do YYYY')}</strong>
-                      </li>
-                      <hr />
-                    </>
-                  ))
-                : ''}
-            </ul>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Question</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('question')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Options</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>A: {getValues('op1')}</span>
+                <br />
+                <span>B: {getValues('op2')}</span>
+                <br />
+                <span>C: {getValues('op3')}</span>
+                <br />
+                <span>D: {getValues('op4')}</span>
+                <br />
+                <span>E: {getValues('op5')}</span>
+                {op6 && (
+                  <>
+                    <br />
+                    <span>F: {op6}</span>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Step</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('usmleStep')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Category</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('usmleCategory')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Explanation</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('explaination')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Explained Options</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>A: {getValues('op1Explain')}</span>
+                <br />
+                <span>B: {getValues('op2Explain')}</span>
+                <br />
+                <span>C: {getValues('op3Explain')}</span>
+                <br />
+                <span>D: {getValues('op4Explain')}</span>
+                <br />
+                <span>E: {getValues('op5Explain')}</span>
+                {op6Exp && (
+                  <>
+                    <br />
+                    <span>F: {op6Exp}</span>
+                  </>
+                )}
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Answer</strong>
+              </CCol>
+              <CCol md={10}>
+                <span>{getValues('correct')}</span>
+              </CCol>
+            </CRow>
+            <CRow className="mb-2">
+              <CCol md={2}>
+                <strong>Comments</strong>
+              </CCol>
+              <CCol md={10}>
+                {comments && comments.length > 0
+                  ? comments.map((com, idx) => (
+                      <>
+                        <span key={idx}>{com.commentText}</span>
+                        <br />
+                      </>
+                    ))
+                  : 'No comments received for this question'}
+              </CCol>
+            </CRow>
+            {image && (
+              <CRow>
+                <CCol md={2}>
+                  <strong>Image</strong>
+                </CCol>
+                <CCol md={10}>
+                  <img
+                    src={`${API_URL}uploads/${image}`}
+                    alt="image"
+                    className="w-52 h-36 rounded-full"
+                  />
+                </CCol>
+              </CRow>
+            )}
           </CModalBody>
-          {/* <CModalFooter>
-            <CButton color="secondary" onClick={() => setCommentModal(false)}>
+          <CModalFooter>
+            <CButton
+              color="secondary"
+              onClick={() => {
+                setDetailModal(false)
+                reset({})
+                setImage('')
+                setOp6('')
+                setOp6Exp('')
+                setComments([])
+              }}
+            >
               Close
             </CButton>
-          </CModalFooter> */}
+          </CModalFooter>
         </CModal>
         {/* success alert */}
         {success && (
