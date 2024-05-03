@@ -161,7 +161,7 @@ const QuizHeader = ({
     console.log('comment', commentValue, 'ques id', questionId)
     setIsLoading(true)
     if (commentValue == '') {
-      setCommentError('Please enter your comment')
+      setCommentError('Please enter your feedback')
       setIsLoading(false)
     } else {
       const myHeaders = new Headers()
@@ -187,7 +187,7 @@ const QuizHeader = ({
             setCommentModal(false)
             setIsLoading(false)
             setSuccess(true)
-            setSuccessMsg('Comment sent successfully')
+            setSuccessMsg('Feedback sent successfully')
             setTimeout(() => {
               setSuccess(false)
               setSuccessMsg('')
@@ -316,18 +316,18 @@ const QuizHeader = ({
         aria-labelledby="VerticallyCenteredExample"
       >
         <CModalHeader>
-          <CModalTitle id="VerticallyCenteredExample">Add Comment</CModalTitle>
+          <CModalTitle id="VerticallyCenteredExample">Add Your Feedback</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm>
             <CRow className="mb-3">
               <CCol md={12}>
                 <CFormInput
-                  label="Comment"
+                  label="Feedback"
                   type="text"
                   id="comment"
                   value={commentValue}
-                  placeholder="Add your comment"
+                  placeholder="Enter your feedback here"
                   onChange={(e) => setCommentValue(e.target.value)}
                 />
               </CCol>
@@ -341,7 +341,7 @@ const QuizHeader = ({
             Close
           </CButton>
           <CButton color="primary" onClick={addComment} disabled={loading ? true : false}>
-            {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
+            {loading ? <CSpinner color="light" size="sm" /> : 'Send'}
           </CButton>
         </CModalFooter>
       </CModal>

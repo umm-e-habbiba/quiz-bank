@@ -98,16 +98,27 @@ const QuizLayout = () => {
   }
 
   const setQues = (data) => {
-    console.log(data)
-    setShowQues(true)
-    setIntro(false)
-    setSteps(false)
-    setStep1(false)
-    setStep2(false)
-    setStep3(false)
-    setShowTotal(false)
-    console.log(filteredQuestion)
-    // fetchQuestion()
+    console.log(data.total, filteredQuestion.length)
+    if (data.total > filteredQuestion.length) {
+      setError(true)
+      setErrorMsg(
+        `${data.total} questions are not available. Kindly enter less number of questions`,
+      )
+      setTimeout(() => {
+        setError(false)
+        setErrorMsg('')
+      }, 3000)
+    } else {
+      setShowQues(true)
+      setIntro(false)
+      setSteps(false)
+      setStep1(false)
+      setStep2(false)
+      setStep3(false)
+      setShowTotal(false)
+      console.log(filteredQuestion)
+      // fetchQuestion()
+    }
   }
 
   const fetchQuestion = (step, value) => {
@@ -204,8 +215,20 @@ const QuizLayout = () => {
 
   const handleHighlight = () => {
     const selectedText = window.getSelection().toString()
+    // if (!highlightedText.includes(selectedText)) {
+    //   setHighlightedText((prevText) => [...prevText, selectedText]) //adding to array because value doesnt exists
+    //   console.log('text highlighted')
+    // } else {
+    //   highlightedText.splice(highlightedText.indexOf(selectedText), 1) //deleting
+    //   console.log('text already highlighted')
+    // }
+    if (highlightedText.includes(selectedText)) {
+      highlightedText.splice(highlightedText.indexOf(selectedText), 1)
+      return
+    }
     setHighlightedText((prevText) => [...prevText, selectedText])
-    console.log(selectedText, '   ', highlightedText)
+    // setHighlightedText((prevText) => [...prevText, selectedText])
+    console.log(selectedText, '  ', highlightedText)
   }
 
   const saveQuiz = () => {
@@ -458,7 +481,7 @@ const QuizLayout = () => {
         {/* Questions */}
         {showQues && (
           <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
-            {filteredQuestion[currentQuestion].image ? (
+            {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
               <CRow className="mb-5">
                 <CCol md={8}>
                   <Highlighter
@@ -485,7 +508,11 @@ const QuizLayout = () => {
                     highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
                     searchWords={highlightedText.length > 0 ? highlightedText : []}
                     autoEscape={true}
-                    textToHighlight={filteredQuestion[currentQuestion].question}
+                    textToHighlight={
+                      filteredQuestion[currentQuestion]
+                        ? filteredQuestion[currentQuestion].question
+                        : ''
+                    }
                     onMouseUp={handleHighlight}
                   />
                 </CCol>
@@ -494,121 +521,139 @@ const QuizLayout = () => {
             <div></div>
             <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}>
               <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    id={filteredQuestion[currentQuestion].optionOne}
-                    name={currentQuestion}
-                    value={filteredQuestion[currentQuestion].optionOne}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                    className="form-check-input"
-                    checked={
-                      filteredQuestion[currentQuestion].optionOne == selectedOption ? true : false
-                    }
-                  />
-                  <label
-                    className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
-                    onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
-                  >
-                    A: {filteredQuestion[currentQuestion].optionOne}
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    id={filteredQuestion[currentQuestion].optionTwo}
-                    name={currentQuestion}
-                    value={filteredQuestion[currentQuestion].optionTwo}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                    className="form-check-input"
-                    checked={
-                      filteredQuestion[currentQuestion].optionTwo == selectedOption ? true : false
-                    }
-                  />
-                  <label
-                    className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
-                    onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
-                  >
-                    B: {filteredQuestion[currentQuestion].optionTwo}
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    id={filteredQuestion[currentQuestion].optionThree}
-                    name={currentQuestion}
-                    value={filteredQuestion[currentQuestion].optionThree}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                    className="form-check-input"
-                    checked={
-                      filteredQuestion[currentQuestion].optionThree == selectedOption ? true : false
-                    }
-                  />
-                  <label
-                    className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
-                    onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
-                  >
-                    C: {filteredQuestion[currentQuestion].optionThree}
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    id={filteredQuestion[currentQuestion].optionFour}
-                    name={currentQuestion}
-                    value={filteredQuestion[currentQuestion].optionFour}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                    className="form-check-input"
-                    checked={
-                      filteredQuestion[currentQuestion].optionFour == selectedOption ? true : false
-                    }
-                  />
-                  <label
-                    className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
-                    onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
-                  >
-                    D: {filteredQuestion[currentQuestion].optionFour}
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    id={filteredQuestion[currentQuestion].optionFive}
-                    name={currentQuestion}
-                    value={filteredQuestion[currentQuestion].optionFive}
-                    onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                    className="form-check-input"
-                    checked={
-                      filteredQuestion[currentQuestion].optionFive == selectedOption ? true : false
-                    }
-                  />
-                  <label
-                    className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
-                    onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
-                  >
-                    E: {filteredQuestion[currentQuestion].optionFive}
-                  </label>
-                </div>
-                {filteredQuestion[currentQuestion].optionSix ? (
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      id={filteredQuestion[currentQuestion].optionSix}
-                      name={currentQuestion}
-                      value={filteredQuestion[currentQuestion].optionSix}
-                      onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                      className="form-check-input"
-                      checked={
-                        filteredQuestion[currentQuestion].optionSix == selectedOption ? true : false
-                      }
-                    />
-                    <label
-                      className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
-                      onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
-                    >
-                      F: {filteredQuestion[currentQuestion].optionSix}
-                    </label>
-                  </div>
+                {filteredQuestion[currentQuestion] ? (
+                  <>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={filteredQuestion[currentQuestion].optionOne}
+                        name={currentQuestion}
+                        value={filteredQuestion[currentQuestion].optionOne}
+                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        className="form-check-input"
+                        checked={
+                          filteredQuestion[currentQuestion].optionOne == selectedOption
+                            ? true
+                            : false
+                        }
+                      />
+                      <label
+                        className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
+                        onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
+                      >
+                        A: {filteredQuestion[currentQuestion].optionOne}
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={filteredQuestion[currentQuestion].optionTwo}
+                        name={currentQuestion}
+                        value={filteredQuestion[currentQuestion].optionTwo}
+                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        className="form-check-input"
+                        checked={
+                          filteredQuestion[currentQuestion].optionTwo == selectedOption
+                            ? true
+                            : false
+                        }
+                      />
+                      <label
+                        className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
+                        onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
+                      >
+                        B: {filteredQuestion[currentQuestion].optionTwo}
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={filteredQuestion[currentQuestion].optionThree}
+                        name={currentQuestion}
+                        value={filteredQuestion[currentQuestion].optionThree}
+                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        className="form-check-input"
+                        checked={
+                          filteredQuestion[currentQuestion].optionThree == selectedOption
+                            ? true
+                            : false
+                        }
+                      />
+                      <label
+                        className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
+                        onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
+                      >
+                        C: {filteredQuestion[currentQuestion].optionThree}
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={filteredQuestion[currentQuestion].optionFour}
+                        name={currentQuestion}
+                        value={filteredQuestion[currentQuestion].optionFour}
+                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        className="form-check-input"
+                        checked={
+                          filteredQuestion[currentQuestion].optionFour == selectedOption
+                            ? true
+                            : false
+                        }
+                      />
+                      <label
+                        className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
+                        onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
+                      >
+                        D: {filteredQuestion[currentQuestion].optionFour}
+                      </label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={filteredQuestion[currentQuestion].optionFive}
+                        name={currentQuestion}
+                        value={filteredQuestion[currentQuestion].optionFive}
+                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        className="form-check-input"
+                        checked={
+                          filteredQuestion[currentQuestion].optionFive == selectedOption
+                            ? true
+                            : false
+                        }
+                      />
+                      <label
+                        className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
+                        onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
+                      >
+                        E: {filteredQuestion[currentQuestion].optionFive}
+                      </label>
+                    </div>
+                    {filteredQuestion[currentQuestion].optionSix ? (
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          id={filteredQuestion[currentQuestion].optionSix}
+                          name={currentQuestion}
+                          value={filteredQuestion[currentQuestion].optionSix}
+                          onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                          className="form-check-input"
+                          checked={
+                            filteredQuestion[currentQuestion].optionSix == selectedOption
+                              ? true
+                              : false
+                          }
+                        />
+                        <label
+                          className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
+                          onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
+                        >
+                          F: {filteredQuestion[currentQuestion].optionSix}
+                        </label>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </>
                 ) : (
                   ''
                 )}
