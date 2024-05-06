@@ -1,4 +1,17 @@
-import { CButton, CForm, CFormCheck, CFormInput, CAlert, CRow, CCol } from '@coreui/react'
+import {
+  CButton,
+  CForm,
+  CFormCheck,
+  CFormInput,
+  CAlert,
+  CRow,
+  CCol,
+  CModal,
+  CModalBody,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
+} from '@coreui/react'
 import React, { useState, useEffect } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
@@ -10,13 +23,15 @@ import Highlighter from 'react-highlight-words'
 import image from '../assets/images/angular.jpg'
 import CIcon from '@coreui/icons-react'
 import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
+import { RiEyeLine } from 'react-icons/ri'
 const QuizLayout = () => {
   const navigate = useNavigate()
-  const [intro, setIntro] = useState(true)
-  const [steps, setSteps] = useState(false)
+  const [intro, setIntro] = useState(false)
+  const [steps, setSteps] = useState(true)
   const [step1, setStep1] = useState(false)
   const [step2, setStep2] = useState(false)
   const [step3, setStep3] = useState(false)
+  const [detailModal, setDetailModal] = useState(false)
   const [showQues, setShowQues] = useState(false)
   const [usmleCategory, setUsmleCategory] = useState('')
   const [usmleStep, setUsmleStep] = useState('')
@@ -25,6 +40,7 @@ const QuizLayout = () => {
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
   const [filteredQuestion, setFilteredQuestion] = useState([])
+  const [question, setQuestion] = useState('')
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedOption, setSelectedOption] = useState('')
   const [quizEnd, setQuizEnd] = useState(false)
@@ -53,9 +69,16 @@ const QuizLayout = () => {
   })
 
   useEffect(() => {
-    console.log(highlightedText)
-    handleHighlight()
-  }, [highlightedText])
+    if (filteredQuestion[currentQuestion]) {
+      setQuestion(filteredQuestion[currentQuestion].question)
+    }
+  }, [currentQuestion, filteredQuestion])
+
+  // useEffect(() => {
+  //   console.log(highlightedText)
+  //   handleHighlight()
+  // }, [highlightedText])
+
   useEffect(() => {
     getAllQuest()
     const getToken = localStorage.getItem('token')
@@ -146,6 +169,7 @@ const QuizLayout = () => {
         const filterUsmle = filterSteps.filter((ques) => ques.USMLE == value)
         if (filterUsmle.length > 0) {
           setFilteredQuestion(filterUsmle)
+
           setIntro(false)
           setSteps(false)
           setStep1(false)
@@ -184,32 +208,45 @@ const QuizLayout = () => {
     }
   }
 
-  const handleFormSubmit = (e, id) => {
-    e.preventDefault()
+  const handleFormSubmit = (e, id, value) => {
+    // e.preventDefault()
     setOpt1Marked(false)
     setOpt2Marked(false)
     setOpt3Marked(false)
     setOpt4Marked(false)
     setOpt5Marked(false)
     setOpt6Marked(false)
-    checkAnswer()
-    handleNextQuestion()
-    const questionObj = {
-      questionId: id,
-      selectedOption: selectedOption,
+
+    const already = saveQuestionArray.filter((q) => q.questionId == id)
+    console.log('already', already)
+    if (already.length > 0) {
+      checkAnswer(value)
+      const valueIndex = saveQuestionArray.findIndex((obj) => obj.questionId == id)
+      saveQuestionArray[valueIndex].selectedOption = value
+      console.log('already present', valueIndex)
+      setSaveQuestionArray((prevQues) => [...prevQues])
+    } else {
+      console.log('not present')
+      checkAnswer(value)
+      // handleNextQuestion()
+      const questionObj = {
+        questionId: id,
+        selectedOption: value,
+      }
+      setSaveQuestionArray((prevQues) => [...prevQues, questionObj])
     }
-    setSaveQuestionArray((prevQues) => [...prevQues, questionObj])
-    console.log('save question array', saveQuestionArray)
+    // console.log('selected option', selectedOption)
     // saveQuiz(id)
   }
 
-  const checkAnswer = () => {
-    if (selectedOption == filteredQuestion[currentQuestion].correctAnswer) {
+  const checkAnswer = (value) => {
+    if (value == filteredQuestion[currentQuestion].correctAnswer) {
       setQuizScore(quizScore + 1)
     }
   }
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = (e) => {
+    e.preventDefault()
     if (currentQuestion + 1 < getValues('total')) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
@@ -218,14 +255,31 @@ const QuizLayout = () => {
   }
 
   const handleHighlight = () => {
-    const selectedText = window.getSelection().toString()
-    if (highlightedText.includes(selectedText)) {
-      highlightedText.splice(highlightedText.indexOf(selectedText), 1)
-      setHighlightedText(highlightedText)
-      return
+    if (filteredQuestion[currentQuestion]) {
+      const replacedText = question.replace(
+        window.getSelection().toString(),
+        `<div className="text-red-700">${window.getSelection().toString()}</div>`,
+      )
+      // const replacedText = question.replace(
+      //   window.getSelection().toString(),
+      //   `<div className="text-red-700">${window.getSelection().toString()}</div>`,
+      // )
+      console.log(replacedText)
+      // setQuestion(replacedText)
     }
-    setHighlightedText((prevText) => [...prevText, selectedText])
-    console.log(selectedText, '  ', highlightedText)
+    // const content = textToRepace.replace(window.getSelection().toString(), `<div className="text-red-700">${window.getSelection().toString()}</div>`)
+    //     const selectedText = window.getSelection().toString()
+    // let newString = originalString
+    // .replace("color", "colour")
+    // .replace("JS", "JavaScript");
+    // if (highlightedText.includes(selectedText)) {
+    //   console.log('text entered')
+    //   highlightedText.splice(highlightedText.indexOf(selectedText), 1)
+    //   setHighlightedText(highlightedText)
+    //   return
+    // }
+    // setHighlightedText((prevText) => [...prevText, selectedText])
+    // // console.log(selectedText, '  ', highlightedText)
   }
 
   const saveQuiz = () => {
@@ -360,7 +414,7 @@ const QuizLayout = () => {
               {step1Categories.map((category, idx) => (
                 <div
                   key={idx}
-                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                   onClick={() => fetchQuestion(usmleStep, category)}
                 >
                   {category}
@@ -392,7 +446,7 @@ const QuizLayout = () => {
               {step2Categories.map((category, idx) => (
                 <div
                   key={idx}
-                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200  border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                   onClick={() => fetchQuestion(usmleStep, category)}
                 >
                   {category}
@@ -424,7 +478,7 @@ const QuizLayout = () => {
               {step3Categories.map((category, idx) => (
                 <div
                   key={idx}
-                  className="bg-gray-200 border-3 border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200  border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                   onClick={() => fetchQuestion(usmleStep, category)}
                 >
                   {category}
@@ -481,14 +535,20 @@ const QuizLayout = () => {
             {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
               <CRow className="mb-5">
                 <CCol md={8}>
-                  <Highlighter
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: question,
+                    }}
+                    onMouseUp={handleHighlight()}
+                  ></p>
+                  {/* <Highlighter
                     highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
                     searchWords={highlightedText.length > 0 ? highlightedText : []}
                     autoEscape={true}
                     textToHighlight={filteredQuestion[currentQuestion].question}
                     onMouseUp={handleHighlight}
                     onMouseOut={handleHighlight}
-                  />
+                  /> */}
                 </CCol>
                 <CCol md={4}>
                   <img
@@ -502,7 +562,13 @@ const QuizLayout = () => {
             ) : (
               <CRow className="mb-5">
                 <CCol md={12}>
-                  <Highlighter
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: question,
+                    }}
+                    onMouseUp={handleHighlight()}
+                  ></p>
+                  {/* <Highlighter
                     highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
                     searchWords={highlightedText.length > 0 ? highlightedText : []}
                     autoEscape={true}
@@ -513,12 +579,13 @@ const QuizLayout = () => {
                     }
                     onMouseUp={handleHighlight}
                     onMouseOut={handleHighlight}
-                  />
+                  /> */}
                 </CCol>
               </CRow>
             )}
             <div></div>
-            <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}>
+            <CForm onSubmit={(e) => handleNextQuestion(e)}>
+              {/* <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}> */}
               <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
                 {filteredQuestion[currentQuestion] ? (
                   <>
@@ -528,7 +595,15 @@ const QuizLayout = () => {
                         id={filteredQuestion[currentQuestion].optionOne}
                         name={currentQuestion}
                         value={filteredQuestion[currentQuestion].optionOne}
-                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        onChange={(e) => {
+                          handleFormSubmit(
+                            e,
+                            filteredQuestion[currentQuestion]._id,
+                            filteredQuestion[currentQuestion].optionOne,
+                          )
+                          setSelectedOption(e.currentTarget.id)
+                        }}
                         className="form-check-input"
                         checked={
                           filteredQuestion[currentQuestion].optionOne == selectedOption
@@ -540,7 +615,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
                       >
-                        A: {filteredQuestion[currentQuestion].optionOne}
+                        A {filteredQuestion[currentQuestion].optionOne}
                       </label>
                     </div>
                     <div className="form-check">
@@ -549,7 +624,15 @@ const QuizLayout = () => {
                         id={filteredQuestion[currentQuestion].optionTwo}
                         name={currentQuestion}
                         value={filteredQuestion[currentQuestion].optionTwo}
-                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        onChange={(e) => {
+                          handleFormSubmit(
+                            e,
+                            filteredQuestion[currentQuestion]._id,
+                            filteredQuestion[currentQuestion].optionTwo,
+                          )
+                          setSelectedOption(e.currentTarget.id)
+                        }}
                         className="form-check-input"
                         checked={
                           filteredQuestion[currentQuestion].optionTwo == selectedOption
@@ -561,7 +644,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
                       >
-                        B: {filteredQuestion[currentQuestion].optionTwo}
+                        B {filteredQuestion[currentQuestion].optionTwo}
                       </label>
                     </div>
                     <div className="form-check">
@@ -570,7 +653,15 @@ const QuizLayout = () => {
                         id={filteredQuestion[currentQuestion].optionThree}
                         name={currentQuestion}
                         value={filteredQuestion[currentQuestion].optionThree}
-                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        onChange={(e) => {
+                          handleFormSubmit(
+                            e,
+                            filteredQuestion[currentQuestion]._id,
+                            filteredQuestion[currentQuestion].optionThree,
+                          )
+                          setSelectedOption(e.currentTarget.id)
+                        }}
                         className="form-check-input"
                         checked={
                           filteredQuestion[currentQuestion].optionThree == selectedOption
@@ -582,7 +673,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
                       >
-                        C: {filteredQuestion[currentQuestion].optionThree}
+                        C {filteredQuestion[currentQuestion].optionThree}
                       </label>
                     </div>
                     <div className="form-check">
@@ -591,7 +682,15 @@ const QuizLayout = () => {
                         id={filteredQuestion[currentQuestion].optionFour}
                         name={currentQuestion}
                         value={filteredQuestion[currentQuestion].optionFour}
-                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        onChange={(e) => {
+                          handleFormSubmit(
+                            e,
+                            filteredQuestion[currentQuestion]._id,
+                            filteredQuestion[currentQuestion].optionFour,
+                          )
+                          setSelectedOption(e.currentTarget.id)
+                        }}
                         className="form-check-input"
                         checked={
                           filteredQuestion[currentQuestion].optionFour == selectedOption
@@ -603,7 +702,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
                       >
-                        D: {filteredQuestion[currentQuestion].optionFour}
+                        D {filteredQuestion[currentQuestion].optionFour}
                       </label>
                     </div>
                     <div className="form-check">
@@ -612,7 +711,15 @@ const QuizLayout = () => {
                         id={filteredQuestion[currentQuestion].optionFive}
                         name={currentQuestion}
                         value={filteredQuestion[currentQuestion].optionFive}
-                        onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                        onChange={(e) => {
+                          handleFormSubmit(
+                            e,
+                            filteredQuestion[currentQuestion]._id,
+                            filteredQuestion[currentQuestion].optionFive,
+                          )
+                          setSelectedOption(e.currentTarget.id)
+                        }}
                         className="form-check-input"
                         checked={
                           filteredQuestion[currentQuestion].optionFive == selectedOption
@@ -624,7 +731,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
                       >
-                        E: {filteredQuestion[currentQuestion].optionFive}
+                        E {filteredQuestion[currentQuestion].optionFive}
                       </label>
                     </div>
                     {filteredQuestion[currentQuestion].optionSix ? (
@@ -634,7 +741,15 @@ const QuizLayout = () => {
                           id={filteredQuestion[currentQuestion].optionSix}
                           name={currentQuestion}
                           value={filteredQuestion[currentQuestion].optionSix}
-                          onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                          // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                          onChange={(e) => {
+                            handleFormSubmit(
+                              e,
+                              filteredQuestion[currentQuestion]._id,
+                              filteredQuestion[currentQuestion].optionSix,
+                            )
+                            setSelectedOption(e.currentTarget.id)
+                          }}
                           className="form-check-input"
                           checked={
                             filteredQuestion[currentQuestion].optionSix == selectedOption
@@ -646,7 +761,7 @@ const QuizLayout = () => {
                           className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
                           onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
                         >
-                          F: {filteredQuestion[currentQuestion].optionSix}
+                          F {filteredQuestion[currentQuestion].optionSix}
                         </label>
                       </div>
                     ) : (
@@ -664,6 +779,18 @@ const QuizLayout = () => {
           </div>
         )}
       </div>
+      {showQues && (
+        <div className="fixed bottom-20 right-6 z-20">
+          <CButton
+            color="primary"
+            className="flex justify-center items-center text-white font-bold py-2 px-4 rounded-full shadow-lg"
+            onClick={() => setDetailModal(true)}
+          >
+            <RiEyeLine className="mr-2" />
+            View
+          </CButton>
+        </div>
+      )}
       <QuizFooter
         showQues={showQues}
         totalQues={getValues('total')}
@@ -678,6 +805,110 @@ const QuizLayout = () => {
           {errorMsg}
         </CAlert>
       )}
+      {/* quiz detail modal */}
+      <CModal
+        alignment="center"
+        visible={detailModal}
+        backdrop="static"
+        onClose={() => {
+          setDetailModal(false)
+        }}
+        aria-labelledby="VerticallyCenteredExample"
+        size="lg"
+      >
+        <CModalHeader>
+          <CModalTitle id="VerticallyCenteredExample">Question Details</CModalTitle>
+        </CModalHeader>
+        {filteredQuestion[currentQuestion] && (
+          <CModalBody>
+            <CRow className="mb-2 flex flex-col">
+              <strong className="mb-2">Question</strong>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: filteredQuestion[currentQuestion].question,
+                }}
+              />
+              {/* <span>{filteredQuestion[currentQuestion].question}</span> */}
+            </CRow>
+            <CRow className="mb-2 flex flex-col">
+              <strong className="mb-2">Question explanation</strong>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: filteredQuestion[currentQuestion].questionExplanation,
+                }}
+              />
+              {/* <span>{filteredQuestion[currentQuestion].questionExplanation}</span> */}
+            </CRow>
+            <CRow className="mb-2 flex flex-col">
+              <strong className="mb-2">Options</strong>
+              <span className="mb-2">
+                <span className="font-bold">A</span> {filteredQuestion[currentQuestion].optionOne}
+                <span className="italic">
+                  &nbsp;({filteredQuestion[currentQuestion].optionOneExplanation})
+                </span>
+              </span>
+              <span className="mb-2">
+                <span className="font-bold">B</span> {filteredQuestion[currentQuestion].optionTwo}
+                <span className="italic">
+                  &nbsp;({filteredQuestion[currentQuestion].optionTwoExplanation})
+                </span>
+              </span>
+              <span className="mb-2">
+                <span className="font-bold">C</span> {filteredQuestion[currentQuestion].optionThree}
+                <span className="italic">
+                  &nbsp;({filteredQuestion[currentQuestion].optionThreeExplanation})
+                </span>
+              </span>
+              <span className="mb-2">
+                <span className="font-bold">D</span> {filteredQuestion[currentQuestion].optionFour}
+                <span className="italic">
+                  &nbsp;({filteredQuestion[currentQuestion].optionFourExplanation})
+                </span>
+              </span>
+              <span className="mb-2">
+                <span className="font-bold">E</span> {filteredQuestion[currentQuestion].optionFive}
+                <span className="italic">
+                  &nbsp;({filteredQuestion[currentQuestion].optionFiveExplanation})
+                </span>
+              </span>
+              {filteredQuestion[currentQuestion].optionSix && (
+                <span className="mb-2">
+                  <span className="font-bold">F</span> {filteredQuestion[currentQuestion].optionSix}
+                  {filteredQuestion[currentQuestion].optionSixExplanation && (
+                    <span className="italic">
+                      &nbsp;({filteredQuestion[currentQuestion].optionSixExplanation})
+                    </span>
+                  )}
+                </span>
+              )}
+            </CRow>
+            {filteredQuestion[currentQuestion].image && (
+              <CRow>
+                <CCol md={2}>
+                  <strong>Image</strong>
+                </CCol>
+                <CCol md={10}>
+                  <img
+                    src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                    alt="image"
+                    className="w-52 h-36 rounded-full"
+                  />
+                </CCol>
+              </CRow>
+            )}
+          </CModalBody>
+        )}
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              setDetailModal(false)
+            }}
+          >
+            Close
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
   )
 }

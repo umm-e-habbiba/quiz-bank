@@ -12,12 +12,13 @@ import {
   CSpinner,
 } from '@coreui/react'
 import { API_URL } from 'src/store'
+
 const QuizPerformance = () => {
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [noQuiz, setNoQuiz] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
-  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
+  const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [percent, setPercent] = useState('')
   const [marks, setMarks] = useState('')
   const [total, setTotal] = useState('')
@@ -25,14 +26,22 @@ const QuizPerformance = () => {
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
-      getAllQuest()
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
-      setUSerID(getUserId)
+      setUserID(getUserId)
     } else {
       navigate('/login')
     }
   }, [])
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      getAllQuest()
+    }, 1000)
+
+    // Clear the timer when the component unmounts or when the dependency changes
+    return () => clearTimeout(timerId)
+  }, [token, userID])
 
   const getAllQuest = () => {
     setLoading(true)
@@ -50,7 +59,7 @@ const QuizPerformance = () => {
         console.log('latest quiz', result)
         setLoading(false)
         if (result.success) {
-          if (result.message == 'User has not attempted any quiz') {
+          if (result.message === 'User has not attempted any quiz') {
             setNoQuiz(true)
           } else {
             setMarks(result.data.obtainedScore)

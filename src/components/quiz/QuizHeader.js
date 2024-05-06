@@ -20,7 +20,9 @@ import {
   CAlert,
   CPopover,
 } from '@coreui/react'
-import { HiMenuAlt4, HiHome } from 'react-icons/hi'
+import { CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem } from '@coreui/react'
+
+import { HiHome, HiMenuAlt4 } from 'react-icons/hi'
 import {
   BiLeftArrow,
   BiRightArrow,
@@ -28,6 +30,7 @@ import {
   BiExitFullscreen,
   BiSolidHelpCircle,
   BiZoomIn,
+  BiZoomOut,
 } from 'react-icons/bi'
 import { FcCalculator } from 'react-icons/fc'
 import { FiSettings } from 'react-icons/fi'
@@ -36,6 +39,7 @@ import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
+
 const QuizHeader = ({
   currentQuestion,
   setCurrentQuestion,
@@ -63,6 +67,7 @@ const QuizHeader = ({
   const [successMsg, setSuccessMsg] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+  const [markedQuestions, setMarkedQuestions] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') || '')
 
   useEffect(() => {
@@ -79,7 +84,6 @@ const QuizHeader = ({
       headerRef.current &&
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
     })
-    console.log(showQues, totalQues)
   }, [])
 
   const onChange = (notes) => {
@@ -136,73 +140,94 @@ const QuizHeader = ({
     if (currentQuestion + 1 < totalQues) {
       setCurrentQuestion(currentQuestion + 1)
       setSelectedOption('')
+      setMarkedQuestions(markedQuestions.filter((id) => id !== questionId)) // Remove current question from marked questions
+      setMarked(false)
+      setQuestionId('')
+      setCommentValue('')
     } else {
       setQuizEnd(true)
     }
-    setMarked(false)
-    setQuestionId('')
-    setCommentValue('')
   }
 
   const toggleMarked = (e) => {
-    setMarked((prevCheck) => !prevCheck)
-    if (e.target.checked) {
-      setQuestionId(e.target.id)
-      setCommentModal(true)
-      setError(false)
-      setErrorMsg('')
-      console.log('checked', e.target.id)
+    const questionNumber = currentQuestion + 1 // Calculate question number
+    const isMarked = markedQuestions.includes(questionNumber)
+
+    if (!isMarked) {
+      // Mark the question
+      setMarkedQuestions([...markedQuestions, questionNumber])
     } else {
-      console.log('unchecked')
-      setQuestionId('')
+      // Unmark the question
+      setMarkedQuestions(markedQuestions.filter((num) => num !== questionNumber))
     }
   }
+
+  const handleAddComment = () => {
+    setCommentModal(true)
+    setError(false)
+    setErrorMsg('')
+  }
+
   const addComment = () => {
-    console.log('comment', commentValue, 'ques id', questionId)
+    console.log('comment', commentValue)
     setIsLoading(true)
-    if (commentValue == '') {
-      setCommentError('Please enter your feedback')
+
+    // Get the ID of the current question
+    const currentQuestionId = filteredArray[currentQuestion]._id
+
+    if (!currentQuestionId) {
+      setError(true)
+      setErrorMsg('Cannot find ID of the current question.')
       setIsLoading(false)
-    } else {
-      const myHeaders = new Headers()
-      myHeaders.append('Authorization', token)
-      myHeaders.append('Content-Type', 'application/json')
-
-      const raw = JSON.stringify({
-        commentText: commentValue,
-      })
-
-      const requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: raw,
-        redirect: 'follow',
-      }
-
-      fetch(API_URL + 'add-comment/' + questionId, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result)
-          if (result.success) {
-            setCommentModal(false)
-            setIsLoading(false)
-            setSuccess(true)
-            setSuccessMsg('Feedback sent successfully')
-            setTimeout(() => {
-              setSuccess(false)
-              setSuccessMsg('')
-            }, 3000)
-          } else {
-            setError(true)
-            setErrorMsg(result.message)
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-          setIsLoading(false)
-        })
+      return
     }
+
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      commentText: commentValue,
+    })
+
+    let url = `${API_URL}add-comment/${currentQuestionId}`
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    }
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setCommentModal(false)
+          setIsLoading(false)
+          setSuccess(true)
+          setSuccessMsg('Comment sent successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding comment:', error)
+        setIsLoading(false)
+      })
   }
+
+  const handleQuestionNavigation = (questionNumber) => {
+    // Navigate to the selected question
+    setCurrentQuestion(questionNumber - 1) // Adjust to zero-based index
+  }
+
   return (
     <>
       <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4">
@@ -210,41 +235,50 @@ const QuizHeader = ({
           <Link to="/">
             <HiHome className="quiz-icons cursor-pointer mr-2" />
           </Link>
-
           {showQues && (
             <div className="flex justify-start items-center">
-              <h1 className="mr-5 text-2xl">
-                Item {currentQuestion + 1} of {totalQues}
-              </h1>
-              <div className="flex flex-col justify-center items-center">
-                <div className="flex justify-center items-center">
-                  <CFormCheck
-                    inline
-                    // id="1"
-                    id={
-                      filteredArray[currentQuestion] && filteredArray[currentQuestion].questionId
-                        ? filteredArray[currentQuestion].questionId._id
-                        : filteredArray[currentQuestion] && filteredArray[currentQuestion]._id
-                          ? filteredArray[currentQuestion]._id
-                          : ''
-                    }
-                    // id={
-                    //   filteredArray[currentQuestion] && filteredArray[currentQuestion]._id
-                    //     ? filteredArray[currentQuestion]._id
-                    //     : filteredArray[currentQuestion] &&
-                    //         filteredArray[currentQuestion].questionId
-                    //       ? filteredArray[currentQuestion].questionId._id
-                    //       : ''
-                    // }
-                    value={marked}
-                    checked={marked ? true : false}
-                    label=""
-                    onChange={(e) => toggleMarked(e)}
-                  />
-                  <img src={markIcon} alt="mark icon" className="cursor-pointer w-5 h-5" />
+              <div className="flex justify-start items-center">
+                <h1 className="mr-5 text-2xl">
+                  Item {currentQuestion + 1} of {totalQues}
+                </h1>
+                <div className="flex flex-col justify-center items-center">
+                  <div className="flex justify-center items-center">
+                    <CFormCheck
+                      inline
+                      id={
+                        filteredArray[currentQuestion] && filteredArray[currentQuestion].questionId
+                          ? filteredArray[currentQuestion].questionId._id
+                          : filteredArray[currentQuestion] && filteredArray[currentQuestion]._id
+                            ? filteredArray[currentQuestion]._id
+                            : ''
+                      }
+                      checked={marked}
+                      label=""
+                      onChange={(e) => toggleMarked(e)}
+                    />
+                    <img src={markIcon} alt="mark icon" className="cursor-pointer w-5 h-5" />
+                  </div>
+                  <span className="text-xs">Mark</span>
                 </div>
-                <span className="text-xs">Mark</span>
               </div>
+              <CButton color="primary" className="ml-3" onClick={handleAddComment}>
+                Add Comment
+              </CButton>
+              {markedQuestions.length > 0 && (
+                <CDropdown className="ml-3">
+                  <CDropdownToggle color="secondary">Marked Questions</CDropdownToggle>
+                  <CDropdownMenu>
+                    {markedQuestions.map((questionNumber) => (
+                      <CDropdownItem
+                        key={questionNumber}
+                        onClick={() => handleQuestionNavigation(questionNumber)}
+                      >
+                        Question No : {questionNumber}
+                      </CDropdownItem>
+                    ))}
+                  </CDropdownMenu>
+                </CDropdown>
+              )}
             </div>
           )}
         </div>
@@ -297,17 +331,23 @@ const QuizHeader = ({
             className="quiz-icons mr-2 cursor-pointer"
             onClick={() => setFontSize(fontSize + 1)}
           />
+          {fontSize > 16 ? (
+            <BiZoomOut
+              className="quiz-icons mr-2 cursor-pointer"
+              onClick={() => setFontSize(fontSize - 1)}
+            />
+          ) : (
+            ''
+          )}
           <FiSettings className="quiz-icons cursor-pointer" />
         </CHeaderNav>
       </CHeader>{' '}
       {showCalculator && (
-        <div className="fixed bottom-0 right-0 calculator-index">
+        <div className="fixed bottom-0 right-0">
           <ReactCalculator />
         </div>
       )}
-      {showNotes && (
-        <ReactStickies notes={notes} onChange={onChange} onSave={onSave} className="z-20" />
-      )}
+      {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}
       {/* comment modal */}
       <CModal
         alignment="center"
@@ -316,18 +356,18 @@ const QuizHeader = ({
         aria-labelledby="VerticallyCenteredExample"
       >
         <CModalHeader>
-          <CModalTitle id="VerticallyCenteredExample">Add Your Feedback</CModalTitle>
+          <CModalTitle id="VerticallyCenteredExample">Add Comment</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm>
             <CRow className="mb-3">
               <CCol md={12}>
                 <CFormInput
-                  label="Feedback"
+                  label="Comment"
                   type="text"
                   id="comment"
                   value={commentValue}
-                  placeholder="Enter your feedback here"
+                  placeholder="Add your comment"
                   onChange={(e) => setCommentValue(e.target.value)}
                 />
               </CCol>
@@ -341,7 +381,7 @@ const QuizHeader = ({
             Close
           </CButton>
           <CButton color="primary" onClick={addComment} disabled={loading ? true : false}>
-            {loading ? <CSpinner color="light" size="sm" /> : 'Send'}
+            {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
           </CButton>
         </CModalFooter>
       </CModal>

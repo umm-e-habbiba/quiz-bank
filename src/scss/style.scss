@@ -102,3 +102,21 @@
   width: 1.8rem !important;
   height: 1.8rem !important;
 }
+mark {
+  padding: 0 !important;
+}
+
+// quill editor
+.ql-container {
+  border-bottom-left-radius: 0.37rem;
+  border-bottom-right-radius: 0.37rem;
+  background: #fefcfc;
+}
+
+/* Snow Theme */
+.ql-snow.ql-toolbar {
+  display: block;
+  background: #eaecec;
+  border-top-left-radius: 0.37rem;
+  border-top-right-radius: 0.37rem;
+}

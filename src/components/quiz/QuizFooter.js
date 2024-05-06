@@ -38,29 +38,29 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
     console.log(saveQuestionArray)
   }, [saveQuestionArray])
 
-  useEffect(() => {
-    //Implementing the setInterval method
-    // console.log('ques ', totalQues, 'seconds', Number(totalQues) * 90, 'left', timeLeft)
-    if (showQues) {
-      if (totalSeconds > 0) {
-        const interval = setInterval(() => {
-          setTotalSeconds(totalSeconds - 1)
-          const leftTime = convertSeconds(totalSeconds - 1)
-          setTimeLeft(leftTime)
-        }, 1000)
-        //Clearing the interval
-        return () => {
-          if (interval) {
-            clearInterval(interval)
-          }
-        }
-      } else {
-        endQuiz()
-      }
-    } else {
-      console.log('total show ques is false')
-    }
-  }, [totalSeconds, showQues, timeLeft])
+  // useEffect(() => {
+  //   //Implementing the setInterval method
+  //   // console.log('ques ', totalQues, 'seconds', Number(totalQues) * 90, 'left', timeLeft)
+  //   if (showQues) {
+  //     if (totalSeconds > 0) {
+  //       const interval = setInterval(() => {
+  //         setTotalSeconds(totalSeconds - 1)
+  //         const leftTime = convertSeconds(totalSeconds - 1)
+  //         setTimeLeft(leftTime)
+  //       }, 1000)
+  //       //Clearing the interval
+  //       return () => {
+  //         if (interval) {
+  //           clearInterval(interval)
+  //         }
+  //       }
+  //     } else {
+  //       endQuiz()
+  //     }
+  //   } else {
+  //     // console.log('total show ques is false')
+  //   }
+  // }, [totalSeconds, showQues, timeLeft])
 
   const endQuiz = () => {
     navigate('/quiz-performance')

@@ -33,6 +33,8 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 const Comments = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
@@ -60,6 +62,10 @@ const Comments = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [comments, setComments] = useState([])
   const role = localStorage.getItem('user') || ''
+  const modules = {
+    toolbar: [['bold', 'italic', 'underline']],
+  }
+  const formats = ['bold', 'italic', 'underline']
   const {
     register,
     handleSubmit,
@@ -306,10 +312,16 @@ const Comments = () => {
                               setComments(q.comments)
                               setQuestionId(e.currentTarget.id)
                             }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                q.question.length > 100
+                                  ? q.question.substring(0, 100) + '...'
+                                  : q.question,
+                            }}
                           >
-                            {q.question.length > 100
+                            {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
-                              : q.question}
+                              : q.question} */}
                           </span>
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
@@ -372,6 +384,7 @@ const Comments = () => {
           aria-labelledby="VerticallyCenteredExample"
           // scrollable={true}
           size="lg"
+          backdrop="static"
         >
           <CModalHeader>
             <CModalTitle id="VerticallyCenteredExample">Edit Question</CModalTitle>
@@ -487,7 +500,22 @@ const Comments = () => {
                 )}
                 <CRow className="mb-3">
                   <CCol md={12}>
-                    <CFormInput
+                    <label className="form-label">Question</label>
+                    <ReactQuill
+                      theme="snow"
+                      name="question"
+                      value={getValues('question')}
+                      // value={...register('question', { required: true })}
+                      // onChange={(e) => console.log('question', e.toString())}
+                      placeholder="Enter question here"
+                      formats={formats}
+                      modules={modules}
+                      onChange={(e) => setValue('question', e.toString())}
+                    />
+                    {errors.question && (
+                      <span className="text-red-500 text-sm">Question is required</span>
+                    )}
+                    {/* <CFormInput
                       label="Question"
                       type="text"
                       id="ques"
@@ -497,12 +525,25 @@ const Comments = () => {
                       {...register('question', { required: true })}
                       feedback="Question is required"
                       invalid={errors.question ? true : false}
-                    />
+                    /> */}
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
                   <CCol md={12}>
-                    <CFormTextarea
+                    <label className="form-label">Explanation</label>
+                    <ReactQuill
+                      theme="snow"
+                      name="question"
+                      value={getValues('explaination')}
+                      placeholder="Enter question explanation here"
+                      formats={formats}
+                      modules={modules}
+                      onChange={(e) => setValue('explaination', e.toString())}
+                    />
+                    {errors.explaination && (
+                      <span className="text-red-500 text-sm">Explanation is required</span>
+                    )}
+                    {/* <CFormTextarea
                       label="Explaination"
                       type="text"
                       id="explain"
@@ -511,7 +552,7 @@ const Comments = () => {
                       {...register('explaination', { required: true })}
                       feedback="Explaination is required"
                       invalid={errors.explaination ? true : false}
-                    />
+                    /> */}
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
@@ -729,7 +770,7 @@ const Comments = () => {
                 Close
               </CButton>
               <CButton color="primary" type="submit" disabled={loading ? true : false}>
-                {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
+                {loading ? <CSpinner color="light" size="sm" /> : 'Save'}
               </CButton>
             </CModalFooter>
           </CForm>
@@ -738,6 +779,7 @@ const Comments = () => {
         <CModal
           alignment="center"
           visible={deleteModal}
+          backdrop="static"
           onClose={() => setDeleteModal(false)}
           aria-labelledby="VerticallyCenteredExample"
         >
@@ -761,6 +803,7 @@ const Comments = () => {
         <CModal
           alignment="center"
           visible={detailModal}
+          backdrop="static"
           onClose={() => {
             setDetailModal(false)
             reset({})
@@ -781,7 +824,13 @@ const Comments = () => {
                 <strong>Question</strong>
               </CCol>
               <CCol md={10}>
-                <span>{getValues('question')}</span>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: getValues('question'),
+                  }}
+                >
+                  {/* {getValues('question')} */}
+                </span>
               </CCol>
             </CRow>
             <CRow className="mb-2">
@@ -789,19 +838,19 @@ const Comments = () => {
                 <strong>Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A: {getValues('op1')}</span>
+                <span>A {getValues('op1')}</span>
                 <br />
-                <span>B: {getValues('op2')}</span>
+                <span>B {getValues('op2')}</span>
                 <br />
-                <span>C: {getValues('op3')}</span>
+                <span>C {getValues('op3')}</span>
                 <br />
-                <span>D: {getValues('op4')}</span>
+                <span>D {getValues('op4')}</span>
                 <br />
-                <span>E: {getValues('op5')}</span>
+                <span>E {getValues('op5')}</span>
                 {op6 && (
                   <>
                     <br />
-                    <span>F: {op6}</span>
+                    <span>F {op6}</span>
                   </>
                 )}
               </CCol>
@@ -835,19 +884,19 @@ const Comments = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A: {getValues('op1Explain')}</span>
+                <span>A {getValues('op1Explain')}</span>
                 <br />
-                <span>B: {getValues('op2Explain')}</span>
+                <span>B {getValues('op2Explain')}</span>
                 <br />
-                <span>C: {getValues('op3Explain')}</span>
+                <span>C {getValues('op3Explain')}</span>
                 <br />
-                <span>D: {getValues('op4Explain')}</span>
+                <span>D {getValues('op4Explain')}</span>
                 <br />
-                <span>E: {getValues('op5Explain')}</span>
+                <span>E {getValues('op5Explain')}</span>
                 {op6Exp && (
                   <>
                     <br />
-                    <span>F: {op6Exp}</span>
+                    <span>F {op6Exp}</span>
                   </>
                 )}
               </CCol>

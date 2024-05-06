@@ -258,7 +258,7 @@ const Dashboard = () => {
                             <div className="progress-group mb-4" key={idx}>
                               <div className="progress-group-prepend">
                                 <span className="text-body-secondary small mr-2">
-                                  {moment(quiz.createdAt).format('DD MMMM YYYY')}
+                                  {moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
                                 </span>
                               </div>
                               <div className="progress-group-bars">

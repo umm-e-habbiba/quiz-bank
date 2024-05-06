@@ -32,6 +32,8 @@ import { cilPencil, cilTrash } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 const ManageQuiz = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
@@ -50,14 +52,20 @@ const ManageQuiz = () => {
   // const [op3, setOp3] = useState('')
   // const [op4, setOp4] = useState('')
   // const [correct, setCorrect] = useState('')
-  const [error, setError] = useState(false)
+  const [error, setErrorr] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
+  const [qError, setQError] = useState(false)
+  const [expError, setExpError] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [op6, setOp6] = useState('')
   const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
+  const modules = {
+    toolbar: [['bold', 'italic', 'underline']],
+  }
+  const formats = ['bold', 'italic', 'underline']
   const {
     register,
     handleSubmit,
@@ -65,6 +73,7 @@ const ManageQuiz = () => {
     watch,
     setValue,
     reset,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -133,69 +142,73 @@ const ManageQuiz = () => {
   }
   const addQuestion = (data) => {
     console.log('add function called', data, '...', stepSelected)
-    setIsLoading(true)
-    setError(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
+    if (getValues('question') == '') {
+      setError('question', true)
+      console.log('question not entered')
+    }
+    // setIsLoading(true)
+    // setErrorr(false)
+    // setErrorMsg('')
+    // const myHeaders = new Headers()
+    // myHeaders.append('Authorization', token)
 
-    const formdata = new FormData()
-    formdata.append('usmleStep', data.usmleStep)
-    formdata.append('USMLE', data.usmleCategory)
-    formdata.append('question', data.question)
-    formdata.append('optionOne', data.op1)
-    formdata.append('correctAnswer', data.correct)
-    formdata.append('questionExplanation', data.explaination)
-    formdata.append('image', image)
-    formdata.append('optionTwo', data.op2)
-    formdata.append('optionThree', data.op3)
-    formdata.append('optionFour', data.op4)
-    formdata.append('optionFive', data.op5)
-    if (op6) {
-      formdata.append('optionSix', op6)
-    }
-    formdata.append('optionOneExplanation', data.op1Explain)
-    formdata.append('optionTwoExplanation', data.op2Explain)
-    formdata.append('optionThreeExplanation', data.op3Explain)
-    formdata.append('optionFourExplanation', data.op4Explain)
-    formdata.append('optionFiveExplanation', data.op5Explain)
-    if (op6Exp) {
-      formdata.append('optionSixExplanation', op6Exp)
-    }
-    const requestOptions = {
-      method: 'POST',
-      body: formdata,
-      headers: myHeaders,
-      redirect: 'follow',
-    }
+    // const formdata = new FormData()
+    // formdata.append('usmleStep', data.usmleStep)
+    // formdata.append('USMLE', data.usmleCategory)
+    // formdata.append('question', data.question)
+    // formdata.append('optionOne', data.op1)
+    // formdata.append('correctAnswer', data.correct)
+    // formdata.append('questionExplanation', data.explaination)
+    // formdata.append('image', image)
+    // formdata.append('optionTwo', data.op2)
+    // formdata.append('optionThree', data.op3)
+    // formdata.append('optionFour', data.op4)
+    // formdata.append('optionFive', data.op5)
+    // if (op6) {
+    //   formdata.append('optionSix', op6)
+    // }
+    // formdata.append('optionOneExplanation', data.op1Explain)
+    // formdata.append('optionTwoExplanation', data.op2Explain)
+    // formdata.append('optionThreeExplanation', data.op3Explain)
+    // formdata.append('optionFourExplanation', data.op4Explain)
+    // formdata.append('optionFiveExplanation', data.op5Explain)
+    // if (op6Exp) {
+    //   formdata.append('optionSixExplanation', op6Exp)
+    // }
+    // const requestOptions = {
+    //   method: 'POST',
+    //   body: formdata,
+    //   headers: myHeaders,
+    //   redirect: 'follow',
+    // }
 
-    fetch(API_URL + 'add-mcqs', requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result)
-        setIsLoading(false)
-        if (result.success) {
-          setAddModal(false)
-          getAllQuest()
-          reset({})
-          setImage('')
-          setOp6('')
-          setOp6Exp('')
-          setSuccess(true)
-          setSuccessMsg('Question added successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
-        } else {
-          setError(true)
-          setErrorMsg(result.message)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setIsLoading(false)
-      })
+    // fetch(API_URL + 'add-mcqs', requestOptions)
+    //   .then((response) => response.json())
+    //   .then((result) => {
+    //     console.log(result)
+    //     setIsLoading(false)
+    //     if (result.success) {
+    //       setAddModal(false)
+    //       getAllQuest()
+    //       reset({})
+    //       setImage('')
+    //       setOp6('')
+    //       setOp6Exp('')
+    //       setSuccess(true)
+    //       setSuccessMsg('Question added successfully')
+    //       setTimeout(() => {
+    //         setSuccess(false)
+    //         setSuccessMsg('')
+    //       }, 3000)
+    //     } else {
+    //       setErrorr(true)
+    //       setErrorMsg(result.message)
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //     setIsLoading(false)
+    //   })
   }
   const getQuestion = () => {
     const myHeaders = new Headers()
@@ -236,7 +249,7 @@ const ManageQuiz = () => {
 
   const deleteQuestion = () => {
     setIsLoading(true)
-    setError(false)
+    setErrorr(false)
     setErrorMsg('')
     console.log(questionId)
     var myHeaders = new Headers()
@@ -262,7 +275,7 @@ const ManageQuiz = () => {
             setSuccessMsg('')
           }, 3000)
         } else {
-          setError(true)
+          setErrorr(true)
           setErrorMsg(result.message)
         }
       })
@@ -271,7 +284,7 @@ const ManageQuiz = () => {
   const editQuestion = (data) => {
     console.log('edit function called', data)
     setIsLoading(true)
-    setError(false)
+    setErrorr(false)
     setErrorMsg('')
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -326,7 +339,7 @@ const ManageQuiz = () => {
             setSuccessMsg('')
           }, 3000)
         } else {
-          setError(true)
+          setErrorr(true)
           setErrorMsg(result.message)
         }
       })
@@ -349,7 +362,7 @@ const ManageQuiz = () => {
                 setIsLoading(false)
                 reset({})
                 setQuestionId('')
-                setError(false)
+                setErrorr(false)
                 setErrorMsg('')
               }}
             >
@@ -384,10 +397,16 @@ const ManageQuiz = () => {
                               setDetailModal(true)
                               setQuestionId(e.currentTarget.id)
                             }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                q.question.length > 100
+                                  ? q.question.substring(0, 100) + '...'
+                                  : q.question,
+                            }}
                           >
-                            {q.question.length > 100
+                            {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
-                              : q.question}
+                              : q.question} */}
                           </span>
                         </CTableHeaderCell>
                         <CTableDataCell>{q.usmleStep}</CTableDataCell>
@@ -408,7 +427,7 @@ const ManageQuiz = () => {
                             onClick={(e) => {
                               setAddModal(true)
                               setQuestionId(e.currentTarget.id)
-                              setError(false)
+                              setErrorr(false)
                               setErrorMsg('')
                             }}
                           >
@@ -421,7 +440,7 @@ const ManageQuiz = () => {
                             onClick={(e) => {
                               setDeleteModal(true)
                               setQuestionId(e.currentTarget.id)
-                              setError(false)
+                              setErrorr(false)
                               setErrorMsg('')
                             }}
                           >
@@ -450,6 +469,7 @@ const ManageQuiz = () => {
           aria-labelledby="VerticallyCenteredExample"
           // scrollable={true}
           size="lg"
+          backdrop="static"
         >
           <CModalHeader>
             <CModalTitle id="VerticallyCenteredExample">
@@ -567,7 +587,7 @@ const ManageQuiz = () => {
                 )}
                 <CRow className="mb-3">
                   <CCol md={12}>
-                    <CFormInput
+                    {/* <CFormInput
                       label="Question"
                       type="text"
                       id="ques"
@@ -577,12 +597,27 @@ const ManageQuiz = () => {
                       {...register('question', { required: true })}
                       feedback="Question is required"
                       invalid={errors.question ? true : false}
+                    /> */}
+                    <label className="form-label">Question</label>
+                    <ReactQuill
+                      theme="snow"
+                      name="question"
+                      value={getValues('question')}
+                      // value={...register('question', { required: true })}
+                      // onChange={(e) => console.log('question', e.toString())}
+                      placeholder="Enter question here"
+                      formats={formats}
+                      modules={modules}
+                      onChange={(e) => setValue('question', e.toString())}
                     />
+                    {errors.question && (
+                      <span className="text-red-500 text-sm">Question is required</span>
+                    )}
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
                   <CCol md={12}>
-                    <CFormTextarea
+                    {/* <CFormTextarea
                       label="Explaination"
                       type="text"
                       id="explain"
@@ -591,7 +626,20 @@ const ManageQuiz = () => {
                       {...register('explaination', { required: true })}
                       feedback="Explaination is required"
                       invalid={errors.explaination ? true : false}
+                    /> */}
+                    <label className="form-label">Explanation</label>
+                    <ReactQuill
+                      theme="snow"
+                      name="question"
+                      value={getValues('explaination')}
+                      placeholder="Enter question explanation here"
+                      formats={formats}
+                      modules={modules}
+                      onChange={(e) => setValue('explaination', e.toString())}
                     />
+                    {errors.explaination && (
+                      <span className="text-red-500 text-sm">Explanation is required</span>
+                    )}
                   </CCol>
                 </CRow>
                 <CRow className="mb-3">
@@ -810,7 +858,7 @@ const ManageQuiz = () => {
               </CButton>
               {questionId ? (
                 <CButton color="primary" type="submit" disabled={loading ? true : false}>
-                  {loading ? <CSpinner color="light" size="sm" /> : 'Edit'}
+                  {loading ? <CSpinner color="light" size="sm" /> : 'Save'}
                 </CButton>
               ) : (
                 <CButton color="primary" type="submit" disabled={loading ? true : false}>
@@ -826,6 +874,7 @@ const ManageQuiz = () => {
           visible={deleteModal}
           onClose={() => setDeleteModal(false)}
           aria-labelledby="VerticallyCenteredExample"
+          backdrop="static"
         >
           <CModalHeader>
             <CModalTitle id="VerticallyCenteredExample">Delete Question</CModalTitle>
@@ -847,6 +896,7 @@ const ManageQuiz = () => {
         <CModal
           alignment="center"
           visible={detailModal}
+          backdrop="static"
           onClose={() => {
             setDetailModal(false)
             reset({})
@@ -866,7 +916,13 @@ const ManageQuiz = () => {
                 <strong>Question</strong>
               </CCol>
               <CCol md={10}>
-                <span>{getValues('question')}</span>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: getValues('question'),
+                  }}
+                >
+                  {/* {getValues('question')} */}
+                </span>
               </CCol>
             </CRow>
             <CRow className="mb-2">
@@ -874,19 +930,19 @@ const ManageQuiz = () => {
                 <strong>Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A: {getValues('op1')}</span>
+                <span>A {getValues('op1')}</span>
                 <br />
-                <span>B: {getValues('op2')}</span>
+                <span>B {getValues('op2')}</span>
                 <br />
-                <span>C: {getValues('op3')}</span>
+                <span>C {getValues('op3')}</span>
                 <br />
-                <span>D: {getValues('op4')}</span>
+                <span>D {getValues('op4')}</span>
                 <br />
-                <span>E: {getValues('op5')}</span>
+                <span>E {getValues('op5')}</span>
                 {op6 && (
                   <>
                     <br />
-                    <span>F: {op6}</span>
+                    <span>F {op6}</span>
                   </>
                 )}
               </CCol>
@@ -912,7 +968,13 @@ const ManageQuiz = () => {
                 <strong>Explanation</strong>
               </CCol>
               <CCol md={10}>
-                <span>{getValues('explaination')}</span>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: getValues('explaination'),
+                  }}
+                >
+                  {/* {getValues('explaination')} */}
+                </span>
               </CCol>
             </CRow>
             <CRow className="mb-2">
@@ -920,19 +982,19 @@ const ManageQuiz = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A: {getValues('op1Explain')}</span>
+                <span>A {getValues('op1Explain')}</span>
                 <br />
-                <span>B: {getValues('op2Explain')}</span>
+                <span>B {getValues('op2Explain')}</span>
                 <br />
-                <span>C: {getValues('op3Explain')}</span>
+                <span>C {getValues('op3Explain')}</span>
                 <br />
-                <span>D: {getValues('op4Explain')}</span>
+                <span>D {getValues('op4Explain')}</span>
                 <br />
-                <span>E: {getValues('op5Explain')}</span>
+                <span>E {getValues('op5Explain')}</span>
                 {op6Exp && (
                   <>
                     <br />
-                    <span>F: {op6Exp}</span>
+                    <span>F {op6Exp}</span>
                   </>
                 )}
               </CCol>

@@ -127,10 +127,17 @@ const ReviewQuiz = () => {
             <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
               {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <div className="mb-5">
-                  <p className="mb-1">
-                    {allQuestion[currentQuestion]
+                  <p
+                    className="mb-1"
+                    dangerouslySetInnerHTML={{
+                      __html: allQuestion[currentQuestion]
+                        ? allQuestion[currentQuestion].questionId.question
+                        : '',
+                    }}
+                  >
+                    {/* {allQuestion[currentQuestion]
                       ? allQuestion[currentQuestion].questionId.question
-                      : ''}
+                      : ''} */}
                   </p>
                   <img
                     src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.image}`}
@@ -139,10 +146,17 @@ const ReviewQuiz = () => {
                   />
                 </div>
               ) : (
-                <p className="mb-5">
-                  {allQuestion[currentQuestion]
+                <p
+                  className="mb-5"
+                  dangerouslySetInnerHTML={{
+                    __html: allQuestion[currentQuestion]
+                      ? allQuestion[currentQuestion].questionId.question
+                      : '',
+                  }}
+                >
+                  {/* {allQuestion[currentQuestion]
                     ? allQuestion[currentQuestion].questionId.question
-                    : ''}
+                    : ''} */}
                 </p>
               )}
               <CForm onSubmit={handleFormSubmit}>
@@ -156,7 +170,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? 'A: ' + allQuestion[currentQuestion].questionId.optionOne
+                        ? 'A ' + allQuestion[currentQuestion].questionId.optionOne
                         : ''
                     }
                     value={
@@ -184,7 +198,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? 'B: ' + allQuestion[currentQuestion].questionId.optionTwo
+                        ? 'B ' + allQuestion[currentQuestion].questionId.optionTwo
                         : ''
                     }
                     value={
@@ -212,7 +226,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? 'C: ' + allQuestion[currentQuestion].questionId.optionThree
+                        ? 'C ' + allQuestion[currentQuestion].questionId.optionThree
                         : ''
                     }
                     value={
@@ -240,7 +254,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? 'D: ' + allQuestion[currentQuestion].questionId.optionFour
+                        ? 'D ' + allQuestion[currentQuestion].questionId.optionFour
                         : ''
                     }
                     value={
@@ -268,7 +282,7 @@ const ReviewQuiz = () => {
                     }
                     label={
                       allQuestion[currentQuestion]
-                        ? 'E: ' + allQuestion[currentQuestion].questionId.optionFive
+                        ? 'E ' + allQuestion[currentQuestion].questionId.optionFive
                         : ''
                     }
                     value={
@@ -298,7 +312,7 @@ const ReviewQuiz = () => {
                       }
                       label={
                         allQuestion[currentQuestion]
-                          ? 'F: ' + allQuestion[currentQuestion].questionId.optionSix
+                          ? 'F ' + allQuestion[currentQuestion].questionId.optionSix
                           : ''
                       }
                       value={
@@ -369,11 +383,18 @@ const ReviewQuiz = () => {
           </CCol>
           <CCol md={6}>
             <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
-              <h5 className="mb-1">Explaination</h5>
-              <p className="mb-1">
-                {allQuestion[currentQuestion]
+              <p className="mb-1 text-2xl font-bold">Explanation</p>
+              <p
+                className="mb-1"
+                dangerouslySetInnerHTML={{
+                  __html: allQuestion[currentQuestion]
+                    ? allQuestion[currentQuestion].questionId.questionExplanation
+                    : '',
+                }}
+              >
+                {/* {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.questionExplanation
-                  : ''}
+                  : ''} */}
               </p>
               {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <img
@@ -385,31 +406,31 @@ const ReviewQuiz = () => {
                 ''
               )}
               <p className="mb-2">
-                <span className="font-bold">(Choise A)</span>
+                <span className="font-bold">(Choice A)</span>
                 {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.optionOneExplanation
                   : ''}
               </p>
               <p className="mb-2">
-                <span className="font-bold">(Choise B)</span>{' '}
+                <span className="font-bold">(Choice B)</span>{' '}
                 {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.optionTwoExplanation
                   : ''}
               </p>
               <p className="mb-2">
-                <span className="font-bold">(Choise B)</span>{' '}
+                <span className="font-bold">(Choice C)</span>{' '}
                 {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.optionThreeExplanation
                   : ''}
               </p>
               <p className="mb-3">
-                <span className="font-bold">(Choise D)</span>{' '}
+                <span className="font-bold">(Choice D)</span>{' '}
                 {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.optionFourExplanation
                   : ''}
               </p>
               <p className="mb-3">
-                <span className="font-bold">(Choise E)</span>{' '}
+                <span className="font-bold">(Choice E)</span>{' '}
                 {allQuestion[currentQuestion]
                   ? allQuestion[currentQuestion].questionId.optionFiveExplanation
                   : ''}
@@ -417,7 +438,7 @@ const ReviewQuiz = () => {
               {allQuestion[currentQuestion] &&
               allQuestion[currentQuestion].questionId.optionSixExplanation ? (
                 <p className="mb-3">
-                  <span className="font-bold">(Choise F)</span>{' '}
+                  <span className="font-bold">(Choice F)</span>{' '}
                   {allQuestion[currentQuestion]
                     ? allQuestion[currentQuestion].questionId.optionSixExplanation
                     : ''}
