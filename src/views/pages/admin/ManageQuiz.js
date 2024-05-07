@@ -62,6 +62,10 @@ const ManageQuiz = () => {
   const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
+  const expmodules = {
+    toolbar: [['bold', 'italic', 'underline', 'image', 'table']],
+  }
+  const expformats = ['bold', 'italic', 'underline', 'image', 'table']
   const modules = {
     toolbar: [['bold', 'italic', 'underline']],
   }
@@ -146,69 +150,69 @@ const ManageQuiz = () => {
       setError('question', true)
       console.log('question not entered')
     }
-    // setIsLoading(true)
-    // setErrorr(false)
-    // setErrorMsg('')
-    // const myHeaders = new Headers()
-    // myHeaders.append('Authorization', token)
+    setIsLoading(true)
+    setErrorr(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
 
-    // const formdata = new FormData()
-    // formdata.append('usmleStep', data.usmleStep)
-    // formdata.append('USMLE', data.usmleCategory)
-    // formdata.append('question', data.question)
-    // formdata.append('optionOne', data.op1)
-    // formdata.append('correctAnswer', data.correct)
-    // formdata.append('questionExplanation', data.explaination)
-    // formdata.append('image', image)
-    // formdata.append('optionTwo', data.op2)
-    // formdata.append('optionThree', data.op3)
-    // formdata.append('optionFour', data.op4)
-    // formdata.append('optionFive', data.op5)
-    // if (op6) {
-    //   formdata.append('optionSix', op6)
-    // }
-    // formdata.append('optionOneExplanation', data.op1Explain)
-    // formdata.append('optionTwoExplanation', data.op2Explain)
-    // formdata.append('optionThreeExplanation', data.op3Explain)
-    // formdata.append('optionFourExplanation', data.op4Explain)
-    // formdata.append('optionFiveExplanation', data.op5Explain)
-    // if (op6Exp) {
-    //   formdata.append('optionSixExplanation', op6Exp)
-    // }
-    // const requestOptions = {
-    //   method: 'POST',
-    //   body: formdata,
-    //   headers: myHeaders,
-    //   redirect: 'follow',
-    // }
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('question', data.question)
+    formdata.append('optionOne', data.op1)
+    formdata.append('correctAnswer', data.correct)
+    formdata.append('questionExplanation', data.explaination)
+    formdata.append('image', image)
+    formdata.append('optionTwo', data.op2)
+    formdata.append('optionThree', data.op3)
+    formdata.append('optionFour', data.op4)
+    formdata.append('optionFive', data.op5)
+    if (op6) {
+      formdata.append('optionSix', op6)
+    }
+    formdata.append('optionOneExplanation', data.op1Explain)
+    formdata.append('optionTwoExplanation', data.op2Explain)
+    formdata.append('optionThreeExplanation', data.op3Explain)
+    formdata.append('optionFourExplanation', data.op4Explain)
+    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op6Exp) {
+      formdata.append('optionSixExplanation', op6Exp)
+    }
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      headers: myHeaders,
+      redirect: 'follow',
+    }
 
-    // fetch(API_URL + 'add-mcqs', requestOptions)
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log(result)
-    //     setIsLoading(false)
-    //     if (result.success) {
-    //       setAddModal(false)
-    //       getAllQuest()
-    //       reset({})
-    //       setImage('')
-    //       setOp6('')
-    //       setOp6Exp('')
-    //       setSuccess(true)
-    //       setSuccessMsg('Question added successfully')
-    //       setTimeout(() => {
-    //         setSuccess(false)
-    //         setSuccessMsg('')
-    //       }, 3000)
-    //     } else {
-    //       setErrorr(true)
-    //       setErrorMsg(result.message)
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     setIsLoading(false)
-    //   })
+    fetch(API_URL + 'add-mcqs', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setIsLoading(false)
+        if (result.success) {
+          setAddModal(false)
+          getAllQuest()
+          reset({})
+          setImage('')
+          setOp6('')
+          setOp6Exp('')
+          setSuccess(true)
+          setSuccessMsg('Question added successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setErrorr(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
   }
   const getQuestion = () => {
     const myHeaders = new Headers()
@@ -633,8 +637,8 @@ const ManageQuiz = () => {
                       name="question"
                       value={getValues('explaination')}
                       placeholder="Enter question explanation here"
-                      formats={formats}
-                      modules={modules}
+                      formats={expformats}
+                      modules={expmodules}
                       onChange={(e) => setValue('explaination', e.toString())}
                     />
                     {errors.explaination && (
@@ -817,7 +821,7 @@ const ManageQuiz = () => {
                     />
                   </CCol>
                 </CRow>
-                {questionId ? (
+                {questionId && image ? (
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CFormInput

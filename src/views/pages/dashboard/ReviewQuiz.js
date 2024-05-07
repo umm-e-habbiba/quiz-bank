@@ -106,6 +106,12 @@ const ReviewQuiz = () => {
       setQuizEnd(true)
     }
   }
+
+  const imgStyle = {
+    width: '300px',
+    height: '300px',
+    margin: '10px 0px',
+  }
   return (
     <div>
       <QuizHeader

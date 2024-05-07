@@ -12,7 +12,7 @@ import {
   CModalTitle,
   CModalFooter,
 } from '@coreui/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
@@ -40,7 +40,6 @@ const QuizLayout = () => {
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
   const [filteredQuestion, setFilteredQuestion] = useState([])
-  const [question, setQuestion] = useState('')
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedOption, setSelectedOption] = useState('')
   const [quizEnd, setQuizEnd] = useState(false)
@@ -56,7 +55,7 @@ const QuizLayout = () => {
   const [opt4Marked, setOpt4Marked] = useState(false)
   const [opt5Marked, setOpt5Marked] = useState(false)
   const [opt6Marked, setOpt6Marked] = useState(false)
-
+  const questionText = useRef()
   const {
     register,
     handleSubmit,
@@ -67,17 +66,6 @@ const QuizLayout = () => {
       total: 1,
     },
   })
-
-  useEffect(() => {
-    if (filteredQuestion[currentQuestion]) {
-      setQuestion(filteredQuestion[currentQuestion].question)
-    }
-  }, [currentQuestion, filteredQuestion])
-
-  // useEffect(() => {
-  //   console.log(highlightedText)
-  //   handleHighlight()
-  // }, [highlightedText])
 
   useEffect(() => {
     getAllQuest()
@@ -143,8 +131,13 @@ const QuizLayout = () => {
       setStep2(false)
       setStep3(false)
       setShowTotal(false)
-      console.log(filteredQuestion)
-      // fetchQuestion()
+      filteredQuestion.length = data.total
+      let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+      const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+        res.push({ questionId: item, selectedOption: '' })
+        return res
+      }, [])
+      setSaveQuestionArray(partialQuestionDetails)
     }
   }
 
@@ -169,7 +162,6 @@ const QuizLayout = () => {
         const filterUsmle = filterSteps.filter((ques) => ques.USMLE == value)
         if (filterUsmle.length > 0) {
           setFilteredQuestion(filterUsmle)
-
           setIntro(false)
           setSteps(false)
           setStep1(false)
@@ -254,34 +246,6 @@ const QuizLayout = () => {
     }
   }
 
-  const handleHighlight = () => {
-    if (filteredQuestion[currentQuestion]) {
-      const replacedText = question.replace(
-        window.getSelection().toString(),
-        `<div className="text-red-700">${window.getSelection().toString()}</div>`,
-      )
-      // const replacedText = question.replace(
-      //   window.getSelection().toString(),
-      //   `<div className="text-red-700">${window.getSelection().toString()}</div>`,
-      // )
-      console.log(replacedText)
-      // setQuestion(replacedText)
-    }
-    // const content = textToRepace.replace(window.getSelection().toString(), `<div className="text-red-700">${window.getSelection().toString()}</div>`)
-    //     const selectedText = window.getSelection().toString()
-    // let newString = originalString
-    // .replace("color", "colour")
-    // .replace("JS", "JavaScript");
-    // if (highlightedText.includes(selectedText)) {
-    //   console.log('text entered')
-    //   highlightedText.splice(highlightedText.indexOf(selectedText), 1)
-    //   setHighlightedText(highlightedText)
-    //   return
-    // }
-    // setHighlightedText((prevText) => [...prevText, selectedText])
-    // // console.log(selectedText, '  ', highlightedText)
-  }
-
   const saveQuiz = () => {
     console.log('user id', userID, 'selected option', selectedOption)
     const myHeaders = new Headers()
@@ -328,6 +292,20 @@ const QuizLayout = () => {
     }
     if (usmleStep == '3') {
       setStep3(true)
+    }
+  }
+  const highlight = () => {
+    const text = window.getSelection().toString()
+    var innerHTML = questionText.current.innerHTML
+    var index = innerHTML.indexOf(text)
+    if (index >= 0) {
+      innerHTML =
+        innerHTML.substring(0, index) +
+        "<span class='bg-yellow-300 text-yellow-700'>" +
+        innerHTML.substring(index, index + text.length) +
+        '</span>' +
+        innerHTML.substring(index + text.length)
+      questionText.current.innerHTML = innerHTML
     }
   }
   return (
@@ -537,18 +515,13 @@ const QuizLayout = () => {
                 <CCol md={8}>
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: question,
+                      __html: filteredQuestion[currentQuestion]
+                        ? filteredQuestion[currentQuestion].question
+                        : '',
                     }}
-                    onMouseUp={handleHighlight()}
+                    ref={questionText}
+                    onMouseUp={highlight}
                   ></p>
-                  {/* <Highlighter
-                    highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
-                    searchWords={highlightedText.length > 0 ? highlightedText : []}
-                    autoEscape={true}
-                    textToHighlight={filteredQuestion[currentQuestion].question}
-                    onMouseUp={handleHighlight}
-                    onMouseOut={handleHighlight}
-                  /> */}
                 </CCol>
                 <CCol md={4}>
                   <img
@@ -564,22 +537,13 @@ const QuizLayout = () => {
                 <CCol md={12}>
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: question,
-                    }}
-                    onMouseUp={handleHighlight()}
-                  ></p>
-                  {/* <Highlighter
-                    highlightClassName="bg-yellow-300 text-yellow-700" //custom highlight class
-                    searchWords={highlightedText.length > 0 ? highlightedText : []}
-                    autoEscape={true}
-                    textToHighlight={
-                      filteredQuestion[currentQuestion]
+                      __html: filteredQuestion[currentQuestion]
                         ? filteredQuestion[currentQuestion].question
-                        : ''
-                    }
-                    onMouseUp={handleHighlight}
-                    onMouseOut={handleHighlight}
-                  /> */}
+                        : '',
+                    }}
+                    onMouseUp={highlight}
+                    ref={questionText}
+                  ></p>
                 </CCol>
               </CRow>
             )}
@@ -606,7 +570,10 @@ const QuizLayout = () => {
                         }}
                         className="form-check-input"
                         checked={
-                          filteredQuestion[currentQuestion].optionOne == selectedOption
+                          filteredQuestion[currentQuestion].optionOne ==
+                          saveQuestionArray.filter(
+                            (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                          )[0].selectedOption
                             ? true
                             : false
                         }
@@ -635,7 +602,10 @@ const QuizLayout = () => {
                         }}
                         className="form-check-input"
                         checked={
-                          filteredQuestion[currentQuestion].optionTwo == selectedOption
+                          filteredQuestion[currentQuestion].optionTwo ==
+                          saveQuestionArray.filter(
+                            (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                          )[0].selectedOption
                             ? true
                             : false
                         }
@@ -664,7 +634,10 @@ const QuizLayout = () => {
                         }}
                         className="form-check-input"
                         checked={
-                          filteredQuestion[currentQuestion].optionThree == selectedOption
+                          filteredQuestion[currentQuestion].optionThree ==
+                          saveQuestionArray.filter(
+                            (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                          )[0].selectedOption
                             ? true
                             : false
                         }
@@ -693,7 +666,10 @@ const QuizLayout = () => {
                         }}
                         className="form-check-input"
                         checked={
-                          filteredQuestion[currentQuestion].optionFour == selectedOption
+                          filteredQuestion[currentQuestion].optionFour ==
+                          saveQuestionArray.filter(
+                            (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                          )[0].selectedOption
                             ? true
                             : false
                         }
@@ -722,7 +698,10 @@ const QuizLayout = () => {
                         }}
                         className="form-check-input"
                         checked={
-                          filteredQuestion[currentQuestion].optionFive == selectedOption
+                          filteredQuestion[currentQuestion].optionFive ==
+                          saveQuestionArray.filter(
+                            (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                          )[0].selectedOption
                             ? true
                             : false
                         }
@@ -752,7 +731,10 @@ const QuizLayout = () => {
                           }}
                           className="form-check-input"
                           checked={
-                            filteredQuestion[currentQuestion].optionSix == selectedOption
+                            filteredQuestion[currentQuestion].optionSix ==
+                            saveQuestionArray.filter(
+                              (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                            )[0].selectedOption
                               ? true
                               : false
                           }

@@ -66,6 +66,10 @@ const Comments = () => {
     toolbar: [['bold', 'italic', 'underline']],
   }
   const formats = ['bold', 'italic', 'underline']
+  const expmodules = {
+    toolbar: [['bold', 'italic', 'underline', 'image']],
+  }
+  const expformats = ['bold', 'italic', 'underline', 'image']
   const {
     register,
     handleSubmit,
@@ -536,8 +540,8 @@ const Comments = () => {
                       name="question"
                       value={getValues('explaination')}
                       placeholder="Enter question explanation here"
-                      formats={formats}
-                      modules={modules}
+                      formats={expformats}
+                      modules={expmodules}
                       onChange={(e) => setValue('explaination', e.toString())}
                     />
                     {errors.explaination && (
