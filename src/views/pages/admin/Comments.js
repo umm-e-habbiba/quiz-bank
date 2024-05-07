@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CCard,
@@ -35,7 +35,31 @@ import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+import JoditEditor from 'jodit-react'
 const Comments = () => {
+  const editor = useRef(null)
+  const options = ['bold', 'italic', 'underline', 'image', 'table']
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      placeholder: 'Start typing...',
+      defaultActionOnPaste: 'insert_as_text',
+      defaultLineHeight: 1.5,
+      enter: 'div',
+      // options that we defined in above step.
+      buttons: options,
+      buttonsMD: options,
+      buttonsSM: options,
+      buttonsXS: options,
+      statusbar: false,
+      sizeLG: 900,
+      sizeMD: 700,
+      sizeSM: 400,
+      toolbarAdaptive: false,
+    }),
+    [],
+  )
+  //////
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
@@ -505,7 +529,14 @@ const Comments = () => {
                 <CRow className="mb-3">
                   <CCol md={12}>
                     <label className="form-label">Question</label>
-                    <ReactQuill
+                    <JoditEditor
+                      ref={editor}
+                      value={getValues('question')}
+                      config={config}
+                      tabIndex={1}
+                      onChange={(e) => setValue('question', e.toString())}
+                    />
+                    {/* <ReactQuill
                       theme="snow"
                       name="question"
                       value={getValues('question')}
@@ -515,7 +546,7 @@ const Comments = () => {
                       formats={formats}
                       modules={modules}
                       onChange={(e) => setValue('question', e.toString())}
-                    />
+                    /> */}
                     {errors.question && (
                       <span className="text-red-500 text-sm">Question is required</span>
                     )}
@@ -535,7 +566,14 @@ const Comments = () => {
                 <CRow className="mb-3">
                   <CCol md={12}>
                     <label className="form-label">Explanation</label>
-                    <ReactQuill
+                    <JoditEditor
+                      ref={editor}
+                      value={getValues('explaination')}
+                      config={config}
+                      tabIndex={1}
+                      onChange={(e) => setValue('explaination', e.toString())}
+                    />
+                    {/* <ReactQuill
                       theme="snow"
                       name="question"
                       value={getValues('explaination')}
@@ -543,7 +581,7 @@ const Comments = () => {
                       formats={expformats}
                       modules={expmodules}
                       onChange={(e) => setValue('explaination', e.toString())}
-                    />
+                    /> */}
                     {errors.explaination && (
                       <span className="text-red-500 text-sm">Explanation is required</span>
                     )}
