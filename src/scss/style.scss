@@ -107,16 +107,41 @@ mark {
 }
 
 // quill editor
-.ql-container {
-  border-bottom-left-radius: 0.37rem;
-  border-bottom-right-radius: 0.37rem;
-  background: #fefcfc;
+.ql-container,
+.jodit-container:not(.jodit_inline) {
+  border-bottom-left-radius: 0.37rem !important;
+  border-bottom-right-radius: 0.37rem !important;
+  background-color: #fefcfc !important;
 }
 
 /* Snow Theme */
-.ql-snow.ql-toolbar {
+.ql-snow.ql-toolbar,
+.jodit-toolbar__box:not(:empty):not(:empty),
+.jodit-toolbar__box:not(:empty) {
   display: block;
-  background: #eaecec;
+  background-color: #eaecec !important;
   border-top-left-radius: 0.37rem;
   border-top-right-radius: 0.37rem;
+  border-radius: 0.37rem 0.37rem 0 0 !important;
+}
+
+//admin tables
+.admin-tables,
+.admin-tables td,
+.admin-tables th {
+  border: none;
+  text-align: left;
+  margin: 0px;
+}
+
+// tables
+table,
+table td,
+table th {
+  border: 1px solid;
+  text-align: center;
+  margin: 10px 0px;
+}
+.setting-toggle::after {
+  display: none !important;
 }

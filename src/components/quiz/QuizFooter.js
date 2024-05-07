@@ -10,7 +10,7 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from 'src/store'
-const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionArray }) => {
+const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionArray, isTimer }) => {
   const navigate = useNavigate()
   const [endModal, setEndModal] = useState(false)
   // const [totalSeconds, setTotalSeconds] = useState(0)
@@ -38,29 +38,30 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
     console.log(saveQuestionArray)
   }, [saveQuestionArray])
 
-  // useEffect(() => {
-  //   //Implementing the setInterval method
-  //   // console.log('ques ', totalQues, 'seconds', Number(totalQues) * 90, 'left', timeLeft)
-  //   if (showQues) {
-  //     if (totalSeconds > 0) {
-  //       const interval = setInterval(() => {
-  //         setTotalSeconds(totalSeconds - 1)
-  //         const leftTime = convertSeconds(totalSeconds - 1)
-  //         setTimeLeft(leftTime)
-  //       }, 1000)
-  //       //Clearing the interval
-  //       return () => {
-  //         if (interval) {
-  //           clearInterval(interval)
-  //         }
-  //       }
-  //     } else {
-  //       endQuiz()
-  //     }
-  //   } else {
-  //     // console.log('total show ques is false')
-  //   }
-  // }, [totalSeconds, showQues, timeLeft])
+  useEffect(() => {
+    //Implementing the setInterval method
+    // console.log('ques ', totalQues, 'seconds', Number(totalQues) * 90, 'left', timeLeft)
+    if (isTimer) {
+      if (totalSeconds > 0) {
+        const interval = setInterval(() => {
+          setTotalSeconds(totalSeconds - 1)
+          const leftTime = convertSeconds(totalSeconds - 1)
+          setTimeLeft(leftTime)
+        }, 1000)
+        //Clearing the interval
+        return () => {
+          if (interval) {
+            clearInterval(interval)
+          }
+        }
+      } else {
+        setTimeLeft('00:00')
+      }
+    } else {
+      // console.log('total show ques is false')
+      setTimeLeft('00:00')
+    }
+  }, [totalSeconds, isTimer, timeLeft])
 
   const endQuiz = () => {
     navigate('/quiz-performance')
@@ -128,7 +129,7 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
     <>
       <CFooter className="quiz-footer">
         {/* <div className="text-xl">Time Left : {showQues ? convertSeconds(totalSeconds) : '00:00'}</div> */}
-        <div className="text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>
+        {isTimer && <div className="text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>}
         <div className="text-xl opacity-40">
           Question Bank for USMLE {showQues ? `Step ${step}: ${category}` : ''}
         </div>

@@ -19,6 +19,7 @@ import {
   CSpinner,
   CAlert,
   CPopover,
+  CFormSwitch,
 } from '@coreui/react'
 import { CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem } from '@coreui/react'
 
@@ -39,7 +40,8 @@ import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
-
+// isTimer={isTimer}
+//         setIsTimer={setIsTimer}
 const QuizHeader = ({
   currentQuestion,
   setCurrentQuestion,
@@ -48,6 +50,8 @@ const QuizHeader = ({
   filteredArray,
   fontSize,
   setFontSize,
+  isTimer,
+  setIsTimer,
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
@@ -69,6 +73,7 @@ const QuizHeader = ({
   const [errorMsg, setErrorMsg] = useState('')
   const [markedQuestions, setMarkedQuestions] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [timer, setTimer] = useState(true)
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -339,7 +344,20 @@ const QuizHeader = ({
           ) : (
             ''
           )}
-          <FiSettings className="quiz-icons cursor-pointer" />
+          <CDropdown alignment="end">
+            <CDropdownToggle className="border-none flex p-0 setting-toggle">
+              <FiSettings className="quiz-icons cursor-pointer" />
+            </CDropdownToggle>
+            <CDropdownMenu className="p-3">
+              <CFormSwitch
+                label="Timer"
+                id="formSwitchCheckChecked"
+                onChange={() => setIsTimer((prevCheck) => !prevCheck)}
+                defaultChecked={isTimer ? true : false}
+              />
+            </CDropdownMenu>
+          </CDropdown>
+          {/* <FiSettings className="quiz-icons cursor-pointer" /> */}
         </CHeaderNav>
       </CHeader>{' '}
       {showCalculator && (

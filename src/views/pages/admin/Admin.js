@@ -193,7 +193,7 @@ const Admin = () => {
             <CCard className="mb-4">
               <CCardHeader>Users</CCardHeader>
               <CCardBody>
-                <CTable align="middle" className="mb-0 border" hover responsive>
+                <CTable align="middle" className="mb-0 border admin-tables" hover responsive>
                   <CTableHead className="text-nowrap">
                     <CTableRow>
                       <CTableHeaderCell className="bg-body-tertiary text-center">

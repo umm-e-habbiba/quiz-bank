@@ -189,7 +189,7 @@ const PreviousTests = () => {
                   <CSpinner color="success" variant="grow" />
                 </div>
               ) : (
-                <CTable striped>
+                <CTable striped className="admin-tables">
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">Obt Score</CTableHeaderCell>

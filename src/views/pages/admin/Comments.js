@@ -293,7 +293,7 @@ const Comments = () => {
                 <CSpinner color="success" variant="grow" />
               </div>
             ) : (
-              <CTable striped>
+              <CTable striped className="admin-tables">
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
@@ -842,19 +842,19 @@ const Comments = () => {
                 <strong>Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A {getValues('op1')}</span>
+                <span>A. {getValues('op1')}</span>
                 <br />
-                <span>B {getValues('op2')}</span>
+                <span>B. {getValues('op2')}</span>
                 <br />
-                <span>C {getValues('op3')}</span>
+                <span>C. {getValues('op3')}</span>
                 <br />
-                <span>D {getValues('op4')}</span>
+                <span>D. {getValues('op4')}</span>
                 <br />
-                <span>E {getValues('op5')}</span>
+                <span>E. {getValues('op5')}</span>
                 {op6 && (
                   <>
                     <br />
-                    <span>F {op6}</span>
+                    <span>F. {op6}</span>
                   </>
                 )}
               </CCol>
@@ -888,19 +888,19 @@ const Comments = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A {getValues('op1Explain')}</span>
+                <span>A. {getValues('op1Explain')}</span>
                 <br />
-                <span>B {getValues('op2Explain')}</span>
+                <span>B. {getValues('op2Explain')}</span>
                 <br />
-                <span>C {getValues('op3Explain')}</span>
+                <span>C. {getValues('op3Explain')}</span>
                 <br />
-                <span>D {getValues('op4Explain')}</span>
+                <span>D. {getValues('op4Explain')}</span>
                 <br />
-                <span>E {getValues('op5Explain')}</span>
+                <span>E. {getValues('op5Explain')}</span>
                 {op6Exp && (
                   <>
                     <br />
-                    <span>F {op6Exp}</span>
+                    <span>F. {op6Exp}</span>
                   </>
                 )}
               </CCol>

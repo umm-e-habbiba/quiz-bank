@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   CCard,
@@ -34,7 +34,32 @@ import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
+//////////
+import JoditEditor from 'jodit-react'
 const ManageQuiz = () => {
+  const editor = useRef(null)
+  const options = ['bold', 'italic', 'underline', 'image', 'table']
+  const config = useMemo(
+    () => ({
+      readonly: false,
+      placeholder: 'Start typing...',
+      defaultActionOnPaste: 'insert_as_text',
+      defaultLineHeight: 1.5,
+      enter: 'div',
+      // options that we defined in above step.
+      buttons: options,
+      buttonsMD: options,
+      buttonsSM: options,
+      buttonsXS: options,
+      statusbar: false,
+      sizeLG: 900,
+      sizeMD: 700,
+      sizeSM: 400,
+      toolbarAdaptive: false,
+    }),
+    [],
+  )
+  //////
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
@@ -63,9 +88,9 @@ const ManageQuiz = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
   const expmodules = {
-    toolbar: [['bold', 'italic', 'underline', 'image', 'table']],
+    toolbar: [['bold', 'italic', 'underline', 'image']],
   }
-  const expformats = ['bold', 'italic', 'underline', 'image', 'table']
+  const expformats = ['bold', 'italic', 'underline', 'image']
   const modules = {
     toolbar: [['bold', 'italic', 'underline']],
   }
@@ -379,7 +404,7 @@ const ManageQuiz = () => {
                 <CSpinner color="success" variant="grow" />
               </div>
             ) : (
-              <CTable striped>
+              <CTable striped className="admin-tables">
                 <CTableHead>
                   <CTableRow>
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
@@ -603,7 +628,7 @@ const ManageQuiz = () => {
                       invalid={errors.question ? true : false}
                     /> */}
                     <label className="form-label">Question</label>
-                    <ReactQuill
+                    {/* <ReactQuill
                       theme="snow"
                       name="question"
                       value={getValues('question')}
@@ -612,6 +637,13 @@ const ManageQuiz = () => {
                       placeholder="Enter question here"
                       formats={formats}
                       modules={modules}
+                      onChange={(e) => setValue('question', e.toString())}
+                    /> */}
+                    <JoditEditor
+                      ref={editor}
+                      value={getValues('question')}
+                      config={config}
+                      tabIndex={1}
                       onChange={(e) => setValue('question', e.toString())}
                     />
                     {errors.question && (
@@ -632,13 +664,20 @@ const ManageQuiz = () => {
                       invalid={errors.explaination ? true : false}
                     /> */}
                     <label className="form-label">Explanation</label>
-                    <ReactQuill
+                    {/* <ReactQuill
                       theme="snow"
                       name="question"
                       value={getValues('explaination')}
                       placeholder="Enter question explanation here"
                       formats={expformats}
                       modules={expmodules}
+                      onChange={(e) => setValue('explaination', e.toString())}
+                    /> */}
+                    <JoditEditor
+                      ref={editor}
+                      value={getValues('explaination')}
+                      config={config}
+                      tabIndex={1}
                       onChange={(e) => setValue('explaination', e.toString())}
                     />
                     {errors.explaination && (
@@ -934,19 +973,19 @@ const ManageQuiz = () => {
                 <strong>Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A {getValues('op1')}</span>
+                <span>A. {getValues('op1')}</span>
                 <br />
-                <span>B {getValues('op2')}</span>
+                <span>B. {getValues('op2')}</span>
                 <br />
-                <span>C {getValues('op3')}</span>
+                <span>C. {getValues('op3')}</span>
                 <br />
-                <span>D {getValues('op4')}</span>
+                <span>D. {getValues('op4')}</span>
                 <br />
-                <span>E {getValues('op5')}</span>
+                <span>E. {getValues('op5')}</span>
                 {op6 && (
                   <>
                     <br />
-                    <span>F {op6}</span>
+                    <span>F. {op6}</span>
                   </>
                 )}
               </CCol>
@@ -986,19 +1025,19 @@ const ManageQuiz = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A {getValues('op1Explain')}</span>
+                <span>A. {getValues('op1Explain')}</span>
                 <br />
-                <span>B {getValues('op2Explain')}</span>
+                <span>B. {getValues('op2Explain')}</span>
                 <br />
-                <span>C {getValues('op3Explain')}</span>
+                <span>C. {getValues('op3Explain')}</span>
                 <br />
-                <span>D {getValues('op4Explain')}</span>
+                <span>D. {getValues('op4Explain')}</span>
                 <br />
-                <span>E {getValues('op5Explain')}</span>
+                <span>E. {getValues('op5Explain')}</span>
                 {op6Exp && (
                   <>
                     <br />
-                    <span>F {op6Exp}</span>
+                    <span>F. {op6Exp}</span>
                   </>
                 )}
               </CCol>

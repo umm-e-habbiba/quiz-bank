@@ -33,6 +33,7 @@ const QuizLayout = () => {
   const [step3, setStep3] = useState(false)
   const [detailModal, setDetailModal] = useState(false)
   const [showQues, setShowQues] = useState(false)
+  const [isTimer, setIsTimer] = useState(true)
   const [usmleCategory, setUsmleCategory] = useState('')
   const [usmleStep, setUsmleStep] = useState('')
   const [showTotal, setShowTotal] = useState(false)
@@ -55,6 +56,7 @@ const QuizLayout = () => {
   const [opt4Marked, setOpt4Marked] = useState(false)
   const [opt5Marked, setOpt5Marked] = useState(false)
   const [opt6Marked, setOpt6Marked] = useState(false)
+
   const questionText = useRef()
   const {
     register,
@@ -294,19 +296,47 @@ const QuizLayout = () => {
       setStep3(true)
     }
   }
+  // const highlight = () => {
+  //   const text = window.getSelection().toString()
+  //   var innerHTML = questionText.current.innerHTML
+  //   var index = innerHTML.indexOf(text)
+  //   if (index >= 0) {
+  //     innerHTML =
+  //       innerHTML.substring(0, index) +
+  //       "<span class='bg-yellow-300 text-yellow-700'>" +
+  //       innerHTML.substring(index, index + text.length) +
+  //       '</span>' +
+  //       innerHTML.substring(index + text.length)
+  //     questionText.current.innerHTML = innerHTML
+  //   }
+  // }
   const highlight = () => {
     const text = window.getSelection().toString()
     var innerHTML = questionText.current.innerHTML
     var index = innerHTML.indexOf(text)
     if (index >= 0) {
-      innerHTML =
-        innerHTML.substring(0, index) +
-        "<span class='bg-yellow-300 text-yellow-700'>" +
-        innerHTML.substring(index, index + text.length) +
-        '</span>' +
-        innerHTML.substring(index + text.length)
-      questionText.current.innerHTML = innerHTML
+      const spanTag = innerHTML.substring(index - 45, index)
+      const isSpan = innerHTML.substring(index - 45, index).includes('<span')
+      console.log('highlighted or not', isSpan)
+      // const isSpan = innerHTML.indexOf('<span class="bg-yellow-300 text-yellow-700">')
+      if (isSpan) {
+        console.log('aready highlighted')
+        // for unhighlight
+        innerHTML = innerHTML.toString().replace(spanTag, ' ')
+        // innerHTML = innerHTML.toString().replace(/(<([^>]+)>)/gi, '')
+        questionText.current.innerHTML = innerHTML
+      } else {
+        console.log('not highlighted')
+        innerHTML = innerHTML
+          .toString()
+          .replace(text, `<span class='bg-yellow-300 text-yellow-700'>${text}</span>`)
+        questionText.current.innerHTML = innerHTML
+      }
     }
+  }
+
+  const createMarkup = (value) => {
+    return { __html: value }
   }
   return (
     <div>
@@ -318,6 +348,8 @@ const QuizLayout = () => {
         filteredArray={filteredQuestion}
         fontSize={fontSize}
         setFontSize={setFontSize}
+        isTimer={isTimer}
+        setIsTimer={setIsTimer}
       />
       <div className="wrapper d-flex flex-column quiz-wrapper overflow-y-auto">
         {/* tutorial */}
@@ -514,13 +546,19 @@ const QuizLayout = () => {
               <CRow className="mb-5">
                 <CCol md={8}>
                   <p
-                    dangerouslySetInnerHTML={{
-                      __html: filteredQuestion[currentQuestion]
+                    dangerouslySetInnerHTML={createMarkup(
+                      filteredQuestion[currentQuestion]
                         ? filteredQuestion[currentQuestion].question
                         : '',
-                    }}
+                    )}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: filteredQuestion[currentQuestion]
+                    //     ? filteredQuestion[currentQuestion].question
+                    //     : '',
+                    // }}
                     ref={questionText}
                     onMouseUp={highlight}
+                    onClick={() => console.log('clicked')}
                   ></p>
                 </CCol>
                 <CCol md={4}>
@@ -536,13 +574,19 @@ const QuizLayout = () => {
               <CRow className="mb-5">
                 <CCol md={12}>
                   <p
-                    dangerouslySetInnerHTML={{
-                      __html: filteredQuestion[currentQuestion]
+                    dangerouslySetInnerHTML={createMarkup(
+                      filteredQuestion[currentQuestion]
                         ? filteredQuestion[currentQuestion].question
                         : '',
-                    }}
+                    )}
+                    // dangerouslySetInnerHTML={{
+                    //   __html: filteredQuestion[currentQuestion]
+                    //     ? filteredQuestion[currentQuestion].question
+                    //     : '',
+                    // }}
                     onMouseUp={highlight}
                     ref={questionText}
+                    onClick={() => console.log('clicked')}
                   ></p>
                 </CCol>
               </CRow>
@@ -582,7 +626,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
                       >
-                        A {filteredQuestion[currentQuestion].optionOne}
+                        A. {filteredQuestion[currentQuestion].optionOne}
                       </label>
                     </div>
                     <div className="form-check">
@@ -614,7 +658,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
                       >
-                        B {filteredQuestion[currentQuestion].optionTwo}
+                        B. {filteredQuestion[currentQuestion].optionTwo}
                       </label>
                     </div>
                     <div className="form-check">
@@ -646,7 +690,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
                       >
-                        C {filteredQuestion[currentQuestion].optionThree}
+                        C. {filteredQuestion[currentQuestion].optionThree}
                       </label>
                     </div>
                     <div className="form-check">
@@ -678,7 +722,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
                       >
-                        D {filteredQuestion[currentQuestion].optionFour}
+                        D. {filteredQuestion[currentQuestion].optionFour}
                       </label>
                     </div>
                     <div className="form-check">
@@ -710,7 +754,7 @@ const QuizLayout = () => {
                         className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
                         onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
                       >
-                        E {filteredQuestion[currentQuestion].optionFive}
+                        E. {filteredQuestion[currentQuestion].optionFive}
                       </label>
                     </div>
                     {filteredQuestion[currentQuestion].optionSix ? (
@@ -743,7 +787,7 @@ const QuizLayout = () => {
                           className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
                           onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
                         >
-                          F {filteredQuestion[currentQuestion].optionSix}
+                          F. {filteredQuestion[currentQuestion].optionSix}
                         </label>
                       </div>
                     ) : (
@@ -780,6 +824,7 @@ const QuizLayout = () => {
         category={usmleCategory}
         score={quizScore}
         saveQuestionArray={saveQuestionArray}
+        isTimer={isTimer}
       />
       {/* error alert */}
       {error && (
@@ -806,18 +851,24 @@ const QuizLayout = () => {
             <CRow className="mb-2 flex flex-col">
               <strong className="mb-2">Question</strong>
               <span
-                dangerouslySetInnerHTML={{
-                  __html: filteredQuestion[currentQuestion].question,
-                }}
+                dangerouslySetInnerHTML={createMarkup(filteredQuestion[currentQuestion].question)}
+                onClick={() => console.log('clicked')}
+                // dangerouslySetInnerHTML={{
+                //   __html: filteredQuestion[currentQuestion].question,
+                // }}
               />
               {/* <span>{filteredQuestion[currentQuestion].question}</span> */}
             </CRow>
             <CRow className="mb-2 flex flex-col">
               <strong className="mb-2">Question explanation</strong>
               <span
-                dangerouslySetInnerHTML={{
-                  __html: filteredQuestion[currentQuestion].questionExplanation,
-                }}
+                dangerouslySetInnerHTML={createMarkup(
+                  filteredQuestion[currentQuestion].questionExplanation,
+                )}
+                onClick={() => console.log('clicked')}
+                // dangerouslySetInnerHTML={{
+                //   __html: filteredQuestion[currentQuestion].questionExplanation,
+                // }}
               />
               {/* <span>{filteredQuestion[currentQuestion].questionExplanation}</span> */}
             </CRow>
