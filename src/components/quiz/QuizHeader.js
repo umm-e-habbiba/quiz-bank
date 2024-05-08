@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   CHeader,
   CHeaderNav,
@@ -55,6 +55,7 @@ const QuizHeader = ({
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
+  const location = useLocation()
   const [fullscreen, setFullscreen] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
@@ -257,7 +258,8 @@ const QuizHeader = ({
                             ? filteredArray[currentQuestion]._id
                             : ''
                       }
-                      checked={marked}
+                      // checked={marked}
+                      checked={markedQuestions.includes(currentQuestion + 1)}
                       label=""
                       onChange={(e) => toggleMarked(e)}
                     />
@@ -320,7 +322,7 @@ const QuizHeader = ({
           ) : (
             <BiFullscreen className="quiz-icons mr-2 cursor-pointer" onClick={toggleFullscreen} />
           )}
-          <CPopover content="Please email test@gmail.com" placement="bottom">
+          <CPopover content="Please email ajmonics@gmail.com" placement="bottom">
             <CButton color="link p-0">
               <BiSolidHelpCircle className="quiz-icons mr-2 cursor-pointer" />
             </CButton>
@@ -344,19 +346,23 @@ const QuizHeader = ({
           ) : (
             ''
           )}
-          <CDropdown alignment="end">
-            <CDropdownToggle className="border-none flex p-0 setting-toggle">
-              <FiSettings className="quiz-icons cursor-pointer" />
-            </CDropdownToggle>
-            <CDropdownMenu className="p-3">
-              <CFormSwitch
-                label="Timer"
-                id="formSwitchCheckChecked"
-                onChange={() => setIsTimer((prevCheck) => !prevCheck)}
-                defaultChecked={isTimer ? true : false}
-              />
-            </CDropdownMenu>
-          </CDropdown>
+          {location.pathname == '/review-quiz' ? (
+            <FiSettings className="quiz-icons cursor-pointer" />
+          ) : (
+            <CDropdown alignment="end">
+              <CDropdownToggle className="border-none flex p-0 setting-toggle">
+                <FiSettings className="quiz-icons cursor-pointer" />
+              </CDropdownToggle>
+              <CDropdownMenu className="p-3">
+                <CFormSwitch
+                  label="Timer"
+                  id="formSwitchCheckChecked"
+                  onChange={() => setIsTimer((prevCheck) => !prevCheck)}
+                  defaultChecked={isTimer ? true : false}
+                />
+              </CDropdownMenu>
+            </CDropdown>
+          )}
           {/* <FiSettings className="quiz-icons cursor-pointer" /> */}
         </CHeaderNav>
       </CHeader>{' '}

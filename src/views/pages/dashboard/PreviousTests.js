@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
 import {
   CCard,
@@ -213,9 +213,18 @@ const PreviousTests = () => {
                             {moment(q.createdAt).format('MMMM Do YYYY')}
                           </CTableDataCell>
                           <CTableDataCell className="flex justify-center items-center" scope="row">
+                            <Link to={`/review-quiz/${q._id}`}>
+                              <CButton
+                                color="success"
+                                className="text-white"
+                                // id={q._id}
+                              >
+                                Review
+                              </CButton>
+                            </Link>
                             <CButton
                               color="danger"
-                              className="text-white"
+                              className="text-white ml-2"
                               id={q._id}
                               onClick={(e) => {
                                 setDeleteModal(true)

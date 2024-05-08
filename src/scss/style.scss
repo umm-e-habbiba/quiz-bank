@@ -112,6 +112,7 @@ mark {
   border-bottom-left-radius: 0.37rem !important;
   border-bottom-right-radius: 0.37rem !important;
   background-color: #fefcfc !important;
+  color: black;
 }
 
 /* Snow Theme */
@@ -145,3 +146,8 @@ table th {
 .setting-toggle::after {
   display: none !important;
 }
+
+// .jodit-ui-group__delete,
+// .jodit-ui-group__addrow {
+//   display: none !important;
+// }

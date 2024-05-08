@@ -381,11 +381,10 @@ const QuizLayout = () => {
         )}
         {/* select steps */}
         {steps && (
-          <div className="flex flex-col bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mx-auto mt-20 mb-10">
-            <h3 className="text-center text-3xl mb-3">Please select your Exam</h3>
+          <div className="flex flex-col bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 pb-0 mx-auto mt-20 mb-10">
+            <h3 className="text-center text-3xl mb-0">Please select your Exam</h3>
             <CButton
-              color="primary"
-              className="mx-auto px-5 rounded-full mb-3 text-xl"
+              className="mx-auto px-5 rounded-full mt-3 mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
               onClick={() => {
                 fetchQuestion(1, '')
               }}
@@ -393,8 +392,7 @@ const QuizLayout = () => {
               USMLE: <span className="font-bold">Step1</span>
             </CButton>
             <CButton
-              color="primary"
-              className="mx-auto px-5 rounded-full mb-3 text-xl"
+              className="mx-auto px-5 rounded-full mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
               onClick={() => {
                 fetchQuestion(2, '')
               }}
@@ -402,8 +400,7 @@ const QuizLayout = () => {
               USMLE: <span className="font-bold">Step2</span>
             </CButton>
             <CButton
-              color="primary"
-              className="mx-auto px-5 rounded-full mb-3 text-xl"
+              className="mx-auto px-5 rounded-full mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
               onClick={() => {
                 fetchQuestion(3, '')
               }}
@@ -566,7 +563,6 @@ const QuizLayout = () => {
                     // src={image}
                     src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
                     alt="question image"
-                    className="w-96 h-64"
                   />
                 </CCol>
               </CRow>
@@ -805,7 +801,7 @@ const QuizLayout = () => {
           </div>
         )}
       </div>
-      {showQues && (
+      {/* {showQues && (
         <div className="fixed bottom-20 right-6 z-20">
           <CButton
             color="primary"
@@ -816,7 +812,7 @@ const QuizLayout = () => {
             View
           </CButton>
         </div>
-      )}
+      )} */}
       <QuizFooter
         showQues={showQues}
         totalQues={getValues('total')}

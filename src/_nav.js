@@ -26,12 +26,12 @@ const _nav = [
     to: '/quiz',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Previous Tests',
-    to: '/previous-tests',
-    icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Previous Tests',
+  //   to: '/previous-tests',
+  //   icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+  // },
   {
     component: CNavGroup,
     name: 'Performance',
@@ -40,14 +40,14 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Overall',
+        name: 'Latest Quiz',
         to: '/quiz-performance',
       },
-      // {
-      //   component: CNavItem,
-      //   name: 'Reports',
-      //   to: '/reports',
-      // },
+      {
+        component: CNavItem,
+        name: 'All Quiz',
+        to: '/previous-tests',
+      },
       // {
       //   component: CNavItem,
       //   name: 'Graphs',

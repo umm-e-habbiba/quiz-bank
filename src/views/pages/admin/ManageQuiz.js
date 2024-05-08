@@ -36,6 +36,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 //////////
 import JoditEditor from 'jodit-react'
+import { RiEyeLine } from 'react-icons/ri'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -55,7 +56,7 @@ const ManageQuiz = () => {
       sizeLG: 900,
       sizeMD: 700,
       sizeSM: 400,
-      toolbarAdaptive: false,
+      toolbarAdaptive: true,
     }),
     [],
   )
@@ -64,6 +65,7 @@ const ManageQuiz = () => {
   const [allQuestion, setAllQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
   const [detailModal, setDetailModal] = useState(false)
+  const [viewModal, setViewModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -382,7 +384,12 @@ const ManageQuiz = () => {
       <>
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
-            <strong>Manage Questions</strong>
+            <div className="flex flex-col">
+              <strong>Manageeee Questions</strong>
+              {!loader && allQuestion.length > 0 && (
+                <span className="text-sm">Total {allQuestion.length} questions added</span>
+              )}
+            </div>
             <CButton
               color="success"
               className="text-white"
@@ -449,6 +456,18 @@ const ManageQuiz = () => {
                         </CTableDataCell> */}
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                         <CTableDataCell className="flex justify-center items-center">
+                          <CButton
+                            color="success"
+                            className="text-white mr-3 my-2"
+                            id={q._id}
+                            onClick={(e) => {
+                              setViewModal(true)
+                              setQuestionId(e.currentTarget.id)
+                            }}
+                            title="View"
+                          >
+                            <RiEyeLine className="my-1" />
+                          </CButton>
                           <CButton
                             color="info"
                             className="text-white mr-3 my-2"
@@ -640,10 +659,8 @@ const ManageQuiz = () => {
                       onChange={(e) => setValue('question', e.toString())}
                     /> */}
                     <JoditEditor
-                      ref={editor}
                       value={getValues('question')}
                       config={config}
-                      tabIndex={1}
                       onChange={(e) => setValue('question', e.toString())}
                     />
                     {errors.question && (
@@ -1079,6 +1096,119 @@ const ManageQuiz = () => {
               Close
             </CButton>
           </CModalFooter>
+        </CModal>
+        {/* view quiz modal */}
+        <CModal
+          alignment="center"
+          fullscreen
+          visible={viewModal}
+          backdrop="static"
+          onClose={() => {
+            setViewModal(false)
+          }}
+          aria-labelledby="VerticallyCenteredExample"
+          size="lg"
+        >
+          <CModalHeader></CModalHeader>
+          <CModalBody>
+            <div className="p-10">
+              {image ? (
+                <CRow className="mb-5">
+                  <CCol md={8}>
+                    <p dangerouslySetInnerHTML={{ __html: getValues('question') }}></p>
+                  </CCol>
+                  <CCol md={4}>
+                    <img
+                      // src={image}
+                      src={`${API_URL}uploads/${image}`}
+                      alt="question image"
+                      className="w-96 h-64"
+                    />
+                  </CCol>
+                </CRow>
+              ) : (
+                <CRow className="mb-5">
+                  <CCol md={12}>
+                    <p dangerouslySetInnerHTML={{ __html: getValues('question') }}></p>
+                  </CCol>
+                </CRow>
+              )}
+              <div></div>
+              <CForm>
+                <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
+                  <>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={getValues('op1')}
+                        name={getValues('correct')}
+                        value={getValues('op1')}
+                        className="form-check-input"
+                      />
+                      <label className={`form-check-label ml-2`}>A. {getValues('op1')}</label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={getValues('op2')}
+                        name={getValues('correct')}
+                        value={getValues('op2')}
+                        className="form-check-input"
+                      />
+                      <label className={`form-check-label ml-2`}>B. {getValues('op2')}</label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={getValues('op3')}
+                        name={getValues('correct')}
+                        value={getValues('op3')}
+                        className="form-check-input"
+                      />
+                      <label className={`form-check-label ml-2`}>C. {getValues('op3')}</label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={getValues('op4')}
+                        name={getValues('correct')}
+                        value={getValues('op4')}
+                        className="form-check-input"
+                      />
+                      <label className={`form-check-label ml-2`}>D. {getValues('op4')}</label>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        id={getValues('op5')}
+                        name={getValues('correct')}
+                        value={getValues('op5')}
+                        className="form-check-input"
+                      />
+                      <label className={`form-check-label ml-2`}>E. {getValues('op5')}</label>
+                    </div>
+                    {op6 ? (
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          id={op6}
+                          name={getValues('correct')}
+                          value={op6}
+                          className="form-check-input"
+                        />
+                        <label className={`form-check-label ml-2`}>F. {op6}</label>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </>
+                </div>
+                <CButton color="primary" className="mx-auto px-5 rounded-full">
+                  Next
+                </CButton>
+              </CForm>
+            </div>
+          </CModalBody>
         </CModal>
         {/* success alert */}
         {success && (

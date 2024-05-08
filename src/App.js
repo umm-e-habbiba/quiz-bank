@@ -63,6 +63,7 @@ const App = () => {
           <Route path="/comments" name="Comments" element={<Comments />} />
           <Route path="/quiz-performance" name="Quiz Performance" element={<QuizPerformance />} />
           <Route path="/review-quiz" name="Review Quiz" element={<ReviewQuiz />} />
+          <Route path="/review-quiz/:id" name="Review Quiz" element={<ReviewQuiz />} />
           <Route path="/previous-tests" name="Previous Tests" element={<PreviousTests />} />
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
           <Route
