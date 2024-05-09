@@ -192,10 +192,9 @@ const PreviousTests = () => {
                 <CTable striped className="admin-tables">
                   <CTableHead>
                     <CTableRow>
-                      <CTableHeaderCell scope="col">Obt Score</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Total Score</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Usmle Step</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">USMLE</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                       {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
@@ -205,14 +204,13 @@ const PreviousTests = () => {
                     {allQuiz && allQuiz.length > 0 ? (
                       allQuiz.map((q, idx) => (
                         <CTableRow key={idx}>
-                          <CTableHeaderCell scope="row">{q.obtainedScore}</CTableHeaderCell>
+                          <CTableDataCell>{q.obtainedScore}</CTableDataCell>
+                          <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
                           <CTableDataCell>{q.totalScore}</CTableDataCell>
-                          <CTableDataCell>{q.usmleSteps}</CTableDataCell>
-                          <CTableDataCell>{q.USMLE}</CTableDataCell>
                           <CTableDataCell>
                             {moment(q.createdAt).format('MMMM Do YYYY')}
                           </CTableDataCell>
-                          <CTableDataCell className="flex justify-center items-center" scope="row">
+                          <CTableDataCell className="flex justify-start items-center" scope="row">
                             <Link to={`/review-quiz/${q._id}`}>
                               <CButton
                                 color="success"

@@ -385,7 +385,7 @@ const ManageQuiz = () => {
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
             <div className="flex flex-col">
-              <strong>Manageeee Questions</strong>
+              <strong>Manage Questions</strong>
               {!loader && allQuestion.length > 0 && (
                 <span className="text-sm">Total {allQuestion.length} questions added</span>
               )}

@@ -12,7 +12,6 @@ import {
   CModalTitle,
   CModalFooter,
   CFormSelect,
-  CFormSwitch,
 } from '@coreui/react'
 import React, { useState, useEffect, useRef } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
@@ -26,16 +25,22 @@ import image from '../assets/images/angular.jpg'
 import CIcon from '@coreui/icons-react'
 import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
 import { RiEyeLine } from 'react-icons/ri'
-const QuizLayout = () => {
+const QuizLayoutOld = () => {
   const navigate = useNavigate()
+  const [intro, setIntro] = useState(false)
+  const [steps, setSteps] = useState(true)
+  const [step1, setStep1] = useState(false)
+  const [step2, setStep2] = useState(false)
+  const [step3, setStep3] = useState(false)
   const [detailModal, setDetailModal] = useState(false)
-  const [showSelectors, setShowSelectors] = useState(true)
   const [showQues, setShowQues] = useState(false)
   const [isTimer, setIsTimer] = useState(true)
+  const [usmleCategory, setUsmleCategory] = useState('')
+  const [usmleStep, setUsmleStep] = useState('')
+  const [showTotal, setShowTotal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
-  const [allAttemptedQuestion, setAllAttemptedQuestion] = useState([])
   const [filteredQuestion, setFilteredQuestion] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [selectedOption, setSelectedOption] = useState('')
@@ -52,17 +57,7 @@ const QuizLayout = () => {
   const [opt4Marked, setOpt4Marked] = useState(false)
   const [opt5Marked, setOpt5Marked] = useState(false)
   const [opt6Marked, setOpt6Marked] = useState(false)
-  const [totalQuest, setTotalQuest] = useState('')
-  const [totalRows, setTotalRows] = useState([
-    {
-      step: '',
-      category: '',
-      number: '',
-      preventAll: false,
-      preventIncorrect: false,
-      preventCorrect: false,
-    },
-  ])
+
   const questionText = useRef()
   const {
     register,
@@ -82,15 +77,10 @@ const QuizLayout = () => {
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUSerID(getUserId)
-      getAllAttemptedQuest()
     } else {
       navigate('/login')
     }
   }, [])
-
-  // useEffect(() => {
-
-  // }, [totalRows])
 
   useEffect(() => {
     console.log(saveQuestionArray)
@@ -125,49 +115,26 @@ const QuizLayout = () => {
       })
   }
 
-  const getAllAttemptedQuest = () => {
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
-    const requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow',
-    }
-
-    fetch(API_URL + 'user-attempted-questions/' + userID, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result)
-        if (result.data) {
-          setAllAttemptedQuestion(result.data)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
-  const setQues = (value, index) => {
-    totalRows[index].number = value
-    if (value > 100 || value < 1) {
+  const setQues = (data) => {
+    console.log(data.total, filteredQuestion.length)
+    if (data.total > filteredQuestion.length) {
       setError(true)
-      setErrorMsg('Please enter number between 1 and 100')
-      setTimeout(() => {
-        setError(false)
-        setErrorMsg('')
-      }, 3000)
-    } else if (value > filteredQuestion.length) {
-      setError(true)
-      setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
+      setErrorMsg(
+        `${data.total} questions are not available. Kindly enter less number of questions`,
+      )
       setTimeout(() => {
         setError(false)
         setErrorMsg('')
       }, 3000)
     } else {
-      const totals = Number(totalQuest) + Number(value)
-      setTotalQuest(totals)
-      filteredQuestion.length = totals
-      console.log('number of total questions', totals)
+      setShowQues(true)
+      setIntro(false)
+      setSteps(false)
+      setStep1(false)
+      setStep2(false)
+      setStep3(false)
+      setShowTotal(false)
+      filteredQuestion.length = data.total
       let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
         res.push({ questionId: item, selectedOption: '' })
@@ -177,40 +144,44 @@ const QuizLayout = () => {
     }
   }
 
-  const fetchQuestion = (step, value, index) => {
+  const fetchQuestion = (step, value) => {
+    setIntro(false)
     const filterSteps = allQuestion.filter((ques) => ques.usmleStep == step)
-    // const filterAttemptedSteps = allAttemptedQuestion.filter(
-    //   (ques) => ques.question.usmleStep == step,
-    // )
-    // if (filterAttemptedSteps.length > 0) {
-    //   setAllAttemptedQuestion(filterAttemptedSteps)
-    // }
-    // if(filteredQuestion.length > 0){
-    //   setFilteredQuestion([...filteredQuestion,filterSteps])
-    // }
     if (filterSteps.length > 0) {
-      totalRows[index].step = step
+      setUsmleStep(step)
+      setSteps(false)
+      if (step == '1') {
+        setStep1(true)
+      }
+      if (step == '2') {
+        setStep2(true)
+      }
+      if (step == '3') {
+        setStep3(true)
+      }
       // if usmle category is selected
       if (value) {
-        totalRows[index].category = value
+        setUsmleCategory(value)
         const filterUsmle = filterSteps.filter((ques) => ques.USMLE == value)
-        // const filterAttemptedUsmle = filterAttemptedSteps.filter(
-        //   (ques) => ques.question.USMLE == value,
-        // )
-        // if (filterAttemptedUsmle.length > 0) {
-        //   setAllAttemptedQuestion(filterAttemptedUsmle)
-        // }
         if (filterUsmle.length > 0) {
-          console.log('filteredQuestion array', filteredQuestion, 'new array', filterUsmle)
-          if (filteredQuestion.length > 0) {
-            // setFilteredQuestion([...filteredQuestion, filterUsmle])
-            // filteredQuestion.concat(filterUsmle)
-            setFilteredQuestion((ques) => [...ques, ...filterUsmle])
-            // setFilteredQuestion(filteredQuestion)
-          } else {
-            setFilteredQuestion(filterUsmle)
-          }
+          setFilteredQuestion(filterUsmle)
+          setIntro(false)
+          setSteps(false)
+          setStep1(false)
+          setStep2(false)
+          setStep3(false)
+          setShowTotal(true)
         } else {
+          if (step == '1') {
+            setStep1(true)
+          }
+          if (step == '2') {
+            setStep2(true)
+          }
+          if (step == '3') {
+            setStep3(true)
+          }
+          setShowTotal(false)
           setError(true)
           setErrorMsg('No Questions avaialable for this USMLE, Kindly select another')
           setTimeout(() => {
@@ -221,6 +192,8 @@ const QuizLayout = () => {
       }
     } else {
       // if no questions found for selected step send back to select steps
+      setShowTotal(false)
+      setSteps(true)
       setError(true)
       setErrorMsg('No Questions avaialable for this Step, Kindly select another')
       setTimeout(() => {
@@ -269,7 +242,7 @@ const QuizLayout = () => {
 
   const handleNextQuestion = (e) => {
     e.preventDefault()
-    if (currentQuestion + 1 < totalQuest) {
+    if (currentQuestion + 1 < getValues('total')) {
       setCurrentQuestion(currentQuestion + 1)
     } else {
       setQuizEnd(true)
@@ -287,10 +260,10 @@ const QuizLayout = () => {
       attemptedQuizzes: [
         {
           questions: saveQuestionArray,
-          totalScore: totalQuest, // need to add other rows question as well
+          totalScore: getValues('total'),
           obtainedScore: quizScore,
-          usmleSteps: null,
-          USMLE: null,
+          usmleSteps: usmleStep,
+          USMLE: usmleCategory,
         },
       ],
     })
@@ -311,6 +284,18 @@ const QuizLayout = () => {
       .catch((error) => {
         console.error(error)
       })
+  }
+  const gotoselectedstep = () => {
+    setShowTotal(false)
+    if (usmleStep == '1') {
+      setStep1(true)
+    }
+    if (usmleStep == '2') {
+      setStep2(true)
+    }
+    if (usmleStep == '3') {
+      setStep3(true)
+    }
   }
   // const highlight = () => {
   //   const text = window.getSelection().toString()
@@ -354,198 +339,13 @@ const QuizLayout = () => {
   const createMarkup = (value) => {
     return { __html: value }
   }
-
-  const addRows = () => {
-    // setTotalRows((prevList) => prevList.push(id + 1))
-
-    setTotalRows([
-      ...totalRows,
-      {
-        step: '',
-        category: '',
-        number: '',
-        preventAll: false,
-        preventIncorrect: false,
-        preventCorrect: false,
-      },
-    ])
-    console.log('rows', totalRows)
-  }
-
-  const removeRow = (index) => {
-    const rows = [...totalRows]
-    rows.splice(index, 1)
-    setTotalRows(rows)
-  }
-
-  const startexam = () => {
-    setShowQues(true)
-    setShowSelectors(false)
-  }
-
-  // remove all attempted questions
-  const getDifference = (array1, array2) => {
-    const diffFromA1toA2 = array1.filter(
-      (obj1) => !array2.some((obj2) => obj1._id === obj2.question._id),
-    )
-
-    return diffFromA1toA2
-  }
-
-  const filterAttemptedQuestions = (toFilter, index) => {
-    console.log(toFilter, index)
-    if (toFilter == 'preventAll') {
-      totalRows[index].preventAll = !totalRows[index].preventAll
-      if (totalRows[index].preventAll) {
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allAttemptedQuestion)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
-    }
-    if (toFilter == 'preventIncorrect') {
-      totalRows[index].preventIncorrect = !totalRows[index].preventIncorrect
-      if (totalRows[index].preventIncorrect) {
-        const allIncorrected = allAttemptedQuestion.filter(
-          (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
-        )
-        console.log('allIncorrected', allIncorrected)
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allIncorrected)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
-    }
-    if (toFilter == 'preventCorrect') {
-      totalRows[index].preventCorrect = !totalRows[index].preventCorrect
-      if (totalRows[index].preventCorrect) {
-        const allCorrected = allAttemptedQuestion.filter(
-          (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
-        )
-        console.log('allCorrected', allCorrected)
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allCorrected)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
-    }
-    console.log('rows', totalRows)
-  }
   return (
     <div>
       <QuizHeader
         currentQuestion={currentQuestion}
         setCurrentQuestion={setCurrentQuestion}
         showQues={showQues}
-        totalQues={totalQuest}
+        totalQues={getValues('total')}
         filteredArray={filteredQuestion}
         fontSize={fontSize}
         setFontSize={setFontSize}
@@ -553,134 +353,189 @@ const QuizLayout = () => {
         setIsTimer={setIsTimer}
       />
       <div className="wrapper d-flex flex-column quiz-wrapper overflow-y-auto">
-        {/* new layout */}
-        {showSelectors ? (
-          <div className="mt-10">
-            {/* <CForm
+        {/* tutorial */}
+        {intro && (
+          <div className="flex flex-col">
+            <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mx-auto mt-20 mb-10">
+              <h3 className="font-bold text-center text-3xl mb-3">Tutorial</h3>
+              <p className="text-center leading-6 ">
+                Welcome to the USMLE Practice Question Bank Tutorial!
+                <br />
+                This tutorial will guide you through the features and
+                <br />
+                functionalities of our practice question bank to help you make
+                <br />
+                the most of your study time.
+              </p>
+            </div>
+            <CButton
+              color="primary"
+              className="mx-auto px-5 rounded-full"
+              onClick={() => {
+                setIntro(false)
+                setSteps(true)
+              }}
+            >
+              Next
+            </CButton>
+          </div>
+        )}
+        {/* select steps */}
+        {steps && (
+          <div className="flex flex-col bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 pb-0 mx-auto mt-20 mb-10">
+            <h3 className="text-center text-3xl mb-0">Please select your Exam</h3>
+            <CButton
+              className="mx-auto px-5 rounded-full mt-3 mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
+              onClick={() => {
+                fetchQuestion(1, '')
+              }}
+            >
+              USMLE: <span className="font-bold">Step1</span>
+            </CButton>
+            <CButton
+              className="mx-auto px-5 rounded-full mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
+              onClick={() => {
+                fetchQuestion(2, '')
+              }}
+            >
+              USMLE: <span className="font-bold">Step2</span>
+            </CButton>
+            <CButton
+              className="mx-auto px-5 rounded-full mb-4 text-xl bg-[#000099] text-white hover:bg-[#000066] "
+              onClick={() => {
+                fetchQuestion(3, '')
+              }}
+            >
+              USMLE: <span className="font-bold">Step3</span>
+            </CButton>
+          </div>
+        )}
+        {/* USMLE STEP 1 */}
+        {step1 && (
+          <div className=" text-black p-4 mx-auto mt-8 mb-10">
+            <center>
+              <CButton color="secondary" className="mx-auto px-7 rounded-full mb-5 text-2xl ">
+                USMLE: <span className="font-bold">Step1</span>
+              </CButton>
+            </center>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
+              {step1Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => fetchQuestion(usmleStep, category)}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep1(false)
+                setSteps(true)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
+          </div>
+        )}
+        {/* USMLE STEP 2 */}
+        {step2 && (
+          <div className=" text-black p-4 mx-auto mt-8 mb-10">
+            <center>
+              <CButton color="secondary" className="mx-auto px-7 rounded-full mb-5 text-2xl ">
+                USMLE: <span className="font-bold">Step2</span>
+              </CButton>
+            </center>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {step2Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200  border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => fetchQuestion(usmleStep, category)}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep1(true)
+                setStep2(false)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
+          </div>
+        )}
+        {/* USMLE STEP 3 */}
+        {step3 && (
+          <div className=" text-black p-4 mx-auto mt-8 mb-10">
+            <center>
+              <CButton color="secondary" className="mx-auto px-7 rounded-full mb-5 text-2xl ">
+                USMLE: <span className="font-bold">Step3</span>
+              </CButton>
+            </center>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {step3Categories.map((category, idx) => (
+                <div
+                  key={idx}
+                  className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200  border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                  onClick={() => fetchQuestion(usmleStep, category)}
+                >
+                  {category}
+                </div>
+              ))}
+            </div>
+            <CButton
+              color="secondary"
+              className="mx-auto px-7 mt-5"
+              onClick={() => {
+                setStep3(false)
+                setStep2(true)
+              }}
+            >
+              <CIcon icon={cilChevronLeft} className="mr-2" />
+              Go Back
+            </CButton>
+          </div>
+        )}
+        {/* Total Questions */}
+        {/* select steps */}
+        {showTotal && (
+          <div className="flex flex-col bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mx-auto mt-20 mb-10">
+            <h3 className="text-center text-3xl mb-3">Please enter number of questions</h3>
+            <CForm
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
-            > */}
-            {totalRows.map((row, id) => (
-              <CRow
-                key={id}
-                className="bg-gray-200 border-3 flex justify-center items-center border-solid border-gray-400 text-black p-4 mx-40 mb-5"
-              >
-                <CCol xs={1} md={3} lg={3}>
-                  <CFormSelect
-                    aria-label="Select Exam"
-                    className="w-full"
-                    options={[
-                      'Select your Exam',
-                      { label: 'USMLE: Step1', value: '1' },
-                      { label: 'USMLE: Step2', value: '2' },
-                      { label: 'USMLE: Step3', value: '3' },
-                    ]}
-                    onChange={(e) => {
-                      fetchQuestion(e.target.value, '', id)
-                    }}
-                  />
-                </CCol>
-                <CCol xs={1} md={3} lg={3}>
-                  <CFormSelect
-                    aria-label="Select Category"
-                    className="w-full"
-                    onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
-                  >
-                    <option>Select your Category</option>
-                    {row.step == '1' &&
-                      step1Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    {row.step == '2' &&
-                      step2Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                    {row.step == '3' &&
-                      step3Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))}
-                  </CFormSelect>
-                </CCol>
-                <CCol xs={1} md={3} lg={3}>
-                  <CFormInput
-                    type="number"
-                    placeholder="Enter number of questions"
-                    // {...register('total', { required: true, min: 1, max: 100 })}
-                    // feedback="Please enter number between 1 and 100"
-                    // invalid={errors.total ? true : false}
-                    className="w-full placeholder:text-[#252b36]"
-                    value={row.number}
-                    // onChange={(e)=>row.number = e.target.value}
-                    // value={totalQuest}
-                    onChange={(e) => setQues(e.target.value, id)}
-                  />
-                </CCol>
-                <CCol xs={1} md={3} lg={3} className="flex flex-col">
-                  <CFormSwitch
-                    size="xl"
-                    label="Prevent Correct Attempted Questions"
-                    id="preventAttemptedCorrect"
-                    className="text-sm"
-                    onChange={() => filterAttemptedQuestions('preventCorrect', id)}
-                    // onChange={() => (row.preventCorrect = !row.preventCorrect)}
-                    defaultChecked={row.preventCorrect ? true : false}
-                  />
-                  <CFormSwitch
-                    size="xl"
-                    label="Prevent Incorrect Attempted Questions"
-                    id="preventAttemptedIncorrect"
-                    className="text-sm"
-                    // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
-                    onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
-                    defaultChecked={row.preventIncorrect ? true : false}
-                  />
-                  <CFormSwitch
-                    size="xl"
-                    label="Prevent All Attempted Questions"
-                    id="preventAttemptedAll"
-                    className="text-sm"
-                    // onChange={() => (row.preventAll = !row.preventAll)}
-                    onChange={() => filterAttemptedQuestions('preventAll', id)}
-                    defaultChecked={row.preventAll ? true : false}
-                  />
-                </CCol>
-              </CRow>
-            ))}
-            <div className="flex justify-center items-center flex-col">
-              <div className="flex">
+            >
+              <CFormInput
+                type="number"
+                placeholder="Enter number of questions"
+                {...register('total', { required: true, min: 1, max: 100 })}
+                feedback="Please enter number between 1 and 100"
+                invalid={errors.total ? true : false}
+              />
+              <div className="flex justify-center items-center mt-3">
                 <CButton
-                  className="mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
-                  onClick={addRows}
+                  color="secondary"
+                  className="px-5 rounded-full mr-3"
+                  onClick={gotoselectedstep}
                 >
-                  Add More
+                  Back
                 </CButton>
-                {/* {totalRows.length > 1 && (
-                  <CButton
-                    className="ml-3 px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
-                    onClick={() => removeRow()}
-                  >
-                    Delete Row
-                  </CButton>
-                )} */}
+                <CButton color="primary" type="submit" className="px-5 rounded-full">
+                  Next
+                </CButton>
               </div>
-              <CButton
-                className="mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]"
-                // type="submit"
-                onClick={startexam}
-              >
-                Start Exam
-              </CButton>
-            </div>
-            {/* </CForm> */}
+            </CForm>
           </div>
-        ) : (
-          ''
         )}
         {/* Questions */}
         {showQues && (
@@ -941,27 +796,29 @@ const QuizLayout = () => {
                 )}
               </div>
               <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
-                {currentQuestion + 1 != totalQuest ? 'Next' : 'Submit'}
+                {currentQuestion + 1 != getValues('total') ? 'Next' : 'Submit'}
               </CButton>
             </CForm>
           </div>
         )}
       </div>
       {/* {showQues && (
-          <div className="fixed bottom-20 right-6 z-20">
-            <CButton
-              color="primary"
-              className="flex justify-center items-center text-white font-bold py-2 px-4 rounded-full shadow-lg"
-              onClick={() => setDetailModal(true)}
-            >
-              <RiEyeLine className="mr-2" />
-              View
-            </CButton>
-          </div>
-        )} */}
+        <div className="fixed bottom-20 right-6 z-20">
+          <CButton
+            color="primary"
+            className="flex justify-center items-center text-white font-bold py-2 px-4 rounded-full shadow-lg"
+            onClick={() => setDetailModal(true)}
+          >
+            <RiEyeLine className="mr-2" />
+            View
+          </CButton>
+        </div>
+      )} */}
       <QuizFooter
         showQues={showQues}
-        totalQues={totalQuest}
+        totalQues={getValues('total')}
+        step={usmleStep}
+        category={usmleCategory}
         score={quizScore}
         saveQuestionArray={saveQuestionArray}
         isTimer={isTimer}
@@ -1086,4 +943,4 @@ const QuizLayout = () => {
   )
 }
 
-export default QuizLayout
+export default QuizLayoutOld

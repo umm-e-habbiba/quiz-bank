@@ -86,8 +86,6 @@ const ReviewQuiz = () => {
         if (result.data) {
           setLoading(false)
           setAllQuestion(result.data.questions)
-          setUsmleStep(result.data.usmleSteps)
-          setUsmleCategory(result.data.USMLE)
           console.log(
             'all questions ',
             result.data.questions,
@@ -118,8 +116,6 @@ const ReviewQuiz = () => {
         if (result.data) {
           setLoading(false)
           setAllQuestion(result.data.questions)
-          setUsmleStep(result.data.usmleSteps)
-          setUsmleCategory(result.data.USMLE)
           console.log(
             'all questions ',
             result.data.questions,
@@ -458,7 +454,7 @@ const ReviewQuiz = () => {
                 ''
               )} */}
                     <p className="mb-2">
-                      <span className="font-bold">(Choice A)</span>
+                      <span className="font-bold">(Choice A)</span>{' '}
                       {allQuestion[currentQuestion]
                         ? allQuestion[currentQuestion].questionId.optionOneExplanation
                         : ''}
@@ -499,7 +495,7 @@ const ReviewQuiz = () => {
                       ''
                     )}
                     <hr />
-                    <CRow className="mt-3">
+                    {/* <CRow className="mt-3">
                       <CCol md={4} className="d-flex justify-start flex-col">
                         <p className="font-bold">Usmle Step</p>
                         <p className="text-xs">{usmleStep}</p>
@@ -508,7 +504,7 @@ const ReviewQuiz = () => {
                         <p className="font-bold">Usmle Category</p>
                         <p className="text-xs">{usmleCategory}</p>
                       </CCol>
-                    </CRow>
+                    </CRow> */}
                   </div>
                 </CCol>
               </CRow>
@@ -520,7 +516,7 @@ const ReviewQuiz = () => {
           </>
         )}
       </div>
-      <ReviewQuizFooter totalQues={allQuestion.length} step={usmleStep} category={usmleCategory} />
+      <ReviewQuizFooter />
     </div>
   )
 }

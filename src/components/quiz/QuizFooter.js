@@ -10,7 +10,7 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from 'src/store'
-const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionArray, isTimer }) => {
+const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) => {
   const navigate = useNavigate()
   const [endModal, setEndModal] = useState(false)
   // const [totalSeconds, setTotalSeconds] = useState(0)
@@ -81,8 +81,8 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
           questions: saveQuestionArray,
           totalScore: totalQues,
           obtainedScore: score,
-          usmleSteps: step,
-          USMLE: category,
+          usmleSteps: null,
+          USMLE: null,
         },
       ],
     })
@@ -130,9 +130,7 @@ const QuizFooter = ({ showQues, step, category, totalQues, score, saveQuestionAr
       <CFooter className="quiz-footer">
         {/* <div className="text-xl">Time Left : {showQues ? convertSeconds(totalSeconds) : '00:00'}</div> */}
         {isTimer && <div className="text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>}
-        <div className="text-xl opacity-40">
-          Question Bank for USMLE {showQues ? `Step ${step}: ${category}` : ''}
-        </div>
+        <div className="text-xl opacity-40">USMLE Question Bank</div>
         {showQues && (
           <div
             className="cursor-pointer text-xl flex justify-center items-center"
