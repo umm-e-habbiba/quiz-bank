@@ -52,6 +52,8 @@ const QuizHeader = ({
   setFontSize,
   isTimer,
   setIsTimer,
+  markedQuestions,
+  setMarkedQuestions,
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
@@ -72,7 +74,6 @@ const QuizHeader = ({
   const [successMsg, setSuccessMsg] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [markedQuestions, setMarkedQuestions] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [timer, setTimer] = useState(true)
 
@@ -156,14 +157,12 @@ const QuizHeader = ({
   }
 
   const toggleMarked = (e) => {
-    const questionNumber = currentQuestion + 1 // Calculate question number
+    const questionNumber = currentQuestion
     const isMarked = markedQuestions.includes(questionNumber)
 
     if (!isMarked) {
-      // Mark the question
       setMarkedQuestions([...markedQuestions, questionNumber])
     } else {
-      // Unmark the question
       setMarkedQuestions(markedQuestions.filter((num) => num !== questionNumber))
     }
   }
@@ -236,7 +235,7 @@ const QuizHeader = ({
 
   return (
     <>
-      <CHeader position="sticky" className="mb-4 p-0 quiz-header px-4">
+      <CHeader position="sticky" className="p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
           <Link to="/">
             <HiHome className="quiz-icons cursor-pointer mr-2" />
@@ -258,8 +257,7 @@ const QuizHeader = ({
                             ? filteredArray[currentQuestion]._id
                             : ''
                       }
-                      // checked={marked}
-                      checked={markedQuestions.includes(currentQuestion + 1)}
+                      checked={markedQuestions.includes(currentQuestion)}
                       label=""
                       onChange={(e) => toggleMarked(e)}
                     />

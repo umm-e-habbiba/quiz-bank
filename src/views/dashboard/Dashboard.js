@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import moment from 'moment'
 import {
   CAvatar,
@@ -229,61 +229,65 @@ const Dashboard = () => {
                   </CCol>
                 </CRow>
               ) : (
-                <CRow>
-                  <CCol xs={12} md={6} xl={6}>
-                    <CRow className="mb-0 pb-3">
-                      <CCol xs={6}>
-                        <div className="border-start border-start-4 border-start-info py-1 px-3">
-                          <div className="text-body-secondary text-truncate small">
-                            Quiz Attempted
+                <>
+                  <CRow>
+                    <CCol xs={12} md={12} xl={12}>
+                      <CRow className="mb-0 pb-3">
+                        <CCol xs={6}>
+                          <div className="border-start border-start-4 border-start-info py-1 px-3">
+                            <div className="text-body-secondary text-truncate small">
+                              Exams Attempted
+                            </div>
+                            <div className="fs-5 fw-semibold">{allQuiz.length}</div>
                           </div>
-                          <div className="fs-5 fw-semibold">{allQuiz.length}</div>
-                        </div>
-                      </CCol>
-                      {/* <CCol xs={6}>
-                      <div className="border-start border-start-4 border-start-danger py-1 px-3 mb-3">
-                        <div className="text-body-secondary text-truncate small">
-                          Recurring Clients
-                        </div>
-                        <div className="fs-5 fw-semibold">22,643</div>
-                      </div>
-                    </CCol> */}
-                    </CRow>
-                    <hr className="mt-0" />
-                    <div className="pt-3">
-                      {allQuiz && allQuiz.length > 0 ? (
-                        <>
-                          <h4 className="my-2">Last attempted quizzes</h4>
-                          {allQuiz.slice(Math.max(allQuiz.length - 5, 0)).map((quiz, idx) => (
-                            <div className="progress-group mb-4" key={idx}>
-                              <div className="progress-group-prepend">
-                                <span className="text-body-secondary small mr-2">
-                                  {moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
-                                </span>
-                              </div>
-                              <div className="progress-group-bars">
-                                <CProgress
-                                  height={10}
-                                  color="info"
-                                  value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
-                                >
-                                  <CProgressBar>
-                                    {Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%
-                                  </CProgressBar>
-                                </CProgress>
-                                {/* <CProgress
+                        </CCol>
+                        <CCol xs={6}>
+                          <div className="py-1 px-3 mb-3 flex justify-end items-center">
+                            <Link to="/previous-tests">
+                              <CButton color="info">Previous Exams</CButton>
+                            </Link>
+                          </div>
+                        </CCol>
+                      </CRow>
+                      <hr className="mt-0" />
+                    </CCol>
+                  </CRow>
+                  <CRow>
+                    <CCol xs={12} md={6} xl={6}>
+                      <div className="pt-3">
+                        {allQuiz && allQuiz.length > 0 ? (
+                          <>
+                            <h4 className="my-2">Last attempted quizzes</h4>
+                            {allQuiz.slice(Math.max(allQuiz.length - 5, 0)).map((quiz, idx) => (
+                              <div className="progress-group mb-4" key={idx}>
+                                <div className="progress-group-prepend">
+                                  <span className="text-body-secondary small mr-2">
+                                    {moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                  </span>
+                                </div>
+                                <div className="progress-group-bars">
+                                  <CProgress
+                                    height={10}
+                                    color="info"
+                                    value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
+                                  >
+                                    <CProgressBar>
+                                      {Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%
+                                    </CProgressBar>
+                                  </CProgress>
+                                  {/* <CProgress
                               height={10}
                               color="info"
                               value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
                             /> */}
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </>
-                      ) : (
-                        <CProgress thin color="info" value={0} />
-                      )}
-                      {/* {progressGroupExample1.map((item, index) => (
+                            ))}
+                          </>
+                        ) : (
+                          <CProgress thin color="info" value={0} />
+                        )}
+                        {/* {progressGroupExample1.map((item, index) => (
                       <div className="progress-group mb-4" key={index}>
                         <div className="progress-group-prepend">
                           <span className="text-body-secondary small">{item.title}</span>
@@ -294,9 +298,9 @@ const Dashboard = () => {
                         </div>
                       </div>
                     ))} */}
-                    </div>
-                  </CCol>
-                  {/* <CCol xs={12} md={6} xl={6}>
+                      </div>
+                    </CCol>
+                    {/* <CCol xs={12} md={6} xl={6}>
                   <CRow>
                     <CCol xs={6}>
                       <div className="border-start border-start-4 border-start-warning py-1 px-3 mb-3">
@@ -345,7 +349,8 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </CCol> */}
-                </CRow>
+                  </CRow>
+                </>
               )}
             </CCardBody>
           </CCard>

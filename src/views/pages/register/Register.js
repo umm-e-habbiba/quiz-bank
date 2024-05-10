@@ -13,7 +13,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import '../auth.css'
 import img1 from '../../../assets/images/image-1.png'
-import img2 from '../../../assets/images/image-2.png'
+// import img2 from '../../../assets/images/image-2.png'
+import img2 from '../../../assets/images/green-one-eye.png'
 import { API_URL } from 'src/store'
 const Register = () => {
   const navigate = useNavigate()

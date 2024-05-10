@@ -40,12 +40,12 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Latest Quiz',
+        name: 'Latest Exam',
         to: '/quiz-performance',
       },
       {
         component: CNavItem,
-        name: 'All Quiz',
+        name: 'All Exams',
         to: '/previous-tests',
       },
       // {

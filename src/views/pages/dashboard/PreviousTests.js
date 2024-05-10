@@ -150,7 +150,7 @@ const PreviousTests = () => {
           setQuizId('')
           getAllQuiz()
           setSuccess(true)
-          setSuccessMsg('Quiz deleted successfully')
+          setSuccessMsg('Exam deleted successfully')
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
@@ -170,7 +170,7 @@ const PreviousTests = () => {
         <div className="body flex-grow-1">
           <CCard className="mb-4 mx-4">
             <CCardHeader className="flex justify-between items-center">
-              <strong>Previous Tests</strong>
+              <strong>Previous Exams</strong>
               {/* <CButton
               color="success"
               className="text-white"
@@ -254,10 +254,10 @@ const PreviousTests = () => {
             aria-labelledby="VerticallyCenteredExample"
           >
             <CModalHeader>
-              <CModalTitle id="VerticallyCenteredExample">Delete Quiz</CModalTitle>
+              <CModalTitle id="VerticallyCenteredExample">Delete Exam</CModalTitle>
             </CModalHeader>
             <CModalBody>
-              Are you sure to delete this quiz?
+              Are you sure to delete this exam?
               {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>
             <CModalFooter>

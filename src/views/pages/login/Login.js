@@ -6,7 +6,9 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle } from '@coreui/icons'
 import { useForm } from 'react-hook-form'
 import img1 from '../../../assets/images/image-1.png'
-import img2 from '../../../assets/images/image-2.png'
+import img2 from '../../../assets/images/green-one-eye.png'
+import img3 from '../../../assets/images/blue-icon.png'
+// import img2 from '../../../assets/images/image-2.png'
 import { API_URL } from 'src/store'
 const Login = () => {
   const navigate = useNavigate()
@@ -104,7 +106,8 @@ const Login = () => {
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <div className="auth-wrapper">
         <div className="inner">
-          <img src={img1} alt="" className="image-1" />
+          {/* <img src={img1} alt="" className="image-1" /> */}
+          {/* <img src={img3} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(login)} className="form">
             {emailVerified && (
               <CAlert color="success" className="d-flex align-items-center">

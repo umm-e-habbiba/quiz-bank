@@ -15,7 +15,7 @@ const routes = [
   { path: '/manage-quiz', name: 'Manage Quiz', element: ManageQuiz },
   { path: '/comments', name: 'Comments', element: Comments },
   { path: '/quiz-performance', name: 'Quiz Performance', element: QuizPerformance },
-  { path: '/previous-tests', name: 'Previous Tests', element: PreviousTests },
+  { path: '/previous-tests', name: 'Previous Exams', element: PreviousTests },
 ]
 
 export default routes
