@@ -178,8 +178,10 @@ const QuizLayout = () => {
 
   const setQues = (value, index) => {
     setPrevIndex(index)
-    // console.log('prev index', prevIndex, 'new index', index)
-    setTotalRows(totalRows.map((item, idx) => (idx === index ? { ...item, number: value } : item)))
+    const list = [...totalRows]
+    list[index].number = value
+    setTotalRows(list)
+    setTotalQuest(calculateSum(totalRows, 'number'))
     if (value > 100 || value < 1) {
       setError(true)
       setErrorMsg('Please enter number between 1 and 100')
@@ -195,8 +197,7 @@ const QuizLayout = () => {
         setErrorMsg('')
       }, 3000)
     } else {
-      // setFilteredQuestion(filteredQuestionBackup)
-      const totals = Number(totalQuest) + Number(value)
+      const totals = calculateSum(totalRows, 'number')
       setTotalQuest(totals)
       filteredQuestion.length = totals
       console.log('number of total questions', totals)
@@ -206,35 +207,15 @@ const QuizLayout = () => {
         return res
       }, [])
       setSaveQuestionArray(partialQuestionDetails)
-      // setTotalQuest(totals)
-      // filteredQuestion.length = totals
-      // console.log('number of total questions', totals)
-      // let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
-      // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //   res.push({ questionId: item, selectedOption: '' })
-      //   return res
-      // }, [])
-      // setSaveQuestionArray(partialQuestionDetails)
     }
   }
 
   const fetchQuestion = (step, value, index) => {
     const filterSteps = allQuestion.filter((ques) => ques.usmleStep == step)
-
-    // const filterAttemptedSteps = allAttemptedQuestion.filter(
-    //   (ques) => ques.question.usmleStep == step,
-    // )
-    // if (filterAttemptedSteps.length > 0) {
-    //   setAllAttemptedQuestion(filterAttemptedSteps)
-    // }
-    // if(filteredQuestion.length > 0){
-    //   setFilteredQuestion([...filteredQuestion,filterSteps])
-    // }
     if (filterSteps.length > 0) {
       setTotalRows(totalRows.map((item, idx) => (idx === index ? { ...item, step: step } : item)))
       // if usmle category is selected
       if (value) {
-        // totalRows[index].category = value
         setTotalRows(
           totalRows.map((item, idx) => (idx === index ? { ...item, category: value } : item)),
         )
@@ -595,6 +576,56 @@ const QuizLayout = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  const handleStepChange = (e, index) => {
+    const { name, value } = e.target
+    const list = [...totalRows]
+    list[index][name] = value
+    setTotalRows(list)
+  }
+
+  const handleNumberChange = (e, index) => {
+    const { name, value } = e.target
+    const list = [...totalRows]
+    list[index][name] = value
+    setTotalRows(list)
+    // setTotalQuest(calculateSum(totalRows, 'number'))
+    // if (value > 100 || value < 1) {
+    //   setError(true)
+    //   setErrorMsg('Please enter number between 1 and 100')
+    //   setTimeout(() => {
+    //     setError(false)
+    //     setErrorMsg('')
+    //   }, 3000)
+    // } else if (value > filteredQuestion.length) {
+    //   setError(true)
+    //   setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
+    //   setTimeout(() => {
+    //     setError(false)
+    //     setErrorMsg('')
+    //   }, 3000)
+    // } else {
+    //   // setFilteredQuestion(filteredQuestionBackup)
+    //   // const totals = Number(totalQuest) + Number(value)
+    //   // setTotalQuest(totals)
+    //   filteredQuestion.length = totalQuest
+    //   console.log('number of total questions', totalQuest)
+    //   let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+    //   const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+    //     res.push({ questionId: item, selectedOption: '' })
+    //     return res
+    //   }, [])
+    //   setSaveQuestionArray(partialQuestionDetails)
+    //   // setTotalQuest(totals)
+    //   // filteredQuestion.length = totals
+    //   // console.log('number of total questions', totals)
+    //   // let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+    //   // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+    //   //   res.push({ questionId: item, selectedOption: '' })
+    //   //   return res
+    //   // }, [])
+    //   // setSaveQuestionArray(partialQuestionDetails)
+    // }
+  }
   return (
     <div>
       <QuizHeader
@@ -681,6 +712,7 @@ const QuizLayout = () => {
                     <CFormSelect
                       aria-label="Select Exam"
                       className="w-full"
+                      name="step"
                       options={[
                         'Select your Exam',
                         { label: 'USMLE: Step1', value: '1' },
@@ -690,12 +722,14 @@ const QuizLayout = () => {
                       onChange={(e) => {
                         fetchQuestion(e.target.value, '', id)
                       }}
+                      // onChange={(e) => handleStepChange(e, id)}
                     />
                   </CCol>
                   <CCol xs={1} md={3} lg={3}>
                     <CFormSelect
                       aria-label="Select Category"
                       className="w-full"
+                      name="category"
                       onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
                     >
                       <option>Select your Category</option>
@@ -722,6 +756,7 @@ const QuizLayout = () => {
                   <CCol xs={1} md={3} lg={3}>
                     <CFormInput
                       type="number"
+                      name="number"
                       placeholder="Enter number of questions"
                       // {...register('total', { required: true, min: 1, max: 100 })}
                       // feedback="Please enter number between 1 and 100"
