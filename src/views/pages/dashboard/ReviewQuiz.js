@@ -163,6 +163,10 @@ const ReviewQuiz = () => {
         totalQues={allQuestion.length}
         filteredArray={allQuestion}
         fontSize={fontSize}
+        toggleSidebar={toggleSidebar}
+        sidebarOpen={sidebarOpen}
+        markedQuestions={markedQuestions}
+        setMarkedQuestions={setMarkedQuestions}
         setFontSize={setFontSize}
         toggleSidebar={toggleSidebar}
         sidebarOpen={sidebarOpen}
