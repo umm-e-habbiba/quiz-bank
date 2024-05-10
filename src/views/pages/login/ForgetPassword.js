@@ -133,7 +133,7 @@ const ForgetPassword = () => {
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
       <div className="auth-wrapper">
         <div className="inner">
-          <img src={img1} alt="" className="image-1" />
+          {/* <img src={img1} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(resetPassword)} className="form">
             <h3>Reset your password</h3>
             {token ? (

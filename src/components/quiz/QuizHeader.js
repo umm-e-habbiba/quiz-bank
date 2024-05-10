@@ -40,6 +40,7 @@ import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
+
 // isTimer={isTimer}
 //         setIsTimer={setIsTimer}
 const QuizHeader = ({
@@ -344,7 +345,8 @@ const QuizHeader = ({
           ) : (
             ''
           )}
-          {location.pathname == '/review-quiz' ? (
+          {/* {location.pathname == '/review-quiz' ? ( */}
+          {location.pathname.includes('review-quiz') ? (
             <FiSettings className="quiz-icons cursor-pointer" />
           ) : (
             <CDropdown alignment="end">

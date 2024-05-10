@@ -59,7 +59,9 @@ const QuizLayout = () => {
   const [opt5Marked, setOpt5Marked] = useState(false)
   const [opt6Marked, setOpt6Marked] = useState(false)
   const [totalQuest, setTotalQuest] = useState('')
-  const [prevIndex, setPrevIndex] = useState('')
+  const [step1Questions, setStep1Questions] = useState('')
+  const [step2Questions, setStep2Questions] = useState('')
+  const [step3Questions, setStep3Questions] = useState('')
   const [totalRows, setTotalRows] = useState([
     {
       step: '',
@@ -94,24 +96,9 @@ const QuizLayout = () => {
       navigate('/login')
     }
   }, [])
-  let totals = 0
   useEffect(() => {
     console.log('rows', totalRows)
-    // // console.log('final total', calculateSum(totalRows, 'number'))
-    // // totalRows.map((x) => (totals += Number(x.number)))
-    // totals = calculateSum(totalRows, 'number')
-    // console.log('***', totals, '***')
-    // setTotalQuest(totals)
   }, [totalRows])
-
-  // useEffect(() => {
-  //   // console.log('total qu', totalQuest)
-  //   setTotalQuest(totalQuest)
-  // }, [totalQuest])
-
-  useEffect(() => {
-    console.log(prevIndex)
-  }, [prevIndex])
 
   useEffect(() => {
     console.log(saveQuestionArray)
@@ -139,6 +126,12 @@ const QuizLayout = () => {
         console.log(result)
         if (result.data) {
           setAllQuestion(result.data)
+          const filterStep1Questions = result.data.filter((ques) => ques.usmleStep == 1)
+          setStep1Questions(filterStep1Questions.length)
+          const filterStep2Questions = result.data.filter((ques) => ques.usmleStep == 2)
+          setStep2Questions(filterStep2Questions.length)
+          const filterStep3Questions = result.data.filter((ques) => ques.usmleStep == 3)
+          setStep3Questions(filterStep3Questions.length)
         }
       })
       .catch((error) => {
@@ -177,11 +170,10 @@ const QuizLayout = () => {
   }
 
   const setQues = (value, index) => {
-    setPrevIndex(index)
     const list = [...totalRows]
-    list[index].number = value
+    list[index].number = value //set number value
     setTotalRows(list)
-    setTotalQuest(calculateSum(totalRows, 'number'))
+    setTotalQuest(calculateSum(totalRows, 'number')) // calculate total number of questions from all rows
     if (value > 100 || value < 1) {
       setError(true)
       setErrorMsg('Please enter number between 1 and 100')
@@ -199,8 +191,11 @@ const QuizLayout = () => {
     } else {
       const totals = calculateSum(totalRows, 'number')
       setTotalQuest(totals)
-      filteredQuestion.length = totals
+      filteredQuestion.length = totals // trim total questions array of total number
       console.log('number of total questions', totals)
+      // add all questions in saveQuestionArray
+      // so that all questions will save on quiz end
+      // either user attempted those questions or not
       let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
         res.push({ questionId: item, selectedOption: '' })
@@ -339,20 +334,7 @@ const QuizLayout = () => {
         console.error(error)
       })
   }
-  // const highlight = () => {
-  //   const text = window.getSelection().toString()
-  //   var innerHTML = questionText.current.innerHTML
-  //   var index = innerHTML.indexOf(text)
-  //   if (index >= 0) {
-  //     innerHTML =
-  //       innerHTML.substring(0, index) +
-  //       "<span class='bg-yellow-300 text-yellow-700'>" +
-  //       innerHTML.substring(index, index + text.length) +
-  //       '</span>' +
-  //       innerHTML.substring(index + text.length)
-  //     questionText.current.innerHTML = innerHTML
-  //   }
-  // }
+
   const highlight = () => {
     const text = window.getSelection().toString()
     var innerHTML = questionText.current.innerHTML
@@ -576,56 +558,6 @@ const QuizLayout = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const handleStepChange = (e, index) => {
-    const { name, value } = e.target
-    const list = [...totalRows]
-    list[index][name] = value
-    setTotalRows(list)
-  }
-
-  const handleNumberChange = (e, index) => {
-    const { name, value } = e.target
-    const list = [...totalRows]
-    list[index][name] = value
-    setTotalRows(list)
-    // setTotalQuest(calculateSum(totalRows, 'number'))
-    // if (value > 100 || value < 1) {
-    //   setError(true)
-    //   setErrorMsg('Please enter number between 1 and 100')
-    //   setTimeout(() => {
-    //     setError(false)
-    //     setErrorMsg('')
-    //   }, 3000)
-    // } else if (value > filteredQuestion.length) {
-    //   setError(true)
-    //   setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
-    //   setTimeout(() => {
-    //     setError(false)
-    //     setErrorMsg('')
-    //   }, 3000)
-    // } else {
-    //   // setFilteredQuestion(filteredQuestionBackup)
-    //   // const totals = Number(totalQuest) + Number(value)
-    //   // setTotalQuest(totals)
-    //   filteredQuestion.length = totalQuest
-    //   console.log('number of total questions', totalQuest)
-    //   let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
-    //   const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-    //     res.push({ questionId: item, selectedOption: '' })
-    //     return res
-    //   }, [])
-    //   setSaveQuestionArray(partialQuestionDetails)
-    //   // setTotalQuest(totals)
-    //   // filteredQuestion.length = totals
-    //   // console.log('number of total questions', totals)
-    //   // let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
-    //   // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-    //   //   res.push({ questionId: item, selectedOption: '' })
-    //   //   return res
-    //   // }, [])
-    //   // setSaveQuestionArray(partialQuestionDetails)
-    // }
-  }
   return (
     <div>
       <QuizHeader
@@ -715,9 +647,23 @@ const QuizLayout = () => {
                       name="step"
                       options={[
                         'Select your Exam',
-                        { label: 'USMLE: Step1', value: '1' },
-                        { label: 'USMLE: Step2', value: '2' },
-                        { label: 'USMLE: Step3', value: '3' },
+                        {
+                          label: `USMLE: Step1 ( ${step1Questions} questions available )`,
+                          value: '1',
+                          disabled: step1Questions > 0 ? false : true,
+                        },
+                        {
+                          label: `USMLE: Step2 ( ${step2Questions} questions available )`,
+                          value: '2',
+                          disabled: step2Questions > 0 ? false : true,
+                        },
+                        {
+                          label: `USMLE: Step3 ( ${step3Questions} questions available )`,
+                          value: '3',
+                          disabled: step3Questions > 0 ? false : true,
+                        },
+                        // { label: `USMLE: Step2 Total Questions: ${step2Questions}`, value: '2' },
+                        // { label: `USMLE: Step3 Total Questions: ${step3Questions}`, value: '3' },
                       ]}
                       onChange={(e) => {
                         fetchQuestion(e.target.value, '', id)
@@ -733,24 +679,57 @@ const QuizLayout = () => {
                       onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
                     >
                       <option>Select your Category</option>
-                      {totalRows[id].step == '1' &&
+                      {totalRows[id].step == '1' ? (
                         step1Categories.map((category, idx) => (
-                          <option key={idx} value={category}>
-                            {category}
+                          <option
+                            key={idx}
+                            value={category}
+                            disabled={
+                              allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                ? false
+                                : true
+                            }
+                          >
+                            {category} ({' '}
+                            {allQuestion.filter((ques) => ques.USMLE == category).length} Questions
+                            avaialable )
                           </option>
-                        ))}
-                      {totalRows[id].step == '2' &&
+                        ))
+                      ) : totalRows[id].step == '2' ? (
                         step2Categories.map((category, idx) => (
-                          <option key={idx} value={category}>
-                            {category}
+                          <option
+                            key={idx}
+                            value={category}
+                            disabled={
+                              allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                ? false
+                                : true
+                            }
+                          >
+                            {category} ({' '}
+                            {allQuestion.filter((ques) => ques.USMLE == category).length} Questions
+                            avaialable )
                           </option>
-                        ))}
-                      {totalRows[id].step == '3' &&
+                        ))
+                      ) : totalRows[id].step == '3' ? (
                         step3Categories.map((category, idx) => (
-                          <option key={idx} value={category}>
-                            {category}
+                          <option
+                            key={idx}
+                            value={category}
+                            disabled={
+                              allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                ? false
+                                : true
+                            }
+                          >
+                            {category} ({' '}
+                            {allQuestion.filter((ques) => ques.USMLE == category).length} Questions
+                            avaialable )
                           </option>
-                        ))}
+                        ))
+                      ) : (
+                        <option disabled>Select Your exam first</option>
+                      )}
                     </CFormSelect>
                   </CCol>
                   <CCol xs={1} md={3} lg={3}>

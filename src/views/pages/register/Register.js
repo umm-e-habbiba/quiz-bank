@@ -102,7 +102,7 @@ const Register = () => {
     <div className="bg-body-tertiary min-vh-100 h-full d-flex flex-row align-items-center">
       <div className="auth-wrapper">
         <div className="inner">
-          <img src={img1} alt="" className="image-1" />
+          {/* <img src={img1} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(signup)} className="form">
             <h3>New Account?</h3>
             <CInputGroup className="mb-3 form-holder">
