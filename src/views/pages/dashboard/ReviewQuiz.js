@@ -168,10 +168,6 @@ const ReviewQuiz = () => {
         markedQuestions={markedQuestions}
         setMarkedQuestions={setMarkedQuestions}
         setFontSize={setFontSize}
-        toggleSidebar={toggleSidebar}
-        sidebarOpen={sidebarOpen}
-        markedQuestions={markedQuestions}
-        setMarkedQuestions={setMarkedQuestions}
         // isTimer={isTimer}
         // setIsTimer={setIsTimer}
       />
