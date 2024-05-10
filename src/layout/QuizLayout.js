@@ -81,7 +81,7 @@ const QuizLayout = () => {
       total: '',
     },
   })
-
+//new branch test
   useEffect(() => {
     getAllQuest()
     const getToken = localStorage.getItem('token')
