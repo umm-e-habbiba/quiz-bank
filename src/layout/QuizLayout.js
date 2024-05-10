@@ -29,6 +29,7 @@ import { RiEyeLine } from 'react-icons/ri'
 import markIcon from '../assets/images/mark-flag.png'
 import { FaBars } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
+import { CiUndo } from 'react-icons/ci'
 const QuizLayout = () => {
   const navigate = useNavigate()
   const [detailModal, setDetailModal] = useState(false)
@@ -81,7 +82,7 @@ const QuizLayout = () => {
       total: '',
     },
   })
-//new branch test
+  //new branch test
   useEffect(() => {
     getAllQuest()
     const getToken = localStorage.getItem('token')
@@ -353,29 +354,35 @@ const QuizLayout = () => {
   //     questionText.current.innerHTML = innerHTML
   //   }
   // }
+
+  const [highlightStack, setHighlightStack] = useState([])
   const highlight = () => {
     const text = window.getSelection().toString()
-    var innerHTML = questionText.current.innerHTML
-    var index = innerHTML.indexOf(text)
+    const innerHTML = questionText.current.innerHTML
+    const index = innerHTML.indexOf(text)
     if (index >= 0) {
       const spanTag = innerHTML.substring(index - 45, index)
       const isSpan = innerHTML.substring(index - 45, index).includes('<span')
-      console.log('highlighted or not', isSpan)
-      // const isSpan = innerHTML.indexOf('<span class="bg-yellow-300 text-yellow-700">')
-      if (isSpan) {
-        console.log('aready highlighted')
-        // for unhighlight
-        innerHTML = innerHTML.toString().replace(spanTag, ' ')
-        // innerHTML = innerHTML.toString().replace(/(<([^>]+)>)/gi, '')
+      if (!isSpan) {
+        const highlightedText = innerHTML.substring(index, index + text.length)
         questionText.current.innerHTML = innerHTML
-      } else {
-        console.log('not highlighted')
-        innerHTML = innerHTML
           .toString()
-          .replace(text, `<span class='bg-yellow-300 text-yellow-700'>${text}</span>`)
-        questionText.current.innerHTML = innerHTML
+          .replace(text, `<span class='bg-yellow-300 text-yellow-700'>${highlightedText}</span>`)
+        setHighlightStack([...highlightStack, highlightedText])
       }
     }
+  }
+
+  const undoHighlight = () => {
+    const questionElement = questionText.current
+    const spans = questionElement.querySelectorAll('span.bg-yellow-300.text-yellow-700')
+    spans.forEach((span) => {
+      const text = span.textContent
+      const startIndex = span.parentNode.textContent.indexOf(text)
+      const endIndex = startIndex + text.length
+      const originalText = span.parentNode.textContent.substring(startIndex, endIndex)
+      span.outerHTML = originalText
+    })
   }
 
   const createMarkup = (value) => {
@@ -642,6 +649,8 @@ const QuizLayout = () => {
         setMarkedQuestions={setMarkedQuestions}
         isTimer={isTimer}
         setIsTimer={setIsTimer}
+        undoHighlight={undoHighlight}
+        highlightStack={highlightStack}
       />
       {showQues && (
         <button
@@ -832,7 +841,7 @@ const QuizLayout = () => {
           )}
           {/* Questions */}
           {showQues && (
-            <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
+            <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
               {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
                 <CRow className="mb-5">
                   <CCol md={8}>

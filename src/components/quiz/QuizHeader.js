@@ -40,6 +40,7 @@ import markIcon from '../../assets/images/mark-flag.png'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
+import { FaUndoAlt } from 'react-icons/fa'
 // isTimer={isTimer}
 //         setIsTimer={setIsTimer}
 const QuizHeader = ({
@@ -54,6 +55,8 @@ const QuizHeader = ({
   setIsTimer,
   markedQuestions,
   setMarkedQuestions,
+  undoHighlight,
+  highlightStack,
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
@@ -76,6 +79,7 @@ const QuizHeader = ({
   const [errorMsg, setErrorMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [timer, setTimer] = useState(true)
+  const [isUndoClicked, setIsUndoClicked] = useState(false);
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -233,6 +237,10 @@ const QuizHeader = ({
     setCurrentQuestion(questionNumber - 1) // Adjust to zero-based index
   }
 
+  const handleUndoClick = () => {
+    setIsUndoClicked(true);
+    undoHighlight();
+  };
   return (
     <>
       <CHeader position="sticky" className="p-0 quiz-header px-4">
@@ -269,7 +277,17 @@ const QuizHeader = ({
               <CButton color="primary" className="ml-3" onClick={handleAddComment}>
                 Add Comment
               </CButton>
-              {markedQuestions.length > 0 && (
+              <div className="p-1 ml-1">
+                {highlightStack.length > 0 ? (
+                  <button
+                    onClick={undoHighlight}
+                    className={`p-2 rounded-md hover:bg-gray-700 focus:outline-none transform transition-transform duration-200 hover:scale-90`}
+                  >
+                    <FaUndoAlt className="text-2xl" />
+                  </button>
+                ) : null}
+              </div>
+              {/* {markedQuestions.length > 0 && (
                 <CDropdown className="ml-3">
                   <CDropdownToggle color="secondary">Marked Questions</CDropdownToggle>
                   <CDropdownMenu>
@@ -283,7 +301,7 @@ const QuizHeader = ({
                     ))}
                   </CDropdownMenu>
                 </CDropdown>
-              )}
+              )} */}
             </div>
           )}
         </div>

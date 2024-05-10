@@ -9,6 +9,9 @@ import CIcon from '@coreui/icons-react'
 import { cilBarChart, cilCalendar, cilClock } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import ReviewQuizFooter from 'src/components/quiz/ReviewQuizFooter'
+import { ImCross } from 'react-icons/im'
+import markIcon from '../../../assets/images/mark-flag.png'
+import { FaBars } from 'react-icons/fa'
 
 const ReviewQuiz = () => {
   const navigate = useNavigate()
@@ -29,7 +32,8 @@ const ReviewQuiz = () => {
   const [errorMsg, setErrorMsg] = useState('')
   const [quizScore, setQuizScore] = useState(0)
   const [fontSize, setFontSize] = useState(16)
-
+  const [markedQuestions, setMarkedQuestions] = useState([])
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const {
     register,
     handleSubmit,
@@ -141,6 +145,9 @@ const ReviewQuiz = () => {
       setQuizEnd(true)
     }
   }
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
 
   const imgStyle = {
     width: '300px',
@@ -156,8 +163,61 @@ const ReviewQuiz = () => {
         totalQues={allQuestion.length}
         filteredArray={allQuestion}
         fontSize={fontSize}
+        toggleSidebar={toggleSidebar}
+        sidebarOpen={sidebarOpen}
+        markedQuestions={markedQuestions}
+        setMarkedQuestions={setMarkedQuestions}
         setFontSize={setFontSize}
       />
+      {showQues && (
+        <button
+          className="sidebar-toggle-btn mt-2 absolute text-[25px] px-4 "
+          onClick={toggleSidebar}
+        >
+          {sidebarOpen ? '' : <FaBars className=" " />}
+        </button>
+      )}
+      {showQues && (
+        <div
+          className={` ${sidebarOpen ? 'w-20' : 'w-0'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+          style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
+        >
+          {sidebarOpen && (
+            <button
+              className={`pb-4 text-[20px] px-4 ml-1 pt-3 text-center ${sidebarOpen ? '' : 'hidden'}`}
+              onClick={toggleSidebar}
+            >
+              <ImCross className="text-white" />
+            </button>
+          )}
+          <ul className={`${sidebarOpen ? 'block' : 'hidden'}`}>
+            {allQuestion.map((question, index) => (
+              <li
+                key={index}
+                className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
+                  currentQuestion === index ? 'bg-blue-500' : ''
+                }`}
+                onClick={() => setCurrentQuestion(index)}
+              >
+                <div className="flex items-center justify-center relative">
+                  <span>{index + 1}</span>
+                  {markedQuestions.includes(index) && (
+                    <img src={markIcon} alt="mark icon" className="w-6 h-6" />
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+          {sidebarOpen && currentQuestion !== null && (
+            <div
+              className="fixed top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
+              style={{ transform: 'translateX(100%)' }}
+            >
+              {currentQuestion + 1}
+            </div>
+          )}
+        </div>
+      )}
       <div className="wrapper relative d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
         {loading ? (
           <center>
