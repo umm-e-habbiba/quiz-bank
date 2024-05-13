@@ -23,7 +23,7 @@ import {
 } from '@coreui/react'
 import { CDropdown, CDropdownToggle, CDropdownMenu, CDropdownItem } from '@coreui/react'
 
-import { HiHome, HiMenuAlt4 } from 'react-icons/hi'
+import { HiHome, HiMenu } from 'react-icons/hi'
 import {
   BiLeftArrow,
   BiRightArrow,
@@ -36,7 +36,8 @@ import {
 import { FcCalculator } from 'react-icons/fc'
 import { FiSettings } from 'react-icons/fi'
 import noteIcon from '../../assets/images/post-it.png'
-import markIcon from '../../assets/images/mark-flag.png'
+// import markIcon from '../../assets/images/mark-flag.png'
+import markIcon from '../../assets/images/mark-icon.svg'
 import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
@@ -57,6 +58,7 @@ const QuizHeader = ({
   setMarkedQuestions,
   undoHighlight,
   highlightStack,
+  toggleSidebar,
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
@@ -245,16 +247,23 @@ const QuizHeader = ({
     <>
       <CHeader position="sticky" className="p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
-          <Link to="/">
-            <HiHome className="quiz-icons cursor-pointer mr-2" />
-          </Link>
+          {showQues ? (
+            <HiMenu
+              onClick={showQues ? toggleSidebar : ''}
+              className="quiz-icons cursor-pointer mr-2"
+            />
+          ) : (
+            <Link to="/">
+              <HiHome className="quiz-icons cursor-pointer mr-2" />
+            </Link>
+          )}
           {showQues && (
             <div className="flex justify-start items-center">
               <div className="flex justify-start items-center">
                 <h1 className="mr-5 text-2xl">
                   Item {currentQuestion + 1} of {totalQues}
                 </h1>
-                <div className="flex flex-col justify-center items-center">
+                <div className="flex flex-col justify-center">
                   <div className="flex justify-center items-center">
                     <CFormCheck
                       inline
@@ -277,16 +286,21 @@ const QuizHeader = ({
               <CButton color="primary" className="ml-3" onClick={handleAddComment}>
                 Add Comment
               </CButton>
-              <div className="p-1 ml-1">
-                {highlightStack.length > 0 ? (
-                  <button
-                    onClick={undoHighlight}
-                    className={`p-2 rounded-md hover:bg-gray-700 focus:outline-none transform transition-transform duration-200 hover:scale-90`}
-                  >
-                    <FaUndoAlt className="text-2xl" />
-                  </button>
-                ) : null}
-              </div>
+              {location.pathname.includes('review-quiz') ? (
+                ''
+              ) : (
+                <div className="p-1 ml-1">
+                  {highlightStack.length > 0 ? (
+                    <button
+                      onClick={undoHighlight}
+                      title="Undo Highlight"
+                      className={`p-2 rounded-md hover:bg-gray-700 focus:outline-none transform transition-transform duration-200 hover:scale-90`}
+                    >
+                      <FaUndoAlt className="text-2xl" />
+                    </button>
+                  ) : null}
+                </div>
+              )}
               {/* {markedQuestions.length > 0 && (
                 <CDropdown className="ml-3">
                   <CDropdownToggle color="secondary">Marked Questions</CDropdownToggle>
