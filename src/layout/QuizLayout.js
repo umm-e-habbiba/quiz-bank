@@ -51,7 +51,7 @@ const QuizLayout = () => {
   const [quizEnd, setQuizEnd] = useState(false)
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
-  const [disableExam, setDisableExam] = useState(false)
+  const [disableExam, setDisableExam] = useState(true)
   const [quizScore, setQuizScore] = useState(0)
   const [highlightedText, setHighlightedText] = useState([])
   const [fontSize, setFontSize] = useState(16)
@@ -839,15 +839,15 @@ const QuizLayout = () => {
                   </CButton>
                 )} */}
                 </div>
-                <CButton
-                  className={`mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]`}
+                <button
+                  className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]`}
                   // type="submit"
                   color="secondary"
                   onClick={startexam}
                   disabled={disableExam ? true : false}
                 >
                   Start Exam
-                </CButton>
+                </button>
               </div>
               {/* </CForm> */}
             </div>
