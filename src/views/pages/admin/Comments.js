@@ -67,6 +67,7 @@ const Comments = () => {
   const [detailModal, setDetailModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
+  const [imgLoader, setImgLoader] = useState(false)
   const [questionId, setQuestionId] = useState('')
   const [image, setImage] = useState('')
   // const [usmleStep, setUsmleStep] = useState('')
@@ -181,22 +182,24 @@ const Comments = () => {
       .then((result) => {
         console.log('ques detail', result)
         if (result.data) {
-          setValue('usmleStep', result.data.usmleStep)
-          setValue('usmleCategory', result.data.USMLE)
-          setValue('question', result.data.question)
-          setValue('explaination', result.data.questionExplanation)
-          setValue('op1', result.data.optionOne)
-          setValue('op2', result.data.optionTwo)
-          setValue('op3', result.data.optionThree)
-          setValue('op4', result.data.optionFour)
-          setValue('op5', result.data.optionFive)
+          reset({
+            usmleStep: result.data.usmleStep,
+            usmleCategory: result.data.USMLE,
+            question: result.data.question,
+            explaination: result.data.questionExplanation,
+            op1: result.data.optionOne,
+            op2: result.data.optionTwo,
+            op3: result.data.optionThree,
+            op4: result.data.optionFour,
+            op5: result.data.optionFive,
+            correct: result.data.correctAnswer,
+            op1Explain: result.data.optionOneExplanation,
+            op2Explain: result.data.optionTwoExplanation,
+            op3Explain: result.data.optionThreeExplanation,
+            op4Explain: result.data.optionFourExplanation,
+            op5Explain: result.data.optionFiveExplanation,
+          })
           setOp6(result.data.optionSix)
-          setValue('correct', result.data.correctAnswer)
-          setValue('op1Explain', result.data.optionOneExplanation)
-          setValue('op2Explain', result.data.optionTwoExplanation)
-          setValue('op3Explain', result.data.optionThreeExplanation)
-          setValue('op4Explain', result.data.optionFourExplanation)
-          setValue('op5Explain', result.data.optionFiveExplanation)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
         }
@@ -302,6 +305,45 @@ const Comments = () => {
       .catch((error) => {
         console.error(error)
         setIsLoading(false)
+      })
+  }
+  const deleteImage = () => {
+    console.log('delete image', questionId)
+    setImgLoader(true)
+    setError(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const formdata = new FormData()
+    formdata.append('image', null)
+    const requestOptions = {
+      method: 'DELETE',
+      body: formdata,
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setImgLoader(false)
+          getQuestion()
+          setSuccess(true)
+          setSuccessMsg('Image deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setImgLoader(false)
       })
   }
   return (
@@ -781,6 +823,14 @@ const Comments = () => {
                         label="Change Image"
                         onChange={(e) => setImage(e.target.files[0])}
                       />
+                      <CButton
+                        color="danger"
+                        onClick={deleteImage}
+                        className="mt-3"
+                        disabled={imgLoader ? true : false}
+                      >
+                        {imgLoader ? <CSpinner color="light" size="sm" /> : 'Delete Image'}
+                      </CButton>
                     </CCol>
                     <CCol md={6}>
                       <center>
