@@ -484,19 +484,109 @@ const QuizLayout = () => {
             setErrorMsg('')
           }, 3000)
         } else {
-          newArray.push(
-            filteredQuestion
-              .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
-              .slice(0, row.number),
-          )
+          if (row.preventAll || row.preventCorrect || row.preventIncorrect) {
+            if (row.preventAll) {
+              let filteredAttemptedQuestions = getDifference(
+                filteredQuestion.filter(
+                  (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
+                ),
+                allAttemptedQuestion,
+              )
+
+              if (
+                filteredAttemptedQuestions.length > 0 &&
+                filteredAttemptedQuestions.length >= row.number
+              ) {
+                // /////////////////////////
+                newArray.push(
+                  filteredAttemptedQuestions
+                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                    .slice(0, row.number),
+                )
+              } else {
+                setError(true)
+                setErrorMsg(
+                  `Sorry!! Insufficient questions matching your filters. Please refine your criteria and try again`,
+                )
+                // setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+                setTimeout(() => {
+                  setError(false)
+                  setErrorMsg('')
+                }, 2000)
+              }
+            }
+            if (row.preventCorrect) {
+              const allCorrected = allAttemptedQuestion.filter(
+                (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
+              )
+              let filteredAttemptedQuestions = getDifference(
+                filteredQuestion.filter(
+                  (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
+                ),
+                allCorrected,
+              )
+              if (
+                filteredAttemptedQuestions.length > 0 &&
+                filteredAttemptedQuestions.length >= row.number
+              ) {
+                // /////////////////////////
+                newArray.push(
+                  filteredAttemptedQuestions
+                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                    .slice(0, row.number),
+                )
+              } else {
+                setError(true)
+                setErrorMsg(
+                  `Sorry!! Insufficient questions matching your filters. Please refine your criteria and try again`,
+                )
+                // setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+                setTimeout(() => {
+                  setError(false)
+                  setErrorMsg('')
+                }, 2000)
+              }
+            }
+            if (row.preventIncorrect) {
+              const allIncorrected = allAttemptedQuestion.filter(
+                (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
+              )
+              let filteredAttemptedQuestions = getDifference(
+                filteredQuestion.filter(
+                  (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
+                ),
+                allIncorrected,
+              )
+              if (
+                filteredAttemptedQuestions.length > 0 &&
+                filteredAttemptedQuestions.length >= row.number
+              ) {
+                // /////////////////////////
+                newArray.push(
+                  filteredAttemptedQuestions
+                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                    .slice(0, row.number),
+                )
+              } else {
+                setError(true)
+                setErrorMsg(
+                  `Sorry!! Insufficient questions matching your filters. Please refine your criteria and try again`,
+                )
+                // setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+                setTimeout(() => {
+                  setError(false)
+                  setErrorMsg('')
+                }, 2000)
+              }
+            }
+          } else {
+            newArray.push(
+              filteredQuestion
+                .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                .slice(0, row.number),
+            )
+          }
         }
-        console.log(
-          '*****',
-          filteredQuestion
-            .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
-            .slice(0, row.number),
-        )
-        // }
       })
       let finalArray = []
       await newArray.map(async (arr, idx) => {
@@ -533,153 +623,153 @@ const QuizLayout = () => {
     console.log(toFilter, index)
     if (toFilter == 'preventAll') {
       totalRows[index].preventAll = !totalRows[index].preventAll
-      if (totalRows[index].preventAll) {
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allAttemptedQuestion)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
+      // if (totalRows[index].preventAll) {
+      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allAttemptedQuestion)
+      //   console.log(
+      //     'filtered question array',
+      //     filteredQuestion,
+      //     'filterAttemptedQuestions',
+      //     filteredAttemptedQuestions,
+      //   )
+      //   if (
+      //     filteredAttemptedQuestions.length > 0 &&
+      //     filteredAttemptedQuestions.length == totalRows[index].number
+      //   ) {
+      //     setTotalQuest(filteredAttemptedQuestions.length)
+      //     if (index > 0) {
+      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
+      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
 
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            setFilteredQuestionBackup(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
+      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
+      //       let allFilteredIds = alll.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     } else {
+      //       setFilteredQuestion(filteredAttemptedQuestions)
+      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
+      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     }
+      //   } else {
+      //     setError(true)
+      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+      //     setTimeout(() => {
+      //       setError(false)
+      //       setErrorMsg('')
+      //     }, 2000)
+      //   }
+      // } else {
+      //   setQues(totalRows[index].number, index)
+      // }
     }
     if (toFilter == 'preventIncorrect') {
       totalRows[index].preventIncorrect = !totalRows[index].preventIncorrect
-      if (totalRows[index].preventIncorrect) {
-        const allIncorrected = allAttemptedQuestion.filter(
-          (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
-        )
-        console.log('allIncorrected', allIncorrected)
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allIncorrected)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            setFilteredQuestionBackup(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
+      // if (totalRows[index].preventIncorrect) {
+      //   const allIncorrected = allAttemptedQuestion.filter(
+      //     (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
+      //   )
+      //   console.log('allIncorrected', allIncorrected)
+      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allIncorrected)
+      //   console.log(
+      //     'filtered question array',
+      //     filteredQuestion,
+      //     'filterAttemptedQuestions',
+      //     filteredAttemptedQuestions,
+      //   )
+      //   if (
+      //     filteredAttemptedQuestions.length > 0 &&
+      //     filteredAttemptedQuestions.length == totalRows[index].number
+      //   ) {
+      //     setTotalQuest(filteredAttemptedQuestions.length)
+      //     if (index > 0) {
+      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
+      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
+      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
+      //       let allFilteredIds = alll.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     } else {
+      //       setFilteredQuestion(filteredAttemptedQuestions)
+      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
+      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     }
+      //   } else {
+      //     setError(true)
+      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+      //     setTimeout(() => {
+      //       setError(false)
+      //       setErrorMsg('')
+      //     }, 2000)
+      //   }
+      // } else {
+      //   setQues(totalRows[index].number, index)
+      // }
     }
     if (toFilter == 'preventCorrect') {
       totalRows[index].preventCorrect = !totalRows[index].preventCorrect
-      if (totalRows[index].preventCorrect) {
-        const allCorrected = allAttemptedQuestion.filter(
-          (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
-        )
-        console.log('allCorrected', allCorrected)
-        let filteredAttemptedQuestions = getDifference(filteredQuestion, allCorrected)
-        console.log(
-          'filtered question array',
-          filteredQuestion,
-          'filterAttemptedQuestions',
-          filteredAttemptedQuestions,
-        )
-        if (
-          filteredAttemptedQuestions.length > 0 &&
-          filteredAttemptedQuestions.length == totalRows[index].number
-        ) {
-          setTotalQuest(filteredAttemptedQuestions.length)
-          if (index > 0) {
-            setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-            setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
-            let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-            let allFilteredIds = alll.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          } else {
-            setFilteredQuestion(filteredAttemptedQuestions)
-            setFilteredQuestionBackup(filteredAttemptedQuestions)
-            let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-            const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-              res.push({ questionId: item, selectedOption: '' })
-              return res
-            }, [])
-            setSaveQuestionArray(partialQuestionDetails)
-          }
-        } else {
-          setError(true)
-          setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-          setTimeout(() => {
-            setError(false)
-            setErrorMsg('')
-          }, 2000)
-        }
-      } else {
-        setQues(totalRows[index].number, index)
-      }
+      // if (totalRows[index].preventCorrect) {
+      //   const allCorrected = allAttemptedQuestion.filter(
+      //     (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
+      //   )
+      //   console.log('allCorrected', allCorrected)
+      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allCorrected)
+      //   console.log(
+      //     'filtered question array',
+      //     filteredQuestion,
+      //     'filterAttemptedQuestions',
+      //     filteredAttemptedQuestions,
+      //   )
+      //   if (
+      //     filteredAttemptedQuestions.length > 0 &&
+      //     filteredAttemptedQuestions.length == totalRows[index].number
+      //   ) {
+      //     setTotalQuest(filteredAttemptedQuestions.length)
+      //     if (index > 0) {
+      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
+      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
+      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
+      //       let allFilteredIds = alll.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     } else {
+      //       setFilteredQuestion(filteredAttemptedQuestions)
+      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
+      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
+      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+      //         res.push({ questionId: item, selectedOption: '' })
+      //         return res
+      //       }, [])
+      //       setSaveQuestionArray(partialQuestionDetails)
+      //     }
+      //   } else {
+      //     setError(true)
+      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
+      //     setTimeout(() => {
+      //       setError(false)
+      //       setErrorMsg('')
+      //     }, 2000)
+      //   }
+      // } else {
+      //   setQues(totalRows[index].number, index)
+      // }
     }
   }
 
@@ -766,8 +856,13 @@ const QuizLayout = () => {
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
+
               {totalRows.map((row, id) => (
-                <div className="mx-40 mb-5 flex justify-center items-center" key={id}>
+                // <div className="mx-40 mb-5 flex justify-center items-center" key={id}>
+                <div
+                  className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
+                  key={id}
+                >
                   <CRow
                     key={id}
                     className="bg-gray-200 relative border-3 flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
