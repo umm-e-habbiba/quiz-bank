@@ -766,165 +766,172 @@ const QuizLayout = () => {
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
-              {totalRows.map((row, id) => (
-                <div className="mx-40 mb-5 flex justify-center items-center" key={id}>
-                  <CRow
+              <div className="mx-40 mb-5 flex flex-col justify-center items-start">
+                {totalRows.map((row, id) => (
+                  <div
+                    className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
                     key={id}
-                    className="bg-gray-200 relative border-3 flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                   >
-                    <CCol xs={1} md={3} lg={3}>
-                      <CFormSelect
-                        aria-label="Select Exam"
-                        className="w-full"
-                        name="step"
-                        options={[
-                          'Select your Exam',
-                          {
-                            label: `USMLE: Step1 (${step1Questions} questions available)`,
-                            value: '1',
-                            disabled: step1Questions > 0 ? false : true,
-                          },
-                          {
-                            label: `USMLE: Step2 (${step2Questions} questions available)`,
-                            value: '2',
-                            disabled: step2Questions > 0 ? false : true,
-                          },
-                          {
-                            label: `USMLE: Step3 (${step3Questions} questions available)`,
-                            value: '3',
-                            disabled: step3Questions > 0 ? false : true,
-                          },
-                          // { label: `USMLE: Step2 Total Questions: ${step2Questions}`, value: '2' },
-                          // { label: `USMLE: Step3 Total Questions: ${step3Questions}`, value: '3' },
-                        ]}
-                        onChange={(e) => {
-                          fetchQuestion(e.target.value, '', id)
-                        }}
-                        // onChange={(e) => setStep(e.target.value, id)}
-                      />
-                    </CCol>
-                    <CCol xs={1} md={3} lg={3}>
-                      <CFormSelect
-                        aria-label="Select Category"
-                        className="w-full"
-                        name="category"
-                        // onChange={(e) => setCategory(e.target.value, id)}
-                        onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
-                      >
-                        <option>Select your Category</option>
-                        {totalRows[id].step == '1' ? (
-                          step1Categories.map((category, idx) => (
-                            <option
-                              key={idx}
-                              value={category}
-                              disabled={
-                                allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                  ? false
-                                  : true
-                              }
-                            >
-                              {category} ({' '}
-                              {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                              Questions avaialable)
-                            </option>
-                          ))
-                        ) : totalRows[id].step == '2' ? (
-                          step2Categories.map((category, idx) => (
-                            <option
-                              key={idx}
-                              value={category}
-                              disabled={
-                                allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                  ? false
-                                  : true
-                              }
-                            >
-                              {category} ({' '}
-                              {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                              Questions avaialable)
-                            </option>
-                          ))
-                        ) : totalRows[id].step == '3' ? (
-                          step3Categories.map((category, idx) => (
-                            <option
-                              key={idx}
-                              value={category}
-                              disabled={
-                                allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                  ? false
-                                  : true
-                              }
-                            >
-                              {category} ({' '}
-                              {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                              Questions avaialable)
-                            </option>
-                          ))
-                        ) : (
-                          <option disabled>Select Your exam first</option>
-                        )}
-                      </CFormSelect>
-                    </CCol>
-                    <CCol xs={1} md={3} lg={3}>
-                      <CFormInput
-                        type="number"
-                        name="number"
-                        placeholder="Enter number of questions"
-                        // {...register('total', { required: true, min: 1, max: 100 })}
-                        // feedback="Please enter number between 1 and 100"
-                        // invalid={errors.total ? true : false}
-                        className="w-full placeholder:text-[#252b36]"
-                        value={row.number}
-                        // onChange={(e) => handleNumberChange(e, id)}
-                        // onChange={(e)=>row.number = e.target.value}
-                        // value={totalQuest}
-                        onChange={(e) => setQues(e.target.value, id)}
-                      />
-                    </CCol>
-                    <CCol xs={1} md={3} lg={3} className="flex flex-col">
-                      <CFormSwitch
-                        size="xl"
-                        label="Correct Attempted Questions"
-                        id="preventAttemptedCorrect"
-                        className="text-sm"
-                        onChange={() => filterAttemptedQuestions('preventCorrect', id)}
-                        // onChange={() => (row.preventCorrect = !row.preventCorrect)}
-                        defaultChecked={row.preventCorrect ? true : false}
-                      />
-                      <CFormSwitch
-                        size="xl"
-                        label="Incorrect Attempted Questions"
-                        id="preventAttemptedIncorrect"
-                        className="text-sm"
-                        // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
-                        onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
-                        defaultChecked={row.preventIncorrect ? true : false}
-                      />
-                      <CFormSwitch
-                        size="xl"
-                        label="All Attempted Questions"
-                        id="preventAttemptedAll"
-                        className="text-sm"
-                        // onChange={() => (row.preventAll = !row.preventAll)}
-                        onChange={() => filterAttemptedQuestions('preventAll', id)}
-                        defaultChecked={row.preventAll ? true : false}
-                      />
-                    </CCol>
-                  </CRow>
-                  {/* button to add more rows */}
-                  {totalRows.length - 1 == id ? (
-                    <CButton
-                      className="w-9 h-9 p-3 text-3xl flex justify-center items-center"
-                      onClick={addRows}
-                      color="secondary"
+                    <CRow
+                      key={id}
+                      className="bg-gray-200 relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                     >
-                      <span className="-mt-2">+</span>
-                    </CButton>
-                  ) : (
-                    ''
-                  )}
-                </div>
-              ))}
+                      <CCol xs={1} md={3} lg={3}>
+                        <CFormSelect
+                          aria-label="Select Exam"
+                          className="w-full"
+                          name="step"
+                          options={[
+                            'Select your Exam',
+                            {
+                              label: `USMLE: Step1 (${step1Questions} questions available)`,
+                              value: '1',
+                              disabled: step1Questions > 0 ? false : true,
+                            },
+                            {
+                              label: `USMLE: Step2 (${step2Questions} questions available)`,
+                              value: '2',
+                              disabled: step2Questions > 0 ? false : true,
+                            },
+                            {
+                              label: `USMLE: Step3 (${step3Questions} questions available)`,
+                              value: '3',
+                              disabled: step3Questions > 0 ? false : true,
+                            },
+                            // { label: `USMLE: Step2 Total Questions: ${step2Questions}`, value: '2' },
+                            // { label: `USMLE: Step3 Total Questions: ${step3Questions}`, value: '3' },
+                          ]}
+                          onChange={(e) => {
+                            fetchQuestion(e.target.value, '', id)
+                          }}
+                          // onChange={(e) => setStep(e.target.value, id)}
+                        />
+                      </CCol>
+                      <CCol xs={1} md={3} lg={3}>
+                        <CFormSelect
+                          aria-label="Select Category"
+                          className="w-full"
+                          name="category"
+                          // onChange={(e) => setCategory(e.target.value, id)}
+                          onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
+                        >
+                          <option>Select your Category</option>
+                          {totalRows[id].step == '1' ? (
+                            step1Categories.map((category, idx) => (
+                              <option
+                                key={idx}
+                                value={category}
+                                disabled={
+                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                    ? false
+                                    : true
+                                }
+                              >
+                                {category} ({' '}
+                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                Questions avaialable)
+                              </option>
+                            ))
+                          ) : totalRows[id].step == '2' ? (
+                            step2Categories.map((category, idx) => (
+                              <option
+                                key={idx}
+                                value={category}
+                                disabled={
+                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                    ? false
+                                    : true
+                                }
+                              >
+                                {category} ({' '}
+                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                Questions avaialable)
+                              </option>
+                            ))
+                          ) : totalRows[id].step == '3' ? (
+                            step3Categories.map((category, idx) => (
+                              <option
+                                key={idx}
+                                value={category}
+                                disabled={
+                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
+                                    ? false
+                                    : true
+                                }
+                              >
+                                {category} ({' '}
+                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                Questions avaialable)
+                              </option>
+                            ))
+                          ) : (
+                            <option disabled>Select Your exam first</option>
+                          )}
+                        </CFormSelect>
+                      </CCol>
+                      <CCol xs={1} md={3} lg={3}>
+                        <CFormInput
+                          type="number"
+                          name="number"
+                          placeholder="Enter number of questions"
+                          // {...register('total', { required: true, min: 1, max: 100 })}
+                          // feedback="Please enter number between 1 and 100"
+                          // invalid={errors.total ? true : false}
+                          className="w-full placeholder:text-[#252b36]"
+                          value={row.number}
+                          // onChange={(e) => handleNumberChange(e, id)}
+                          // onChange={(e)=>row.number = e.target.value}
+                          // value={totalQuest}
+                          onChange={(e) => setQues(e.target.value, id)}
+                        />
+                      </CCol>
+                      <CCol xs={1} md={3} lg={3} className="flex flex-col">
+                        <CFormSwitch
+                          size="xl"
+                          label="Correct Attempted Questions"
+                          id="preventAttemptedCorrect"
+                          className="text-sm"
+                          onChange={() => filterAttemptedQuestions('preventCorrect', id)}
+                          // onChange={() => (row.preventCorrect = !row.preventCorrect)}
+                          defaultChecked={row.preventCorrect ? true : false}
+                        />
+                        <CFormSwitch
+                          size="xl"
+                          label="Incorrect Attempted Questions"
+                          id="preventAttemptedIncorrect"
+                          className="text-sm"
+                          // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
+                          onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
+                          defaultChecked={row.preventIncorrect ? true : false}
+                        />
+                        <CFormSwitch
+                          size="xl"
+                          label="All Attempted Questions"
+                          id="preventAttemptedAll"
+                          className="text-sm"
+                          // onChange={() => (row.preventAll = !row.preventAll)}
+                          onChange={() => filterAttemptedQuestions('preventAll', id)}
+                          defaultChecked={row.preventAll ? true : false}
+                        />
+                      </CCol>
+                    </CRow>
+
+                    {totalRows.length - 1 === id ? (
+                      <div className="flex justify-center items-center">
+                        <CButton
+                          className="w-9 h-9 p-3 text-2xl flex justify-center items-center"
+                          onClick={addRows}
+                          color="secondary"
+                        >
+                          <span className="-mt-1">+</span>
+                        </CButton>
+                      </div>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                ))}
+              </div>
               <div className="flex justify-center items-center flex-col">
                 <div className="flex">
                   {/* <CButton
