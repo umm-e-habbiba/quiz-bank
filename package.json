@@ -44,7 +44,8 @@
     "react-stickies": "^0.0.16",
     "redux": "5.0.1",
     "simple-react-calculator": "^0.4.1",
-    "simplebar-react": "^3.2.4"
+    "simplebar-react": "^3.2.4",
+    "video-react": "^0.16.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",

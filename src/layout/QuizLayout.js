@@ -96,6 +96,7 @@ const QuizLayout = () => {
       const getUserId = localStorage.getItem('userId')
       setUSerID(getUserId)
       getAllAttemptedQuest()
+      getAllAttemptedQuestOfAllUsers()
     } else {
       navigate('/login')
     }
@@ -155,10 +156,32 @@ const QuizLayout = () => {
     fetch(API_URL + 'user-attempted-questions/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        console.log('getAllAttemptedQuest', result)
         if (result.data) {
           setAllAttemptedQuestion(result.data)
         }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const getAllAttemptedQuestOfAllUsers = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'attempted-questions', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('get all attempted questions of all users', result)
+        // if (result.data) {
+        //   setAllAttemptedQuestion(result.data)
+        // }
       })
       .catch((error) => {
         console.error(error)
@@ -178,38 +201,38 @@ const QuizLayout = () => {
     list[index].number = value //set number value
     setTotalRows(list)
     setTotalQuest(calculateSum(totalRows, 'number')) // calculate total number of questions from all rows
-    if (value > 100 || value < 1) {
-      setError(true)
-      setErrorMsg('Please enter number between 1 and 100')
-      setTimeout(() => {
-        setError(false)
-        setErrorMsg('')
-      }, 3000)
-      setDisableExam(true)
-    } else if (value > filteredQuestion.length) {
-      setError(true)
-      setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
-      setTimeout(() => {
-        setError(false)
-        setErrorMsg('')
-      }, 3000)
-      setDisableExam(true)
-    } else {
-      const totals = calculateSum(totalRows, 'number')
-      setTotalQuest(totals)
-      filteredQuestion.length = totals // trim total questions array of total number
-      console.log('number of total questions', totals)
-      // add all questions in saveQuestionArray
-      // so that all questions will save on quiz end
-      // either user attempted those questions or not
-      let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
-      const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-        res.push({ questionId: item, selectedOption: '' })
-        return res
-      }, [])
-      setSaveQuestionArray(partialQuestionDetails)
-      setDisableExam(false)
-    }
+    // if (value > 100 || value < 1) {
+    //   setError(true)
+    //   setErrorMsg('Please enter number between 1 and 100')
+    //   setTimeout(() => {
+    //     setError(false)
+    //     setErrorMsg('')
+    //   }, 3000)
+    //   setDisableExam(true)
+    // } else if (value > filteredQuestion.length) {
+    //   setError(true)
+    //   setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
+    //   setTimeout(() => {
+    //     setError(false)
+    //     setErrorMsg('')
+    //   }, 3000)
+    //   setDisableExam(true)
+    // } else {
+    //   const totals = calculateSum(totalRows, 'number')
+    //   setTotalQuest(totals)
+    //   filteredQuestion.length = totals // trim total questions array of total number
+    //   console.log('number of total questions', totals)
+    //   // add all questions in saveQuestionArray
+    //   // so that all questions will save on quiz end
+    //   // either user attempted those questions or not
+    //   let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+    //   const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+    //     res.push({ questionId: item, selectedOption: '' })
+    //     return res
+    //   }, [])
+    //   setSaveQuestionArray(partialQuestionDetails)
+    //   setDisableExam(false)
+    // }
   }
 
   const fetchQuestion = (step, value, index) => {
@@ -414,8 +437,43 @@ const QuizLayout = () => {
   }
 
   const startexam = () => {
-    setShowQues(true)
-    setShowSelectors(false)
+    console.log('total Questions', totalQuest)
+    if (totalQuest > 100 || totalQuest < 1) {
+      setError(true)
+      setErrorMsg('Please enter number between 1 and 100')
+      setTimeout(() => {
+        setError(false)
+        setErrorMsg('')
+      }, 3000)
+      // setDisableExam(true)
+    } else if (totalQuest > filteredQuestion.length) {
+      setError(true)
+      setErrorMsg(
+        `${totalQuest} questions are not available. Kindly enter less number of questions`,
+      )
+      setTimeout(() => {
+        setError(false)
+        setErrorMsg('')
+      }, 3000)
+      // setDisableExam(true)
+    } else {
+      // const totals = calculateSum(totalRows, 'number')
+      // setTotalQuest(totals)
+      filteredQuestion.length = totalQuest // trim total questions array of total number
+      console.log('number of total questions', totalQuest)
+      // add all questions in saveQuestionArray
+      // so that all questions will save on quiz end
+      // either user attempted those questions or not
+      let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+      const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+        res.push({ questionId: item, selectedOption: '' })
+        return res
+      }, [])
+      setSaveQuestionArray(partialQuestionDetails)
+      // setDisableExam(false)
+      setShowQues(true)
+      setShowSelectors(false)
+    }
   }
 
   // remove all attempted questions
@@ -844,7 +902,7 @@ const QuizLayout = () => {
                   // type="submit"
                   color="secondary"
                   onClick={startexam}
-                  disabled={disableExam ? true : false}
+                  // disabled={disableExam ? true : false}
                 >
                   Start Exam
                 </button>

@@ -20,6 +20,7 @@ import {
   cilCommentBubble,
   cilCommentSquare,
   cilListRich,
+  cilStarHalf,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -41,6 +42,12 @@ const _admin_nav = [
     name: 'Comments',
     to: '/comments',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Feedbacks',
+    to: '/manage-feedback',
+    icon: <CIcon icon={cilStarHalf} customClassName="nav-icon" />,
   },
 ]
 

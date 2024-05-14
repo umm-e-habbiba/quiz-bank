@@ -37,6 +37,9 @@ import 'react-quill/dist/quill.snow.css'
 //////////
 import JoditEditor from 'jodit-react'
 import { RiEyeLine } from 'react-icons/ri'
+/// video player
+import '../../../../node_modules/video-react/dist/video-react.css' // import css
+import { Player } from 'video-react'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -72,6 +75,7 @@ const ManageQuiz = () => {
   const [imgLoader, setImgLoader] = useState(false)
   const [questionId, setQuestionId] = useState('')
   const [image, setImage] = useState('')
+  const [videoSrc, seVideoSrc] = useState('')
   // const [usmleStep, setUsmleStep] = useState('')
   // const [usmleCategory, setUsmleCategory] = useState('')
   // const [question, setQuestion] = useState('')
@@ -420,6 +424,13 @@ const ManageQuiz = () => {
         console.error(error)
         setImgLoader(false)
       })
+  }
+  const handleVideoChange = (file) => {
+    var reader = new FileReader()
+    console.log(file)
+    var url = URL.createObjectURL(file)
+    seVideoSrc(url)
+    console.log('video url', url)
   }
   return (
     <AdminLayout>
@@ -958,6 +969,21 @@ const ManageQuiz = () => {
                     </CCol>
                   </CRow>
                 )}
+                {/* <CRow className="mb-3">
+                  <CCol md={12}>
+                    <CFormInput
+                      type="file"
+                      id="formFile"
+                      label="Upload Video"
+                      onChange={(e) => handleVideoChange(e.target.files[0])}
+                    />
+                  </CCol>
+                </CRow>
+                {videoSrc && (
+                  <center>
+                    <Player playsInline src={videoSrc} fluid={false} width={480} height={272} />
+                  </center>
+                )} */}
               </CForm>
               {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>

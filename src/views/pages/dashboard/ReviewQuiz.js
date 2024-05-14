@@ -171,12 +171,12 @@ const ReviewQuiz = () => {
         // isTimer={isTimer}
         // setIsTimer={setIsTimer}
       />
-      <button
+      {/* <button
         className="sidebar-toggle-btn mt-2 absolute text-[25px] px-4 z-20"
         onClick={toggleSidebar}
       >
         {sidebarOpen ? '' : <FaBars className=" " />}
-      </button>
+      </button> */}
       <div className="flex flex-row">
         <div
           className={` ${

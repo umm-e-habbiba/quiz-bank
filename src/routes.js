@@ -7,6 +7,7 @@ import PreviousTests from './views/pages/dashboard/PreviousTests'
 import AboutUs from './views/pages/dashboard/AboutUs'
 import Donations from './views/pages/dashboard/Donations'
 import Feedback from './views/pages/dashboard/Feedback'
+import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -22,6 +23,7 @@ const routes = [
   { path: '/about-us', name: 'About Us', element: AboutUs },
   { path: '/donations', name: 'Donations', element: Donations },
   { path: '/feedback', name: 'Feedback', element: Feedback },
+  { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
 ]
 
 export default routes

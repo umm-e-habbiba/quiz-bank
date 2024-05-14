@@ -52,6 +52,7 @@ const Feedback = () => {
   const [loader, setLoader] = useState(false)
   const [allFeedbacks, setAllFeedbacks] = useState([])
   const [myFeedbacks, setMyFeedbacks] = useState([])
+  const [myFeedbackDate, setMyFeedbackDate] = useState('')
   const [feedbackModal, setFeedbackModal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
@@ -122,11 +123,12 @@ const Feedback = () => {
     }
 
     fetch(API_URL + 'feedbacks', requestOptions)
+      // fetch(API_URL + 'others-feedbacks/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
         if (result.data) {
-          setAllFeedbacks(result.data)
+          setAllFeedbacks(result.data.filter((feedback) => feedback.feedbackId === feedbackId))
         }
         setLoader(false)
       })
@@ -151,6 +153,15 @@ const Feedback = () => {
         console.log(result)
         if (result.data) {
           setMyFeedbacks(result.data)
+          reset({
+            name: result.data[0].name,
+            message: result.data[0].text,
+            school: result.data[0].school,
+            rating: result.data[0].rating,
+          })
+          setFeedbackId(result.data[0]._id)
+          setMyFeedbackDate(result.data[0].feedbackCreatedAt)
+          // set all data for edit here
         }
         setLoader(false)
       })
@@ -190,6 +201,7 @@ const Feedback = () => {
           setFeedbackModal(false)
           setSpinner(false)
           getAllFeedbacks()
+          getMyFeedbacks()
           reset({})
           setSuccess(true)
           setSuccessMsg('Feedback sent successfully')
@@ -236,11 +248,17 @@ const Feedback = () => {
       .then((result) => {
         console.log(result)
         if (result.success) {
+          reset({
+            name: result.data.feedbacks[0].name,
+            message: result.data.feedbacks[0].text,
+            school: result.data.feedbacks[0].school,
+            rating: result.data.feedbacks[0].rating,
+          })
+          setFeedbackId(result.data.feedbacks[0]._id)
+          setMyFeedbackDate(result.data.feedbacks[0].feedbackCreatedAt)
           setFeedbackModal(false)
           setSpinner(false)
-          getAllFeedbacks()
           getMyFeedbacks()
-          reset({})
           setSuccess(true)
           setSuccessMsg('Feedback updated successfully')
           setTimeout(() => {
@@ -269,22 +287,17 @@ const Feedback = () => {
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
         <div className="body flex-grow-1 mx-4">
-          <CNav variant="underline" role="tablist">
-            <CNavItem>
-              <CNavLink href="#!" active={activeKey === 1} onClick={() => setActiveKey(1)}>
-                My Feedbacks
-              </CNavLink>
-            </CNavItem>
-            <CNavItem>
-              <CNavLink href="#!" active={activeKey === 2} onClick={() => setActiveKey(2)}>
-                All Feedbacks
-              </CNavLink>
-            </CNavItem>
-          </CNav>
-          <CTabContent>
-            <CTabPane role="tabpanel" aria-labelledby="home-tab" visible={activeKey === 1}>
+          {loader ? (
+            <div className="text-center">
+              <CSpinner color="success" variant="grow" />
+            </div>
+          ) : (
+            <></>
+          )}
+          {myFeedbacks && myFeedbacks.length > 0 ? (
+            <>
               <div className="flex justify-between items-center my-2">
-                <p className="text-2xl mb-1">My Feedbacks</p>
+                <p className="text-2xl mb-1">My Feedback</p>
                 <CButton
                   onClick={(e) => {
                     setFeedbackModal(true)
@@ -292,106 +305,148 @@ const Feedback = () => {
                   }}
                   className="bg-[#d2652d] text-white hover:bg-[#d2642ddc]"
                 >
-                  Add Feedback
+                  Edit Feedback
                 </CButton>
               </div>
-              {loader ? (
-                <div className="text-center">
-                  <CSpinner color="success" variant="grow" />
-                </div>
-              ) : myFeedbacks && myFeedbacks.length > 0 ? (
-                <CRow>
-                  {myFeedbacks.map((feedback, index) => (
-                    <CCol sm={1} md={4} lg={4} key={index}>
-                      <figure className="snip1533">
-                        <figcaption>
-                          <blockquote>
-                            <p>{feedback.text}</p>
-                          </blockquote>
-                          <h3>{feedback.name}</h3>
-                          <h4>{feedback.school}</h4>
+              <CRow>
+                <CCol sm={1} md={4} lg={4}>
+                  <figure className="snip1533">
+                    <figcaption>
+                      <blockquote>
+                        <p>
+                          {getValues('message')}
+                          {getValues('message').length}
+                        </p>
+                      </blockquote>
+                      <h3>{getValues('name')}</h3>
+                      <h4>{getValues('school')}</h4>
 
-                          <div className="flex justify-center items-center my-1">
-                            <ReactStars
-                              count={5}
-                              size={34}
-                              isHalf={true}
-                              emptyIcon={<i className="far fa-star"></i>}
-                              halfIcon={<i className="fa fa-star-half-alt"></i>}
-                              fullIcon={<i className="fa fa-star"></i>}
-                              activeColor="#d2652d"
-                              classNames="justify-center"
-                              value={feedback.rating}
-                              disabled={true}
-                            />
-                          </div>
-                          <div className="my-2 flex justify-center items-center">
-                            <div
-                              id={feedback._id}
-                              onClick={(e) => {
-                                setFeedbackModal(true)
-                                setFeedbackId(e.currentTarget.id)
-                                setError(false)
-                                setErrorMsg('')
-                              }}
-                              className="w-8 h-8 rounded-sm cursor-pointer bg-[#d2652d] flex justify-center items-center"
-                              title="Edit feedback"
-                            >
-                              <CIcon icon={cilPencil} className="text-white" />
-                            </div>
-                          </div>
-                        </figcaption>
-                      </figure>
-                    </CCol>
-                  ))}
-                </CRow>
-              ) : (
-                <center>No Feedbacks added yet</center>
-              )}
-            </CTabPane>
-            <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 2}>
-              <p className="text-2xl mb-1 mt-2">All Feedbacks</p>
-              {loader ? (
-                <div className="text-center">
-                  <CSpinner color="success" variant="grow" />
-                </div>
-              ) : allFeedbacks && allFeedbacks.length > 0 ? (
-                <CRow>
-                  {allFeedbacks.map((feedback, index) => (
-                    <CCol sm={1} md={4} lg={4} key={index}>
-                      <figure className="snip1533">
-                        <figcaption>
-                          <blockquote>
-                            <p>{feedback.lastFeedback.text}</p>
-                          </blockquote>
-                          <h3>{feedback.lastFeedback.name}</h3>
-                          <h4>{feedback.lastFeedback.school}</h4>
+                      <div className="flex justify-center items-center my-1">
+                        <ReactStars
+                          count={5}
+                          size={34}
+                          isHalf={true}
+                          emptyIcon={<i className="far fa-star"></i>}
+                          halfIcon={<i className="fa fa-star-half-alt"></i>}
+                          fullIcon={<i className="fa fa-star"></i>}
+                          activeColor="#d2652d"
+                          classNames="justify-center"
+                          value={getValues('rating')}
+                          disabled={true}
+                        />
+                      </div>
+                      <em className="mt-3">
+                        {moment(myFeedbackDate).format('DD MMMM YYYY, h:mm a')}
+                      </em>
+                    </figcaption>
+                  </figure>
+                </CCol>
+                {/* {myFeedbacks.map((feedback, index) => (
+                  <CCol sm={1} md={4} lg={4} key={index}>
+                    <figure className="snip1533">
+                      <figcaption>
+                        <blockquote>
+                          <p>{feedback.text}</p>
+                        </blockquote>
+                        <h3>{feedback.name}</h3>
+                        <h4>{feedback.school}</h4>
 
-                          <div className="flex justify-center items-center my-1">
-                            <ReactStars
-                              count={5}
-                              size={34}
-                              isHalf={true}
-                              emptyIcon={<i className="far fa-star"></i>}
-                              halfIcon={<i className="fa fa-star-half-alt"></i>}
-                              fullIcon={<i className="fa fa-star"></i>}
-                              activeColor="#d2652d"
-                              classNames="justify-center"
-                              value={feedback.lastFeedback.rating}
-                              disabled={true}
-                            />
-                          </div>
-                          <h4>{feedback.email}</h4>
-                        </figcaption>
-                      </figure>
-                    </CCol>
-                  ))}
-                </CRow>
-              ) : (
-                <center>No Feedbacks added yet</center>
-              )}
-            </CTabPane>
-          </CTabContent>
+                        <div className="flex justify-center items-center my-1">
+                          <ReactStars
+                            count={5}
+                            size={34}
+                            isHalf={true}
+                            emptyIcon={<i className="far fa-star"></i>}
+                            halfIcon={<i className="fa fa-star-half-alt"></i>}
+                            fullIcon={<i className="fa fa-star"></i>}
+                            activeColor="#d2652d"
+                            classNames="justify-center"
+                            value={feedback.rating}
+                            disabled={true}
+                          />
+                        </div>
+                        <em className="mt-3">
+                          {moment(feedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
+                        </em>
+                      </figcaption>
+                    </figure>
+                  </CCol>
+                ))} */}
+              </CRow>
+            </>
+          ) : (
+            ''
+            // <div className="flex justify-end items-center my-2">
+            //   <CButton
+            //     onClick={(e) => {
+            //       setFeedbackModal(true)
+            //       reset({})
+            //     }}
+            //     className="bg-[#d2652d] text-white hover:bg-[#d2642ddc]"
+            //   >
+            //     Add Feedback
+            //   </CButton>
+            // </div>
+          )}
+          <div className="flex justify-between items-center my-2">
+            <p className="text-2xl mb-1 mt-2">Other Feedbacks</p>
+            {myFeedbacks && myFeedbacks.length > 0 ? (
+              ''
+            ) : (
+              <CButton
+                onClick={(e) => {
+                  setFeedbackModal(true)
+                  reset({})
+                }}
+                className="bg-[#d2652d] text-white hover:bg-[#d2642ddc]"
+              >
+                Add Feedback
+              </CButton>
+            )}
+          </div>
+
+          {allFeedbacks && allFeedbacks.length > 0 ? (
+            <CRow>
+              {allFeedbacks.map((feedback, index) => (
+                <CCol sm={1} md={4} lg={4} key={index}>
+                  <figure className="snip1533">
+                    <figcaption>
+                      <blockquote>
+                        <p>{feedback.lastFeedback.text}</p>
+                      </blockquote>
+                      <h3>{feedback.lastFeedback.name}</h3>
+                      <h4>{feedback.lastFeedback.school}</h4>
+
+                      <div className="flex justify-center items-center my-1">
+                        <ReactStars
+                          count={5}
+                          size={34}
+                          isHalf={true}
+                          emptyIcon={<i className="far fa-star"></i>}
+                          halfIcon={<i className="fa fa-star-half-alt"></i>}
+                          fullIcon={<i className="fa fa-star"></i>}
+                          activeColor="#d2652d"
+                          classNames="justify-center"
+                          value={feedback.lastFeedback.rating}
+                          disabled={true}
+                        />
+                      </div>
+                      <h4>{feedback.email}</h4>
+                      <em className="mt-3">
+                        {moment(feedback.lastFeedback.feedbackCreatedAt).format(
+                          'DD MMMM YYYY, h:mm a',
+                        )}
+                      </em>
+                    </figcaption>
+                  </figure>
+                </CCol>
+              ))}
+            </CRow>
+          ) : (
+            <div className="flex justify-center items-center my-6">
+              <p className="text-xl mt-6">No Feedbacks added yet</p>
+            </div>
+          )}
         </div>
       </div>
       {/* add feedback modal */}
