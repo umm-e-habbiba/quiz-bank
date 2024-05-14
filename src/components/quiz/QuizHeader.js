@@ -38,10 +38,11 @@ import { FiSettings } from 'react-icons/fi'
 import noteIcon from '../../assets/images/post-it.png'
 // import markIcon from '../../assets/images/mark-flag.png'
 import markIcon from '../../assets/images/mark-icon.svg'
-import { ReactCalculator } from 'simple-react-calculator'
+// import { ReactCalculator } from 'simple-react-calculator'
 import ReactStickies from 'react-stickies'
 import { API_URL } from 'src/store'
 import { FaUndoAlt } from 'react-icons/fa'
+import Calculator from './Calculator'
 // isTimer={isTimer}
 //         setIsTimer={setIsTimer}
 const QuizHeader = ({
@@ -98,6 +99,11 @@ const QuizHeader = ({
         headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
     })
   }, [])
+
+  // Function to toggle the calculator
+  const toggleCalculator = () => {
+    setShowCalculator((prevState) => !prevState) // Toggle the state
+  }
 
   const onChange = (notes) => {
     setNotes(notes)
@@ -234,15 +240,6 @@ const QuizHeader = ({
       })
   }
 
-  const handleQuestionNavigation = (questionNumber) => {
-    // Navigate to the selected question
-    setCurrentQuestion(questionNumber - 1) // Adjust to zero-based index
-  }
-
-  const handleUndoClick = () => {
-    setIsUndoClicked(true)
-    undoHighlight()
-  }
   return (
     <>
       <CHeader position="sticky" className="p-0 quiz-header px-4">
@@ -360,10 +357,7 @@ const QuizHeader = ({
           <div onClick={() => setShowNotes((prevCheck) => !prevCheck)}>
             <img src={noteIcon} alt="notes icon" className="mr-2 cursor-pointer" />
           </div>
-          <FcCalculator
-            className="quiz-icons mr-2 cursor-pointer"
-            onClick={() => setShowCalculator((prevCheck) => !prevCheck)}
-          />
+          <FcCalculator className="quiz-icons mr-2 cursor-pointer" onClick={toggleCalculator} />
           <BiZoomIn
             className="quiz-icons mr-2 cursor-pointer"
             onClick={() => setFontSize(fontSize + 1)}
@@ -398,8 +392,8 @@ const QuizHeader = ({
         </CHeaderNav>
       </CHeader>{' '}
       {showCalculator && (
-        <div className="fixed bottom-0 right-0">
-          <ReactCalculator />
+        <div className="fixed bottom-20 right-0 z-50">
+          <Calculator />
         </div>
       )}
       {showNotes && <ReactStickies notes={notes} onChange={onChange} onSave={onSave} />}

@@ -195,7 +195,16 @@ const QuizLayout = () => {
 
     return total
   }
-
+  const setStep = (value, index) => {
+    const list = [...totalRows]
+    list[index].step = value //set step value
+    setTotalRows(list)
+  }
+  const setCategory = (value, index) => {
+    const list = [...totalRows]
+    list[index].category = value //set category value
+    setTotalRows(list)
+  }
   const setQues = (value, index) => {
     const list = [...totalRows]
     list[index].number = value //set number value
@@ -245,17 +254,9 @@ const QuizLayout = () => {
           totalRows.map((item, idx) => (idx === index ? { ...item, category: value } : item)),
         )
         const filterUsmle = filterSteps.filter((ques) => ques.USMLE == value)
-        // const filterAttemptedUsmle = filterAttemptedSteps.filter(
-        //   (ques) => ques.question.USMLE == value,
-        // )
-        // if (filterAttemptedUsmle.length > 0) {
-        //   setAllAttemptedQuestion(filterAttemptedUsmle)
-        // }
         if (filterUsmle.length > 0) {
           console.log('filteredQuestion array', filteredQuestion, 'new array', filterUsmle)
           if (filteredQuestion.length > 0) {
-            // setFilteredQuestion([...filteredQuestion, filterUsmle])
-            // filteredQuestion.concat(filterUsmle)
             setFilteredQuestion((ques) => [...ques, ...filterUsmle])
             setFilteredQuestionBackup((ques) => [...ques, ...filterUsmle])
           } else {
@@ -436,8 +437,8 @@ const QuizLayout = () => {
     setTotalRows(rows)
   }
 
-  const startexam = () => {
-    console.log('total Questions', totalQuest)
+  const startexam = async () => {
+    console.log('total Questions', totalQuest, 'filtererd array', filteredQuestion)
     if (totalQuest > 100 || totalQuest < 1) {
       setError(true)
       setErrorMsg('Please enter number between 1 and 100')
@@ -459,20 +460,63 @@ const QuizLayout = () => {
     } else {
       // const totals = calculateSum(totalRows, 'number')
       // setTotalQuest(totals)
-      filteredQuestion.length = totalQuest // trim total questions array of total number
-      console.log('number of total questions', totalQuest)
+      var newArray = []
+      await totalRows.map((row, index) => {
+        if (
+          row.number >
+          filteredQuestion.filter(
+            (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
+          ).length
+        ) {
+          setError(true)
+          setErrorMsg(
+            `Only ${
+              filteredQuestion.filter(
+                (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
+              ).length
+            } questions are available for ${row.category}.`,
+          )
+          // setErrorMsg(
+          //   `${row.number} questions are not available for ${row.category}. Kindly enter less number of questions`,
+          // )
+          setTimeout(() => {
+            setError(false)
+            setErrorMsg('')
+          }, 3000)
+        } else {
+          newArray.push(
+            filteredQuestion
+              .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+              .slice(0, row.number),
+          )
+        }
+        console.log(
+          '*****',
+          filteredQuestion
+            .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+            .slice(0, row.number),
+        )
+        // }
+      })
+      let finalArray = []
+      await newArray.map(async (arr, idx) => {
+        await arr.map((a, idx) => {
+          finalArray.push(a)
+        })
+      })
+      console.log('final array', finalArray)
       // add all questions in saveQuestionArray
       // so that all questions will save on quiz end
       // either user attempted those questions or not
-      let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
+      let allFilteredIds = finalArray.map(({ _id }) => _id)
       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
         res.push({ questionId: item, selectedOption: '' })
         return res
       }, [])
       setSaveQuestionArray(partialQuestionDetails)
       // setDisableExam(false)
-      setShowQues(true)
-      setShowSelectors(false)
+      // setShowQues(true)
+      // setShowSelectors(false)
     }
   }
 
@@ -756,7 +800,7 @@ const QuizLayout = () => {
                         onChange={(e) => {
                           fetchQuestion(e.target.value, '', id)
                         }}
-                        // onChange={(e) => handleStepChange(e, id)}
+                        // onChange={(e) => setStep(e.target.value, id)}
                       />
                     </CCol>
                     <CCol xs={1} md={3} lg={3}>
@@ -764,6 +808,7 @@ const QuizLayout = () => {
                         aria-label="Select Category"
                         className="w-full"
                         name="category"
+                        // onChange={(e) => setCategory(e.target.value, id)}
                         onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
                       >
                         <option>Select your Category</option>
@@ -867,7 +912,7 @@ const QuizLayout = () => {
                     </CCol>
                   </CRow>
                   {/* button to add more rows */}
-                  {/* {totalRows.length - 1 == id ? (
+                  {totalRows.length - 1 == id ? (
                     <CButton
                       className="w-9 h-9 p-3 text-3xl flex justify-center items-center"
                       onClick={addRows}
@@ -877,7 +922,7 @@ const QuizLayout = () => {
                     </CButton>
                   ) : (
                     ''
-                  )} */}
+                  )}
                 </div>
               ))}
               <div className="flex justify-center items-center flex-col">
