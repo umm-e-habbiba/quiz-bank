@@ -439,6 +439,7 @@ const QuizLayout = () => {
 
   const startexam = async () => {
     console.log('total Questions', totalQuest, 'filtererd array', filteredQuestion)
+    let start = true
     if (totalQuest > 100 || totalQuest < 1) {
       setError(true)
       setErrorMsg('Please enter number between 1 and 100')
@@ -513,6 +514,7 @@ const QuizLayout = () => {
                   setError(false)
                   setErrorMsg('')
                 }, 2000)
+                start = false
               }
             }
             if (row.preventCorrect) {
@@ -545,6 +547,7 @@ const QuizLayout = () => {
                   setError(false)
                   setErrorMsg('')
                 }, 2000)
+                start = false
               }
             }
             if (row.preventIncorrect) {
@@ -577,6 +580,7 @@ const QuizLayout = () => {
                   setError(false)
                   setErrorMsg('')
                 }, 2000)
+                start = false
               }
             }
           } else {
@@ -594,7 +598,6 @@ const QuizLayout = () => {
           finalArray.push(a)
         })
       })
-      console.log('final array', finalArray)
       // add all questions in saveQuestionArray
       // so that all questions will save on quiz end
       // either user attempted those questions or not
@@ -604,9 +607,12 @@ const QuizLayout = () => {
         return res
       }, [])
       setSaveQuestionArray(partialQuestionDetails)
+      console.log('final array', finalArray, 'allFiteredIDs', partialQuestionDetails)
       // setDisableExam(false)
-      // setShowQues(true)
-      // setShowSelectors(false)
+      if (start) {
+        setShowQues(true)
+        setShowSelectors(false)
+      }
     }
   }
 
