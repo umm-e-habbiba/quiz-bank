@@ -243,10 +243,10 @@ const ManageFeedbacks = () => {
                     <ImCross />
                   </button>
                   <blockquote>
-                    <p>{selectedFeedback.text}</p>
+                    <p className='text-black font-semibold'>{selectedFeedback.text}</p>
                   </blockquote>
-                  <h3>{selectedFeedback.name}</h3>
-                  <h4>{selectedFeedback.school}</h4>
+                  <h3 >{selectedFeedback.name}</h3>
+                  <p className='text-black font-semibold'>{selectedFeedback.school}</p>
                   <div className="flex justify-center items-center my-1">
                     <ReactStars
                       count={5}
@@ -266,8 +266,8 @@ const ManageFeedbacks = () => {
                       }}
                     />
                   </div>
-                  <h4>{selectedFeedback.email}</h4>
-                  <em className="mt-3">
+                  <p className='text-black '>{selectedFeedback.email}</p>
+                  <em className="mt-3 text-black">
                     {moment(selectedFeedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
                   </em>
                 </figcaption>

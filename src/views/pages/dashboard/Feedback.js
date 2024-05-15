@@ -318,13 +318,13 @@ const Feedback = () => {
                   <figure className="snip1533">
                     <figcaption>
                       <blockquote>
-                        <p>
+                        <p className='text-black font-medium'>
                           {getValues('message')}
                           {getValues('message').length}
                         </p>
                       </blockquote>
                       <h3>{getValues('name')}</h3>
-                      <h4>{getValues('school')}</h4>
+                      <p className='text-black font-medium'>{getValues('school')}</p>
 
                       <div className="flex justify-center items-center my-1">
                         <ReactStars
@@ -340,7 +340,7 @@ const Feedback = () => {
                           disabled={true}
                         />
                       </div>
-                      <em className="mt-3">
+                      <em className="mt-3 text-black">
                         {moment(myFeedbackDate).format('DD MMMM YYYY, h:mm a')}
                       </em>
                     </figcaption>
@@ -424,10 +424,10 @@ const Feedback = () => {
                     <figure className="snip1533">
                       <figcaption>
                         <blockquote>
-                          <p>{feedback.lastFeedback.text}</p>
+                          <p className='text-black font-semibold'>{feedback.lastFeedback.text}</p>
                         </blockquote>
                         <h3>{feedback.lastFeedback.name}</h3>
-                        <h4>{feedback.lastFeedback.school}</h4>
+                        <p className='text-black'>{feedback.lastFeedback.school}</p>
 
                         <div className="flex justify-center items-center my-1">
                           <ReactStars
@@ -443,8 +443,8 @@ const Feedback = () => {
                             disabled={true}
                           />
                         </div>
-                        <h4>{feedback.email}</h4>
-                        <em className="mt-3">
+                        <p className='text-black'>{feedback.email}</p>
+                        <em className="mt-3 text-black">
                           {moment(feedback.lastFeedback.feedbackCreatedAt).format(
                             'DD MMMM YYYY, h:mm a',
                           )}
