@@ -201,7 +201,9 @@ const Feedback = () => {
           getAllFeedbacks()
           getMyFeedbacks()
           reset({})
+          window.location.reload()
           setSuccess(true)
+
           setSuccessMsg('Feedback sent successfully')
           setTimeout(() => {
             setSuccess(false)
@@ -258,6 +260,7 @@ const Feedback = () => {
           setSpinner(false)
           getMyFeedbacks()
           setSuccess(true)
+          window.location.reload()
           setSuccessMsg('Feedback updated successfully')
           setTimeout(() => {
             setSuccess(false)

@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactStars from 'react-rating-stars-component'
+
 import {
   CCard,
   CCardBody,
@@ -33,23 +35,28 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
+import { ImCross } from 'react-icons/im'
+import { FaRegEye } from 'react-icons/fa'
+
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
   const [deleteModal, setDeleteModal] = useState(false)
+  const [feedbackModal, setFeedbackModal] = useState(false)
+  const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
-  const [feedbackId, setFeedbackId] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
+
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     getAllFeedbacks()
-    if (getToken && role == 'admin') {
+    if (getToken && role === 'admin') {
       setToken(getToken)
     } else {
       navigate('/login')
@@ -80,6 +87,7 @@ const ManageFeedbacks = () => {
         setLoader(false)
       })
   }
+
   const deleteFeedback = () => {
     setIsLoading(true)
     setError(false)
@@ -114,6 +122,12 @@ const ManageFeedbacks = () => {
       })
       .catch((error) => console.log('error', error))
   }
+
+  const openFeedbackModal = (feedback) => {
+    setSelectedFeedback(feedback)
+    setFeedbackModal(true)
+  }
+
   return (
     <AdminLayout>
       <>
@@ -149,7 +163,14 @@ const ManageFeedbacks = () => {
                         <CTableDataCell>
                           {moment(feedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
                         </CTableDataCell>
-                        <CTableDataCell className="flex justify-center items-center">
+                        <CTableDataCell className="flex justify-start items-center">
+                          <CButton
+                            color="primary"
+                            className="text-white my-2 mr-2 py-2"
+                            onClick={() => openFeedbackModal(feedback)}
+                          >
+                            <FaRegEye className="text-[20px]" />
+                          </CButton>
                           <CButton
                             color="danger"
                             className="text-white my-2"
@@ -202,6 +223,59 @@ const ManageFeedbacks = () => {
             </CButton>
           </CModalFooter>
         </CModal>
+        {/* feedback modal */}
+        <CModal
+          alignment="center"
+          visible={feedbackModal}
+          backdrop="static"
+          onClose={() => setFeedbackModal(false)}
+          aria-labelledby="FeedbackModalTitle"
+          className="bg-transparent"
+        >
+          <CModalBody className="pr-9">
+            {selectedFeedback && (
+              <figure className="snip1533 ">
+                <figcaption>
+                  <button
+                    className=" text-red-500 absolute top-2 right-2"
+                    onClick={() => setFeedbackModal(false)}
+                  >
+                    <ImCross />
+                  </button>
+                  <blockquote>
+                    <p>{selectedFeedback.text}</p>
+                  </blockquote>
+                  <h3>{selectedFeedback.name}</h3>
+                  <h4>{selectedFeedback.school}</h4>
+                  <div className="flex justify-center items-center my-1">
+                    <ReactStars
+                      count={5}
+                      size={34}
+                      isHalf={true}
+                      emptyIcon={<i className="far fa-star"></i>}
+                      halfIcon={<i className="fa fa-star-half-alt"></i>}
+                      fullIcon={<i className="fa fa-star"></i>}
+                      activeColor="#d2652d"
+                      value={selectedFeedback.rating}
+                      readOnly={true}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <h4>{selectedFeedback.email}</h4>
+                  <em className="mt-3">
+                    {moment(selectedFeedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
+                  </em>
+                </figcaption>
+              </figure>
+            )}
+          </CModalBody>
+        </CModal>
+
         {/* success alert */}
         {success && (
           <CAlert color="success" className="success-alert">
@@ -212,4 +286,5 @@ const ManageFeedbacks = () => {
     </AdminLayout>
   )
 }
+
 export default ManageFeedbacks
