@@ -563,6 +563,7 @@ const QuizLayout = () => {
       // so that all questions will save on quiz end
       // either user attempted those questions or not
       if (finalArray.length > 0) {
+        finalArray.length = totalQuest
         let allFilteredIds = finalArray.map(({ _id }) => _id)
         const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
           res.push({ questionId: item, selectedOption: '' })
