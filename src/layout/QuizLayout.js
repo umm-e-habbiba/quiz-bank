@@ -940,9 +940,7 @@ const QuizLayout = () => {
               {/* Questions */}
               {showQues && (
                 <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
-                  {filteredQuestion[currentQuestion] &&
-                  (filteredQuestion[currentQuestion].image ||
-                    filteredQuestion[currentQuestion].video) ? (
+                  {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
                     <CRow className="mb-5">
                       <CCol md={8}>
                         <p
@@ -971,7 +969,7 @@ const QuizLayout = () => {
                             className="mb-3"
                           />
                         )}
-                        {filteredQuestion[currentQuestion]?.video && (
+                        {/* {filteredQuestion[currentQuestion]?.video && (
                           <video controls ref={videoRef}>
                             {filteredQuestion[currentQuestion]?.video && (
                               <source
@@ -980,7 +978,7 @@ const QuizLayout = () => {
                               />
                             )}
                           </video>
-                        )}
+                        )} */}
                       </CCol>
                     </CRow>
                   ) : (
