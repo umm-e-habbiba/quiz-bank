@@ -195,53 +195,11 @@ const QuizLayout = () => {
 
     return total
   }
-  const setStep = (value, index) => {
-    const list = [...totalRows]
-    list[index].step = value //set step value
-    setTotalRows(list)
-  }
-  const setCategory = (value, index) => {
-    const list = [...totalRows]
-    list[index].category = value //set category value
-    setTotalRows(list)
-  }
   const setQues = (value, index) => {
     const list = [...totalRows]
     list[index].number = value //set number value
     setTotalRows(list)
     setTotalQuest(calculateSum(totalRows, 'number')) // calculate total number of questions from all rows
-    // if (value > 100 || value < 1) {
-    //   setError(true)
-    //   setErrorMsg('Please enter number between 1 and 100')
-    //   setTimeout(() => {
-    //     setError(false)
-    //     setErrorMsg('')
-    //   }, 3000)
-    //   setDisableExam(true)
-    // } else if (value > filteredQuestion.length) {
-    //   setError(true)
-    //   setErrorMsg(`${value} questions are not available. Kindly enter less number of questions`)
-    //   setTimeout(() => {
-    //     setError(false)
-    //     setErrorMsg('')
-    //   }, 3000)
-    //   setDisableExam(true)
-    // } else {
-    //   const totals = calculateSum(totalRows, 'number')
-    //   setTotalQuest(totals)
-    //   filteredQuestion.length = totals // trim total questions array of total number
-    //   console.log('number of total questions', totals)
-    //   // add all questions in saveQuestionArray
-    //   // so that all questions will save on quiz end
-    //   // either user attempted those questions or not
-    //   let allFilteredIds = filteredQuestion.map(({ _id }) => _id)
-    //   const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-    //     res.push({ questionId: item, selectedOption: '' })
-    //     return res
-    //   }, [])
-    //   setSaveQuestionArray(partialQuestionDetails)
-    //   setDisableExam(false)
-    // }
   }
 
   const fetchQuestion = (step, value, index) => {
@@ -438,9 +396,17 @@ const QuizLayout = () => {
   }
 
   const startexam = async () => {
-    console.log('total Questions', totalQuest, 'filtererd array', filteredQuestion)
+    console.log(
+      'total Questions',
+      totalQuest,
+      'filtererd array',
+      filteredQuestion,
+      'bakcup array',
+      filteredQuestionBackup,
+    )
     let start = true
     if (totalQuest > 100 || totalQuest < 1) {
+      start = false
       setError(true)
       setErrorMsg('Please enter number between 1 and 100')
       setTimeout(() => {
@@ -448,7 +414,8 @@ const QuizLayout = () => {
         setErrorMsg('')
       }, 3000)
       // setDisableExam(true)
-    } else if (totalQuest > filteredQuestion.length) {
+    } else if (totalQuest > filteredQuestionBackup.length) {
+      start = false
       setError(true)
       setErrorMsg(
         `${totalQuest} questions are not available. Kindly enter less number of questions`,
@@ -465,14 +432,15 @@ const QuizLayout = () => {
       await totalRows.map((row, index) => {
         if (
           row.number >
-          filteredQuestion.filter(
+          filteredQuestionBackup.filter(
             (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
           ).length
         ) {
+          start = false
           setError(true)
           setErrorMsg(
             `Only ${
-              filteredQuestion.filter(
+              filteredQuestionBackup.filter(
                 (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
               ).length
             } questions are available for ${row.category}.`,
@@ -488,22 +456,22 @@ const QuizLayout = () => {
           if (row.preventAll || row.preventCorrect || row.preventIncorrect) {
             if (row.preventAll) {
               let filteredAttemptedQuestions = getDifference(
-                filteredQuestion.filter(
+                filteredQuestionBackup.filter(
                   (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
                 ),
                 allAttemptedQuestion,
               )
-
               if (
                 filteredAttemptedQuestions.length > 0 &&
                 filteredAttemptedQuestions.length >= row.number
               ) {
                 // /////////////////////////
-                newArray.push(
-                  filteredAttemptedQuestions
-                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
-                    .slice(0, row.number),
-                )
+                // newArray.push(
+                //   filteredAttemptedQuestions
+                //     .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                //     .slice(0, row.number),
+                // )
+                newArray.push(filteredAttemptedQuestions.slice(0, row.number))
               } else {
                 setError(true)
                 setErrorMsg(
@@ -522,7 +490,7 @@ const QuizLayout = () => {
                 (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
               )
               let filteredAttemptedQuestions = getDifference(
-                filteredQuestion.filter(
+                filteredQuestionBackup.filter(
                   (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
                 ),
                 allCorrected,
@@ -532,11 +500,12 @@ const QuizLayout = () => {
                 filteredAttemptedQuestions.length >= row.number
               ) {
                 // /////////////////////////
-                newArray.push(
-                  filteredAttemptedQuestions
-                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
-                    .slice(0, row.number),
-                )
+                newArray.push(filteredAttemptedQuestions.slice(0, row.number))
+                // newArray.push(
+                //   filteredAttemptedQuestions
+                //     .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                //     .slice(0, row.number),
+                // )
               } else {
                 setError(true)
                 setErrorMsg(
@@ -555,7 +524,7 @@ const QuizLayout = () => {
                 (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
               )
               let filteredAttemptedQuestions = getDifference(
-                filteredQuestion.filter(
+                filteredQuestionBackup.filter(
                   (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
                 ),
                 allIncorrected,
@@ -565,11 +534,12 @@ const QuizLayout = () => {
                 filteredAttemptedQuestions.length >= row.number
               ) {
                 // /////////////////////////
-                newArray.push(
-                  filteredAttemptedQuestions
-                    .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
-                    .slice(0, row.number),
-                )
+                // newArray.push(
+                //   filteredAttemptedQuestions
+                //     .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                //     .slice(0, row.number),
+                // )
+                newArray.push(filteredAttemptedQuestions.slice(0, row.number))
               } else {
                 setError(true)
                 setErrorMsg(
@@ -585,7 +555,7 @@ const QuizLayout = () => {
             }
           } else {
             newArray.push(
-              filteredQuestion
+              filteredQuestionBackup
                 .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
                 .slice(0, row.number),
             )
@@ -607,6 +577,8 @@ const QuizLayout = () => {
         return res
       }, [])
       setSaveQuestionArray(partialQuestionDetails)
+      setFilteredQuestion(finalArray)
+      setTotalQuest(finalArray.length)
       console.log('final array', finalArray, 'allFiteredIDs', partialQuestionDetails)
       // setDisableExam(false)
       if (start) {
@@ -626,156 +598,14 @@ const QuizLayout = () => {
   }
 
   const filterAttemptedQuestions = (toFilter, index) => {
-    console.log(toFilter, index)
     if (toFilter == 'preventAll') {
       totalRows[index].preventAll = !totalRows[index].preventAll
-      // if (totalRows[index].preventAll) {
-      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allAttemptedQuestion)
-      //   console.log(
-      //     'filtered question array',
-      //     filteredQuestion,
-      //     'filterAttemptedQuestions',
-      //     filteredAttemptedQuestions,
-      //   )
-      //   if (
-      //     filteredAttemptedQuestions.length > 0 &&
-      //     filteredAttemptedQuestions.length == totalRows[index].number
-      //   ) {
-      //     setTotalQuest(filteredAttemptedQuestions.length)
-      //     if (index > 0) {
-      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
-
-      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-      //       let allFilteredIds = alll.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     } else {
-      //       setFilteredQuestion(filteredAttemptedQuestions)
-      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
-      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     }
-      //   } else {
-      //     setError(true)
-      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-      //     setTimeout(() => {
-      //       setError(false)
-      //       setErrorMsg('')
-      //     }, 2000)
-      //   }
-      // } else {
-      //   setQues(totalRows[index].number, index)
-      // }
     }
     if (toFilter == 'preventIncorrect') {
       totalRows[index].preventIncorrect = !totalRows[index].preventIncorrect
-      // if (totalRows[index].preventIncorrect) {
-      //   const allIncorrected = allAttemptedQuestion.filter(
-      //     (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
-      //   )
-      //   console.log('allIncorrected', allIncorrected)
-      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allIncorrected)
-      //   console.log(
-      //     'filtered question array',
-      //     filteredQuestion,
-      //     'filterAttemptedQuestions',
-      //     filteredAttemptedQuestions,
-      //   )
-      //   if (
-      //     filteredAttemptedQuestions.length > 0 &&
-      //     filteredAttemptedQuestions.length == totalRows[index].number
-      //   ) {
-      //     setTotalQuest(filteredAttemptedQuestions.length)
-      //     if (index > 0) {
-      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
-      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-      //       let allFilteredIds = alll.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     } else {
-      //       setFilteredQuestion(filteredAttemptedQuestions)
-      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
-      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     }
-      //   } else {
-      //     setError(true)
-      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-      //     setTimeout(() => {
-      //       setError(false)
-      //       setErrorMsg('')
-      //     }, 2000)
-      //   }
-      // } else {
-      //   setQues(totalRows[index].number, index)
-      // }
     }
     if (toFilter == 'preventCorrect') {
       totalRows[index].preventCorrect = !totalRows[index].preventCorrect
-      // if (totalRows[index].preventCorrect) {
-      //   const allCorrected = allAttemptedQuestion.filter(
-      //     (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
-      //   )
-      //   console.log('allCorrected', allCorrected)
-      //   let filteredAttemptedQuestions = getDifference(filteredQuestion, allCorrected)
-      //   console.log(
-      //     'filtered question array',
-      //     filteredQuestion,
-      //     'filterAttemptedQuestions',
-      //     filteredAttemptedQuestions,
-      //   )
-      //   if (
-      //     filteredAttemptedQuestions.length > 0 &&
-      //     filteredAttemptedQuestions.length == totalRows[index].number
-      //   ) {
-      //     setTotalQuest(filteredAttemptedQuestions.length)
-      //     if (index > 0) {
-      //       setFilteredQuestion((ques) => [...ques, ...filteredAttemptedQuestions])
-      //       setFilteredQuestionBackup((ques) => [...ques, ...filteredAttemptedQuestions])
-      //       let alll = [...filteredQuestion, ...filteredAttemptedQuestions]
-      //       let allFilteredIds = alll.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     } else {
-      //       setFilteredQuestion(filteredAttemptedQuestions)
-      //       setFilteredQuestionBackup(filteredAttemptedQuestions)
-      //       let allFilteredIds = filteredAttemptedQuestions.map(({ _id }) => _id)
-      //       const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-      //         res.push({ questionId: item, selectedOption: '' })
-      //         return res
-      //       }, [])
-      //       setSaveQuestionArray(partialQuestionDetails)
-      //     }
-      //   } else {
-      //     setError(true)
-      //     setErrorMsg(`sorry!! ${totalRows[index].number} questions not found`)
-      //     setTimeout(() => {
-      //       setError(false)
-      //       setErrorMsg('')
-      //     }, 2000)
-      //   }
-      // } else {
-      //   setQues(totalRows[index].number, index)
-      // }
     }
   }
 
@@ -894,13 +724,10 @@ const QuizLayout = () => {
                               value: '3',
                               disabled: step3Questions > 0 ? false : true,
                             },
-                            // { label: `USMLE: Step2 Total Questions: ${step2Questions}`, value: '2' },
-                            // { label: `USMLE: Step3 Total Questions: ${step3Questions}`, value: '3' },
                           ]}
                           onChange={(e) => {
                             fetchQuestion(e.target.value, '', id)
                           }}
-                          // onChange={(e) => setStep(e.target.value, id)}
                         />
                       </CCol>
                       <CCol xs={1} md={3} lg={3}>
