@@ -591,7 +591,10 @@ const QuizLayout = () => {
   // remove all attempted questions
   const getDifference = (array1, array2) => {
     const diffFromA1toA2 = array1.filter(
-      (obj1) => !array2.some((obj2) => obj1._id === obj2.question._id),
+      (obj1) =>
+        !array2.some(
+          (obj2) => obj1 && obj1._id && obj2 && obj2.question && obj2.question._id === obj1._id,
+        ),
     )
 
     return diffFromA1toA2
@@ -612,6 +615,13 @@ const QuizLayout = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
+
+  const videoRef = useRef(null)
+  useEffect(() => {
+    if (videoRef.current && filteredQuestion[currentQuestion]?.video) {
+      videoRef.current.load()
+    }
+  }, [filteredQuestion, currentQuestion])
 
   return (
     <div>
@@ -911,10 +921,19 @@ const QuizLayout = () => {
                   </CCol>
                   <CCol md={4}>
                     <img
-                      // src={image}
-                      src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                      src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
                       alt="question image"
                     />
+                  </CCol>
+                  <CCol md={4}>
+                    <video controls ref={videoRef}>
+                      {filteredQuestion[currentQuestion]?.video && (
+                        <source
+                          src={`${API_URL}uploads/videos/${filteredQuestion[currentQuestion].video}`}
+                          type="video/mp4"
+                        />
+                      )}
+                    </video>
                   </CCol>
                 </CRow>
               ) : (
