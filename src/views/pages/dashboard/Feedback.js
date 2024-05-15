@@ -36,8 +36,6 @@ import {
 } from '@coreui/react'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
-// import StarRatings from 'react-star-ratings'
-import StarRating from 'react-star-rating'
 import ReactStars from 'react-rating-stars-component'
 import CIcon from '@coreui/icons-react'
 import { cilPencil } from '@coreui/icons'

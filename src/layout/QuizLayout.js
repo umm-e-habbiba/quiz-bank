@@ -32,9 +32,11 @@ import { FaBars } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
 import { CiUndo } from 'react-icons/ci'
 import { HiOutlineX } from 'react-icons/hi'
+import '../scss/loader.scss'
 const QuizLayout = () => {
   const navigate = useNavigate()
   const [detailModal, setDetailModal] = useState(false)
+  const [loader, setLoader] = useState(true)
   const [showSelectors, setShowSelectors] = useState(true)
   const [showQues, setShowQues] = useState(false)
   const [isTimer, setIsTimer] = useState(true)
@@ -87,16 +89,21 @@ const QuizLayout = () => {
       total: '',
     },
   })
+  const videoRef = useRef(null)
+  useEffect(() => {
+    if (videoRef.current && filteredQuestion[currentQuestion]?.video) {
+      videoRef.current.load()
+    }
+  }, [filteredQuestion, currentQuestion])
   //new branch test
   useEffect(() => {
-    getAllQuest()
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUSerID(getUserId)
+      getAllQuest()
       getAllAttemptedQuest()
-      getAllAttemptedQuestOfAllUsers()
     } else {
       navigate('/login')
     }
@@ -117,6 +124,7 @@ const QuizLayout = () => {
   }, [quizEnd])
 
   const getAllQuest = () => {
+    setLoader(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     const requestOptions = {
@@ -137,6 +145,7 @@ const QuizLayout = () => {
           setStep2Questions(filterStep2Questions.length)
           const filterStep3Questions = result.data.filter((ques) => ques.usmleStep == 3)
           setStep3Questions(filterStep3Questions.length)
+          setLoader(false)
         }
       })
       .catch((error) => {
@@ -160,28 +169,6 @@ const QuizLayout = () => {
         if (result.data) {
           setAllAttemptedQuestion(result.data)
         }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
-
-  const getAllAttemptedQuestOfAllUsers = () => {
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
-    const requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow',
-    }
-
-    fetch(API_URL + 'attempted-questions', requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('get all attempted questions of all users', result)
-        // if (result.data) {
-        //   setAllAttemptedQuestion(result.data)
-        // }
       })
       .catch((error) => {
         console.error(error)
@@ -486,8 +473,10 @@ const QuizLayout = () => {
               }
             }
             if (row.preventCorrect) {
-              const allCorrected = allAttemptedQuestion.filter(
-                (obj1) => obj1.selectedOption == obj1.question.correctAnswer,
+              const allCorrected = allAttemptedQuestion.filter((obj1) =>
+                obj1.selectedOption == obj1.question && obj1.question.correctAnswer
+                  ? obj1.question.correctAnswer
+                  : '',
               )
               let filteredAttemptedQuestions = getDifference(
                 filteredQuestionBackup.filter(
@@ -520,8 +509,10 @@ const QuizLayout = () => {
               }
             }
             if (row.preventIncorrect) {
-              const allIncorrected = allAttemptedQuestion.filter(
-                (obj1) => obj1.selectedOption != obj1.question.correctAnswer,
+              const allIncorrected = allAttemptedQuestion.filter((obj1) =>
+                obj1.selectedOption != obj1.question && obj1.question.correctAnswer
+                  ? obj1.question.correctAnswer
+                  : '',
               )
               let filteredAttemptedQuestions = getDifference(
                 filteredQuestionBackup.filter(
@@ -565,21 +556,26 @@ const QuizLayout = () => {
       let finalArray = []
       await newArray.map(async (arr, idx) => {
         await arr.map((a, idx) => {
-          finalArray.push(a)
+          if (!finalArray.find((o) => o._id == a._id)) finalArray.push(a)
         })
       })
       // add all questions in saveQuestionArray
       // so that all questions will save on quiz end
       // either user attempted those questions or not
-      let allFilteredIds = finalArray.map(({ _id }) => _id)
-      const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-        res.push({ questionId: item, selectedOption: '' })
-        return res
-      }, [])
-      setSaveQuestionArray(partialQuestionDetails)
-      setFilteredQuestion(finalArray)
-      setTotalQuest(finalArray.length)
-      console.log('final array', finalArray, 'allFiteredIDs', partialQuestionDetails)
+      if (finalArray.length > 0) {
+        finalArray.length = totalQuest
+        let allFilteredIds = finalArray.map(({ _id }) => _id)
+        const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+          res.push({ questionId: item, selectedOption: '' })
+          return res
+        }, [])
+        setSaveQuestionArray(partialQuestionDetails)
+        setFilteredQuestion(finalArray)
+        setTotalQuest(finalArray.length)
+      } else {
+        start = true
+      }
+      console.log('final array', finalArray, 'new Array', newArray)
       // setDisableExam(false)
       if (start) {
         setShowQues(true)
@@ -591,10 +587,7 @@ const QuizLayout = () => {
   // remove all attempted questions
   const getDifference = (array1, array2) => {
     const diffFromA1toA2 = array1.filter(
-      (obj1) =>
-        !array2.some(
-          (obj2) => obj1 && obj1._id && obj2 && obj2.question && obj2.question._id === obj1._id,
-        ),
+      (obj1) => !array2.some((obj2) => obj1._id === obj2.question._id),
     )
 
     return diffFromA1toA2
@@ -652,7 +645,7 @@ const QuizLayout = () => {
       )} */}
       <div className="flex flex-row">
         {/* Side Bar */}
-
+{/* some change */}
         {showQues && (
           <div
             className={` ${sidebarOpen ? 'w-20' : 'w-0'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
@@ -696,184 +689,206 @@ const QuizLayout = () => {
         )}
         <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
           {/* new layout */}
-          {showSelectors ? (
-            <div className="mt-10">
-              {/* <CForm
+          {loader ? (
+            <div className="flex justify-center items-center mt-9">
+              <div className="lds-spinner">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {showSelectors ? (
+                <div className="mt-10">
+                  {/* <CForm
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
-              <div className="mx-40 mb-5 flex flex-col justify-center items-start">
-                {totalRows.map((row, id) => (
-                  <div
-                    className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
-                    key={id}
-                  >
-                    <CRow
-                      key={id}
-                      className="bg-gray-200 relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
-                    >
-                      <CCol xs={1} md={3} lg={3}>
-                        <CFormSelect
-                          aria-label="Select Exam"
-                          className="w-full"
-                          name="step"
-                          options={[
-                            'Select your Exam',
-                            {
-                              label: `USMLE: Step1 (${step1Questions} questions available)`,
-                              value: '1',
-                              disabled: step1Questions > 0 ? false : true,
-                            },
-                            {
-                              label: `USMLE: Step2 (${step2Questions} questions available)`,
-                              value: '2',
-                              disabled: step2Questions > 0 ? false : true,
-                            },
-                            {
-                              label: `USMLE: Step3 (${step3Questions} questions available)`,
-                              value: '3',
-                              disabled: step3Questions > 0 ? false : true,
-                            },
-                          ]}
-                          onChange={(e) => {
-                            fetchQuestion(e.target.value, '', id)
-                          }}
-                        />
-                      </CCol>
-                      <CCol xs={1} md={3} lg={3}>
-                        <CFormSelect
-                          aria-label="Select Category"
-                          className="w-full"
-                          name="category"
-                          // onChange={(e) => setCategory(e.target.value, id)}
-                          onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
+                  <div className="mx-40 mb-5 flex flex-col justify-center items-start">
+                    {totalRows.map((row, id) => (
+                      <div
+                        className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
+                        key={id}
+                      >
+                        <CRow
+                          key={id}
+                          className="bg-gray-200 relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                         >
-                          <option>Select your Category</option>
-                          {totalRows[id].step == '1' ? (
-                            step1Categories.map((category, idx) => (
-                              <option
-                                key={idx}
-                                value={category}
-                                disabled={
-                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                    ? false
-                                    : true
-                                }
-                              >
-                                {category} ({' '}
-                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                                Questions avaialable)
-                              </option>
-                            ))
-                          ) : totalRows[id].step == '2' ? (
-                            step2Categories.map((category, idx) => (
-                              <option
-                                key={idx}
-                                value={category}
-                                disabled={
-                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                    ? false
-                                    : true
-                                }
-                              >
-                                {category} ({' '}
-                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                                Questions avaialable)
-                              </option>
-                            ))
-                          ) : totalRows[id].step == '3' ? (
-                            step3Categories.map((category, idx) => (
-                              <option
-                                key={idx}
-                                value={category}
-                                disabled={
-                                  allQuestion.filter((ques) => ques.USMLE == category).length > 0
-                                    ? false
-                                    : true
-                                }
-                              >
-                                {category} ({' '}
-                                {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
-                                Questions avaialable)
-                              </option>
-                            ))
-                          ) : (
-                            <option disabled>Select Your exam first</option>
-                          )}
-                        </CFormSelect>
-                      </CCol>
-                      <CCol xs={1} md={3} lg={3}>
-                        <CFormInput
-                          type="number"
-                          name="number"
-                          placeholder="Enter number of questions"
-                          // {...register('total', { required: true, min: 1, max: 100 })}
-                          // feedback="Please enter number between 1 and 100"
-                          // invalid={errors.total ? true : false}
-                          className="w-full placeholder:text-[#252b36]"
-                          value={row.number}
-                          // onChange={(e) => handleNumberChange(e, id)}
-                          // onChange={(e)=>row.number = e.target.value}
-                          // value={totalQuest}
-                          onChange={(e) => setQues(e.target.value, id)}
-                        />
-                      </CCol>
-                      <CCol xs={1} md={3} lg={3} className="flex flex-col">
-                        <CFormSwitch
-                          size="xl"
-                          label="Correct Attempted Questions"
-                          id="preventAttemptedCorrect"
-                          className="text-sm"
-                          onChange={() => filterAttemptedQuestions('preventCorrect', id)}
-                          // onChange={() => (row.preventCorrect = !row.preventCorrect)}
-                          defaultChecked={row.preventCorrect ? true : false}
-                        />
-                        <CFormSwitch
-                          size="xl"
-                          label="Incorrect Attempted Questions"
-                          id="preventAttemptedIncorrect"
-                          className="text-sm"
-                          // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
-                          onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
-                          defaultChecked={row.preventIncorrect ? true : false}
-                        />
-                        <CFormSwitch
-                          size="xl"
-                          label="All Attempted Questions"
-                          id="preventAttemptedAll"
-                          className="text-sm"
-                          // onChange={() => (row.preventAll = !row.preventAll)}
-                          onChange={() => filterAttemptedQuestions('preventAll', id)}
-                          defaultChecked={row.preventAll ? true : false}
-                        />
-                      </CCol>
-                    </CRow>
+                          <CCol xs={1} md={3} lg={3}>
+                            <CFormSelect
+                              aria-label="Select Exam"
+                              className="w-full"
+                              name="step"
+                              options={[
+                                'Select your Exam',
+                                {
+                                  label: `USMLE: Step1 (${step1Questions} questions available)`,
+                                  value: '1',
+                                  disabled: step1Questions > 0 ? false : true,
+                                },
+                                {
+                                  label: `USMLE: Step2 (${step2Questions} questions available)`,
+                                  value: '2',
+                                  disabled: step2Questions > 0 ? false : true,
+                                },
+                                {
+                                  label: `USMLE: Step3 (${step3Questions} questions available)`,
+                                  value: '3',
+                                  disabled: step3Questions > 0 ? false : true,
+                                },
+                              ]}
+                              onChange={(e) => {
+                                fetchQuestion(e.target.value, '', id)
+                              }}
+                            />
+                          </CCol>
+                          <CCol xs={1} md={3} lg={3}>
+                            <CFormSelect
+                              aria-label="Select Category"
+                              className="w-full"
+                              name="category"
+                              // onChange={(e) => setCategory(e.target.value, id)}
+                              onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
+                            >
+                              <option>Select your Category</option>
+                              {totalRows[id].step == '1' ? (
+                                step1Categories.map((category, idx) => (
+                                  <option
+                                    key={idx}
+                                    value={category}
+                                    disabled={
+                                      allQuestion.filter((ques) => ques.USMLE == category).length >
+                                      0
+                                        ? false
+                                        : true
+                                    }
+                                  >
+                                    {category} ({' '}
+                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    Questions avaialable)
+                                  </option>
+                                ))
+                              ) : totalRows[id].step == '2' ? (
+                                step2Categories.map((category, idx) => (
+                                  <option
+                                    key={idx}
+                                    value={category}
+                                    disabled={
+                                      allQuestion.filter((ques) => ques.USMLE == category).length >
+                                      0
+                                        ? false
+                                        : true
+                                    }
+                                  >
+                                    {category} ({' '}
+                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    Questions avaialable)
+                                  </option>
+                                ))
+                              ) : totalRows[id].step == '3' ? (
+                                step3Categories.map((category, idx) => (
+                                  <option
+                                    key={idx}
+                                    value={category}
+                                    disabled={
+                                      allQuestion.filter((ques) => ques.USMLE == category).length >
+                                      0
+                                        ? false
+                                        : true
+                                    }
+                                  >
+                                    {category} ({' '}
+                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    Questions avaialable)
+                                  </option>
+                                ))
+                              ) : (
+                                <option disabled>Select Your exam first</option>
+                              )}
+                            </CFormSelect>
+                          </CCol>
+                          <CCol xs={1} md={3} lg={3}>
+                            <CFormInput
+                              type="number"
+                              name="number"
+                              placeholder="Enter number of questions"
+                              // {...register('total', { required: true, min: 1, max: 100 })}
+                              // feedback="Please enter number between 1 and 100"
+                              // invalid={errors.total ? true : false}
+                              className="w-full placeholder:text-[#252b36]"
+                              value={row.number}
+                              // onChange={(e) => handleNumberChange(e, id)}
+                              // onChange={(e)=>row.number = e.target.value}
+                              // value={totalQuest}
+                              onChange={(e) => setQues(e.target.value, id)}
+                            />
+                          </CCol>
+                          <CCol xs={1} md={3} lg={3} className="flex flex-col">
+                            <CFormSwitch
+                              size="xl"
+                              label="Correct Attempted Questions"
+                              id="preventAttemptedCorrect"
+                              className="text-sm"
+                              onChange={() => filterAttemptedQuestions('preventCorrect', id)}
+                              // onChange={() => (row.preventCorrect = !row.preventCorrect)}
+                              defaultChecked={row.preventCorrect ? true : false}
+                            />
+                            <CFormSwitch
+                              size="xl"
+                              label="Incorrect Attempted Questions"
+                              id="preventAttemptedIncorrect"
+                              className="text-sm"
+                              // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
+                              onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
+                              defaultChecked={row.preventIncorrect ? true : false}
+                            />
+                            <CFormSwitch
+                              size="xl"
+                              label="All Attempted Questions"
+                              id="preventAttemptedAll"
+                              className="text-sm"
+                              // onChange={() => (row.preventAll = !row.preventAll)}
+                              onChange={() => filterAttemptedQuestions('preventAll', id)}
+                              defaultChecked={row.preventAll ? true : false}
+                            />
+                          </CCol>
+                        </CRow>
 
-                    {totalRows.length - 1 === id ? (
-                      <div className="flex justify-center items-center">
-                        <CButton
-                          className="w-9 h-9 p-3 text-2xl flex justify-center items-center"
-                          onClick={addRows}
-                          color="secondary"
-                        >
-                          <span className="-mt-1">+</span>
-                        </CButton>
+                        {totalRows.length - 1 === id ? (
+                          <div className="flex justify-center items-center">
+                            <CButton
+                              className="w-9 h-9 p-3 text-2xl flex justify-center items-center"
+                              onClick={addRows}
+                              color="secondary"
+                            >
+                              <span className="-mt-1">+</span>
+                            </CButton>
+                          </div>
+                        ) : (
+                          ''
+                        )}
                       </div>
-                    ) : (
-                      ''
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="flex justify-center items-center flex-col">
-                <div className="flex">
-                  {/* <CButton
+                  <div className="flex justify-center items-center flex-col">
+                    <div className="flex">
+                      {/* <CButton
                     className="mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
                     onClick={addRows}
                   >
                     Add More
                   </CButton> */}
-                  {/* {totalRows.length > 1 && (
+                      {/* {totalRows.length > 1 && (
                   <CButton
                     className="ml-3 px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
                     onClick={() => removeRow()}
@@ -921,19 +936,10 @@ const QuizLayout = () => {
                   </CCol>
                   <CCol md={4}>
                     <img
-                      src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
+                      // src={image}
+                      src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
                       alt="question image"
                     />
-                  </CCol>
-                  <CCol md={4}>
-                    <video controls ref={videoRef}>
-                      {filteredQuestion[currentQuestion]?.video && (
-                        <source
-                          src={`${API_URL}uploads/videos/${filteredQuestion[currentQuestion].video}`}
-                          type="video/mp4"
-                        />
-                      )}
-                    </video>
                   </CCol>
                 </CRow>
               ) : (
