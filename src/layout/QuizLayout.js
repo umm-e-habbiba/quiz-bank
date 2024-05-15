@@ -555,23 +555,48 @@ const QuizLayout = () => {
           if (!finalArray.find((o) => o._id == a._id)) finalArray.push(a)
         })
       })
+
       // add all questions in saveQuestionArray
       // so that all questions will save on quiz end
       // either user attempted those questions or not
       if (finalArray.length > 0) {
-        finalArray.length = totalQuest
-        let allFilteredIds = finalArray.map(({ _id }) => _id)
+        // finalArray.length = totalQuest
+        let quizArray = []
+        await totalRows.map((row) => {
+          if (
+            finalArray.filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+              .length > row.number
+          ) {
+            quizArray.push(
+              finalArray
+                .filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category)
+                .slice(0, row.number),
+            )
+          } else {
+            quizArray.push(
+              finalArray.filter((ques) => ques.usmleStep == row.step && ques.USMLE == row.category),
+            )
+          }
+        })
+        let quesArray = []
+        await quizArray.map(async (arr, idx) => {
+          await arr.map((a, idx) => {
+            if (!quesArray.find((o) => o._id == a._id)) quesArray.push(a)
+          })
+        })
+
+        let allFilteredIds = quesArray.map(({ _id }) => _id)
         const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
           res.push({ questionId: item, selectedOption: '' })
           return res
         }, [])
         setSaveQuestionArray(partialQuestionDetails)
-        setFilteredQuestion(finalArray)
-        setTotalQuest(finalArray.length)
+        setFilteredQuestion(quesArray)
+        setTotalQuest(quesArray.length)
+        console.log('final array', finalArray, 'new Array', quesArray)
       } else {
         start = true
       }
-      console.log('final array', finalArray, 'new Array', newArray)
       // setDisableExam(false)
       if (start) {
         setShowQues(true)
@@ -770,7 +795,7 @@ const QuizLayout = () => {
                                         : true
                                     }
                                   >
-                                    {category} ({' '}
+                                    {category} (
                                     {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
                                     Questions avaialable)
                                   </option>
@@ -787,7 +812,7 @@ const QuizLayout = () => {
                                         : true
                                     }
                                   >
-                                    {category} ({' '}
+                                    {category} (
                                     {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
                                     Questions avaialable)
                                   </option>
@@ -804,7 +829,7 @@ const QuizLayout = () => {
                                         : true
                                     }
                                   >
-                                    {category} ({' '}
+                                    {category} (
                                     {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
                                     Questions avaialable)
                                   </option>
