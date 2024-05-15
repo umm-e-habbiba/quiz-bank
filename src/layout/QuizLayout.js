@@ -34,6 +34,7 @@ import { CiUndo } from 'react-icons/ci'
 import { HiOutlineX } from 'react-icons/hi'
 import '../scss/loader.scss'
 const QuizLayout = () => {
+  const videoRef = useRef(null)
   const navigate = useNavigate()
   const [detailModal, setDetailModal] = useState(false)
   const [loader, setLoader] = useState(true)
@@ -89,12 +90,7 @@ const QuizLayout = () => {
       total: '',
     },
   })
-  const videoRef = useRef(null)
-  useEffect(() => {
-    if (videoRef.current && filteredQuestion[currentQuestion]?.video) {
-      videoRef.current.load()
-    }
-  }, [filteredQuestion, currentQuestion])
+ 
   //new branch test
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -609,7 +605,8 @@ const QuizLayout = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const videoRef = useRef(null)
+
+
   useEffect(() => {
     if (videoRef.current && filteredQuestion[currentQuestion]?.video) {
       videoRef.current.load()
@@ -645,7 +642,7 @@ const QuizLayout = () => {
       )} */}
       <div className="flex flex-row">
         {/* Side Bar */}
-{/* some change */}
+
         {showQues && (
           <div
             className={` ${sidebarOpen ? 'w-20' : 'w-0'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
@@ -937,9 +934,20 @@ const QuizLayout = () => {
                   <CCol md={4}>
                     <img
                       // src={image}
-                      src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                      src={`${API_URL}uploads/images${filteredQuestion[currentQuestion].image}`}
                       alt="question image"
                     />
+                    
+                  </CCol>
+                  <CCol md={4}>
+                    <video controls ref={videoRef}>
+                      {filteredQuestion[currentQuestion]?.video && (
+                        <source
+                          src={`${API_URL}uploads/videos/${filteredQuestion[currentQuestion].video}`}
+                          type="video/mp4"
+                        />
+                      )}
+                    </video>
                   </CCol>
                 </CRow>
               ) : (
