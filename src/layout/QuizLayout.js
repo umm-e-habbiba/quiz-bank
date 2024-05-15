@@ -473,16 +473,23 @@ const QuizLayout = () => {
               }
             }
             if (row.preventCorrect) {
-              const allCorrected = allAttemptedQuestion.filter((obj1) =>
-                obj1.selectedOption == obj1.question && obj1.question.correctAnswer
-                  ? obj1.question.correctAnswer
-                  : '',
-              )
+              const allCorrected = allAttemptedQuestion.filter((obj1) => obj1.isCorrect == true)
+
               let filteredAttemptedQuestions = getDifference(
                 filteredQuestionBackup.filter(
                   (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
                 ),
                 allCorrected,
+              )
+
+              console.log(
+                'all attempted array',
+
+                allAttemptedQuestion,
+                'all corrected',
+                allCorrected,
+                'all corrected filtered',
+                filteredAttemptedQuestions,
               )
               if (
                 filteredAttemptedQuestions.length > 0 &&
@@ -509,11 +516,7 @@ const QuizLayout = () => {
               }
             }
             if (row.preventIncorrect) {
-              const allIncorrected = allAttemptedQuestion.filter((obj1) =>
-                obj1.selectedOption != obj1.question && obj1.question.correctAnswer
-                  ? obj1.question.correctAnswer
-                  : '',
-              )
+              const allIncorrected = allAttemptedQuestion.filter((obj1) => obj1.isCorrect == false)
               let filteredAttemptedQuestions = getDifference(
                 filteredQuestionBackup.filter(
                   (ques) => ques.usmleStep == row.step && ques.USMLE == row.category,
@@ -599,10 +602,10 @@ const QuizLayout = () => {
         setTotalQuest(quesArray.length)
         console.log('final array', finalArray, 'new Array', quesArray)
       } else {
-        start = true
+        start = false
       }
       // setDisableExam(false)
-      if (start) {
+      if (start == true) {
         setShowQues(true)
         setShowSelectors(false)
       }
@@ -937,7 +940,9 @@ const QuizLayout = () => {
               {/* Questions */}
               {showQues && (
                 <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
-                  {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
+                  {filteredQuestion[currentQuestion] &&
+                  (filteredQuestion[currentQuestion].image ||
+                    filteredQuestion[currentQuestion].video) ? (
                     <CRow className="mb-5">
                       <CCol md={8}>
                         <p
@@ -957,12 +962,15 @@ const QuizLayout = () => {
                         ></p>
                       </CCol>
                       <CCol md={4}>
-                        <img
-                          // src={image}
-                          // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
-                          src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
-                          alt="question image"
-                        />
+                        {filteredQuestion[currentQuestion]?.image && (
+                          <img
+                            // src={image}
+                            // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                            src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
+                            alt="question image"
+                            className="mb-3"
+                          />
+                        )}
                         {filteredQuestion[currentQuestion]?.video && (
                           <video controls ref={videoRef}>
                             {filteredQuestion[currentQuestion]?.video && (
@@ -1259,7 +1267,7 @@ const QuizLayout = () => {
       />
       {/* error alert */}
       {error && (
-        <CAlert color="danger" className="success-alert">
+        <CAlert color="danger" className="middle-alert">
           {errorMsg}
         </CAlert>
       )}

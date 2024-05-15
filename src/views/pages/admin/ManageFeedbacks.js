@@ -33,6 +33,9 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
+import ReactStars from 'react-rating-stars-component'
+import { ImCross } from 'react-icons/im'
+import { FaRegEye } from 'react-icons/fa'
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
@@ -40,6 +43,8 @@ const ManageFeedbacks = () => {
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [feedbackId, setFeedbackId] = useState('')
+  const [feedbackModal, setFeedbackModal] = useState(false)
+  const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
@@ -114,6 +119,10 @@ const ManageFeedbacks = () => {
       })
       .catch((error) => console.log('error', error))
   }
+  const openFeedbackModal = (feedback) => {
+    setSelectedFeedback(feedback)
+    setFeedbackModal(true)
+  }
   return (
     <AdminLayout>
       <>
@@ -149,7 +158,14 @@ const ManageFeedbacks = () => {
                         <CTableDataCell>
                           {moment(feedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
                         </CTableDataCell>
-                        <CTableDataCell className="flex justify-center items-center">
+                        <CTableDataCell className="flex justify-start items-center">
+                          <CButton
+                            color="primary"
+                            className="text-white my-2 mr-2 py-2"
+                            onClick={() => openFeedbackModal(feedback)}
+                          >
+                            <FaRegEye className="text-[20px]" />
+                          </CButton>
                           <CButton
                             color="danger"
                             className="text-white my-2"
@@ -201,6 +217,58 @@ const ManageFeedbacks = () => {
               {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
             </CButton>
           </CModalFooter>
+        </CModal>
+        {/* feedback modal */}
+        <CModal
+          alignment="center"
+          visible={feedbackModal}
+          backdrop="static"
+          onClose={() => setFeedbackModal(false)}
+          aria-labelledby="FeedbackModalTitle"
+          className="bg-transparent"
+        >
+          <CModalBody className="pr-9">
+            {selectedFeedback && (
+              <figure className="snip1533 ">
+                <figcaption>
+                  <button
+                    className=" text-red-500 absolute top-2 right-2"
+                    onClick={() => setFeedbackModal(false)}
+                  >
+                    <ImCross />
+                  </button>
+                  <blockquote>
+                    <p className="text-black font-semibold">{selectedFeedback.text}</p>
+                  </blockquote>
+                  <h3>{selectedFeedback.name}</h3>
+                  <p className="text-black font-semibold">{selectedFeedback.school}</p>
+                  <div className="flex justify-center items-center my-1">
+                    <ReactStars
+                      count={5}
+                      size={34}
+                      isHalf={true}
+                      emptyIcon={<i className="far fa-star"></i>}
+                      halfIcon={<i className="fa fa-star-half-alt"></i>}
+                      fullIcon={<i className="fa fa-star"></i>}
+                      activeColor="#d2652d"
+                      value={selectedFeedback.rating}
+                      readOnly={true}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  </div>
+                  <p className="text-black ">{selectedFeedback.email}</p>
+                  <em className="mt-3 text-black">
+                    {moment(selectedFeedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
+                  </em>
+                </figcaption>
+              </figure>
+            )}
+          </CModalBody>
         </CModal>
         {/* success alert */}
         {success && (

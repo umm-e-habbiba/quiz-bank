@@ -238,7 +238,8 @@ const ReviewQuiz = () => {
                   <CCol md={6} className="border-r-2 border-solid">
                     <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
                       {allQuestion[currentQuestion] &&
-                      allQuestion[currentQuestion].questionId.image ? (
+                      (allQuestion[currentQuestion].questionId.image ||
+                        allQuestion[currentQuestion].questionId.video) ? (
                         <div className="mb-5">
                           <p
                             className="mb-1"
@@ -253,9 +254,27 @@ const ReviewQuiz = () => {
                       : ''} */}
                           </p>
                           <img
-                            src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.image}`}
+                            src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
                             alt="question image"
+                            className="mb-3"
                           />
+                          {allQuestion[currentQuestion].questionId.image && (
+                            <img
+                              src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
+                              alt="question image"
+                              className="mb-3"
+                            />
+                          )}
+                          {allQuestion[currentQuestion].questionId.video && (
+                            <video controls>
+                              {allQuestion[currentQuestion].questionId.video && (
+                                <source
+                                  src={`${API_URL}uploads/videos/${allQuestion[currentQuestion].questionId.video}`}
+                                  type="video/mp4"
+                                />
+                              )}
+                            </video>
+                          )}
                         </div>
                       ) : (
                         <p
