@@ -1,5 +1,5 @@
 import { CButton, CForm, CFormCheck, CFormInput, CAlert, CRow, CCol, CSpinner } from '@coreui/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
@@ -12,6 +12,7 @@ import ReviewQuizFooter from 'src/components/quiz/ReviewQuizFooter'
 import { ImCross } from 'react-icons/im'
 import markIcon from '../../../assets/images/mark-flag.png'
 import { FaBars } from 'react-icons/fa'
+import { GoChevronRight } from 'react-icons/go'
 const ReviewQuiz = () => {
   const navigate = useNavigate()
   let { id } = useParams()
@@ -33,7 +34,7 @@ const ReviewQuiz = () => {
   const [quizScore, setQuizScore] = useState(0)
   const [fontSize, setFontSize] = useState(16)
   const [markedQuestions, setMarkedQuestions] = useState([])
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const {
     register,
     handleSubmit,
@@ -154,6 +155,21 @@ const ReviewQuiz = () => {
     height: '300px',
     margin: '10px 0px',
   }
+
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    // Whenever the current question changes, update the video source
+    if (allQuestion[currentQuestion]?.questionId?.video) {
+      const videoSource = `${API_URL}/uploads/videos/${allQuestion[currentQuestion].questionId.video}`
+      // Update video source
+      if (videoRef.current) {
+        videoRef.current.src = videoSource
+        // You may also want to load the new video after changing the source
+        videoRef.current.load()
+      }
+    }
+  }, [currentQuestion, allQuestion])
   return (
     <div>
       <QuizHeader
@@ -171,58 +187,77 @@ const ReviewQuiz = () => {
         // isTimer={isTimer}
         // setIsTimer={setIsTimer}
       />
-      {/* <button
-        className="sidebar-toggle-btn mt-2 absolute text-[25px] px-4 z-20"
-        onClick={toggleSidebar}
-      >
-        {sidebarOpen ? '' : <FaBars className=" " />}
-      </button> */}
-      <div className="flex flex-row">
-        <div
-          className={` ${
-            sidebarOpen ? 'w-20' : 'w-0'
-          } bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
-          style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
+      {showQues && (
+        <button
+          className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+          onClick={toggleSidebar}
         >
-          {sidebarOpen && (
+          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] " />}
+        </button>
+      )}
+      <div className="flex flex-row">
+        <div className="relative">
+          <div
+            className={` ${
+              sidebarOpen ? 'w-20' : 'w-5'
+            } bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+            style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
+          >
+            {/* {sidebarOpen && (
             <button
               className={`pb-4 text-[20px] px-4 ml-1 pt-3 text-center ${sidebarOpen ? '' : 'hidden'}`}
               onClick={toggleSidebar}
             >
               <ImCross className="text-white" />
             </button>
-          )}
-          <ul className={`${sidebarOpen ? 'block' : 'hidden'}`}>
-            {allQuestion && allQuestion.length > 0
-              ? allQuestion.map((question, index) => (
-                  <li
-                    key={index}
-                    className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
-                      currentQuestion === index ? 'bg-blue-500' : ''
-                    }`}
-                    onClick={() => setCurrentQuestion(index)}
-                  >
-                    <div className="flex items-center justify-center relative">
-                      <span>{index + 1}</span>
-                      {markedQuestions.includes(index) && (
-                        <img src={markIcon} alt="mark icon" className="w-6 h-6" />
-                      )}
-                    </div>
-                  </li>
-                ))
-              : ''}
-          </ul>
-          {sidebarOpen && currentQuestion !== null && (
-            <div
-              className="fixed top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
-              style={{ transform: 'translateX(100%)' }}
+          )} */}
+            <ul className={`${sidebarOpen ? 'block' : 'hidden'} pt-5 `}>
+              {allQuestion && allQuestion.length > 0
+                ? allQuestion.map((question, index) => (
+                    <li
+                      key={index}
+                      className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
+                        currentQuestion === index ? 'bg-blue-500' : ''
+                      }`}
+                      onClick={() => setCurrentQuestion(index)}
+                    >
+                      <div className="flex items-center justify-center relative">
+                        <span>{index + 1}</span>
+                        {markedQuestions.includes(index) && (
+                          <img src={markIcon} alt="mark icon" className="w-6 h-6" />
+                        )}
+                      </div>
+                    </li>
+                  ))
+                : ''}
+            </ul>
+            {sidebarOpen && currentQuestion !== null && (
+              <div
+                className="fixed top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
+                style={{ transform: 'translateX(100%)' }}
+              >
+                {currentQuestion + 1}
+              </div>
+            )}
+            {/* {sidebarOpen && (
+              <button
+                className="absolute -top-5 left-[150%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+                onClick={toggleSidebar}
+              >
+                <GoChevronRight className="text-[40px] rotate-180" />
+              </button>
+            )} */}
+          </div>
+          {sidebarOpen && (
+            <button
+              className="absolute -top-6 left-[98%] text-[25px] px-1 py-1 mt-4 z-50 mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+              onClick={toggleSidebar}
             >
-              {currentQuestion + 1}
-            </div>
+              <GoChevronRight className="text-[40px] rotate-180" />
+            </button>
           )}
         </div>
-
-        <div className="wrapper relative d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
+        <div className="wrapper relative p-4 d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
           {loading ? (
             <center>
               <CSpinner color="info" variant="grow" />
@@ -521,16 +556,10 @@ const ReviewQuiz = () => {
                   ? allQuestion[currentQuestion].questionId.questionExplanation
                   : ''} */}
                       </p>
-                      {allQuestion[currentQuestion].questionId.video && (
-                        <video controls>
-                          {allQuestion[currentQuestion].questionId.video && (
-                            <source
-                              src={`${API_URL}uploads/videos/${allQuestion[currentQuestion].questionId.video}`}
-                              type="video/mp4"
-                            />
-                          )}
-                        </video>
-                      )}
+                      {allQuestion[currentQuestion] &&
+                        allQuestion[currentQuestion].questionId.video && (
+                          <video controls ref={videoRef}></video>
+                        )}
                       {/* {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <img
                   src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.image}`}

@@ -299,7 +299,7 @@ const Feedback = () => {
           )}
           {myFeedbacks && myFeedbacks.length > 0 ? (
             <>
-              <div className="flex justify-between items-center my-2">
+              <div className="flex justify-between items-center my-2 mx-[5%]">
                 <p className="text-2xl mb-1">My Feedback</p>
                 <CButton
                   onClick={(e) => {
@@ -313,7 +313,7 @@ const Feedback = () => {
               </div>
               <CRow>
                 <CCol sm={1} md={4} lg={4}>
-                  <figure className="snip1533">
+                  <figure className="snip1533 w-full">
                     <figcaption>
                       <blockquote>
                         <p>
@@ -422,10 +422,10 @@ const Feedback = () => {
                     <figure className="snip1533">
                       <figcaption>
                         <blockquote>
-                          <p className='text-black font-semibold'>{feedback.lastFeedback.text}</p>
+                          <p className="text-black font-semibold">{feedback.lastFeedback.text}</p>
                         </blockquote>
                         <h3>{feedback.lastFeedback.name}</h3>
-                        <p className='text-black'>{feedback.lastFeedback.school}</p>
+                        <p className="text-black">{feedback.lastFeedback.school}</p>
 
                         <div className="flex justify-center items-center my-1">
                           <ReactStars
@@ -441,7 +441,7 @@ const Feedback = () => {
                             disabled={true}
                           />
                         </div>
-                        <p className='text-black'>{feedback.email}</p>
+                        <p className="text-black">{feedback.email}</p>
                         <em className="mt-3 text-black">
                           {moment(feedback.lastFeedback.feedbackCreatedAt).format(
                             'DD MMMM YYYY, h:mm a',
