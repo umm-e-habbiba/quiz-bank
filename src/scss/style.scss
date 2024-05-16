@@ -99,6 +99,16 @@
   right: 5px;
   z-index: 10000;
 }
+.middle-alert {
+  position: fixed;
+  width: 400px;
+  text-align: center;
+  left: calc(50% - 200px);
+  top: calc(50% - 100px);
+  // top: 10px;
+  // right: 5px;
+  z-index: 10000;
+}
 
 .answer-stat-box {
   box-shadow: 0 1px 3px 0 rgba(10, 5, 5, 0.25);

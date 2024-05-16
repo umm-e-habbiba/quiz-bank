@@ -960,13 +960,16 @@ const QuizLayout = () => {
                         ></p>
                       </CCol>
                       <CCol md={4}>
-                        <img
-                          // src={image}
-                          // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
-                          src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
-                          alt="question image"
-                        />
-                        {filteredQuestion[currentQuestion]?.video && (
+                        {filteredQuestion[currentQuestion]?.image && (
+                          <img
+                            // src={image}
+                            // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                            src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
+                            alt="question image"
+                            className="mb-3"
+                          />
+                        )}
+                        {/* {filteredQuestion[currentQuestion]?.video && (
                           <video controls ref={videoRef}>
                             {filteredQuestion[currentQuestion]?.video && (
                               <source
@@ -975,7 +978,7 @@ const QuizLayout = () => {
                               />
                             )}
                           </video>
-                        )}
+                        )} */}
                       </CCol>
                     </CRow>
                   ) : (
@@ -1262,7 +1265,7 @@ const QuizLayout = () => {
       />
       {/* error alert */}
       {error && (
-        <CAlert color="danger" className="success-alert">
+        <CAlert color="danger" className="middle-alert">
           {errorMsg}
         </CAlert>
       )}

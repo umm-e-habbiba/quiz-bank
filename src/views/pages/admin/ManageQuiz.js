@@ -75,7 +75,9 @@ const ManageQuiz = () => {
   const [imgLoader, setImgLoader] = useState(false)
   const [questionId, setQuestionId] = useState('')
   const [image, setImage] = useState('')
-  const [videoSrc, seVideoSrc] = useState('')
+  const [videoLoader, setVideoLoader] = useState(false)
+  const [videoSrc, setVideoSrc] = useState('')
+  const [video, setVideo] = useState('')
   // const [usmleStep, setUsmleStep] = useState('')
   // const [usmleCategory, setUsmleCategory] = useState('')
   // const [question, setQuestion] = useState('')
@@ -196,6 +198,7 @@ const ManageQuiz = () => {
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
     formdata.append('image', image)
+    formdata.append('video', video)
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
@@ -228,6 +231,8 @@ const ManageQuiz = () => {
           getAllQuest()
           reset({})
           setImage('')
+          setVideo('')
+          setVideoSrc('')
           setOp6('')
           setOp6Exp('')
           setSuccess(true)
@@ -280,6 +285,8 @@ const ManageQuiz = () => {
           setOp6(result.data.optionSix)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
+          setVideoSrc(result.data.video)
+          setVideo(result.data.video)
         }
       })
       .catch((error) => console.log('error', error))
@@ -335,6 +342,7 @@ const ManageQuiz = () => {
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
     formdata.append('image', image)
+    formdata.append('video', video)
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
@@ -367,6 +375,8 @@ const ManageQuiz = () => {
           getAllQuest()
           setQuestionId('')
           setImage('')
+          setVideo('')
+          setVideoSrc('')
           setOp6('')
           setOp6Exp('')
           reset({})
@@ -394,11 +404,8 @@ const ManageQuiz = () => {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
-    const formdata = new FormData()
-    formdata.append('image', null)
     const requestOptions = {
       method: 'DELETE',
-      body: formdata,
       headers: myHeaders,
       redirect: 'follow',
     }
@@ -425,11 +432,48 @@ const ManageQuiz = () => {
         setImgLoader(false)
       })
   }
+  const deleteVideo = () => {
+    console.log('delete video', questionId)
+    setVideoLoader(true)
+    setErrorr(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setVideoLoader(false)
+          getQuestion()
+          setSuccess(true)
+          setSuccessMsg('Video deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setErrorr(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setVideoLoader(false)
+      })
+  }
   const handleVideoChange = (file) => {
     var reader = new FileReader()
+    setVideo(file)
     console.log(file)
     var url = URL.createObjectURL(file)
-    seVideoSrc(url)
+    setVideoSrc(url)
     console.log('video url', url)
   }
   return (
@@ -508,7 +552,7 @@ const ManageQuiz = () => {
                           />
                         </CTableDataCell> */}
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell className="flex justify-center items-center">
+                        <CTableDataCell className="flex justify-start items-center">
                           <CButton
                             color="success"
                             className="text-white mr-3 my-2"
@@ -950,7 +994,7 @@ const ManageQuiz = () => {
                     <CCol md={6}>
                       <center>
                         <img
-                          src={`${API_URL}uploads/${image}`}
+                          src={`${API_URL}uploads/images/${image}`}
                           alt="image"
                           className="w-52 h-36 rounded-full"
                         />
@@ -965,6 +1009,46 @@ const ManageQuiz = () => {
                         id="formFile"
                         label="Image"
                         onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                  </CRow>
+                )}
+                {questionId && video ? (
+                  <CRow className="mb-3">
+                    <CCol md={6}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Change Video"
+                        onChange={(e) => handleVideoChange(e.target.files[0])}
+                      />
+                      <CButton
+                        color="danger"
+                        onClick={deleteVideo}
+                        className="mt-3"
+                        disabled={videoLoader ? true : false}
+                      >
+                        {videoLoader ? <CSpinner color="light" size="sm" /> : 'Delete Video'}
+                      </CButton>
+                    </CCol>
+                    <CCol md={6}>
+                      <center>
+                        <video controls>
+                          {video && (
+                            <source src={`${API_URL}uploads/videos/${video}`} type="video/mp4" />
+                          )}
+                        </video>
+                      </center>
+                    </CCol>
+                  </CRow>
+                ) : (
+                  <CRow className="mb-3">
+                    <CCol md={12}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Video"
+                        onChange={(e) => handleVideoChange(e.target.files[0])}
                       />
                     </CCol>
                   </CRow>
@@ -1149,7 +1233,7 @@ const ManageQuiz = () => {
                 </CCol>
                 <CCol md={10}>
                   <img
-                    src={`${API_URL}uploads/${image}`}
+                    src={`${API_URL}uploads/images/${image}`}
                     alt="image"
                     className="w-52 h-36 rounded-full"
                   />
@@ -1187,18 +1271,27 @@ const ManageQuiz = () => {
           <CModalHeader></CModalHeader>
           <CModalBody>
             <div className="p-10">
-              {image ? (
+              {image || videoSrc ? (
                 <CRow className="mb-5">
                   <CCol md={8}>
                     <p dangerouslySetInnerHTML={{ __html: getValues('question') }}></p>
                   </CCol>
                   <CCol md={4}>
-                    <img
-                      // src={image}
-                      src={`${API_URL}uploads/${image}`}
-                      alt="question image"
-                      className="w-96 h-64"
-                    />
+                    {image && (
+                      <img
+                        // src={image}
+                        src={`${API_URL}uploads/images/${image}`}
+                        alt="question image"
+                        className="mb-3"
+                      />
+                    )}
+                    {videoSrc && (
+                      <video controls>
+                        {videoSrc && (
+                          <source src={`${API_URL}uploads/videos/${videoSrc}`} type="video/mp4" />
+                        )}
+                      </video>
+                    )}
                   </CCol>
                 </CRow>
               ) : (

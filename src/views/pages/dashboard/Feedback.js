@@ -72,7 +72,6 @@ const Feedback = () => {
       school: '',
     },
   })
-
   useEffect(() => {
     getAllFeedbacks()
     getMyFeedbacks()
@@ -89,7 +88,6 @@ const Feedback = () => {
   useEffect(() => {
     getFeedback()
   }, [feedbackId])
-
   const getFeedback = () => {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -259,12 +257,12 @@ const Feedback = () => {
             school: result.data.feedbacks[0].school,
             rating: result.data.feedbacks[0].rating,
           })
-          setFeedbackId(result.data.feedbacks[0]._id)
           setMyFeedbackDate(result.data.feedbacks[0].feedbackCreatedAt)
           setFeedbackModal(false)
           setSpinner(false)
-          getMyFeedbacks()
+          // getMyFeedbacks()
           setSuccess(true)
+          window.location.reload()
           setSuccessMsg('Feedback updated successfully')
           setTimeout(() => {
             setSuccess(false)
@@ -318,13 +316,13 @@ const Feedback = () => {
                   <figure className="snip1533">
                     <figcaption>
                       <blockquote>
-                        <p className='text-black font-medium'>
+                        <p>
                           {getValues('message')}
                           {getValues('message').length}
                         </p>
                       </blockquote>
                       <h3>{getValues('name')}</h3>
-                      <p className='text-black font-medium'>{getValues('school')}</p>
+                      <h4>{getValues('school')}</h4>
 
                       <div className="flex justify-center items-center my-1">
                         <ReactStars
@@ -336,7 +334,7 @@ const Feedback = () => {
                           fullIcon={<i className="fa fa-star"></i>}
                           activeColor="#d2652d"
                           classNames="justify-center"
-                          value={getValues('rating')}
+                          value={Number(getValues('rating'))}
                           disabled={true}
                         />
                       </div>
@@ -461,40 +459,47 @@ const Feedback = () => {
           )}
           {/* {allFeedbacks && allFeedbacks.length > 0 ? (
             <CRow>
-              {allFeedbacks.map((feedback, index) => (
-                <CCol sm={1} md={4} lg={4} key={index}>
-                  <figure className="snip1533">
-                    <figcaption>
-                      <blockquote>
-                        <p>{feedback.lastFeedback.text}</p>
-                      </blockquote>
-                      <h3>{feedback.lastFeedback.name}</h3>
-                      <h4>{feedback.lastFeedback.school}</h4>
+              {allFeedbacks
+                .sort((a, b) => {
+                  return (
+                    new Date(b.lastFeedback.feedbackCreatedAt).getTime() -
+                    new Date(a.lastFeedback.feedbackCreatedAt).getTime()
+                  )
+                })
+                .map((feedback, index) => (
+                  <CCol sm={1} md={4} lg={4} key={index}>
+                    <figure className="snip1533">
+                      <figcaption>
+                        <blockquote>
+                          <p className="text-black font-semibold">{feedback.lastFeedback.text}</p>
+                        </blockquote>
+                        <h3>{feedback.lastFeedback.name}</h3>
+                        <p className="text-black">{feedback.lastFeedback.school}</p>
 
-                      <div className="flex justify-center items-center my-1">
-                        <ReactStars
-                          count={5}
-                          size={34}
-                          isHalf={true}
-                          emptyIcon={<i className="far fa-star"></i>}
-                          halfIcon={<i className="fa fa-star-half-alt"></i>}
-                          fullIcon={<i className="fa fa-star"></i>}
-                          activeColor="#d2652d"
-                          classNames="justify-center"
-                          value={feedback.lastFeedback.rating}
-                          disabled={true}
-                        />
-                      </div>
-                      <h4>{feedback.email}</h4>
-                      <em className="mt-3">
-                        {moment(feedback.lastFeedback.feedbackCreatedAt).format(
-                          'DD MMMM YYYY, h:mm a',
-                        )}
-                      </em>
-                    </figcaption>
-                  </figure>
-                </CCol>
-              ))}
+                        <div className="flex justify-center items-center my-1">
+                          <ReactStars
+                            count={5}
+                            size={34}
+                            isHalf={true}
+                            emptyIcon={<i className="far fa-star"></i>}
+                            halfIcon={<i className="fa fa-star-half-alt"></i>}
+                            fullIcon={<i className="fa fa-star"></i>}
+                            activeColor="#d2652d"
+                            classNames="justify-center"
+                            value={feedback.lastFeedback.rating}
+                            disabled={true}
+                          />
+                        </div>
+                        <p className="text-black">{feedback.email}</p>
+                        <em className="mt-3 text-black">
+                          {moment(feedback.lastFeedback.feedbackCreatedAt).format(
+                            'DD MMMM YYYY, h:mm a',
+                          )}
+                        </em>
+                      </figcaption>
+                    </figure>
+                  </CCol>
+                ))}
             </CRow>
           ) : (
             <div className="flex justify-center items-center my-6">

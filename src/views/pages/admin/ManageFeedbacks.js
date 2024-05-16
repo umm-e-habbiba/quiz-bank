@@ -35,9 +35,6 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
-import { ImCross } from 'react-icons/im'
-import { FaRegEye } from 'react-icons/fa'
-
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
@@ -46,6 +43,7 @@ const ManageFeedbacks = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
+  const [feedbackId, setFeedbackId] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
@@ -122,12 +120,6 @@ const ManageFeedbacks = () => {
       })
       .catch((error) => console.log('error', error))
   }
-
-  const openFeedbackModal = (feedback) => {
-    setSelectedFeedback(feedback)
-    setFeedbackModal(true)
-  }
-
   return (
     <AdminLayout>
       <>
@@ -223,59 +215,6 @@ const ManageFeedbacks = () => {
             </CButton>
           </CModalFooter>
         </CModal>
-        {/* feedback modal */}
-        <CModal
-          alignment="center"
-          visible={feedbackModal}
-          backdrop="static"
-          onClose={() => setFeedbackModal(false)}
-          aria-labelledby="FeedbackModalTitle"
-          className="bg-transparent"
-        >
-          <CModalBody className="pr-9">
-            {selectedFeedback && (
-              <figure className="snip1533 ">
-                <figcaption>
-                  <button
-                    className=" text-red-500 absolute top-2 right-2"
-                    onClick={() => setFeedbackModal(false)}
-                  >
-                    <ImCross />
-                  </button>
-                  <blockquote>
-                    <p className='text-black font-semibold'>{selectedFeedback.text}</p>
-                  </blockquote>
-                  <h3 >{selectedFeedback.name}</h3>
-                  <p className='text-black font-semibold'>{selectedFeedback.school}</p>
-                  <div className="flex justify-center items-center my-1">
-                    <ReactStars
-                      count={5}
-                      size={34}
-                      isHalf={true}
-                      emptyIcon={<i className="far fa-star"></i>}
-                      halfIcon={<i className="fa fa-star-half-alt"></i>}
-                      fullIcon={<i className="fa fa-star"></i>}
-                      activeColor="#d2652d"
-                      value={selectedFeedback.rating}
-                      readOnly={true}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginBottom: '10px',
-                      }}
-                    />
-                  </div>
-                  <p className='text-black '>{selectedFeedback.email}</p>
-                  <em className="mt-3 text-black">
-                    {moment(selectedFeedback.feedbackCreatedAt).format('DD MMMM YYYY, h:mm a')}
-                  </em>
-                </figcaption>
-              </figure>
-            )}
-          </CModalBody>
-        </CModal>
-
         {/* success alert */}
         {success && (
           <CAlert color="success" className="success-alert">

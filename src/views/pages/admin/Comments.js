@@ -70,6 +70,9 @@ const Comments = () => {
   const [imgLoader, setImgLoader] = useState(false)
   const [questionId, setQuestionId] = useState('')
   const [image, setImage] = useState('')
+  const [videoLoader, setVideoLoader] = useState(false)
+  const [videoSrc, setVideoSrc] = useState('')
+  const [video, setVideo] = useState('')
   // const [usmleStep, setUsmleStep] = useState('')
   // const [usmleCategory, setUsmleCategory] = useState('')
   // const [question, setQuestion] = useState('')
@@ -202,6 +205,8 @@ const Comments = () => {
           setOp6(result.data.optionSix)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
+          setVideoSrc(result.data.video)
+          setVideo(result.data.video)
         }
       })
       .catch((error) => console.log('error', error))
@@ -256,6 +261,7 @@ const Comments = () => {
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
     formdata.append('image', image)
+    formdata.append('video', video)
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
@@ -288,6 +294,8 @@ const Comments = () => {
           getAllQuest()
           setQuestionId('')
           setImage('')
+          setVideo('')
+          setVideoSrc('')
           setOp6('')
           setOp6Exp('')
           reset({})
@@ -345,6 +353,50 @@ const Comments = () => {
         console.error(error)
         setImgLoader(false)
       })
+  }
+  const deleteVideo = () => {
+    console.log('delete video', questionId)
+    setVideoLoader(true)
+    setError(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setVideoLoader(false)
+          getQuestion()
+          setSuccess(true)
+          setSuccessMsg('Video deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setVideoLoader(false)
+      })
+  }
+  const handleVideoChange = (file) => {
+    var reader = new FileReader()
+    setVideo(file)
+    console.log(file)
+    var url = URL.createObjectURL(file)
+    setVideoSrc(url)
+    console.log('video url', url)
   }
   return (
     <AdminLayout>
@@ -835,7 +887,7 @@ const Comments = () => {
                     <CCol md={6}>
                       <center>
                         <img
-                          src={`${API_URL}uploads/${image}`}
+                          src={`${API_URL}uploads/images/${image}`}
                           alt="image"
                           className="w-52 h-36 rounded-full"
                         />
@@ -850,6 +902,46 @@ const Comments = () => {
                         id="formFile"
                         label="Image"
                         onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                  </CRow>
+                )}
+                {video ? (
+                  <CRow className="mb-3">
+                    <CCol md={6}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Change Video"
+                        onChange={(e) => handleVideoChange(e.target.files[0])}
+                      />
+                      <CButton
+                        color="danger"
+                        onClick={deleteVideo}
+                        className="mt-3"
+                        disabled={videoLoader ? true : false}
+                      >
+                        {videoLoader ? <CSpinner color="light" size="sm" /> : 'Delete Video'}
+                      </CButton>
+                    </CCol>
+                    <CCol md={6}>
+                      <center>
+                        <video controls>
+                          {video && (
+                            <source src={`${API_URL}uploads/videos/${video}`} type="video/mp4" />
+                          )}
+                        </video>
+                      </center>
+                    </CCol>
+                  </CRow>
+                ) : (
+                  <CRow className="mb-3">
+                    <CCol md={12}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Video"
+                        onChange={(e) => handleVideoChange(e.target.files[0])}
                       />
                     </CCol>
                   </CRow>
@@ -1023,7 +1115,7 @@ const Comments = () => {
                 </CCol>
                 <CCol md={10}>
                   <img
-                    src={`${API_URL}uploads/${image}`}
+                    src={`${API_URL}uploads/images/${image}`}
                     alt="image"
                     className="w-52 h-36 rounded-full"
                   />
