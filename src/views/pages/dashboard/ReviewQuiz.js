@@ -1,5 +1,5 @@
 import { CButton, CForm, CFormCheck, CFormInput, CAlert, CRow, CCol, CSpinner } from '@coreui/react'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
@@ -154,6 +154,21 @@ const ReviewQuiz = () => {
     height: '300px',
     margin: '10px 0px',
   }
+
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    // Whenever the current question changes, update the video source
+    if (allQuestion[currentQuestion]?.questionId?.video) {
+      const videoSource = `${API_URL}uploads/videos/${allQuestion[currentQuestion].questionId.video}`
+      // Update video source
+      if (videoRef.current) {
+        videoRef.current.src = videoSource
+        // You may also want to load the new video after changing the source
+        videoRef.current.load()
+      }
+    }
+  }, [currentQuestion, allQuestion])
   return (
     <div>
       <QuizHeader
@@ -521,16 +536,10 @@ const ReviewQuiz = () => {
                   ? allQuestion[currentQuestion].questionId.questionExplanation
                   : ''} */}
                       </p>
-                      {allQuestion[currentQuestion].questionId.video && (
-                        <video controls>
-                          {allQuestion[currentQuestion].questionId.video && (
-                            <source
-                              src={`${API_URL}uploads/videos/${allQuestion[currentQuestion].questionId.video}`}
-                              type="video/mp4"
-                            />
-                          )}
-                        </video>
-                      )}
+                      {allQuestion[currentQuestion] &&
+                        allQuestion[currentQuestion].questionId.video && (
+                          <video controls ref={videoRef}></video>
+                        )}
                       {/* {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <img
                   src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.image}`}

@@ -846,7 +846,7 @@ const QuizLayout = () => {
                             <CFormInput
                               type="number"
                               name="number"
-                              placeholder="Enter number of questions"
+                              placeholder="Number of questions"
                               // {...register('total', { required: true, min: 1, max: 100 })}
                               // feedback="Please enter number between 1 and 100"
                               // invalid={errors.total ? true : false}

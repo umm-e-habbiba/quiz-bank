@@ -313,19 +313,13 @@ const Feedback = () => {
                 </CButton>
               </div>
               <CRow>
-                <CCol sm={1} md={4} lg={4}>
+                <CCol sm={12} md={12} lg={12}>
                   <figure className="snip1533">
                     <figcaption>
-                      <blockquote>
-                        <p className="text-black font-medium">{getValues('message')}</p>
-                      </blockquote>
-                      <h3>{getValues('name')}</h3>
-                      <p className="text-black font-medium">{getValues('school')}</p>
-
                       <div className="flex justify-center items-center my-1">
                         <ReactStars
                           count={5}
-                          size={34}
+                          size={54}
                           isHalf={true}
                           emptyIcon={<i className="far fa-star"></i>}
                           halfIcon={<i className="fa fa-star-half-alt"></i>}
@@ -333,11 +327,21 @@ const Feedback = () => {
                           activeColor="#d2652d"
                           classNames="justify-center"
                           value={Number(getValues('rating'))}
-                          disabled={true}
+                          edit={false}
                         />
                       </div>
+                      <div className="flex justify-center items-center">
+                        <p className="text-black font-medium capitalize mr-5">
+                          {getValues('name')}
+                        </p>
+                        <p className="text-black font-medium capitalize">{getValues('school')}</p>
+                      </div>
+
+                      <blockquote>
+                        <p className="text-black font-medium">{getValues('message')}</p>
+                      </blockquote>
                       <em className="mt-3 text-black">
-                        {moment(myFeedbackDate).format('DD MMMM YYYY, h:mm a')}
+                        {moment(myFeedbackDate).format('DD MMMM YY, h:mm a')}
                       </em>
                     </figcaption>
                   </figure>
@@ -416,9 +420,43 @@ const Feedback = () => {
                   )
                 })
                 .map((feedback, index) => (
-                  <CCol sm={1} md={4} lg={4} key={index}>
+                  <CCol sm={12} md={12} lg={12} key={index}>
                     <figure className="snip1533">
                       <figcaption>
+                        <div className="flex justify-center items-center my-1">
+                          <ReactStars
+                            count={5}
+                            size={34}
+                            isHalf={true}
+                            emptyIcon={<i className="far fa-star"></i>}
+                            halfIcon={<i className="fa fa-star-half-alt"></i>}
+                            fullIcon={<i className="fa fa-star"></i>}
+                            activeColor="#d2652d"
+                            classNames="justify-center"
+                            value={feedback.lastFeedback.rating}
+                            edit={false}
+                          />
+                        </div>
+                        <div className="flex justify-center items-center">
+                          <p className="text-black font-medium capitalize mr-5">
+                            {feedback.lastFeedback.name}
+                          </p>
+                          <p className="text-black font-medium capitalize">
+                            {feedback.lastFeedback.school}
+                          </p>
+                        </div>
+
+                        <blockquote>
+                          <p className="text-black font-medium">{feedback.lastFeedback.text}</p>
+                        </blockquote>
+                        <p className="text-black my-1">{feedback.email}</p>
+                        <em className="mt-3 text-black">
+                          {moment(feedback.lastFeedback.feedbackCreatedAt).format(
+                            'DD MMMM YY, h:mm a',
+                          )}
+                        </em>
+                      </figcaption>
+                      {/* <figcaption>
                         <blockquote>
                           <p className="text-black font-semibold">{feedback.lastFeedback.text}</p>
                         </blockquote>
@@ -436,16 +474,16 @@ const Feedback = () => {
                             activeColor="#d2652d"
                             classNames="justify-center"
                             value={feedback.lastFeedback.rating}
-                            disabled={true}
+                            edit={false}
                           />
                         </div>
                         <p className="text-black">{feedback.email}</p>
                         <em className="mt-3 text-black">
                           {moment(feedback.lastFeedback.feedbackCreatedAt).format(
-                            'DD MMMM YYYY, h:mm a',
+                            'DD MMMM YY, h:mm a',
                           )}
                         </em>
-                      </figcaption>
+                      </figcaption> */}
                     </figure>
                   </CCol>
                 ))}
@@ -525,6 +563,7 @@ const Feedback = () => {
                 required={true}
                 classNames="justify-center"
                 value={getValues('rating')}
+                edit={true}
               />
             </div>
             {errors.rating ? <span className="text-red-500 text-sm">Rating is required</span> : ''}
