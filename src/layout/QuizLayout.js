@@ -688,7 +688,7 @@ const QuizLayout = () => {
           className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
           onClick={toggleSidebar}
         >
-          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] " />}
+          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] text-white" />}
         </button>
       )}
       <div className="flex flex-row ">
@@ -741,7 +741,7 @@ const QuizLayout = () => {
                 className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
                 onClick={toggleSidebar}
               >
-                <GoChevronRight className="text-[40px] rotate-180" />
+                <GoChevronRight className="text-[40px] rotate-180 text-white" />
               </button>
             )}
           </div>

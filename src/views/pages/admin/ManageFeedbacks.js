@@ -36,6 +36,7 @@ import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
 import { FaRegEye } from 'react-icons/fa'
+import { ImCross } from 'react-icons/im'
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
@@ -120,6 +121,10 @@ const ManageFeedbacks = () => {
         }
       })
       .catch((error) => console.log('error', error))
+  }
+  const openFeedbackModal = (feedback) => {
+    setSelectedFeedback(feedback)
+    setFeedbackModal(true)
   }
   return (
     <AdminLayout>
