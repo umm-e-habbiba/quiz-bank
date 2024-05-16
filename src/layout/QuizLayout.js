@@ -15,6 +15,8 @@ import {
   CFormSwitch,
 } from '@coreui/react'
 import React, { useState, useEffect, useRef } from 'react'
+import { GoChevronRight } from 'react-icons/go'
+
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
@@ -37,6 +39,9 @@ const QuizLayout = () => {
   const navigate = useNavigate()
   const [detailModal, setDetailModal] = useState(false)
   const [loader, setLoader] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [progress, setProgress] = useState(0)
+
   const [showSelectors, setShowSelectors] = useState(true)
   const [showQues, setShowQues] = useState(false)
   const [isTimer, setIsTimer] = useState(true)
@@ -45,7 +50,7 @@ const QuizLayout = () => {
   const [allQuestion, setAllQuestion] = useState([])
   const [allAttemptedQuestion, setAllAttemptedQuestion] = useState([])
   const [markedQuestions, setMarkedQuestions] = useState([])
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [filteredQuestion, setFilteredQuestion] = useState([])
   const [filteredQuestionBackup, setFilteredQuestionBackup] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -122,6 +127,24 @@ const QuizLayout = () => {
       saveQuiz()
     }
   }, [quizEnd])
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      setLoading(false)
+    }
+
+    fetchQuestions()
+
+    const timer = setInterval(() => {
+      setProgress((prevProgress) => {
+        const newProgress = prevProgress + 1
+        return Math.min(newProgress, 100)
+      })
+    }, 20)
+
+    return () => clearInterval(timer)
+  }, [])
 
   const getAllQuest = () => {
     setLoader(true)
@@ -660,75 +683,87 @@ const QuizLayout = () => {
         undoHighlight={undoHighlight}
         highlightStack={highlightStack}
       />
-      {/* {showQues && (
+      {showQues && (
         <button
-          className="sidebar-toggle-btn mt-2 absolute text-[25px] px-4 "
+          className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
           onClick={toggleSidebar}
         >
-          {sidebarOpen ? '' : <FaBars className=" " />}
+          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] " />}
         </button>
-      )} */}
-      <div className="flex flex-row">
+      )}
+      <div className="flex flex-row ">
         {/* Side Bar */}
 
         {showQues && (
-          <div
-            className={` ${sidebarOpen ? 'w-20' : 'w-0'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
-            style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
-          >
+          <div className="relative">
+            <div
+              className={` ${sidebarOpen ? 'w-20' : 'w-5'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
+            >
+              {/* {sidebarOpen && (
+                <button
+                  className={`pb-4 text-[20px] px-3 ml-8 bg- text-center ${sidebarOpen ? '' : 'hidden'}`}
+                  onClick={toggleSidebar}
+                >
+                  <GoChevronRight className="text-[40px] rotate-180" />
+                </button>
+              )} */}
+              <ul className={`${sidebarOpen ? 'block' : 'hidden'} pt-5`}>
+                {saveQuestionArray.map((question, index) => (
+                  <li
+                    key={index}
+                    className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
+                      currentQuestion === index ? 'bg-blue-500' : ''
+                    }`}
+                    onClick={() => setCurrentQuestion(index)}
+                  >
+                    <div className="flex items-center justify-center relative">
+                      <span>{index + 1}</span>
+                      {markedQuestions.includes(index) && (
+                        <img src={markIcon} alt="mark icon" className="w-6 h-6" />
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              {sidebarOpen && currentQuestion !== null && (
+                <div
+                  className="fixed top-[10vh]  right-0 bg-gray-800 text-white p-2 rounded"
+                  style={{ transform: 'translateX(100%)' }}
+                >
+                  {currentQuestion + 1}
+                </div>
+              )}
+            </div>
+            {/* Close button outside sidebar */}
             {sidebarOpen && (
               <button
-                className={`pb-4 text-[20px] px-4 pt-3 text-center ${sidebarOpen ? '' : 'hidden'}`}
+                className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
                 onClick={toggleSidebar}
               >
-                <HiOutlineX className="text-white quiz-icons" />
+                <GoChevronRight className="text-[40px] rotate-180" />
               </button>
-            )}
-            <ul className={`${sidebarOpen ? 'block' : 'hidden'}`}>
-              {saveQuestionArray.map((question, index) => (
-                <li
-                  key={index}
-                  className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
-                    currentQuestion === index ? 'bg-blue-500' : ''
-                  }`}
-                  onClick={() => setCurrentQuestion(index)}
-                >
-                  <div className="flex items-center justify-center relative">
-                    <span>{index + 1}</span>
-                    {markedQuestions.includes(index) && (
-                      <img src={markIcon} alt="mark icon" className="w-6 h-6" />
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {sidebarOpen && currentQuestion !== null && (
-              <div
-                className="fixed top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
-                style={{ transform: 'translateX(100%)' }}
-              >
-                {currentQuestion + 1}
-              </div>
             )}
           </div>
         )}
+
         <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
           {/* new layout */}
-          {loader ? (
-            <div className="flex justify-center items-center mt-9">
-              <div className="lds-spinner">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+          {loading ? (
+            <div>
+              <div className="flex flex-col gap-10 justify-center items-center mt-[35vh]">
+                <div className="lds-spinner -ml-8">
+                  {[...Array(12)].map((_, index) => (
+                    <div key={index}></div>
+                  ))}
+                </div>
+                <div className="text-sm font-medium text-gray-500 mt-2">
+                  <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while
+                  it get`s completed...
+                </div>
+                <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
+                  <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
+                </div>
               </div>
             </div>
           ) : (

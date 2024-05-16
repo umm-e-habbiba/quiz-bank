@@ -245,11 +245,6 @@ const QuizHeader = ({
       <CHeader position="sticky" className="p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
           {showQues && (
-            //   <HiMenu
-            //     onClick={showQues ? toggleSidebar : ''}
-            //     className="quiz-icons cursor-pointer mr-2"
-            //   />
-            // ) : (
             <Link to="/">
               <HiHome className="quiz-icons cursor-pointer mr-2" />
             </Link>

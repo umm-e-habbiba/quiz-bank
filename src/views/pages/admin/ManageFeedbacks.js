@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactStars from 'react-rating-stars-component'
+
 import {
   CCard,
   CCardBody,
@@ -33,28 +35,27 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
-import ReactStars from 'react-rating-stars-component'
-import { ImCross } from 'react-icons/im'
 import { FaRegEye } from 'react-icons/fa'
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
   const [deleteModal, setDeleteModal] = useState(false)
+  const [feedbackModal, setFeedbackModal] = useState(false)
+  const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [feedbackId, setFeedbackId] = useState('')
-  const [feedbackModal, setFeedbackModal] = useState(false)
-  const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
+
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     getAllFeedbacks()
-    if (getToken && role == 'admin') {
+    if (getToken && role === 'admin') {
       setToken(getToken)
     } else {
       navigate('/login')
@@ -85,6 +86,7 @@ const ManageFeedbacks = () => {
         setLoader(false)
       })
   }
+
   const deleteFeedback = () => {
     setIsLoading(true)
     setError(false)
@@ -118,10 +120,6 @@ const ManageFeedbacks = () => {
         }
       })
       .catch((error) => console.log('error', error))
-  }
-  const openFeedbackModal = (feedback) => {
-    setSelectedFeedback(feedback)
-    setFeedbackModal(true)
   }
   return (
     <AdminLayout>
@@ -341,4 +339,5 @@ const ManageFeedbacks = () => {
     </AdminLayout>
   )
 }
+
 export default ManageFeedbacks

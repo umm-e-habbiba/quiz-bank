@@ -39,6 +39,7 @@ import { useForm } from 'react-hook-form'
 import ReactStars from 'react-rating-stars-component'
 import CIcon from '@coreui/icons-react'
 import { cilPencil } from '@coreui/icons'
+
 const Feedback = () => {
   const navigate = useNavigate()
   const [error, setError] = useState(false)
@@ -53,7 +54,7 @@ const Feedback = () => {
   const [myFeedbackDate, setMyFeedbackDate] = useState('')
   const [feedbackModal, setFeedbackModal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
-  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
+  const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [activeKey, setActiveKey] = useState(1)
   const {
     register,
@@ -71,7 +72,6 @@ const Feedback = () => {
       school: '',
     },
   })
-  const watchFields = watch(['rating'])
   useEffect(() => {
     getAllFeedbacks()
     getMyFeedbacks()
@@ -79,18 +79,15 @@ const Feedback = () => {
     if (getToken) {
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
-      setUSerID(getUserId)
+      setUserID(getUserId)
     } else {
       navigate('/login')
     }
   }, [])
+
   useEffect(() => {
     getFeedback()
-  }, [watch])
-  // useEffect(() => {
-  //   getFeedback()
-  // }, [feedbackId])
-
+  }, [feedbackId])
   const getFeedback = () => {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -115,6 +112,7 @@ const Feedback = () => {
       })
       .catch((error) => console.log('error', error))
   }
+
   const getAllFeedbacks = () => {
     setLoader(true)
     const myHeaders = new Headers()
@@ -126,7 +124,6 @@ const Feedback = () => {
     }
 
     fetch(API_URL + 'feedbacks', requestOptions)
-      // fetch(API_URL + 'others-feedbacks/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -141,6 +138,7 @@ const Feedback = () => {
         setLoader(false)
       })
   }
+
   const getMyFeedbacks = () => {
     setLoader(true)
     const myHeaders = new Headers()
@@ -165,7 +163,6 @@ const Feedback = () => {
           })
           setFeedbackId(result.data[0]._id)
           setMyFeedbackDate(result.data[0].feedbackCreatedAt)
-          // set all data for edit here
         }
         setLoader(false)
       })
@@ -174,6 +171,7 @@ const Feedback = () => {
         setLoader(false)
       })
   }
+
   const addfeedback = (data) => {
     setSpinner(true)
     setError(false)
@@ -224,6 +222,7 @@ const Feedback = () => {
         setSpinner(false)
       })
   }
+
   const editFeedback = (data) => {
     setSpinner(true)
     setError(false)
@@ -280,11 +279,11 @@ const Feedback = () => {
         setSpinner(false)
       })
   }
+
   const handleRating = (rate) => {
     setValue('rating', rate)
-
-    // other logic
   }
+
   return (
     <div>
       <AppSidebar />
@@ -300,7 +299,7 @@ const Feedback = () => {
           )}
           {myFeedbacks && myFeedbacks.length > 0 ? (
             <>
-              <div className="flex justify-between items-center my-2">
+              <div className="flex justify-between items-center my-2 mx-[5%]">
                 <p className="text-2xl mb-1">My Feedback</p>
                 <CButton
                   onClick={(e) => {
@@ -493,6 +492,55 @@ const Feedback = () => {
               <p className="text-xl mt-6">No Feedbacks added yet</p>
             </div>
           )}
+          {/* {allFeedbacks && allFeedbacks.length > 0 ? (
+            <CRow>
+              {allFeedbacks
+                .sort((a, b) => {
+                  return (
+                    new Date(b.lastFeedback.feedbackCreatedAt).getTime() -
+                    new Date(a.lastFeedback.feedbackCreatedAt).getTime()
+                  )
+                })
+                .map((feedback, index) => (
+                  <CCol sm={1} md={4} lg={4} key={index}>
+                    <figure className="snip1533">
+                      <figcaption>
+                        <blockquote>
+                          <p className="text-black font-semibold">{feedback.lastFeedback.text}</p>
+                        </blockquote>
+                        <h3>{feedback.lastFeedback.name}</h3>
+                        <p className="text-black">{feedback.lastFeedback.school}</p>
+
+                        <div className="flex justify-center items-center my-1">
+                          <ReactStars
+                            count={5}
+                            size={34}
+                            isHalf={true}
+                            emptyIcon={<i className="far fa-star"></i>}
+                            halfIcon={<i className="fa fa-star-half-alt"></i>}
+                            fullIcon={<i className="fa fa-star"></i>}
+                            activeColor="#d2652d"
+                            classNames="justify-center"
+                            value={feedback.lastFeedback.rating}
+                            disabled={true}
+                          />
+                        </div>
+                        <p className="text-black">{feedback.email}</p>
+                        <em className="mt-3 text-black">
+                          {moment(feedback.lastFeedback.feedbackCreatedAt).format(
+                            'DD MMMM YYYY, h:mm a',
+                          )}
+                        </em>
+                      </figcaption>
+                    </figure>
+                  </CCol>
+                ))}
+            </CRow>
+          ) : (
+            <div className="flex justify-center items-center my-6">
+              <p className="text-xl mt-6">No Feedbacks added yet</p>
+            </div>
+          )} */}
         </div>
       </div>
       {/* add feedback modal */}
