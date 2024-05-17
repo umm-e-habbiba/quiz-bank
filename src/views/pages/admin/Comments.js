@@ -394,9 +394,9 @@ const Comments = () => {
     var reader = new FileReader()
     setVideo(file)
     console.log(file)
-    var url = URL.createObjectURL(file)
-    setVideoSrc(url)
-    console.log('video url', url)
+    // var url = URL.createObjectURL(file)
+    // setVideoSrc(url)
+    // console.log('video url', url)
   }
   return (
     <AdminLayout>

@@ -558,7 +558,7 @@ const Feedback = () => {
         aria-labelledby="VerticallyCenteredExample"
         // scrollable={true}
         backdrop="static"
-        size="sm"
+        size="lg"
       >
         <CModalHeader>
           <CModalTitle id="VerticallyCenteredExample">Tell us what you think</CModalTitle>
