@@ -299,7 +299,7 @@ const Feedback = () => {
           )}
           {myFeedbacks && myFeedbacks.length > 0 ? (
             <>
-              <div className="flex justify-between items-center my-2 mx-[5%]">
+              <div className="flex justify-between items-center my-2">
                 <p className="text-2xl mb-1">My Feedback</p>
                 <CButton
                   onClick={(e) => {

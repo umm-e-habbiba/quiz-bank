@@ -267,7 +267,17 @@ const AttemptedQuestions = () => {
                         </span>{' '}
                       </p>
                       <p className="text-sm">
-                        <span className="text-yellow-500">500</span> Users Attempted {category}
+                        <span className="text-yellow-500">
+                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                            ? allAttemptedQuestion
+                                .filter(
+                                  (ques) =>
+                                    ques.details.USMLE == category && ques.details.usmleStep == 1,
+                                )
+                                .reduce((acc, curr) => acc + curr.attempts, 0)
+                            : 0}
+                        </span>{' '}
+                        Users Attempted {category}
                       </p>
                     </div>
                   ))}
@@ -289,8 +299,18 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
-                      <span className="text-yellow-500">500</span> Users Attempted{' '}
-                      {selectedCategory}
+                      <span className="text-yellow-500">
+                        {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                          ? allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE == selectedCategory &&
+                                  ques.details.usmleStep == 1,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)
+                          : 0}
+                      </span>{' '}
+                      Users Attempted {selectedCategory}
                     </p>
                   </div>
                   <div>
@@ -343,12 +363,12 @@ const AttemptedQuestions = () => {
                     <div
                       key={idx}
                       className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
-                      // onClick={() => fetchQuestion(usmleStep, category)}
                       onClick={() => {
                         setShowstep2Ques(true)
                         setShowstep2Topics(false)
                         setSelectedCategory(category)
                       }}
+                      //   onClick={() => fetchQuestion(usmleStep, category)}
                     >
                       <p className="text-xl">
                         {category}{' '}
@@ -363,7 +383,17 @@ const AttemptedQuestions = () => {
                         </span>{' '}
                       </p>
                       <p className="text-sm">
-                        <span className="text-yellow-500">500</span> Users Attempted {category}
+                        <span className="text-yellow-500">
+                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                            ? allAttemptedQuestion
+                                .filter(
+                                  (ques) =>
+                                    ques.details.USMLE == category && ques.details.usmleStep == 2,
+                                )
+                                .reduce((acc, curr) => acc + curr.attempts, 0)
+                            : 0}
+                        </span>{' '}
+                        Users Attempted {category}
                       </p>
                     </div>
                   ))}
@@ -385,12 +415,51 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
-                      <span className="text-yellow-500">500</span> Users Attempted{' '}
-                      {selectedCategory}
+                      <span className="text-yellow-500">
+                        {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                          ? allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE == selectedCategory &&
+                                  ques.details.usmleStep == 2,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)
+                          : 0}
+                      </span>{' '}
+                      Users Attempted {selectedCategory}
                     </p>
                   </div>
                   <div>
-                    {data.map((item, index) => (
+                    {allAttemptedQuestion &&
+                    allAttemptedQuestion.length > 0 &&
+                    allAttemptedQuestion.filter(
+                      (ques) =>
+                        ques.details.USMLE == selectedCategory && ques.details.usmleStep == 2,
+                    ).length > 0
+                      ? allAttemptedQuestion
+                          .filter(
+                            (ques) =>
+                              ques.details.USMLE == selectedCategory && ques.details.usmleStep == 2,
+                          )
+                          .map((item, index) => (
+                            <AccordionQuestions
+                              key={index}
+                              question={item.details?.question}
+                              attempts={item.attempts}
+                              answer={item.details?.correctAnswer}
+                              op1={item.details?.optionOne}
+                              op2={item.details?.optionTwo}
+                              op3={item.details?.optionThree}
+                              op4={item.details?.optionFour}
+                              op5={item.details?.optionFive}
+                              options={item.optionsCount}
+                              op6={item.details?.optionSix ? item.details?.optionSix : ''}
+                              isOpen={activeIndex === index}
+                              onClick={() => handleItemClick(index)}
+                            />
+                          ))
+                      : 'No questions attempted '}
+                    {/* {data.map((item, index) => (
                       <AccordionQuestions
                         key={index}
                         question={item.question}
@@ -398,7 +467,7 @@ const AttemptedQuestions = () => {
                         isOpen={activeIndex === index}
                         onClick={() => handleItemClick(index)}
                       />
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               )}
@@ -410,12 +479,12 @@ const AttemptedQuestions = () => {
                     <div
                       key={idx}
                       className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
-                      // onClick={() => fetchQuestion(usmleStep, category)}
                       onClick={() => {
                         setShowstep3Ques(true)
                         setShowstep3Topics(false)
                         setSelectedCategory(category)
                       }}
+                      //   onClick={() => fetchQuestion(usmleStep, category)}
                     >
                       <p className="text-xl">
                         {category}{' '}
@@ -430,7 +499,17 @@ const AttemptedQuestions = () => {
                         </span>{' '}
                       </p>
                       <p className="text-sm">
-                        <span className="text-yellow-500">500</span> Users Attempted {category}
+                        <span className="text-yellow-500">
+                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                            ? allAttemptedQuestion
+                                .filter(
+                                  (ques) =>
+                                    ques.details.USMLE == category && ques.details.usmleStep == 3,
+                                )
+                                .reduce((acc, curr) => acc + curr.attempts, 0)
+                            : 0}
+                        </span>{' '}
+                        Users Attempted {category}
                       </p>
                     </div>
                   ))}
@@ -452,12 +531,51 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
-                      <span className="text-yellow-500">500</span> Users Attempted{' '}
-                      {selectedCategory}
+                      <span className="text-yellow-500">
+                        {allAttemptedQuestion && allAttemptedQuestion.length > 0
+                          ? allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE == selectedCategory &&
+                                  ques.details.usmleStep == 3,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)
+                          : 0}
+                      </span>{' '}
+                      Users Attempted {selectedCategory}
                     </p>
                   </div>
                   <div>
-                    {data.map((item, index) => (
+                    {allAttemptedQuestion &&
+                    allAttemptedQuestion.length > 0 &&
+                    allAttemptedQuestion.filter(
+                      (ques) =>
+                        ques.details.USMLE == selectedCategory && ques.details.usmleStep == 3,
+                    ).length > 0
+                      ? allAttemptedQuestion
+                          .filter(
+                            (ques) =>
+                              ques.details.USMLE == selectedCategory && ques.details.usmleStep == 3,
+                          )
+                          .map((item, index) => (
+                            <AccordionQuestions
+                              key={index}
+                              question={item.details?.question}
+                              attempts={item.attempts}
+                              answer={item.details?.correctAnswer}
+                              op1={item.details?.optionOne}
+                              op2={item.details?.optionTwo}
+                              op3={item.details?.optionThree}
+                              op4={item.details?.optionFour}
+                              op5={item.details?.optionFive}
+                              options={item.optionsCount}
+                              op6={item.details?.optionSix ? item.details?.optionSix : ''}
+                              isOpen={activeIndex === index}
+                              onClick={() => handleItemClick(index)}
+                            />
+                          ))
+                      : 'No questions attempted '}
+                    {/* {data.map((item, index) => (
                       <AccordionQuestions
                         key={index}
                         question={item.question}
@@ -465,7 +583,7 @@ const AttemptedQuestions = () => {
                         isOpen={activeIndex === index}
                         onClick={() => handleItemClick(index)}
                       />
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               )}
