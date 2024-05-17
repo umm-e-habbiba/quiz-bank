@@ -18,6 +18,7 @@ import AboutUs from './views/pages/dashboard/AboutUs'
 import Feedback from './views/pages/dashboard/Feedback'
 import Donations from './views/pages/dashboard/Donations'
 import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
+import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -74,6 +75,11 @@ const App = () => {
           <Route path="/feedback" name="Feedback" element={<Feedback />} />
           <Route path="/manage-feedback" name="Manage Feedback" element={<ManageFeedbacks />} />
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
+          <Route
+            path="/attempted-questions"
+            name="Attempted Questions"
+            element={<AttemptedQuestions />}
+          />
           <Route
             path="/forget-password/:id/:token"
             name="Forget Password"

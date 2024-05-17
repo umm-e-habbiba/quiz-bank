@@ -58,24 +58,6 @@ const _nav = [
       // },
     ],
   },
-  {
-    component: CNavItem,
-    name: 'About Us',
-    to: '/about-us',
-    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Donations',
-    to: '/donations',
-    icon: <CIcon icon={cilMoney} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Feedback',
-    to: '/feedback',
-    icon: <CIcon icon={cilStarHalf} customClassName="nav-icon" />,
-  },
   // {
   //   component: CNavItem,
   //   name: 'Notes',

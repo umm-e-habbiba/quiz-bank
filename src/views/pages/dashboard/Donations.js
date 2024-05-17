@@ -14,23 +14,16 @@ const Donations = () => {
           <div className="flex justify-center items-center flex-col mx-40 my-20">
             <p className="text-3xl mb-1">Donations</p>
             <p className="text-base/loose text-center">
-              If you have found value in what we do and want to support us in creating more content
-              like this, consider making a donation. Your contribution helps us continue our work
-              and ensures that we can dedicate more time and resources to producing high-quality
-              content.
+              No pressure, but if you have benefitted from my work
+            </p>
+            <p className="text-base/loose text-center">Please consider donating!!</p>
+            <p className="text-base/loose text-center">
+              Every donation, no matter how small, makes me feel truly appreciated for my hard work.
             </p>
             <p className="text-base/loose text-center">
-              Every donation, no matter how small, makes a difference and is greatly appreciated. It
-              helps cover expenses such as hosting fees, software licenses, and the time invested in
-              research and creation.
+              (And helps me produce better, more awesome content!)
             </p>
-            <p className="text-base/loose text-center">
-              Your support enables us to keep providing valuable resources and services. Thank you
-              for considering a donation to support our work. Together, we can make a difference.
-            </p>
-            <p className="text-base/loose text-center">
-              If you had like to donate, simply click the link below. Thank you for your generosity!
-            </p>
+            <p className="text-base/loose text-center">From the bottom of my heart, Thank you.</p>
             <em>ajmonics@gmail.com</em>
             <Link to="https://www.paypal.com/pk/home" className="my-2" target="_blank">
               <CButton color="link" className="flex justify-center items-center no-underline">
