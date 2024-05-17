@@ -289,7 +289,7 @@ const Feedback = () => {
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
-        <div className="body flex-grow-1 mx-4">
+        <div className="body flex-grow-1 mx-[10%] ">
           {loader ? (
             <div className="text-center">
               <CSpinner color="success" variant="grow" />
