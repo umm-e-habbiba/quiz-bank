@@ -246,7 +246,7 @@ const QuizHeader = ({
         <div className="flex justify-start items-center">
           {/* {showQues && ( */}
           <Link to="/">
-            <HiHome className="quiz-icons cursor-pointer mr-2" />
+            <HiHome className="quiz-icons transition-all hover:text-[#6261CC] cursor-pointer mr-2" />
           </Link>
           {/* )} */}
           {showQues && (

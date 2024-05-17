@@ -244,7 +244,9 @@ const Dashboard = () => {
                         <CCol xs={6}>
                           <div className="py-1 px-3 mb-3 flex justify-end items-center">
                             <Link to="/previous-tests">
-                              <CButton color="info">Previous Exams</CButton>
+                              <CButton className="bg-[#6261CC] text-white hover:bg-[#484796]">
+                                Previous Exams
+                              </CButton>
                             </Link>
                           </div>
                         </CCol>
@@ -268,7 +270,8 @@ const Dashboard = () => {
                                 <div className="progress-group-bars">
                                   <CProgress
                                     height={10}
-                                    color="info"
+                                    // bg-[#6261CC] text-white hover:bg-[#484796]
+                                    color="#6261CC"
                                     value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
                                   >
                                     <CProgressBar>

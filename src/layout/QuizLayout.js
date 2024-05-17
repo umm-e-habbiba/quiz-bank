@@ -824,7 +824,7 @@ const QuizLayout = () => {
                           >
                             <CRow
                               key={id}
-                              className="bg-gray-200 relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
+                              className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                             >
                               <CCol xs={1} md={3} lg={3}>
                                 <CFormSelect
@@ -1027,7 +1027,6 @@ const QuizLayout = () => {
                                 <CButton
                                   className="w-9 h-9 p-3 bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
                                   onClick={addRows}
-                              
                                 >
                                   <span className="-mt-1">+</span>
                                 </CButton>
@@ -1040,7 +1039,7 @@ const QuizLayout = () => {
                       </div>
                       <div className="flex justify-center items-center flex-col">
                         <button
-                          className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                          className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                           // type="submit"
                           color="secondary"
                           onClick={startexam}

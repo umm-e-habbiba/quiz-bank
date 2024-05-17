@@ -260,7 +260,11 @@ const Admin = () => {
                            <small className="text-body-secondary">{item.usage.period}</small>
                          </div> */}
                               </div>
-                              <CProgress thin color="info" value={user.attemptedQuizzes.length} />
+                              <CProgress
+                                thin
+                                color="#4f4ea0"
+                                value={user.attemptedQuizzes.length}
+                              />
                             </CTableDataCell>
                           </CTableRow>
                         ))
