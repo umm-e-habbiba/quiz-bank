@@ -316,6 +316,7 @@ const AttemptedQuestions = () => {
                               op3={item.details?.optionThree}
                               op4={item.details?.optionFour}
                               op5={item.details?.optionFive}
+                              options={item.optionsCount}
                               op6={item.details?.optionSix ? item.details?.optionSix : ''}
                               isOpen={activeIndex === index}
                               onClick={() => handleItemClick(index)}
