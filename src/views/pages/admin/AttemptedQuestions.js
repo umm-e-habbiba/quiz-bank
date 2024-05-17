@@ -276,7 +276,7 @@ const AttemptedQuestions = () => {
                       >
                         <p className="text-xl">
                           {category}{' '}
-                          <span className="text-yellow-500 text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             (
                             {
                               allQuestion.filter(
@@ -287,7 +287,7 @@ const AttemptedQuestions = () => {
                           </span>{' '}
                         </p>
                         <p className="text-sm">
-                          <span className="text-yellow-500">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             {allAttemptedQuestion
                               .filter(
                                 (ques) =>
@@ -398,7 +398,7 @@ const AttemptedQuestions = () => {
                       >
                         <p className="text-xl">
                           {category}{' '}
-                          <span className="text-yellow-500 text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             (
                             {
                               allQuestion.filter(
@@ -409,7 +409,7 @@ const AttemptedQuestions = () => {
                           </span>{' '}
                         </p>
                         <p className="text-sm">
-                          <span className="text-yellow-500">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             {allAttemptedQuestion
                               .filter(
                                 (ques) =>
@@ -417,7 +417,7 @@ const AttemptedQuestions = () => {
                               )
                               .reduce((acc, curr) => acc + curr.attempts, 0)}
                           </span>{' '}
-                          Users Attempted {category}
+                          Attempts For {category}
                         </p>
                       </div>
                     ))}
@@ -519,7 +519,7 @@ const AttemptedQuestions = () => {
                       >
                         <p className="text-xl">
                           {category}{' '}
-                          <span className="text-yellow-500 text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             (
                             {
                               allQuestion.filter(
@@ -530,7 +530,7 @@ const AttemptedQuestions = () => {
                           </span>{' '}
                         </p>
                         <p className="text-sm">
-                          <span className="text-yellow-500">
+                          <span className="text-yellow-800 text-sm font-semibold">
                             {allAttemptedQuestion
                               .filter(
                                 (ques) =>
