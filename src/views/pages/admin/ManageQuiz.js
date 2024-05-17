@@ -488,8 +488,7 @@ const ManageQuiz = () => {
               )}
             </div>
             <CButton
-              color="success"
-              className="text-white"
+              className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
               onClick={() => {
                 setAddModal(true)
                 setIsLoading(false)
@@ -554,8 +553,7 @@ const ManageQuiz = () => {
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                         <CTableDataCell className="flex justify-start items-center">
                           <CButton
-                            color="success"
-                            className="text-white mr-3 my-2"
+                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
                             id={q._id}
                             onClick={(e) => {
                               setViewModal(true)

@@ -306,7 +306,7 @@ const Feedback = () => {
                     setFeedbackModal(true)
                     reset({})
                   }}
-                  className="bg-[#d2652d] text-white hover:bg-[#d2642ddc]"
+                  className="bg-[#6261CC] text-white hover:bg-[#484796]"
                 >
                   Edit Feedback
                 </CButton>
@@ -392,10 +392,10 @@ const Feedback = () => {
             //   </CButton>
             // </div>
           )}
-          <div className="flex justify-between items-center my-2">
+          <div className="flex justify-between items-center my-2 mt-4">
             <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
             <p className="text-2xl mb-1  no-wrap px-4 " style={{ whiteSpace: 'nowrap' }}>
-              Others Feedbacks
+              Others Feedback
             </p>
             <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
             {myFeedbacks && myFeedbacks.length > 0 ? (
@@ -406,7 +406,7 @@ const Feedback = () => {
                   setFeedbackModal(true)
                   reset({})
                 }}
-                className="bg-[#d2652d] text-white hover:bg-[#d2642ddc]"
+                className="bg-[#6261CC] text-white hover:bg-[#4b4999]"
               >
                 Add Feedback
               </CButton>

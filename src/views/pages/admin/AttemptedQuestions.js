@@ -267,7 +267,7 @@ const AttemptedQuestions = () => {
                     .map((category, idx) => (
                       <div
                         key={idx}
-                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        className="bg-gray-200 rounded-lg hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                         onClick={() => {
                           setShowstep1Ques(true)
                           setShowstep1Topics(false)
@@ -389,7 +389,7 @@ const AttemptedQuestions = () => {
                     .map((category, idx) => (
                       <div
                         key={idx}
-                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        className="bg-gray-200 rounded-lg hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                         onClick={() => {
                           setShowstep2Ques(true)
                           setShowstep2Topics(false)
@@ -510,7 +510,7 @@ const AttemptedQuestions = () => {
                     .map((category, idx) => (
                       <div
                         key={idx}
-                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        className="bg-gray-200 rounded-lg hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
                         onClick={() => {
                           setShowstep3Ques(true)
                           setShowstep3Topics(false)
