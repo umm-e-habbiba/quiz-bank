@@ -130,7 +130,7 @@ const QuizLayout = () => {
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      await new Promise((resolve) => setTimeout(resolve, 4000))
       setLoading(false)
     }
 
@@ -141,7 +141,7 @@ const QuizLayout = () => {
         const newProgress = prevProgress + 1
         return Math.min(newProgress, 100)
       })
-    }, 20)
+    }, 40)
 
     return () => clearInterval(timer)
   }, [])
@@ -808,212 +808,212 @@ const QuizLayout = () => {
             </div>
           ) : (
             <>
-              {allQuestion && allQuestion.length > 0 ? (
-                <>
-                  {showSelectors ? (
-                    <div className="mt-10">
-                      {/* <CForm
+              {/* {allQuestion && allQuestion.length > 0 ? ( */}
+              <>
+                {showSelectors ? (
+                  <div className="mt-10">
+                    {/* <CForm
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
-                      <div className="mx-40 mb-5 flex flex-col justify-center items-start">
-                        {totalRows.map((row, id) => (
-                          <div
-                            className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
+                    <div className="mx-40 mb-5 flex flex-col justify-center items-start">
+                      {totalRows.map((row, id) => (
+                        <div
+                          className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
+                          key={id}
+                        >
+                          <CRow
                             key={id}
+                            className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                           >
-                            <CRow
-                              key={id}
-                              className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
-                            >
-                              <CCol xs={1} md={3} lg={3}>
-                                <CFormSelect
-                                  aria-label="Select Exam"
-                                  className="w-full"
-                                  name="step"
-                                  options={[
-                                    'Select your Exam',
-                                    {
-                                      label: `USMLE: Step1 (${step1Questions} questions available)`,
-                                      value: '1',
-                                      disabled: step1Questions > 0 ? false : true,
-                                    },
-                                    {
-                                      label: `USMLE: Step2 (${step2Questions} questions available)`,
-                                      value: '2',
-                                      disabled: step2Questions > 0 ? false : true,
-                                    },
-                                    {
-                                      label: `USMLE: Step3 (${step3Questions} questions available)`,
-                                      value: '3',
-                                      disabled: step3Questions > 0 ? false : true,
-                                    },
-                                  ]}
-                                  onChange={(e) => {
-                                    fetchQuestion(e.target.value, '', id)
-                                  }}
-                                  defaultValue={row.step}
-                                  value={row.step}
-                                />
-                              </CCol>
-                              <CCol xs={1} md={3} lg={3}>
-                                <CFormSelect
-                                  aria-label="Select Category"
-                                  className="w-full"
-                                  name="category"
-                                  // onChange={(e) => setCategory(e.target.value, id)}
-                                  defaultValue={row.category}
-                                  value={row.category}
-                                  onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
-                                >
-                                  <option>Select your Category</option>
-                                  {totalRows[id].step == '1' ? (
-                                    step1Categories.map((category, idx) => (
-                                      <option
-                                        key={idx}
-                                        value={category}
-                                        disabled={
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 1,
-                                          ).length > 0
-                                            ? false
-                                            : true
-                                        }
-                                      >
-                                        {category} (
-                                        {
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 1,
-                                          ).length
-                                        }{' '}
-                                        Questions avaialable)
-                                      </option>
-                                    ))
-                                  ) : totalRows[id].step == '2' ? (
-                                    step2Categories.map((category, idx) => (
-                                      <option
-                                        key={idx}
-                                        value={category}
-                                        disabled={
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 2,
-                                          ).length > 0
-                                            ? false
-                                            : true
-                                        }
-                                      >
-                                        {category} (
-                                        {
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 2,
-                                          ).length
-                                        }{' '}
-                                        Questions avaialable)
-                                      </option>
-                                    ))
-                                  ) : totalRows[id].step == '3' ? (
-                                    step3Categories.map((category, idx) => (
-                                      <option
-                                        key={idx}
-                                        value={category}
-                                        disabled={
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 3,
-                                          ).length > 0
-                                            ? false
-                                            : true
-                                        }
-                                      >
-                                        {category} (
-                                        {
-                                          allQuestion.filter(
-                                            (ques) => ques.USMLE == category && ques.usmleStep == 3,
-                                          ).length
-                                        }{' '}
-                                        Questions avaialable)
-                                      </option>
-                                    ))
-                                  ) : (
-                                    <option disabled>Select Your exam first</option>
-                                  )}
-                                </CFormSelect>
-                              </CCol>
-                              <CCol xs={1} md={3} lg={3}>
-                                <CFormInput
-                                  type="number"
-                                  name="number"
-                                  placeholder="Number of questions"
-                                  // {...register('total', { required: true, min: 1, max: 100 })}
-                                  // feedback="Please enter number between 1 and 100"
-                                  // invalid={errors.total ? true : false}
-                                  className="w-full placeholder:text-[#252b36]"
-                                  value={row.number}
-                                  // onChange={(e) => handleNumberChange(e, id)}
-                                  // onChange={(e)=>row.number = e.target.value}
-                                  // value={totalQuest}
-                                  onChange={(e) => setQues(e.target.value, id)}
-                                />
-                              </CCol>
-                              <CCol xs={1} md={3} lg={3} className="flex flex-col">
-                                <CFormSwitch
-                                  size="xl"
-                                  label="Correct Attempted Questions"
-                                  id="preventAttemptedCorrect"
-                                  className="text-sm"
-                                  // onChange={() => filterAttemptedQuestions('preventCorrect', id)}
-                                  onChange={() => handlePreventCorrect(id)}
-                                  // onChange={() => (row.preventCorrect = !row.preventCorrect)}
-                                  defaultChecked={row.preventCorrect ? true : false}
-                                  value={row.preventCorrect}
-                                  checked={row.preventCorrect ? true : false}
-                                />
-                                <CFormSwitch
-                                  size="xl"
-                                  label="Incorrect Attempted Questions"
-                                  id="preventAttemptedIncorrect"
-                                  className="text-sm"
-                                  // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
-                                  // onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
-                                  onChange={() => handlePreventIncorrect(id)}
-                                  defaultChecked={row.preventIncorrect ? true : false}
-                                  value={row.preventIncorrect}
-                                  checked={row.preventIncorrect ? true : false}
-                                />
-                                <CFormSwitch
-                                  size="xl"
-                                  label="All Attempted Questions"
-                                  id="preventAttemptedAll"
-                                  className="text-sm"
-                                  // onChange={() => (row.preventAll = !row.preventAll)}
-                                  // onChange={() => filterAttemptedQuestions('preventAll', id)}
-                                  onChange={() => handlePreventAll(id)}
-                                  defaultChecked={row.preventAll ? true : false}
-                                  value={row.preventAll}
-                                  checked={row.preventAll ? true : false}
-                                />
-                              </CCol>
-                              {totalRows.length > 1 && (
-                                <button
-                                  className="w-9 h-9 text-xl flex justify-center items-center absolute right-0 top-0 z-10"
-                                  onClick={() => removeRow(id)}
-                                >
-                                  <span>
-                                    <RiCloseLine />
-                                  </span>
-                                </button>
-                                // <CButton
-                                //   className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute right-0 top-0 z-10 rounded-full"
-                                //   // className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute -right-5 -top-5 z-10 rounded-full"
-                                //   onClick={() => removeRow(id)}
-                                //   color="secondary"
-                                // >
-                                //   <span>
-                                //     <RiCloseLine />
-                                //   </span>
-                                // </CButton>
-                              )}
-                            </CRow>
-                            {/* {totalRows.length > 1 && (
+                            <CCol xs={1} md={3} lg={3}>
+                              <CFormSelect
+                                aria-label="Select Exam"
+                                className="w-full"
+                                name="step"
+                                options={[
+                                  'Select your Exam',
+                                  {
+                                    label: `USMLE: Step1 (${step1Questions} questions available)`,
+                                    value: '1',
+                                    disabled: step1Questions > 0 ? false : true,
+                                  },
+                                  {
+                                    label: `USMLE: Step2 (${step2Questions} questions available)`,
+                                    value: '2',
+                                    disabled: step2Questions > 0 ? false : true,
+                                  },
+                                  {
+                                    label: `USMLE: Step3 (${step3Questions} questions available)`,
+                                    value: '3',
+                                    disabled: step3Questions > 0 ? false : true,
+                                  },
+                                ]}
+                                onChange={(e) => {
+                                  fetchQuestion(e.target.value, '', id)
+                                }}
+                                defaultValue={row.step}
+                                value={row.step}
+                              />
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3}>
+                              <CFormSelect
+                                aria-label="Select Category"
+                                className="w-full"
+                                name="category"
+                                // onChange={(e) => setCategory(e.target.value, id)}
+                                defaultValue={row.category}
+                                value={row.category}
+                                onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
+                              >
+                                <option>Select your Category</option>
+                                {totalRows[id].step == '1' ? (
+                                  step1Categories.map((category, idx) => (
+                                    <option
+                                      key={idx}
+                                      value={category}
+                                      disabled={
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 1,
+                                        ).length > 0
+                                          ? false
+                                          : true
+                                      }
+                                    >
+                                      {category} (
+                                      {
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 1,
+                                        ).length
+                                      }{' '}
+                                      Questions avaialable)
+                                    </option>
+                                  ))
+                                ) : totalRows[id].step == '2' ? (
+                                  step2Categories.map((category, idx) => (
+                                    <option
+                                      key={idx}
+                                      value={category}
+                                      disabled={
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 2,
+                                        ).length > 0
+                                          ? false
+                                          : true
+                                      }
+                                    >
+                                      {category} (
+                                      {
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 2,
+                                        ).length
+                                      }{' '}
+                                      Questions avaialable)
+                                    </option>
+                                  ))
+                                ) : totalRows[id].step == '3' ? (
+                                  step3Categories.map((category, idx) => (
+                                    <option
+                                      key={idx}
+                                      value={category}
+                                      disabled={
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 3,
+                                        ).length > 0
+                                          ? false
+                                          : true
+                                      }
+                                    >
+                                      {category} (
+                                      {
+                                        allQuestion.filter(
+                                          (ques) => ques.USMLE == category && ques.usmleStep == 3,
+                                        ).length
+                                      }{' '}
+                                      Questions avaialable)
+                                    </option>
+                                  ))
+                                ) : (
+                                  <option disabled>Select Your exam first</option>
+                                )}
+                              </CFormSelect>
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3}>
+                              <CFormInput
+                                type="number"
+                                name="number"
+                                placeholder="Number of questions"
+                                // {...register('total', { required: true, min: 1, max: 100 })}
+                                // feedback="Please enter number between 1 and 100"
+                                // invalid={errors.total ? true : false}
+                                className="w-full placeholder:text-[#252b36]"
+                                value={row.number}
+                                // onChange={(e) => handleNumberChange(e, id)}
+                                // onChange={(e)=>row.number = e.target.value}
+                                // value={totalQuest}
+                                onChange={(e) => setQues(e.target.value, id)}
+                              />
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3} className="flex flex-col">
+                              <CFormSwitch
+                                size="xl"
+                                label="Correct Attempted Questions"
+                                id="preventAttemptedCorrect"
+                                className="text-sm"
+                                // onChange={() => filterAttemptedQuestions('preventCorrect', id)}
+                                onChange={() => handlePreventCorrect(id)}
+                                // onChange={() => (row.preventCorrect = !row.preventCorrect)}
+                                defaultChecked={row.preventCorrect ? true : false}
+                                value={row.preventCorrect}
+                                checked={row.preventCorrect ? true : false}
+                              />
+                              <CFormSwitch
+                                size="xl"
+                                label="Incorrect Attempted Questions"
+                                id="preventAttemptedIncorrect"
+                                className="text-sm"
+                                // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
+                                // onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
+                                onChange={() => handlePreventIncorrect(id)}
+                                defaultChecked={row.preventIncorrect ? true : false}
+                                value={row.preventIncorrect}
+                                checked={row.preventIncorrect ? true : false}
+                              />
+                              <CFormSwitch
+                                size="xl"
+                                label="All Attempted Questions"
+                                id="preventAttemptedAll"
+                                className="text-sm"
+                                // onChange={() => (row.preventAll = !row.preventAll)}
+                                // onChange={() => filterAttemptedQuestions('preventAll', id)}
+                                onChange={() => handlePreventAll(id)}
+                                defaultChecked={row.preventAll ? true : false}
+                                value={row.preventAll}
+                                checked={row.preventAll ? true : false}
+                              />
+                            </CCol>
+                            {totalRows.length > 1 && (
+                              <button
+                                className="w-9 h-9 text-xl flex justify-center items-center absolute right-0 top-0 z-10"
+                                onClick={() => removeRow(id)}
+                              >
+                                <span>
+                                  <RiCloseLine />
+                                </span>
+                              </button>
+                              // <CButton
+                              //   className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute right-0 top-0 z-10 rounded-full"
+                              //   // className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute -right-5 -top-5 z-10 rounded-full"
+                              //   onClick={() => removeRow(id)}
+                              //   color="secondary"
+                              // >
+                              //   <span>
+                              //     <RiCloseLine />
+                              //   </span>
+                              // </CButton>
+                            )}
+                          </CRow>
+                          {/* {totalRows.length > 1 && (
                               <CButton
                                 className="w-9 h-9 p-3 text-2xl flex justify-center items-center mr-2"
                                 onClick={() => removeRow(id)}
@@ -1022,71 +1022,71 @@ const QuizLayout = () => {
                                 <span className="-mt-1">-</span>
                               </CButton>
                             )} */}
-                            {totalRows.length - 1 === id ? (
-                              <div className="flex justify-center items-center">
-                                <CButton
-                                  className="w-9 h-9 p-3 text-white  bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
-                                  onClick={addRows}
-                                >
-                                  <span className="-mt-1">+</span>
-                                </CButton>
-                              </div>
-                            ) : (
-                              ''
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex justify-center items-center flex-col">
-                        <button
-                          className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
-                          // type="submit"
-                          color="secondary"
-                          onClick={startexam}
-                          // disabled={disableExam ? true : false}
-                        >
-                          Start Exam
-                        </button>
-                      </div>
-                      {/* </CForm> */}
+                          {totalRows.length - 1 === id ? (
+                            <div className="flex justify-center items-center">
+                              <CButton
+                                className="w-9 h-9 p-3 text-white  bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
+                                onClick={addRows}
+                              >
+                                <span className="-mt-1">+</span>
+                              </CButton>
+                            </div>
+                          ) : (
+                            ''
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ) : (
-                    ''
-                  )}
-                  {/* Questions */}
-                  {showQues && (
-                    <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
-                      {filteredQuestion[currentQuestion] &&
-                      filteredQuestion[currentQuestion].image ? (
-                        <CRow className="mb-5">
-                          <CCol md={8}>
-                            <p
-                              dangerouslySetInnerHTML={createMarkup(
-                                filteredQuestion[currentQuestion]
-                                  ? filteredQuestion[currentQuestion].question
-                                  : '',
-                              )}
-                              // dangerouslySetInnerHTML={{
-                              //   __html: filteredQuestion[currentQuestion]
-                              //     ? filteredQuestion[currentQuestion].question
-                              //     : '',
-                              // }}
-                              ref={questionText}
-                              onMouseUp={highlight}
-                              onClick={() => console.log('clicked')}
-                            ></p>
-                          </CCol>
-                          <CCol md={4}>
-                            {filteredQuestion[currentQuestion]?.image && (
-                              <img
-                                // src={image}
-                                // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
-                                src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
-                                alt="question image"
-                                className="mb-3"
-                              />
+                    <div className="flex justify-center items-center flex-col">
+                      <button
+                        className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                        // type="submit"
+                        color="secondary"
+                        onClick={startexam}
+                        // disabled={disableExam ? true : false}
+                      >
+                        Start Exam
+                      </button>
+                    </div>
+                    {/* </CForm> */}
+                  </div>
+                ) : (
+                  ''
+                )}
+                {/* Questions */}
+                {showQues && (
+                  <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
+                    {filteredQuestion[currentQuestion] &&
+                    filteredQuestion[currentQuestion].image ? (
+                      <CRow className="mb-5">
+                        <CCol md={8}>
+                          <p
+                            dangerouslySetInnerHTML={createMarkup(
+                              filteredQuestion[currentQuestion]
+                                ? filteredQuestion[currentQuestion].question
+                                : '',
                             )}
-                            {/* {filteredQuestion[currentQuestion]?.video && (
+                            // dangerouslySetInnerHTML={{
+                            //   __html: filteredQuestion[currentQuestion]
+                            //     ? filteredQuestion[currentQuestion].question
+                            //     : '',
+                            // }}
+                            ref={questionText}
+                            onMouseUp={highlight}
+                            onClick={() => console.log('clicked')}
+                          ></p>
+                        </CCol>
+                        <CCol md={4}>
+                          {filteredQuestion[currentQuestion]?.image && (
+                            <img
+                              // src={image}
+                              // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
+                              src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
+                              alt="question image"
+                              className="mb-3"
+                            />
+                          )}
+                          {/* {filteredQuestion[currentQuestion]?.video && (
                           <video controls ref={videoRef}>
                             {filteredQuestion[currentQuestion]?.video && (
                               <source
@@ -1096,283 +1096,278 @@ const QuizLayout = () => {
                             )}
                           </video>
                         )} */}
-                          </CCol>
-                        </CRow>
-                      ) : (
-                        <CRow className="mb-5">
-                          <CCol md={12}>
-                            <p
-                              dangerouslySetInnerHTML={createMarkup(
-                                filteredQuestion[currentQuestion]
-                                  ? filteredQuestion[currentQuestion].question
-                                  : '',
-                              )}
-                              // dangerouslySetInnerHTML={{
-                              //   __html: filteredQuestion[currentQuestion]
-                              //     ? filteredQuestion[currentQuestion].question
-                              //     : '',
-                              // }}
-                              onMouseUp={highlight}
-                              ref={questionText}
-                              onClick={() => console.log('clicked')}
-                            ></p>
-                          </CCol>
-                        </CRow>
-                      )}
-                      <div></div>
-                      <CForm onSubmit={(e) => handleNextQuestion(e)}>
-                        {/* <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}> */}
-                        <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
-                          {filteredQuestion[currentQuestion] ? (
-                            <>
-                              <div className="form-check">
-                                <input
-                                  type="radio"
-                                  id={filteredQuestion[currentQuestion].optionOne}
-                                  name={currentQuestion}
-                                  value={filteredQuestion[currentQuestion].optionOne}
-                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                  onChange={(e) => {
-                                    handleFormSubmit(
-                                      e,
-                                      filteredQuestion[currentQuestion]._id,
-                                      filteredQuestion[currentQuestion].optionOne,
-                                    )
-                                    setSelectedOption(e.currentTarget.id)
-                                  }}
-                                  className="form-check-input"
-                                  checked={
-                                    saveQuestionArray.filter(
-                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
-                                    ).length > 0
-                                      ? filteredQuestion[currentQuestion].optionOne ==
-                                        saveQuestionArray.filter(
-                                          (q) =>
-                                            q.questionId == filteredQuestion[currentQuestion]._id,
-                                        )[0].selectedOption
-                                        ? true
-                                        : false
-                                      : false
-                                  }
-                                />
-                                <label
-                                  className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
-                                  onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
-                                >
-                                  A. {filteredQuestion[currentQuestion].optionOne}
-                                </label>
-                              </div>
-                              <div className="form-check">
-                                <input
-                                  type="radio"
-                                  id={filteredQuestion[currentQuestion].optionTwo}
-                                  name={currentQuestion}
-                                  value={filteredQuestion[currentQuestion].optionTwo}
-                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                  onChange={(e) => {
-                                    handleFormSubmit(
-                                      e,
-                                      filteredQuestion[currentQuestion]._id,
-                                      filteredQuestion[currentQuestion].optionTwo,
-                                    )
-                                    setSelectedOption(e.currentTarget.id)
-                                  }}
-                                  className="form-check-input"
-                                  checked={
-                                    saveQuestionArray.filter(
-                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
-                                    ).length > 0
-                                      ? filteredQuestion[currentQuestion].optionTwo ==
-                                        saveQuestionArray.filter(
-                                          (q) =>
-                                            q.questionId == filteredQuestion[currentQuestion]._id,
-                                        )[0].selectedOption
-                                        ? true
-                                        : false
-                                      : false
-                                  }
-                                />
-                                <label
-                                  className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
-                                  onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
-                                >
-                                  B. {filteredQuestion[currentQuestion].optionTwo}
-                                </label>
-                              </div>
-                              <div className="form-check">
-                                <input
-                                  type="radio"
-                                  id={filteredQuestion[currentQuestion].optionThree}
-                                  name={currentQuestion}
-                                  value={filteredQuestion[currentQuestion].optionThree}
-                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                  onChange={(e) => {
-                                    handleFormSubmit(
-                                      e,
-                                      filteredQuestion[currentQuestion]._id,
-                                      filteredQuestion[currentQuestion].optionThree,
-                                    )
-                                    setSelectedOption(e.currentTarget.id)
-                                  }}
-                                  className="form-check-input"
-                                  checked={
-                                    saveQuestionArray.filter(
-                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
-                                    ).length > 0
-                                      ? filteredQuestion[currentQuestion].optionThree ==
-                                        saveQuestionArray.filter(
-                                          (q) =>
-                                            q.questionId == filteredQuestion[currentQuestion]._id,
-                                        )[0].selectedOption
-                                        ? true
-                                        : false
-                                      : false
-                                  }
-                                />
-                                <label
-                                  className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
-                                  onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
-                                >
-                                  C. {filteredQuestion[currentQuestion].optionThree}
-                                </label>
-                              </div>
-                              <div className="form-check">
-                                <input
-                                  type="radio"
-                                  id={filteredQuestion[currentQuestion].optionFour}
-                                  name={currentQuestion}
-                                  value={filteredQuestion[currentQuestion].optionFour}
-                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                  onChange={(e) => {
-                                    handleFormSubmit(
-                                      e,
-                                      filteredQuestion[currentQuestion]._id,
-                                      filteredQuestion[currentQuestion].optionFour,
-                                    )
-                                    setSelectedOption(e.currentTarget.id)
-                                  }}
-                                  className="form-check-input"
-                                  checked={
-                                    saveQuestionArray.filter(
-                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
-                                    ).length > 0
-                                      ? filteredQuestion[currentQuestion].optionFour ==
-                                        saveQuestionArray.filter(
-                                          (q) =>
-                                            q.questionId == filteredQuestion[currentQuestion]._id,
-                                        )[0].selectedOption
-                                        ? true
-                                        : false
-                                      : false
-                                  }
-                                />
-                                <label
-                                  className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
-                                  onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
-                                >
-                                  D. {filteredQuestion[currentQuestion].optionFour}
-                                </label>
-                              </div>
-                              <div className="form-check">
-                                <input
-                                  type="radio"
-                                  id={filteredQuestion[currentQuestion].optionFive}
-                                  name={currentQuestion}
-                                  value={filteredQuestion[currentQuestion].optionFive}
-                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                  onChange={(e) => {
-                                    handleFormSubmit(
-                                      e,
-                                      filteredQuestion[currentQuestion]._id,
-                                      filteredQuestion[currentQuestion].optionFive,
-                                    )
-                                    setSelectedOption(e.currentTarget.id)
-                                  }}
-                                  className="form-check-input"
-                                  checked={
-                                    saveQuestionArray.filter(
-                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
-                                    ).length > 0
-                                      ? filteredQuestion[currentQuestion].optionFive ==
-                                        saveQuestionArray.filter(
-                                          (q) =>
-                                            q.questionId == filteredQuestion[currentQuestion]._id,
-                                        )[0].selectedOption
-                                        ? true
-                                        : false
-                                      : false
-                                  }
-                                />
-                                <label
-                                  className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
-                                  onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
-                                >
-                                  E. {filteredQuestion[currentQuestion].optionFive}
-                                </label>
-                              </div>
-                              {filteredQuestion[currentQuestion].optionSix ? (
-                                <div className="form-check">
-                                  <input
-                                    type="radio"
-                                    id={filteredQuestion[currentQuestion].optionSix}
-                                    name={currentQuestion}
-                                    value={filteredQuestion[currentQuestion].optionSix}
-                                    // onChange={(e) => setSelectedOption(e.currentTarget.id)}
-                                    onChange={(e) => {
-                                      handleFormSubmit(
-                                        e,
-                                        filteredQuestion[currentQuestion]._id,
-                                        filteredQuestion[currentQuestion].optionSix,
-                                      )
-                                      setSelectedOption(e.currentTarget.id)
-                                    }}
-                                    className="form-check-input"
-                                    checked={
+                        </CCol>
+                      </CRow>
+                    ) : (
+                      <CRow className="mb-5">
+                        <CCol md={12}>
+                          <p
+                            dangerouslySetInnerHTML={createMarkup(
+                              filteredQuestion[currentQuestion]
+                                ? filteredQuestion[currentQuestion].question
+                                : '',
+                            )}
+                            // dangerouslySetInnerHTML={{
+                            //   __html: filteredQuestion[currentQuestion]
+                            //     ? filteredQuestion[currentQuestion].question
+                            //     : '',
+                            // }}
+                            onMouseUp={highlight}
+                            ref={questionText}
+                            onClick={() => console.log('clicked')}
+                          ></p>
+                        </CCol>
+                      </CRow>
+                    )}
+                    <div></div>
+                    <CForm onSubmit={(e) => handleNextQuestion(e)}>
+                      {/* <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}> */}
+                      <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
+                        {filteredQuestion[currentQuestion] ? (
+                          <>
+                            <div className="form-check">
+                              <input
+                                type="radio"
+                                id={filteredQuestion[currentQuestion].optionOne}
+                                name={currentQuestion}
+                                value={filteredQuestion[currentQuestion].optionOne}
+                                // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                onChange={(e) => {
+                                  handleFormSubmit(
+                                    e,
+                                    filteredQuestion[currentQuestion]._id,
+                                    filteredQuestion[currentQuestion].optionOne,
+                                  )
+                                  setSelectedOption(e.currentTarget.id)
+                                }}
+                                className="form-check-input"
+                                checked={
+                                  saveQuestionArray.filter(
+                                    (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                  ).length > 0
+                                    ? filteredQuestion[currentQuestion].optionOne ==
                                       saveQuestionArray.filter(
                                         (q) =>
                                           q.questionId == filteredQuestion[currentQuestion]._id,
-                                      ).length > 0
-                                        ? filteredQuestion[currentQuestion].optionSix ==
-                                          saveQuestionArray.filter(
-                                            (q) =>
-                                              q.questionId == filteredQuestion[currentQuestion]._id,
-                                          )[0].selectedOption
-                                          ? true
-                                          : false
+                                      )[0].selectedOption
+                                      ? true
+                                      : false
+                                    : false
+                                }
+                              />
+                              <label
+                                className={`form-check-label ml-2 ${opt1Marked ? 'line-through' : ''}`}
+                                onClick={() => setOpt1Marked((prevCheck) => !prevCheck)}
+                              >
+                                A. {filteredQuestion[currentQuestion].optionOne}
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="radio"
+                                id={filteredQuestion[currentQuestion].optionTwo}
+                                name={currentQuestion}
+                                value={filteredQuestion[currentQuestion].optionTwo}
+                                // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                onChange={(e) => {
+                                  handleFormSubmit(
+                                    e,
+                                    filteredQuestion[currentQuestion]._id,
+                                    filteredQuestion[currentQuestion].optionTwo,
+                                  )
+                                  setSelectedOption(e.currentTarget.id)
+                                }}
+                                className="form-check-input"
+                                checked={
+                                  saveQuestionArray.filter(
+                                    (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                  ).length > 0
+                                    ? filteredQuestion[currentQuestion].optionTwo ==
+                                      saveQuestionArray.filter(
+                                        (q) =>
+                                          q.questionId == filteredQuestion[currentQuestion]._id,
+                                      )[0].selectedOption
+                                      ? true
+                                      : false
+                                    : false
+                                }
+                              />
+                              <label
+                                className={`form-check-label ml-2 ${opt2Marked ? 'line-through' : ''}`}
+                                onClick={() => setOpt2Marked((prevCheck) => !prevCheck)}
+                              >
+                                B. {filteredQuestion[currentQuestion].optionTwo}
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="radio"
+                                id={filteredQuestion[currentQuestion].optionThree}
+                                name={currentQuestion}
+                                value={filteredQuestion[currentQuestion].optionThree}
+                                // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                onChange={(e) => {
+                                  handleFormSubmit(
+                                    e,
+                                    filteredQuestion[currentQuestion]._id,
+                                    filteredQuestion[currentQuestion].optionThree,
+                                  )
+                                  setSelectedOption(e.currentTarget.id)
+                                }}
+                                className="form-check-input"
+                                checked={
+                                  saveQuestionArray.filter(
+                                    (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                  ).length > 0
+                                    ? filteredQuestion[currentQuestion].optionThree ==
+                                      saveQuestionArray.filter(
+                                        (q) =>
+                                          q.questionId == filteredQuestion[currentQuestion]._id,
+                                      )[0].selectedOption
+                                      ? true
+                                      : false
+                                    : false
+                                }
+                              />
+                              <label
+                                className={`form-check-label ml-2 ${opt3Marked ? 'line-through' : ''}`}
+                                onClick={() => setOpt3Marked((prevCheck) => !prevCheck)}
+                              >
+                                C. {filteredQuestion[currentQuestion].optionThree}
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="radio"
+                                id={filteredQuestion[currentQuestion].optionFour}
+                                name={currentQuestion}
+                                value={filteredQuestion[currentQuestion].optionFour}
+                                // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                onChange={(e) => {
+                                  handleFormSubmit(
+                                    e,
+                                    filteredQuestion[currentQuestion]._id,
+                                    filteredQuestion[currentQuestion].optionFour,
+                                  )
+                                  setSelectedOption(e.currentTarget.id)
+                                }}
+                                className="form-check-input"
+                                checked={
+                                  saveQuestionArray.filter(
+                                    (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                  ).length > 0
+                                    ? filteredQuestion[currentQuestion].optionFour ==
+                                      saveQuestionArray.filter(
+                                        (q) =>
+                                          q.questionId == filteredQuestion[currentQuestion]._id,
+                                      )[0].selectedOption
+                                      ? true
+                                      : false
+                                    : false
+                                }
+                              />
+                              <label
+                                className={`form-check-label ml-2 ${opt4Marked ? 'line-through' : ''}`}
+                                onClick={() => setOpt4Marked((prevCheck) => !prevCheck)}
+                              >
+                                D. {filteredQuestion[currentQuestion].optionFour}
+                              </label>
+                            </div>
+                            <div className="form-check">
+                              <input
+                                type="radio"
+                                id={filteredQuestion[currentQuestion].optionFive}
+                                name={currentQuestion}
+                                value={filteredQuestion[currentQuestion].optionFive}
+                                // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                onChange={(e) => {
+                                  handleFormSubmit(
+                                    e,
+                                    filteredQuestion[currentQuestion]._id,
+                                    filteredQuestion[currentQuestion].optionFive,
+                                  )
+                                  setSelectedOption(e.currentTarget.id)
+                                }}
+                                className="form-check-input"
+                                checked={
+                                  saveQuestionArray.filter(
+                                    (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                  ).length > 0
+                                    ? filteredQuestion[currentQuestion].optionFive ==
+                                      saveQuestionArray.filter(
+                                        (q) =>
+                                          q.questionId == filteredQuestion[currentQuestion]._id,
+                                      )[0].selectedOption
+                                      ? true
+                                      : false
+                                    : false
+                                }
+                              />
+                              <label
+                                className={`form-check-label ml-2 ${opt5Marked ? 'line-through' : ''}`}
+                                onClick={() => setOpt5Marked((prevCheck) => !prevCheck)}
+                              >
+                                E. {filteredQuestion[currentQuestion].optionFive}
+                              </label>
+                            </div>
+                            {filteredQuestion[currentQuestion].optionSix ? (
+                              <div className="form-check">
+                                <input
+                                  type="radio"
+                                  id={filteredQuestion[currentQuestion].optionSix}
+                                  name={currentQuestion}
+                                  value={filteredQuestion[currentQuestion].optionSix}
+                                  // onChange={(e) => setSelectedOption(e.currentTarget.id)}
+                                  onChange={(e) => {
+                                    handleFormSubmit(
+                                      e,
+                                      filteredQuestion[currentQuestion]._id,
+                                      filteredQuestion[currentQuestion].optionSix,
+                                    )
+                                    setSelectedOption(e.currentTarget.id)
+                                  }}
+                                  className="form-check-input"
+                                  checked={
+                                    saveQuestionArray.filter(
+                                      (q) => q.questionId == filteredQuestion[currentQuestion]._id,
+                                    ).length > 0
+                                      ? filteredQuestion[currentQuestion].optionSix ==
+                                        saveQuestionArray.filter(
+                                          (q) =>
+                                            q.questionId == filteredQuestion[currentQuestion]._id,
+                                        )[0].selectedOption
+                                        ? true
                                         : false
-                                    }
-                                  />
-                                  <label
-                                    className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
-                                    onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
-                                  >
-                                    F. {filteredQuestion[currentQuestion].optionSix}
-                                  </label>
-                                </div>
-                              ) : (
-                                ''
-                              )}
-                            </>
-                          ) : (
-                            ''
-                          )}
-                        </div>
-                        <CButton
-                          color="primary"
-                          className="mx-auto px-5 rounded-full"
-                          type="submit"
-                        >
-                          {currentQuestion + 1 != totalQuest ? 'Next' : 'Submit'}
-                        </CButton>
-                      </CForm>
-                    </div>
-                  )}
-                </>
-              ) : (
+                                      : false
+                                  }
+                                />
+                                <label
+                                  className={`form-check-label ml-2 ${opt6Marked ? 'line-through' : ''}`}
+                                  onClick={() => setOpt6Marked((prevCheck) => !prevCheck)}
+                                >
+                                  F. {filteredQuestion[currentQuestion].optionSix}
+                                </label>
+                              </div>
+                            ) : (
+                              ''
+                            )}
+                          </>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
+                        {currentQuestion + 1 != totalQuest ? 'Next' : 'Submit'}
+                      </CButton>
+                    </CForm>
+                  </div>
+                )}
+              </>
+              {/* ) : (
                 <CAlert color="danger" className="middle-alert">
                   No questions added yet
                 </CAlert>
-              )}
+              )} */}
             </>
           )}
         </div>
