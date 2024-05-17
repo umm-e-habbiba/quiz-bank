@@ -237,7 +237,7 @@ const QuizLayout = () => {
           setTimeout(() => {
             setError(false)
             setErrorMsg('')
-          }, 2000)
+          }, 1000)
         }
       }
     } else {
@@ -247,7 +247,7 @@ const QuizLayout = () => {
       setTimeout(() => {
         setError(false)
         setErrorMsg('')
-      }, 2000)
+      }, 1000)
     }
   }
 
@@ -497,7 +497,7 @@ const QuizLayout = () => {
                 setTimeout(() => {
                   setError(false)
                   setErrorMsg('')
-                }, 2000)
+                }, 1000)
                 start = false
               }
             }
@@ -540,7 +540,7 @@ const QuizLayout = () => {
                 setTimeout(() => {
                   setError(false)
                   setErrorMsg('')
-                }, 2000)
+                }, 1000)
                 start = false
               }
             }
@@ -572,7 +572,7 @@ const QuizLayout = () => {
                 setTimeout(() => {
                   setError(false)
                   setErrorMsg('')
-                }, 2000)
+                }, 1000)
                 start = false
               }
             }
@@ -824,7 +824,7 @@ const QuizLayout = () => {
                           >
                             <CRow
                               key={id}
-                              className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
+                              className="bg-gray-200 shadow-black shadow-2xl rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
                             >
                               <CCol xs={1} md={3} lg={3}>
                                 <CFormSelect
@@ -1025,7 +1025,7 @@ const QuizLayout = () => {
                             {totalRows.length - 1 === id ? (
                               <div className="flex justify-center items-center">
                                 <CButton
-                                  className="w-9 h-9 p-3 bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
+                                  className="w-9 h-9 p-3 shadow-black shadow-3xl bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
                                   onClick={addRows}
                                 >
                                   <span className="-mt-1">+</span>
@@ -1039,7 +1039,7 @@ const QuizLayout = () => {
                       </div>
                       <div className="flex justify-center items-center flex-col">
                         <button
-                          className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                          className={`mx-auto px-5 py-2 shadow-2xl shadow-black rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                           // type="submit"
                           color="secondary"
                           onClick={startexam}
