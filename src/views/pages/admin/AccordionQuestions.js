@@ -170,8 +170,8 @@ const AccordionQuestions = ({
                   </span>
                   <span className="text-center">
                     {options.hasOwnProperty(option)
-                      ? `(${options[option]} Users Selected this option)`
-                      : '(0 Users Selected this option)'}
+                      ? `(${options[option]} Selections for this option)`
+                      : '(0 Selections for this option)'}
                   </span>
 
                   <span className="text-right">{getPercentage(options[option] || 0)}%</span>
