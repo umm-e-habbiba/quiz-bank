@@ -1,7 +1,6 @@
 import {
   CButton,
   CForm,
-  CFormCheck,
   CFormInput,
   CAlert,
   CRow,
@@ -20,20 +19,20 @@ import { GoChevronRight } from 'react-icons/go'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useForm } from 'react-hook-form'
-import { useNavigate, NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import { API_URL } from 'src/store'
-import Highlighter from 'react-highlight-words'
-import image from '../assets/images/angular.jpg'
-import CIcon from '@coreui/icons-react'
-import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
-import { RiEyeLine } from 'react-icons/ri'
+// import Highlighter from 'react-highlight-words'
+// import image from '../assets/images/angular.jpg'
+// import CIcon from '@coreui/icons-react'
+// import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
+// import { RiEyeLine } from 'react-icons/ri'
 // import markIcon from '../assets/images/mark-flag.png'
 import markIcon from '../assets/images/mark-icon.svg'
-import { FaBars } from 'react-icons/fa'
-import { ImCross } from 'react-icons/im'
-import { CiUndo } from 'react-icons/ci'
-import { HiOutlineX } from 'react-icons/hi'
+// import { FaBars } from 'react-icons/fa'
+// import { ImCross } from 'react-icons/im'
+// import { CiUndo } from 'react-icons/ci'
+// import { HiOutlineX } from 'react-icons/hi'
 import '../scss/loader.scss'
 const QuizLayout = () => {
   const navigate = useNavigate()
