@@ -400,9 +400,11 @@ const QuizLayout = () => {
   }
 
   const removeRow = (index) => {
-    const rows = [...totalRows]
-    rows.splice(index, 1)
-    setTotalRows(rows)
+    // const rows = [...totalRows]
+    // rows.splice(index, 1)
+    // setTotalRows(rows)
+    // totalRows.splice(index, 1)
+    setTotalRows(totalRows.splice(index, 1))
   }
 
   const startexam = async () => {
@@ -923,7 +925,15 @@ const QuizLayout = () => {
                             />
                           </CCol>
                         </CRow>
-
+                        {totalRows.length > 1 && (
+                          <CButton
+                            className="w-9 h-9 p-3 text-2xl flex justify-center items-center mr-2"
+                            onClick={() => removeRow(id)}
+                            color="secondary"
+                          >
+                            <span className="-mt-1">-</span>
+                          </CButton>
+                        )}
                         {totalRows.length - 1 === id ? (
                           <div className="flex justify-center items-center">
                             <CButton
@@ -941,22 +951,6 @@ const QuizLayout = () => {
                     ))}
                   </div>
                   <div className="flex justify-center items-center flex-col">
-                    <div className="flex">
-                      {/* <CButton
-                    className="mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
-                    onClick={addRows}
-                  >
-                    Add More
-                  </CButton> */}
-                      {/* {totalRows.length > 1 && (
-                  <CButton
-                    className="ml-3 px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
-                    onClick={() => removeRow()}
-                  >
-                    Delete Row
-                  </CButton>
-                )} */}
-                    </div>
                     <button
                       className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]`}
                       // type="submit"
