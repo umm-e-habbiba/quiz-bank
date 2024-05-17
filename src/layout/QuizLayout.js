@@ -22,11 +22,12 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import { API_URL } from 'src/store'
-// import Highlighter from 'react-highlight-words'
-// import image from '../assets/images/angular.jpg'
-// import CIcon from '@coreui/icons-react'
-// import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
-// import { RiEyeLine } from 'react-icons/ri'
+
+import Highlighter from 'react-highlight-words'
+import image from '../assets/images/angular.jpg'
+import CIcon from '@coreui/icons-react'
+import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
+import { RiCloseLine, RiEyeLine } from 'react-icons/ri'
 // import markIcon from '../assets/images/mark-flag.png'
 import markIcon from '../assets/images/mark-icon.svg'
 // import { FaBars } from 'react-icons/fa'
@@ -710,14 +711,14 @@ const QuizLayout = () => {
         undoHighlight={undoHighlight}
         highlightStack={highlightStack}
       />
-      {showQues && (
+      {/* {showQues && (
         <button
           className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
           onClick={toggleSidebar}
         >
           {sidebarOpen ? '' : <GoChevronRight className="text-[40px] text-white" />}
         </button>
-      )}
+      )} */}
       <div className="flex flex-row ">
         {/* {/ Side Bar /} */}
 
@@ -739,8 +740,8 @@ const QuizLayout = () => {
                 {saveQuestionArray.map((question, index) => (
                   <li
                     key={index}
-                    className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-blue-500 hover:bg-[#12151b] transition-all duration-150 ${
-                      currentQuestion === index ? 'bg-blue-500' : ''
+                    className={`text-white font-semibold text-center py-2 cursor-pointer border-b border-gray-400 focus:bg-[#6261CC] hover:bg-[#12151b] transition-all duration-150 ${
+                      currentQuestion === index ? 'bg-[#6261CC]' : ''
                     }`}
                     onClick={() => setCurrentQuestion(index)}
                   >
@@ -991,8 +992,28 @@ const QuizLayout = () => {
                                   checked={row.preventAll ? true : false}
                                 />
                               </CCol>
+                              {totalRows.length > 1 && (
+                                <button
+                                  className="w-9 h-9 text-xl flex justify-center items-center absolute right-0 top-0 z-10"
+                                  onClick={() => removeRow(id)}
+                                >
+                                  <span>
+                                    <RiCloseLine />
+                                  </span>
+                                </button>
+                                // <CButton
+                                //   className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute right-0 top-0 z-10 rounded-full"
+                                //   // className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute -right-5 -top-5 z-10 rounded-full"
+                                //   onClick={() => removeRow(id)}
+                                //   color="secondary"
+                                // >
+                                //   <span>
+                                //     <RiCloseLine />
+                                //   </span>
+                                // </CButton>
+                              )}
                             </CRow>
-                            {totalRows.length > 1 && (
+                            {/* {totalRows.length > 1 && (
                               <CButton
                                 className="w-9 h-9 p-3 text-2xl flex justify-center items-center mr-2"
                                 onClick={() => removeRow(id)}
@@ -1000,13 +1021,13 @@ const QuizLayout = () => {
                               >
                                 <span className="-mt-1">-</span>
                               </CButton>
-                            )}
+                            )} */}
                             {totalRows.length - 1 === id ? (
                               <div className="flex justify-center items-center">
                                 <CButton
-                                  className="w-9 h-9 p-3 text-2xl flex justify-center items-center"
+                                  className="w-9 h-9 p-3 bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
                                   onClick={addRows}
-                                  color="secondary"
+                              
                                 >
                                   <span className="-mt-1">+</span>
                                 </CButton>
@@ -1019,7 +1040,7 @@ const QuizLayout = () => {
                       </div>
                       <div className="flex justify-center items-center flex-col">
                         <button
-                          className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]`}
+                          className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                           // type="submit"
                           color="secondary"
                           onClick={startexam}

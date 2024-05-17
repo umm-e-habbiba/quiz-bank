@@ -211,7 +211,7 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step One <span className="text-yellow-500">({step1Questions} Qs)</span>
+                Step One <span className="text-yellow-800">({step1Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
             <CNavItem>
@@ -228,7 +228,7 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step Two <span className="text-yellow-500">({step2Questions} Qs)</span>
+                Step Two <span className="text-yellow-800">({step2Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
             <CNavItem>
@@ -245,7 +245,7 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step Three <span className="text-yellow-500">({step3Questions} Qs)</span>
+                Step Three <span className="text-yellow-800">({step3Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
           </CNav>
@@ -306,7 +306,7 @@ const AttemptedQuestions = () => {
                   <div className="border-b w-fit flex flex-col pb-2">
                     <p className="text-xl">
                       {selectedCategory}{' '}
-                      <span className="text-yellow-500 text-sm">
+                      <span className="text-yellow-800 text-sm">
                         (
                         {
                           allQuestion.filter(
@@ -318,7 +318,7 @@ const AttemptedQuestions = () => {
                     </p>
                     <p className="text-sm">
                       ({' '}
-                      <span className="text-yellow-500">
+                      <span className="text-yellow-800">
                         {allAttemptedQuestion && allAttemptedQuestion.length > 0
                           ? allAttemptedQuestion
                               .filter(
@@ -428,7 +428,7 @@ const AttemptedQuestions = () => {
                   <div className="border-b w-fit flex flex-col pb-2">
                     <p className="text-xl">
                       {selectedCategory}{' '}
-                      <span className="text-yellow-500 text-sm">
+                      <span className="text-yellow-800 text-sm">
                         (
                         {
                           allQuestion.filter(
@@ -439,7 +439,7 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
-                      <span className="text-yellow-500">
+                      <span className="text-yellow-800">
                         {allAttemptedQuestion && allAttemptedQuestion.length > 0
                           ? allAttemptedQuestion
                               .filter(
@@ -549,7 +549,7 @@ const AttemptedQuestions = () => {
                   <div className="border-b w-fit flex flex-col pb-2">
                     <p className="text-xl">
                       {selectedCategory}{' '}
-                      <span className="text-yellow-500 text-sm">
+                      <span className="text-yellow-800 text-sm">
                         (
                         {
                           allQuestion.filter(
@@ -560,7 +560,7 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
-                      <span className="text-yellow-500">
+                      <span className="text-yellow-800">
                         {allAttemptedQuestion && allAttemptedQuestion.length > 0
                           ? allAttemptedQuestion
                               .filter(

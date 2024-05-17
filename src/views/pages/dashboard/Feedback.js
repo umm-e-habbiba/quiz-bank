@@ -393,7 +393,11 @@ const Feedback = () => {
             // </div>
           )}
           <div className="flex justify-between items-center my-2">
-            <p className="text-2xl mb-1 mt-2">Other Feedbacks</p>
+            <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
+            <p className="text-2xl mb-1  no-wrap px-4 " style={{ whiteSpace: 'nowrap' }}>
+              Others Feedbacks
+            </p>
+            <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
             {myFeedbacks && myFeedbacks.length > 0 ? (
               ''
             ) : (
