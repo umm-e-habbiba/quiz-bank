@@ -400,11 +400,9 @@ const QuizLayout = () => {
   }
 
   const removeRow = (index) => {
-    // const rows = [...totalRows]
-    // rows.splice(index, 1)
-    // setTotalRows(rows)
-    // totalRows.splice(index, 1)
-    setTotalRows(totalRows.splice(index, 1))
+    const rows = [...totalRows]
+    rows.splice(index, 1)
+    setTotalRows(rows)
   }
 
   const startexam = async () => {
@@ -685,14 +683,7 @@ const QuizLayout = () => {
         undoHighlight={undoHighlight}
         highlightStack={highlightStack}
       />
-      {showQues && (
-        <button
-          className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
-          onClick={toggleSidebar}
-        >
-          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] text-white" />}
-        </button>
-      )}
+
       <div className="flex flex-row ">
         {/* Side Bar */}
 
@@ -738,17 +729,28 @@ const QuizLayout = () => {
               )}
             </div>
             {/* Close button outside sidebar */}
-            {sidebarOpen && (
+            {/* {sidebarOpen && (
               <button
                 className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
                 onClick={toggleSidebar}
               >
                 <GoChevronRight className="text-[40px] rotate-180 text-white" />
               </button>
-            )}
+            )} */}
           </div>
         )}
-
+        {showQues && (
+          <button
+            className="sidebar-toggle-btn  h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+            onClick={toggleSidebar}
+          >
+            {sidebarOpen ? (
+              <GoChevronRight className="text-[40px] rotate-180 text-white" />
+            ) : (
+              <GoChevronRight className="text-[40px] text-white" />
+            )}
+          </button>
+        )}
         <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
           {/* new layout */}
           {loading ? (
@@ -925,15 +927,7 @@ const QuizLayout = () => {
                             />
                           </CCol>
                         </CRow>
-                        {totalRows.length > 1 && (
-                          <CButton
-                            className="w-9 h-9 p-3 text-2xl flex justify-center items-center mr-2"
-                            onClick={() => removeRow(id)}
-                            color="secondary"
-                          >
-                            <span className="-mt-1">-</span>
-                          </CButton>
-                        )}
+
                         {totalRows.length - 1 === id ? (
                           <div className="flex justify-center items-center">
                             <CButton
@@ -951,6 +945,22 @@ const QuizLayout = () => {
                     ))}
                   </div>
                   <div className="flex justify-center items-center flex-col">
+                    <div className="flex">
+                      {/* <CButton
+                    className="mx-auto px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
+                    onClick={addRows}
+                  >
+                    Add More
+                  </CButton> */}
+                      {/* {totalRows.length > 1 && (
+                  <CButton
+                    className="ml-3 px-5 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066] "
+                    onClick={() => removeRow()}
+                  >
+                    Delete Row
+                  </CButton>
+                )} */}
+                    </div>
                     <button
                       className={`mx-auto px-5 py-2 rounded-full mb-3 text-xl bg-[#000099] text-white hover:bg-[#000066]`}
                       // type="submit"
