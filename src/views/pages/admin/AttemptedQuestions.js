@@ -156,6 +156,16 @@ const AttemptedQuestions = () => {
         setLoader(false)
       })
   }
+
+  // const sortedCategories = step2Categories.slice().sort((a, b) => {
+  //   const attemptsA = allAttemptedQuestion
+  //     .filter((ques) => ques.details.USMLE === a && ques.details.usmleStep === 2)
+  //     .reduce((acc, curr) => acc + curr.attempts, 0)
+  //   const attemptsB = allAttemptedQuestion
+  //     .filter((ques) => ques.details.USMLE === b && ques.details.usmleStep === 2)
+  //     .reduce((acc, curr) => acc + curr.attempts, 0)
+  //   return attemptsB - attemptsA
+  // })
   const data = [
     {
       question: 'What are accordion components?',
@@ -243,44 +253,52 @@ const AttemptedQuestions = () => {
             <CTabPane role="tabpanel" aria-labelledby="home-tab" visible={activeKey === 1}>
               {showstep1Topics && (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 my-4 mx-4">
-                  {step1Categories.map((category, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
-                      onClick={() => {
-                        setShowstep1Ques(true)
-                        setShowstep1Topics(false)
-                        setSelectedCategory(category)
-                      }}
-                      //   onClick={() => fetchQuestion(usmleStep, category)}
-                    >
-                      <p className="text-xl">
-                        {category}{' '}
-                        <span className="text-yellow-500 text-sm">
-                          (
-                          {
-                            allQuestion.filter(
-                              (ques) => ques.USMLE == category && ques.usmleStep == 1,
-                            ).length
-                          }{' '}
-                          Qs)
-                        </span>{' '}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-yellow-500">
-                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
-                            ? allAttemptedQuestion
-                                .filter(
-                                  (ques) =>
-                                    ques.details.USMLE == category && ques.details.usmleStep == 1,
-                                )
-                                .reduce((acc, curr) => acc + curr.attempts, 0)
-                            : 0}
-                        </span>{' '}
-                        Users Attempted {category}
-                      </p>
-                    </div>
-                  ))}
+                  {step1Categories
+                    .slice()
+                    .sort((a, b) => {
+                      const attemptsA = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === a && ques.details.usmleStep === 1)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      const attemptsB = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === b && ques.details.usmleStep === 1)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      return attemptsB - attemptsA
+                    })
+                    .map((category, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        onClick={() => {
+                          setShowstep1Ques(true)
+                          setShowstep1Topics(false)
+                          setSelectedCategory(category)
+                        }}
+                      >
+                        <p className="text-xl">
+                          {category}{' '}
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            (
+                            {
+                              allQuestion.filter(
+                                (ques) => ques.USMLE == category && ques.usmleStep == 1,
+                              ).length
+                            }{' '}
+                            Qs)
+                          </span>{' '}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            {allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE === category && ques.details.usmleStep === 1,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)}
+                          </span>{' '}
+                          Attempts For {category}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               )}
               {showstep1Ques && (
@@ -299,6 +317,7 @@ const AttemptedQuestions = () => {
                       </span>{' '}
                     </p>
                     <p className="text-sm">
+                      ({' '}
                       <span className="text-yellow-500">
                         {allAttemptedQuestion && allAttemptedQuestion.length > 0
                           ? allAttemptedQuestion
@@ -310,93 +329,98 @@ const AttemptedQuestions = () => {
                               .reduce((acc, curr) => acc + curr.attempts, 0)
                           : 0}
                       </span>{' '}
-                      Users Attempted {selectedCategory}
+                      ) Users Attempted {selectedCategory}
                     </p>
                   </div>
-                  <div>
+                  <div className="mt-4">
                     {allAttemptedQuestion &&
                     allAttemptedQuestion.length > 0 &&
                     allAttemptedQuestion.filter(
                       (ques) =>
                         ques.details.USMLE == selectedCategory && ques.details.usmleStep == 1,
-                    ).length > 0
-                      ? allAttemptedQuestion
-                          .filter(
-                            (ques) =>
-                              ques.details.USMLE == selectedCategory && ques.details.usmleStep == 1,
-                          )
-                          .map((item, index) => (
-                            <AccordionQuestions
-                              key={index}
-                              question={item.details?.question}
-                              attempts={item.attempts}
-                              answer={item.details?.correctAnswer}
-                              op1={item.details?.optionOne}
-                              op2={item.details?.optionTwo}
-                              op3={item.details?.optionThree}
-                              op4={item.details?.optionFour}
-                              op5={item.details?.optionFive}
-                              options={item.optionsCount}
-                              op6={item.details?.optionSix ? item.details?.optionSix : ''}
-                              isOpen={activeIndex === index}
-                              onClick={() => handleItemClick(index)}
-                            />
-                          ))
-                      : 'No questions attempted '}
-                    {/* {data.map((item, index) => (
-                      <AccordionQuestions
-                        key={index}
-                        question={item.question}
-                        answer={item.answer}
-                        isOpen={activeIndex === index}
-                        onClick={() => handleItemClick(index)}
-                      />
-                    ))} */}
+                    ).length > 0 ? (
+                      allAttemptedQuestion
+                        .filter(
+                          (ques) =>
+                            ques.details.USMLE == selectedCategory && ques.details.usmleStep == 1,
+                        )
+                        .sort((a, b) => b.attempts - a.attempts) // Sorting attempted questions by attempts
+                        .map((item, index) => (
+                          <AccordionQuestions
+                            key={index}
+                            question={item.details?.question}
+                            attempts={item.attempts}
+                            answer={item.details?.correctAnswer}
+                            op1={item.details?.optionOne}
+                            op2={item.details?.optionTwo}
+                            op3={item.details?.optionThree}
+                            op4={item.details?.optionFour}
+                            op5={item.details?.optionFive}
+                            options={item.optionsCount}
+                            op6={item.details?.optionSix ? item.details?.optionSix : ''}
+                            isOpen={activeIndex === index}
+                            onClick={() => handleItemClick(index)}
+                          />
+                        ))
+                    ) : (
+                      <div className="text-center align-center justify-center">
+                        Sorry,No Attempted Questions
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </CTabPane>
+
             <CTabPane role="tabpanel" aria-labelledby="profile-tab" visible={activeKey === 2}>
               {showstep2Topics && (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 my-4 mx-4">
-                  {step2Categories.map((category, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
-                      onClick={() => {
-                        setShowstep2Ques(true)
-                        setShowstep2Topics(false)
-                        setSelectedCategory(category)
-                      }}
-                      //   onClick={() => fetchQuestion(usmleStep, category)}
-                    >
-                      <p className="text-xl">
-                        {category}{' '}
-                        <span className="text-yellow-500 text-sm">
-                          (
-                          {
-                            allQuestion.filter(
-                              (ques) => ques.USMLE == category && ques.usmleStep == 2,
-                            ).length
-                          }{' '}
-                          Qs)
-                        </span>{' '}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-yellow-500">
-                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
-                            ? allAttemptedQuestion
-                                .filter(
-                                  (ques) =>
-                                    ques.details.USMLE == category && ques.details.usmleStep == 2,
-                                )
-                                .reduce((acc, curr) => acc + curr.attempts, 0)
-                            : 0}
-                        </span>{' '}
-                        Users Attempted {category}
-                      </p>
-                    </div>
-                  ))}
+                  {step2Categories
+                    .slice()
+                    .sort((a, b) => {
+                      const attemptsA = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === a && ques.details.usmleStep === 2)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      const attemptsB = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === b && ques.details.usmleStep === 2)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      return attemptsB - attemptsA
+                    })
+                    .map((category, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        onClick={() => {
+                          setShowstep2Ques(true)
+                          setShowstep2Topics(false)
+                          setSelectedCategory(category)
+                        }}
+                      >
+                        <p className="text-xl">
+                          {category}{' '}
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            (
+                            {
+                              allQuestion.filter(
+                                (ques) => ques.USMLE === category && ques.usmleStep === 2,
+                              ).length
+                            }{' '}
+                            Qs)
+                          </span>{' '}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            {allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE === category && ques.details.usmleStep === 2,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)}
+                          </span>{' '}
+                          Attempts For {category}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               )}
               {showstep2Ques && (
@@ -408,7 +432,7 @@ const AttemptedQuestions = () => {
                         (
                         {
                           allQuestion.filter(
-                            (ques) => ques.USMLE == selectedCategory && ques.usmleStep == 2,
+                            (ques) => ques.USMLE === selectedCategory && ques.usmleStep === 2,
                           ).length
                         }{' '}
                         Qs)
@@ -420,8 +444,8 @@ const AttemptedQuestions = () => {
                           ? allAttemptedQuestion
                               .filter(
                                 (ques) =>
-                                  ques.details.USMLE == selectedCategory &&
-                                  ques.details.usmleStep == 2,
+                                  ques.details.USMLE === selectedCategory &&
+                                  ques.details.usmleStep === 2,
                               )
                               .reduce((acc, curr) => acc + curr.attempts, 0)
                           : 0}
@@ -434,85 +458,90 @@ const AttemptedQuestions = () => {
                     allAttemptedQuestion.length > 0 &&
                     allAttemptedQuestion.filter(
                       (ques) =>
-                        ques.details.USMLE == selectedCategory && ques.details.usmleStep == 2,
-                    ).length > 0
-                      ? allAttemptedQuestion
-                          .filter(
-                            (ques) =>
-                              ques.details.USMLE == selectedCategory && ques.details.usmleStep == 2,
-                          )
-                          .map((item, index) => (
-                            <AccordionQuestions
-                              key={index}
-                              question={item.details?.question}
-                              attempts={item.attempts}
-                              answer={item.details?.correctAnswer}
-                              op1={item.details?.optionOne}
-                              op2={item.details?.optionTwo}
-                              op3={item.details?.optionThree}
-                              op4={item.details?.optionFour}
-                              op5={item.details?.optionFive}
-                              options={item.optionsCount}
-                              op6={item.details?.optionSix ? item.details?.optionSix : ''}
-                              isOpen={activeIndex === index}
-                              onClick={() => handleItemClick(index)}
-                            />
-                          ))
-                      : 'No questions attempted '}
-                    {/* {data.map((item, index) => (
-                      <AccordionQuestions
-                        key={index}
-                        question={item.question}
-                        answer={item.answer}
-                        isOpen={activeIndex === index}
-                        onClick={() => handleItemClick(index)}
-                      />
-                    ))} */}
+                        ques.details.USMLE === selectedCategory && ques.details.usmleStep === 2,
+                    ).length > 0 ? (
+                      allAttemptedQuestion
+                        .filter(
+                          (ques) =>
+                            ques.details.USMLE === selectedCategory && ques.details.usmleStep === 2,
+                        )
+                        .sort((a, b) => b.attempts - a.attempts) // Sorting attempted questions by attempts
+                        .map((item, index) => (
+                          <AccordionQuestions
+                            key={index}
+                            question={item.details?.question}
+                            attempts={item.attempts}
+                            answer={item.details?.correctAnswer}
+                            op1={item.details?.optionOne}
+                            op2={item.details?.optionTwo}
+                            op3={item.details?.optionThree}
+                            op4={item.details?.optionFour}
+                            op5={item.details?.optionFive}
+                            options={item.optionsCount}
+                            op6={item.details?.optionSix ? item.details?.optionSix : ''}
+                            isOpen={activeIndex === index}
+                            onClick={() => handleItemClick(index)}
+                          />
+                        ))
+                    ) : (
+                      <div className="text-center align-center justify-center">
+                        Sorry, No Attempted Questions
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </CTabPane>
+
             <CTabPane role="tabpanel" aria-labelledby="contact-tab" visible={activeKey === 3}>
               {showstep3Topics && (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 my-4 mx-4">
-                  {step3Categories.map((category, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
-                      onClick={() => {
-                        setShowstep3Ques(true)
-                        setShowstep3Topics(false)
-                        setSelectedCategory(category)
-                      }}
-                      //   onClick={() => fetchQuestion(usmleStep, category)}
-                    >
-                      <p className="text-xl">
-                        {category}{' '}
-                        <span className="text-yellow-500 text-sm">
-                          (
-                          {
-                            allQuestion.filter(
-                              (ques) => ques.USMLE == category && ques.usmleStep == 3,
-                            ).length
-                          }{' '}
-                          Qs)
-                        </span>{' '}
-                      </p>
-                      <p className="text-sm">
-                        <span className="text-yellow-500">
-                          {allAttemptedQuestion && allAttemptedQuestion.length > 0
-                            ? allAttemptedQuestion
-                                .filter(
-                                  (ques) =>
-                                    ques.details.USMLE == category && ques.details.usmleStep == 3,
-                                )
-                                .reduce((acc, curr) => acc + curr.attempts, 0)
-                            : 0}
-                        </span>{' '}
-                        Users Attempted {category}
-                      </p>
-                    </div>
-                  ))}
+                  {step3Categories
+                    .slice()
+                    .sort((a, b) => {
+                      const attemptsA = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === a && ques.details.usmleStep === 3)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      const attemptsB = allAttemptedQuestion
+                        .filter((ques) => ques.details.USMLE === b && ques.details.usmleStep === 3)
+                        .reduce((acc, curr) => acc + curr.attempts, 0)
+                      return attemptsB - attemptsA
+                    })
+                    .map((category, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-gray-200 hover:bg-gray-400 hover:border-gray-200 border-3 text-center border-solid border-gray-400 p-2 text-black cursor-pointer"
+                        onClick={() => {
+                          setShowstep3Ques(true)
+                          setShowstep3Topics(false)
+                          setSelectedCategory(category)
+                        }}
+                      >
+                        <p className="text-xl">
+                          {category}{' '}
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            (
+                            {
+                              allQuestion.filter(
+                                (ques) => ques.USMLE == category && ques.usmleStep == 3,
+                              ).length
+                            }{' '}
+                            Qs)
+                          </span>{' '}
+                        </p>
+                        <p className="text-sm">
+                          <span className="text-yellow-800 text-sm font-semibold">
+                            {allAttemptedQuestion
+                              .filter(
+                                (ques) =>
+                                  ques.details.USMLE === category && ques.details.usmleStep === 3,
+                              )
+                              .reduce((acc, curr) => acc + curr.attempts, 0)}
+                          </span>{' '}
+                          Attempts For {category}
+                        </p>
+                      </div>
+                    ))}
                 </div>
               )}
               {showstep3Ques && (
@@ -542,7 +571,7 @@ const AttemptedQuestions = () => {
                               .reduce((acc, curr) => acc + curr.attempts, 0)
                           : 0}
                       </span>{' '}
-                      Users Attempted {selectedCategory}
+                      Attempts For {selectedCategory}
                     </p>
                   </div>
                   <div>
@@ -551,39 +580,35 @@ const AttemptedQuestions = () => {
                     allAttemptedQuestion.filter(
                       (ques) =>
                         ques.details.USMLE == selectedCategory && ques.details.usmleStep == 3,
-                    ).length > 0
-                      ? allAttemptedQuestion
-                          .filter(
-                            (ques) =>
-                              ques.details.USMLE == selectedCategory && ques.details.usmleStep == 3,
-                          )
-                          .map((item, index) => (
-                            <AccordionQuestions
-                              key={index}
-                              question={item.details?.question}
-                              attempts={item.attempts}
-                              answer={item.details?.correctAnswer}
-                              op1={item.details?.optionOne}
-                              op2={item.details?.optionTwo}
-                              op3={item.details?.optionThree}
-                              op4={item.details?.optionFour}
-                              op5={item.details?.optionFive}
-                              options={item.optionsCount}
-                              op6={item.details?.optionSix ? item.details?.optionSix : ''}
-                              isOpen={activeIndex === index}
-                              onClick={() => handleItemClick(index)}
-                            />
-                          ))
-                      : 'No questions attempted '}
-                    {/* {data.map((item, index) => (
-                      <AccordionQuestions
-                        key={index}
-                        question={item.question}
-                        answer={item.answer}
-                        isOpen={activeIndex === index}
-                        onClick={() => handleItemClick(index)}
-                      />
-                    ))} */}
+                    ).length > 0 ? (
+                      allAttemptedQuestion
+                        .filter(
+                          (ques) =>
+                            ques.details.USMLE == selectedCategory && ques.details.usmleStep == 3,
+                        )
+                        .sort((a, b) => b.attempts - a.attempts) // Sorting attempted questions by attempts
+                        .map((item, index) => (
+                          <AccordionQuestions
+                            key={index}
+                            question={item.details?.question}
+                            attempts={item.attempts}
+                            answer={item.details?.correctAnswer}
+                            op1={item.details?.optionOne}
+                            op2={item.details?.optionTwo}
+                            op3={item.details?.optionThree}
+                            op4={item.details?.optionFour}
+                            op5={item.details?.optionFive}
+                            options={item.optionsCount}
+                            op6={item.details?.optionSix ? item.details?.optionSix : ''}
+                            isOpen={activeIndex === index}
+                            onClick={() => handleItemClick(index)}
+                          />
+                        ))
+                    ) : (
+                      <div className="text-center align-center justify-center">
+                        Sorry, No Attempted Questions
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

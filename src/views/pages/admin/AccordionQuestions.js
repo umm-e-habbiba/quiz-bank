@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+
 import { RiArrowDropDownLine } from 'react-icons/ri'
+
 const AccordionQuestions = ({
   question,
   answer,
@@ -16,6 +18,7 @@ const AccordionQuestions = ({
 }) => {
   const contentHeight = useRef()
   const [contentHeightStyle, setContentHeightStyle] = useState({ height: '0px' })
+
   useEffect(() => {
     if (isOpen) {
       setContentHeightStyle({ height: `${contentHeight.current.scrollHeight}px` })
@@ -32,6 +35,7 @@ const AccordionQuestions = ({
     const total = getTotalUsers()
     return total > 0 ? ((count / total) * 100).toFixed(2) : '0.00'
   }
+
   return (
     // <div className="question-wrapper">
     //   <button className={`question-container ${isOpen ? 'active' : ''}`} onClick={onClick}>
@@ -166,12 +170,11 @@ const AccordionQuestions = ({
                   </span>
                   <span className="text-center">
                     {options.hasOwnProperty(option)
-                      ? `(${options[option]} Users Selected this option)`
-                      : '(0 Users Selected this option)'}
+                      ? `(${options[option]} Selections for this option)`
+                      : '(0 Selections for this option)'}
                   </span>
-                  <span className="text-right">
-                    {Math.round(getPercentage(options[option] || 0))}%
-                  </span>
+
+                  <span className="text-right">{getPercentage(options[option] || 0)}%</span>
                 </div>
               ),
           )}
@@ -180,4 +183,5 @@ const AccordionQuestions = ({
     </div>
   )
 }
+
 export default AccordionQuestions

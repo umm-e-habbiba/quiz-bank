@@ -289,7 +289,7 @@ const Feedback = () => {
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
-        <div className="body flex-grow-1 mx-4">
+        <div className="body flex-grow-1 mx-[10%] ">
           {loader ? (
             <div className="text-center">
               <CSpinner color="success" variant="grow" />
@@ -299,7 +299,7 @@ const Feedback = () => {
           )}
           {myFeedbacks && myFeedbacks.length > 0 ? (
             <>
-              <div className="flex justify-between items-center my-2">
+              <div className="flex justify-between items-center my-2 ">
                 <p className="text-2xl mb-1">My Feedback</p>
                 <CButton
                   onClick={(e) => {
