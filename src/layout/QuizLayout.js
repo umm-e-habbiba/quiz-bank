@@ -400,9 +400,15 @@ const QuizLayout = () => {
   }
 
   const removeRow = (index) => {
-    const rows = [...totalRows]
-    rows.splice(index, 1)
-    setTotalRows(rows)
+    // const rows = [...totalRows]
+    // rows.splice(index, 1)
+    // setTotalRows(rows)
+    // totalRows.splice(index, 1)
+    // setTotalRows(totalRows.splice(index, 1))
+    console.log(index)
+    const list = [...totalRows]
+    list.splice(index, 1)
+    setTotalRows(list)
   }
 
   const startexam = async () => {
@@ -685,7 +691,7 @@ const QuizLayout = () => {
       />
 
       <div className="flex flex-row ">
-        {/* Side Bar */}
+        {/* {/ Side Bar /} */}
 
         {showQues && (
           <div className="relative">
@@ -728,7 +734,8 @@ const QuizLayout = () => {
                 </div>
               )}
             </div>
-            {/* Close button outside sidebar */}
+            {/* {/ Close button outside sidebar /} */}
+
             {/* {sidebarOpen && (
               <button
                 className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
@@ -751,6 +758,7 @@ const QuizLayout = () => {
             )}
           </button>
         )}
+
         <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
           {/* new layout */}
           {loading ? (
@@ -814,6 +822,8 @@ const QuizLayout = () => {
                               onChange={(e) => {
                                 fetchQuestion(e.target.value, '', id)
                               }}
+                              defaultValue={row.step}
+                              value={row.step}
                             />
                           </CCol>
                           <CCol xs={1} md={3} lg={3}>
@@ -822,6 +832,8 @@ const QuizLayout = () => {
                               className="w-full"
                               name="category"
                               // onChange={(e) => setCategory(e.target.value, id)}
+                              defaultValue={row.category}
+                              value={row.category}
                               onChange={(e) => fetchQuestion(row.step, e.target.value, id)}
                             >
                               <option>Select your Category</option>
@@ -831,14 +843,19 @@ const QuizLayout = () => {
                                     key={idx}
                                     value={category}
                                     disabled={
-                                      allQuestion.filter((ques) => ques.USMLE == category).length >
-                                      0
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 1,
+                                      ).length > 0
                                         ? false
                                         : true
                                     }
                                   >
                                     {category} (
-                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    {
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 1,
+                                      ).length
+                                    }{' '}
                                     Questions avaialable)
                                   </option>
                                 ))
@@ -848,14 +865,19 @@ const QuizLayout = () => {
                                     key={idx}
                                     value={category}
                                     disabled={
-                                      allQuestion.filter((ques) => ques.USMLE == category).length >
-                                      0
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 2,
+                                      ).length > 0
                                         ? false
                                         : true
                                     }
                                   >
                                     {category} (
-                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    {
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 2,
+                                      ).length
+                                    }{' '}
                                     Questions avaialable)
                                   </option>
                                 ))
@@ -865,14 +887,19 @@ const QuizLayout = () => {
                                     key={idx}
                                     value={category}
                                     disabled={
-                                      allQuestion.filter((ques) => ques.USMLE == category).length >
-                                      0
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 3,
+                                      ).length > 0
                                         ? false
                                         : true
                                     }
                                   >
                                     {category} (
-                                    {allQuestion.filter((ques) => ques.USMLE == category).length}{' '}
+                                    {
+                                      allQuestion.filter(
+                                        (ques) => ques.USMLE == category && ques.usmleStep == 3,
+                                      ).length
+                                    }{' '}
                                     Questions avaialable)
                                   </option>
                                 ))
@@ -906,6 +933,7 @@ const QuizLayout = () => {
                               onChange={() => filterAttemptedQuestions('preventCorrect', id)}
                               // onChange={() => (row.preventCorrect = !row.preventCorrect)}
                               defaultChecked={row.preventCorrect ? true : false}
+                              value={row.preventCorrect}
                             />
                             <CFormSwitch
                               size="xl"
@@ -915,6 +943,7 @@ const QuizLayout = () => {
                               // onChange={() => (row.preventIncorrect = !row.preventIncorrect)}
                               onChange={() => filterAttemptedQuestions('preventIncorrect', id)}
                               defaultChecked={row.preventIncorrect ? true : false}
+                              value={row.preventIncorrect}
                             />
                             <CFormSwitch
                               size="xl"
@@ -924,6 +953,7 @@ const QuizLayout = () => {
                               // onChange={() => (row.preventAll = !row.preventAll)}
                               onChange={() => filterAttemptedQuestions('preventAll', id)}
                               defaultChecked={row.preventAll ? true : false}
+                              value={row.preventAll}
                             />
                           </CCol>
                         </CRow>
