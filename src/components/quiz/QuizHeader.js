@@ -244,11 +244,11 @@ const QuizHeader = ({
     <>
       <CHeader position="sticky" className="p-0 quiz-header px-4">
         <div className="flex justify-start items-center">
-          {showQues && (
-            <Link to="/">
-              <HiHome className="quiz-icons cursor-pointer mr-2" />
-            </Link>
-          )}
+          {/* {showQues && ( */}
+          <Link to="/">
+            <HiHome className="quiz-icons cursor-pointer mr-2" />
+          </Link>
+          {/* )} */}
           {showQues && (
             <div className="flex justify-start items-center">
               <div className="flex justify-start items-center">
