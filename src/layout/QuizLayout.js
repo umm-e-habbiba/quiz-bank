@@ -27,7 +27,7 @@ import Highlighter from 'react-highlight-words'
 import image from '../assets/images/angular.jpg'
 import CIcon from '@coreui/icons-react'
 import { cilChevronDoubleLeft, cilChevronLeft } from '@coreui/icons'
-import { RiEyeLine } from 'react-icons/ri'
+import { RiCloseLine, RiEyeLine } from 'react-icons/ri'
 // import markIcon from '../assets/images/mark-flag.png'
 import markIcon from '../assets/images/mark-icon.svg'
 import { FaBars } from 'react-icons/fa'
@@ -992,8 +992,28 @@ const QuizLayout = () => {
                                   checked={row.preventAll ? true : false}
                                 />
                               </CCol>
+                              {totalRows.length > 1 && (
+                                <button
+                                  className="w-9 h-9 text-xl flex justify-center items-center absolute right-0 top-0 z-10"
+                                  onClick={() => removeRow(id)}
+                                >
+                                  <span>
+                                    <RiCloseLine />
+                                  </span>
+                                </button>
+                                // <CButton
+                                //   className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute right-0 top-0 z-10 rounded-full"
+                                //   // className="w-9 h-9 p-3 text-white text-xl flex justify-center items-center mr-2 absolute -right-5 -top-5 z-10 rounded-full"
+                                //   onClick={() => removeRow(id)}
+                                //   color="secondary"
+                                // >
+                                //   <span>
+                                //     <RiCloseLine />
+                                //   </span>
+                                // </CButton>
+                              )}
                             </CRow>
-                            {totalRows.length > 1 && (
+                            {/* {totalRows.length > 1 && (
                               <CButton
                                 className="w-9 h-9 p-3 text-2xl flex justify-center items-center mr-2"
                                 onClick={() => removeRow(id)}
@@ -1001,7 +1021,7 @@ const QuizLayout = () => {
                               >
                                 <span className="-mt-1">-</span>
                               </CButton>
-                            )}
+                            )} */}
                             {totalRows.length - 1 === id ? (
                               <div className="flex justify-center items-center">
                                 <CButton

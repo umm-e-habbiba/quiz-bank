@@ -46,7 +46,7 @@ const AccordionQuestions = ({
     //       }}
     //     ></p>
     //     <div className="flex justify-end items-center">
-    //       <span className="text-yellow-500 text-sm mr-1">({attempts} Attempts)</span>
+    //       <span className="text-yellow-800 text-sm mr-1">({attempts} Attempts)</span>
     //       <RiArrowDropDownLine className={`arrow ${isOpen ? 'active' : ''}`} />
     //     </div>
     //   </button>
@@ -151,7 +151,7 @@ const AccordionQuestions = ({
           }}
         ></p>
         <div className="flex justify-end items-center">
-          <span className="text-yellow-500 text-sm mr-1">({attempts} Attempts)</span>
+          <span className="text-yellow-800 text-sm mr-1">({attempts} Attempts)</span>
           <RiArrowDropDownLine className={`arrow ${isOpen ? 'active' : ''}`} />
         </div>
       </button>
