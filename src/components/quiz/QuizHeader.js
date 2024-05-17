@@ -357,7 +357,7 @@ const QuizHeader = ({
             className="quiz-icons mr-2 cursor-pointer"
             onClick={() => setFontSize(fontSize + 1)}
           />
-          {fontSize > 16 ? (
+          {fontSize > 16 && showQues ? (
             <BiZoomOut
               className="quiz-icons mr-2 cursor-pointer"
               onClick={() => setFontSize(fontSize - 1)}
