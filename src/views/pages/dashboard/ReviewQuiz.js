@@ -187,14 +187,18 @@ const ReviewQuiz = () => {
         // isTimer={isTimer}
         // setIsTimer={setIsTimer}
       />
-      {showQues && (
+      {/* {showQues && (
         <button
           className="sidebar-toggle-btn absolute z-50 ml-5 text-[25px] px-1 py-1  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
           onClick={toggleSidebar}
         >
-          {sidebarOpen ? '' : <GoChevronRight className="text-[40px] " />}
+          {sidebarOpen ? (
+            <GoChevronRight className="text-[40px] rotate-180" />
+          ) : (
+            <GoChevronRight className="text-[40px] " />
+          )}
         </button>
-      )}
+      )} */}
       <div className="flex flex-row">
         <div className="relative">
           <div
@@ -248,15 +252,27 @@ const ReviewQuiz = () => {
               </button>
             )} */}
           </div>
-          {sidebarOpen && (
+          {/* {sidebarOpen && (
             <button
-              className="absolute -top-6 left-[98%] text-[25px] px-1 py-1 mt-4 z-50 mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+              className="static -top-6 left-[98%] text-[25px] px-1 py-1 mt-4 z-50 mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
               onClick={toggleSidebar}
             >
               <GoChevronRight className="text-[40px] rotate-180" />
             </button>
-          )}
+          )} */}
         </div>
+        {showQues && (
+          <button
+            className="sidebar-toggle-btn  h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+            onClick={toggleSidebar}
+          >
+            {sidebarOpen ? (
+              <GoChevronRight className="text-[40px] rotate-180 text-white" />
+            ) : (
+              <GoChevronRight className="text-[40px] text-white" />
+            )}
+          </button>
+        )}
         <div className="wrapper relative p-4 d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
           {loading ? (
             <center>
@@ -320,7 +336,7 @@ const ReviewQuiz = () => {
                         </p>
                       )}
                       <CForm onSubmit={handleFormSubmit}>
-                        <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">
+                        <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-5 min-w-64 w-fit">
                           <CFormCheck
                             type="radio"
                             id={
@@ -497,7 +513,7 @@ const ReviewQuiz = () => {
                         </div>
                         {allQuestion.length > 0 && allQuestion[currentQuestion] ? (
                           <CRow
-                            className={`py-2 px-1 border-l-4 border-solid ${allQuestion[currentQuestion].questionId.correctAnswer == allQuestion[currentQuestion].selectedOption ? 'border-green-600' : 'border-red-600'}  answer-stat-box bg-gray-200`}
+                            className={`py-2 px-1 ml-[1px] border-l-4 border-solid ${allQuestion[currentQuestion].questionId.correctAnswer == allQuestion[currentQuestion].selectedOption ? 'border-green-600' : 'border-red-600'}  answer-stat-box bg-gray-200`}
                           >
                             <CCol md={12} className="flex justify-start flex-col">
                               {allQuestion[currentQuestion].questionId.correctAnswer ==
@@ -558,7 +574,7 @@ const ReviewQuiz = () => {
                       </p>
                       {allQuestion[currentQuestion] &&
                         allQuestion[currentQuestion].questionId.video && (
-                          <video controls ref={videoRef}></video>
+                          <video controls ref={videoRef} className="my-3"></video>
                         )}
                       {/* {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
                 <img
