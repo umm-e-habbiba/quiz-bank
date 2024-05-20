@@ -161,7 +161,7 @@ const ReviewQuiz = () => {
   useEffect(() => {
     // Whenever the current question changes, update the video source
     if (allQuestion[currentQuestion]?.questionId?.video) {
-      const videoSource = `${API_URL}/uploads/videos/${allQuestion[currentQuestion].questionId.video}`
+      const videoSource = `${API_URL}uploads/videos/${allQuestion[currentQuestion].questionId.video}`
       // Update video source
       if (videoRef.current) {
         videoRef.current.src = videoSource

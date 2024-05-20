@@ -77,7 +77,7 @@ const App = () => {
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
           <Route
             path="/attempted-questions"
-            name="Attempted Questions"
+            name="Questions Statistics"
             element={<AttemptedQuestions />}
           />
           <Route

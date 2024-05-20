@@ -25,7 +25,7 @@ const routes = [
   { path: '/donations', name: 'Donations', element: Donations },
   { path: '/feedback', name: 'Feedback', element: Feedback },
   { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
-  { path: '/attempted-questions', name: 'Attempted Questions', element: AttemptedQuestions },
+  { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
 ]
 
 export default routes

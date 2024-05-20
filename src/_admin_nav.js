@@ -40,7 +40,7 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
-    name: 'Attempted Questions',
+    name: 'Questions Statistics',
     to: '/attempted-questions',
     icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
