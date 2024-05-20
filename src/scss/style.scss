@@ -91,6 +91,35 @@
   width: 300px !important;
   height: 300px !important;
 }
+.react-stickies-wrapper .note-body {
+  height: 300px !important;
+  overflow-y: auto !important;
+}
+.react-grid-item.cssTransforms {
+  height: auto !important;
+}
+
+// new notes
+.rs-notes--navbar,
+.rs-notes--header--button__add,
+.rs-notes--header--button__trash,
+.rs-notes--header--button__hideshow {
+  display: none !important;
+}
+
+.rs-notes {
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 300px !important;
+  height: 300px !important;
+  z-index: 50;
+}
+.rs-notes--note,
+.rs-notes--note__body {
+  width: 300px !important;
+  height: 300px !important;
+}
 
 // alert
 .success-alert {

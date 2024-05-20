@@ -81,6 +81,7 @@ const QuizHeader = ({
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [timer, setTimer] = useState(true)
   const [isUndoClicked, setIsUndoClicked] = useState(false)
 
@@ -88,6 +89,8 @@ const QuizHeader = ({
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
+      const getUserId = localStorage.getItem('userId')
+      setUSerID(getUserId)
     } else {
       navigate('/login')
     }
@@ -239,7 +242,6 @@ const QuizHeader = ({
         setIsLoading(false)
       })
   }
-
   return (
     <>
       <CHeader position="sticky" className="p-0 quiz-header px-4">
