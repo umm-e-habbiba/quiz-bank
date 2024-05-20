@@ -174,7 +174,9 @@ const AccordionQuestions = ({
                       : '(0 Selections for this option)'}
                   </span>
 
-                  <span className="text-right">{getPercentage(options[option] || 0)}%</span>
+                  <span className="text-right">
+                    {Math.round(getPercentage(options[option] || 0))}%
+                  </span>
                 </div>
               ),
           )}

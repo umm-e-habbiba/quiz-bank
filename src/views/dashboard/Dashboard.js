@@ -255,7 +255,7 @@ const Dashboard = () => {
                     </CCol>
                   </CRow>
                   <CRow>
-                    <CCol xs={12} md={6} xl={6}>
+                    <CCol xs={12} md={12} xl={12}>
                       <div className="pt-3">
                         {allQuiz && allQuiz.length > 0 ? (
                           <>

@@ -504,7 +504,7 @@ const ManageQuiz = () => {
           <CCardBody>
             {loader ? (
               <div className="text-center">
-                <CSpinner color="success" variant="grow" />
+                <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : (
               <CTable striped className="admin-tables">
@@ -944,6 +944,7 @@ const ManageQuiz = () => {
                       label="Correct Option"
                       aria-label="correct option"
                       id="correct"
+                      defaultValue={getValues('correct')}
                       options={
                         op6
                           ? [
@@ -967,7 +968,6 @@ const ManageQuiz = () => {
                       {...register('correct', { required: true })}
                       feedback="Please select correct option"
                       invalid={errors.correct ? true : false}
-                      defaultValue={getValues('correct')}
                     />
                   </CCol>
                 </CRow>

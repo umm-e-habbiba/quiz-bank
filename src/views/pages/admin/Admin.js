@@ -13,6 +13,7 @@ import {
   CCol,
   CProgress,
   CRow,
+  CSpinner,
   CTable,
   CTableBody,
   CTableDataCell,
@@ -65,6 +66,7 @@ const Admin = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const widgetChartRef1 = useRef(null)
   const widgetChartRef2 = useRef(null)
+  const [loader, setLoader] = useState(false)
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -92,6 +94,7 @@ const Admin = () => {
     })
   }, [widgetChartRef1, widgetChartRef2])
   const getAllUsers = () => {
+    setLoader(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     const requestOptions = {
@@ -104,109 +107,116 @@ const Admin = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
+        setLoader(false)
         if (result.data) {
           setAllUsers(result.data)
         }
       })
       .catch((error) => {
         console.error(error)
+        setLoader(false)
       })
   }
 
   return (
     <AdminLayout>
-      <div className="mx-4">
-        <CRow className="mb-4" xs={{ gutter: 4 }}>
-          <CCol sm={6} xl={4} xxl={3}>
-            <CWidgetStatsA
-              color="primary"
-              value={<>{allUsers.length}</>}
-              title="Users"
-              chart={
-                <CChartLine
-                  ref={widgetChartRef1}
-                  className="mt-3 mx-3"
-                  style={{ height: '70px' }}
-                  data={{
-                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                    datasets: [
-                      {
-                        label: 'My First dataset',
-                        backgroundColor: 'transparent',
-                        borderColor: 'rgba(255,255,255,.55)',
-                        pointBackgroundColor: getStyle('--cui-primary'),
-                        data: [65, 59, 84, 84, 51, 55, 40],
-                      },
-                    ],
-                  }}
-                  options={{
-                    plugins: {
-                      legend: {
-                        display: false,
-                      },
-                    },
-                    maintainAspectRatio: false,
-                    scales: {
-                      x: {
-                        border: {
-                          display: false,
+      {loader ? (
+        <div className="text-center">
+          <CSpinner className="bg-[#6261CC]" variant="grow" />
+        </div>
+      ) : (
+        <div className="mx-4">
+          <CRow className="mb-4" xs={{ gutter: 4 }}>
+            <CCol sm={6} xl={4} xxl={3}>
+              <CWidgetStatsA
+                color="primary"
+                value={<>{allUsers.length}</>}
+                title="Users"
+                chart={
+                  <CChartLine
+                    ref={widgetChartRef1}
+                    className="mt-3 mx-3"
+                    style={{ height: '70px' }}
+                    data={{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'transparent',
+                          borderColor: 'rgba(255,255,255,.55)',
+                          pointBackgroundColor: getStyle('--cui-primary'),
+                          data: [65, 59, 84, 84, 51, 55, 40],
                         },
-                        grid: {
-                          display: false,
-                          drawBorder: false,
-                        },
-                        ticks: {
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
                           display: false,
                         },
                       },
-                      y: {
-                        min: 30,
-                        max: 89,
-                        display: false,
-                        grid: {
-                          display: false,
+                      maintainAspectRatio: false,
+                      scales: {
+                        x: {
+                          border: {
+                            display: false,
+                          },
+                          grid: {
+                            display: false,
+                            drawBorder: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
                         },
-                        ticks: {
+                        y: {
+                          min: 30,
+                          max: 89,
                           display: false,
+                          grid: {
+                            display: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
                         },
                       },
-                    },
-                    elements: {
-                      line: {
-                        borderWidth: 1,
-                        tension: 0.4,
+                      elements: {
+                        line: {
+                          borderWidth: 1,
+                          tension: 0.4,
+                        },
+                        point: {
+                          radius: 4,
+                          hitRadius: 10,
+                          hoverRadius: 4,
+                        },
                       },
-                      point: {
-                        radius: 4,
-                        hitRadius: 10,
-                        hoverRadius: 4,
-                      },
-                    },
-                  }}
-                />
-              }
-            />
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol xs>
-            <CCard className="mb-4">
-              <CCardHeader>Users</CCardHeader>
-              <CCardBody>
-                <CTable align="middle" className="mb-0 border admin-tables" hover responsive>
-                  <CTableHead className="text-nowrap">
-                    <CTableRow>
-                      <CTableHeaderCell className="bg-body-tertiary text-center">
-                        <CIcon icon={cilPeople} />
-                      </CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                      <CTableHeaderCell className="bg-body-tertiary">
-                        Quiz Attempted
-                      </CTableHeaderCell>
-                    </CTableRow>
-                  </CTableHead>
-                  <CTableBody>
-                    {/* {tableExample.map((item, index) => (
+                    }}
+                  />
+                }
+              />
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol xs>
+              <CCard className="mb-4">
+                <CCardHeader>Users</CCardHeader>
+                <CCardBody>
+                  <CTable align="middle" className="mb-0 border admin-tables" hover responsive>
+                    <CTableHead className="text-nowrap">
+                      <CTableRow>
+                        <CTableHeaderCell className="bg-body-tertiary text-center">
+                          <CIcon icon={cilPeople} />
+                        </CTableHeaderCell>
+                        <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
+                        <CTableHeaderCell className="bg-body-tertiary">
+                          Quiz Attempted
+                        </CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      {/* {tableExample.map((item, index) => (
                       <CTableRow v-for="item in tableItems" key={index}>
                         <CTableDataCell className="text-center">
                           <CAvatar size="md" src={item.avatar.src} status={item.avatar.status} />
@@ -239,43 +249,44 @@ const Admin = () => {
                         </CTableDataCell>
                       </CTableRow>
                     ))} */}
-                    {allUsers && allUsers.length > 0
-                      ? allUsers.map((user, index) => (
-                          <CTableRow v-for="item in tableItems" key={index}>
-                            <CTableDataCell className="text-center">
-                              <CAvatar size="md" color="primary" textColor="white">
-                                {user.firstName.substring(0, 2)}
-                              </CAvatar>
-                            </CTableDataCell>
-                            <CTableDataCell>
-                              <div>{user.firstName + user.lastName}</div>
-                              <div className="small text-body-secondary text-nowrap">
-                                {user.email}
-                              </div>
-                            </CTableDataCell>
-                            <CTableDataCell>
-                              <div className="d-flex justify-content-between text-nowrap">
-                                <div className="fw-semibold">{user.attemptedQuizzes.length}</div>
-                                {/* <div className="ms-3">
+                      {allUsers && allUsers.length > 0
+                        ? allUsers.map((user, index) => (
+                            <CTableRow v-for="item in tableItems" key={index}>
+                              <CTableDataCell className="text-center">
+                                <CAvatar size="md" color="primary" textColor="white">
+                                  {user.firstName.substring(0, 2)}
+                                </CAvatar>
+                              </CTableDataCell>
+                              <CTableDataCell>
+                                <div>{user.firstName + user.lastName}</div>
+                                <div className="small text-body-secondary text-nowrap">
+                                  {user.email}
+                                </div>
+                              </CTableDataCell>
+                              <CTableDataCell>
+                                <div className="d-flex justify-content-between text-nowrap">
+                                  <div className="fw-semibold">{user.attemptedQuizzes.length}</div>
+                                  {/* <div className="ms-3">
                            <small className="text-body-secondary">{item.usage.period}</small>
                          </div> */}
-                              </div>
-                              <CProgress
-                                thin
-                                color="#4f4ea0"
-                                value={user.attemptedQuizzes.length}
-                              />
-                            </CTableDataCell>
-                          </CTableRow>
-                        ))
-                      : 'No users registered yet'}
-                  </CTableBody>
-                </CTable>
-              </CCardBody>
-            </CCard>
-          </CCol>
-        </CRow>
-      </div>
+                                </div>
+                                <CProgress
+                                  thin
+                                  color="#4f4ea0"
+                                  value={user.attemptedQuizzes.length}
+                                />
+                              </CTableDataCell>
+                            </CTableRow>
+                          ))
+                        : 'No users registered yet'}
+                    </CTableBody>
+                  </CTable>
+                </CCardBody>
+              </CCard>
+            </CCol>
+          </CRow>
+        </div>
+      )}
     </AdminLayout>
   )
 }

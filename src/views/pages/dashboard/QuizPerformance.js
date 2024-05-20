@@ -105,7 +105,7 @@ const QuizPerformance = () => {
                       </center>
                     </CCol>
                   ) : (
-                    <CCol md={6}>
+                    <CCol md={12}>
                       {noQuiz ? (
                         <div>No quizzes attempted yet</div>
                       ) : (

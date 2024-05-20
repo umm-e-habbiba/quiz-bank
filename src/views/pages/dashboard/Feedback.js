@@ -392,12 +392,7 @@ const Feedback = () => {
             //   </CButton>
             // </div>
           )}
-          <div className="flex justify-between items-center my-2 mt-4">
-            <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
-            <p className="text-2xl mb-1  no-wrap px-4 " style={{ whiteSpace: 'nowrap' }}>
-              Others Feedback
-            </p>
-            <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
+          <>
             {myFeedbacks && myFeedbacks.length > 0 ? (
               ''
             ) : (
@@ -411,7 +406,14 @@ const Feedback = () => {
                 Add Feedback
               </CButton>
             )}
-          </div>
+            <div className="flex justify-between items-center my-2 mt-4">
+              <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
+              <p className="text-2xl mb-1  no-wrap px-4 " style={{ whiteSpace: 'nowrap' }}>
+                Others Feedback
+              </p>
+              <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
+            </div>
+          </>
 
           {allFeedbacks && allFeedbacks.length > 0 ? (
             <CRow>
