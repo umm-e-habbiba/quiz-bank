@@ -585,36 +585,61 @@ const ReviewQuiz = () => {
               ) : (
                 ''
               )} */}
-                      <p className="mb-2">
-                        <span className="font-bold">(Choice A)</span>{' '}
-                        {allQuestion[currentQuestion]
-                          ? allQuestion[currentQuestion].questionId.optionOneExplanation
-                          : ''}
-                      </p>
-                      <p className="mb-2">
-                        <span className="font-bold">(Choice B)</span>{' '}
-                        {allQuestion[currentQuestion]
-                          ? allQuestion[currentQuestion].questionId.optionTwoExplanation
-                          : ''}
-                      </p>
-                      <p className="mb-2">
-                        <span className="font-bold">(Choice C)</span>{' '}
-                        {allQuestion[currentQuestion]
-                          ? allQuestion[currentQuestion].questionId.optionThreeExplanation
-                          : ''}
-                      </p>
-                      <p className="mb-3">
-                        <span className="font-bold">(Choice D)</span>{' '}
-                        {allQuestion[currentQuestion]
-                          ? allQuestion[currentQuestion].questionId.optionFourExplanation
-                          : ''}
-                      </p>
-                      <p className="mb-3">
-                        <span className="font-bold">(Choice E)</span>{' '}
-                        {allQuestion[currentQuestion]
-                          ? allQuestion[currentQuestion].questionId.optionFiveExplanation
-                          : ''}
-                      </p>
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.optionOneExplanation ? (
+                        <p className="mb-3">
+                          <span className="font-bold">(Choice A)</span>{' '}
+                          {allQuestion[currentQuestion]
+                            ? allQuestion[currentQuestion].questionId.optionOneExplanation
+                            : ''}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.optionTwoExplanation ? (
+                        <p className="mb-3">
+                          <span className="font-bold">(Choice B)</span>{' '}
+                          {allQuestion[currentQuestion]
+                            ? allQuestion[currentQuestion].questionId.optionTwoExplanation
+                            : ''}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.optionThreeExplanation ? (
+                        <p className="mb-3">
+                          <span className="font-bold">(Choice C)</span>{' '}
+                          {allQuestion[currentQuestion]
+                            ? allQuestion[currentQuestion].questionId.optionThreeExplanation
+                            : ''}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.optionFourExplanation ? (
+                        <p className="mb-3">
+                          <span className="font-bold">(Choice D)</span>{' '}
+                          {allQuestion[currentQuestion]
+                            ? allQuestion[currentQuestion].questionId.optionFourExplanation
+                            : ''}
+                        </p>
+                      ) : (
+                        ''
+                      )}
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.optionFiveExplanation ? (
+                        <p className="mb-3">
+                          <span className="font-bold">(Choice E)</span>{' '}
+                          {allQuestion[currentQuestion]
+                            ? allQuestion[currentQuestion].questionId.optionFiveExplanation
+                            : ''}
+                        </p>
+                      ) : (
+                        ''
+                      )}
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionSixExplanation ? (
                         <p className="mb-3">

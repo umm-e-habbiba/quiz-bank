@@ -26,6 +26,7 @@ import {
   CSpinner,
   CFormTextarea,
   CAlert,
+  CFormCheck,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilFilter, cilPencil, cilTrash } from '@coreui/icons'
@@ -40,6 +41,7 @@ import { RiEyeLine } from 'react-icons/ri'
 /// video player
 import '../../../../node_modules/video-react/dist/video-react.css' // import css
 import { Player } from 'video-react'
+import DropBox from 'src/components/admin/DropBox'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -71,6 +73,7 @@ const ManageQuiz = () => {
   const [detailModal, setDetailModal] = useState(false)
   const [viewModal, setViewModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [bulkDeleteModal, setBulkDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [imgLoader, setImgLoader] = useState(false)
@@ -94,12 +97,21 @@ const ManageQuiz = () => {
   const [expError, setExpError] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [op6, setOp6] = useState('')
+  const [op1Exp, setOp1Exp] = useState('')
+  const [op2Exp, setOp2Exp] = useState('')
+  const [op3Exp, setOp3Exp] = useState('')
+  const [op4Exp, setOp4Exp] = useState('')
+  const [op5Exp, setOp5Exp] = useState('')
   const [op6Exp, setOp6Exp] = useState('')
+  const [deleteIds, setDeleteIds] = useState([])
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
   const [filterUsmle, setFilterUsmle] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
   const [showFilteredResult, setShowFilteredResult] = useState(false)
+  const [file, setFile] = useState()
+  const [fileEnter, setFileEnter] = useState(false)
+  const [isCheck, setIsCheck] = useState(false)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -129,11 +141,6 @@ const ManageQuiz = () => {
       op5: '',
       correct: '',
       explaination: '',
-      op1Explain: '',
-      op2Explain: '',
-      op3Explain: '',
-      op4Explain: '',
-      op5Explain: '',
     },
   })
 
@@ -157,6 +164,9 @@ const ManageQuiz = () => {
   useEffect(() => {
     getQuestion()
   }, [questionId])
+  useEffect(() => {
+    console.log('delete id array is chnaged')
+  }, [deleteIds])
 
   const getAllQuest = () => {
     setLoader(true)
@@ -210,11 +220,21 @@ const ManageQuiz = () => {
     if (op6) {
       formdata.append('optionSix', op6)
     }
-    formdata.append('optionOneExplanation', data.op1Explain)
-    formdata.append('optionTwoExplanation', data.op2Explain)
-    formdata.append('optionThreeExplanation', data.op3Explain)
-    formdata.append('optionFourExplanation', data.op4Explain)
-    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op1Exp) {
+      formdata.append('optionOneExplanation', op1Exp)
+    }
+    if (op2Exp) {
+      formdata.append('optionTwoExplanation', op2Exp)
+    }
+    if (op3Exp) {
+      formdata.append('optionThreeExplanation', op3Exp)
+    }
+    if (op4Exp) {
+      formdata.append('optionFourExplanation', op4Exp)
+    }
+    if (op5Exp) {
+      formdata.append('optionFiveExplanation', op5Exp)
+    }
     if (op6Exp) {
       formdata.append('optionSixExplanation', op6Exp)
     }
@@ -280,13 +300,13 @@ const ManageQuiz = () => {
             op4: result.data.optionFour,
             op5: result.data.optionFive,
             correct: result.data.correctAnswer,
-            op1Explain: result.data.optionOneExplanation,
-            op2Explain: result.data.optionTwoExplanation,
-            op3Explain: result.data.optionThreeExplanation,
-            op4Explain: result.data.optionFourExplanation,
-            op5Explain: result.data.optionFiveExplanation,
           })
           setOp6(result.data.optionSix)
+          setOp1Exp(result.data.optionOneExplanation)
+          setOp2Exp(result.data.optionTwoExplanation)
+          setOp3Exp(result.data.optionThreeExplanation)
+          setOp4Exp(result.data.optionFourExplanation)
+          setOp5Exp(result.data.optionFiveExplanation)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
           setVideoSrc(result.data.video)
@@ -296,11 +316,56 @@ const ManageQuiz = () => {
       .catch((error) => console.log('error', error))
   }
 
-  const deleteQuestion = () => {
+  const bulkdeleteQuestion = () => {
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
     console.log(questionId)
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      mcqIds: deleteIds,
+    })
+
+    var requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      body: raw,
+    }
+
+    fetch(API_URL + 'delete-multiple-mcqs', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setIsLoading(false)
+        if (result.success) {
+          setBulkDeleteModal(false)
+          setShowFilteredResult(false)
+          getAllQuest()
+          setSuccess(true)
+          setDeleteIds([])
+          setSuccessMsg(result.message)
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setErrorr(true)
+          setErrorMsg(result.message)
+          setIsLoading(false)
+        }
+      })
+      .catch((error) => {
+        console.log('error', error)
+        setIsLoading(false)
+      })
+  }
+  const deleteQuestion = () => {
+    setIsLoading(true)
+    setErrorr(false)
+    setErrorMsg('')
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -354,11 +419,21 @@ const ManageQuiz = () => {
     if (op6) {
       formdata.append('optionSix', op6)
     }
-    formdata.append('optionOneExplanation', data.op1Explain)
-    formdata.append('optionTwoExplanation', data.op2Explain)
-    formdata.append('optionThreeExplanation', data.op3Explain)
-    formdata.append('optionFourExplanation', data.op4Explain)
-    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op1Exp) {
+      formdata.append('optionOneExplanation', op1Exp)
+    }
+    if (op2Exp) {
+      formdata.append('optionTwoExplanation', op2Exp)
+    }
+    if (op3Exp) {
+      formdata.append('optionThreeExplanation', op3Exp)
+    }
+    if (op4Exp) {
+      formdata.append('optionFourExplanation', op4Exp)
+    }
+    if (op5Exp) {
+      formdata.append('optionFiveExplanation', op5Exp)
+    }
     if (op6Exp) {
       formdata.append('optionSixExplanation', op6Exp)
     }
@@ -393,6 +468,7 @@ const ManageQuiz = () => {
         } else {
           setErrorr(true)
           setErrorMsg(result.message)
+          setIsLoading(false)
         }
       })
       .catch((error) => {
@@ -501,6 +577,41 @@ const ManageQuiz = () => {
     setFilteredQuestion(filtered_result)
     console.log(filtered_result)
   }
+  const handleCheckboxChange = (event) => {
+    if (event.target.checked) {
+      event.target.checked = true
+    } else {
+      event.target.checked = false
+    }
+    let newArray = [...deleteIds, event.target.id]
+    if (deleteIds.includes(event.target.id)) {
+      newArray = newArray.filter((id) => id !== event.target.id)
+    }
+    setDeleteIds(newArray)
+  }
+  const handleCheckboxChangeAll = (event) => {
+    if (event.target.checked) {
+      setIsCheck(true)
+      let checkboxes = document.querySelectorAll('.checkboxes')
+      checkboxes.forEach(function (checkbox) {
+        checkbox.checked = true
+      }, this)
+      if (showFilteredResult) {
+        let ids = filteredQuestion.map((item) => item._id)
+        setDeleteIds(ids)
+      } else {
+        let ids = allQuestion.map((item) => item._id)
+        setDeleteIds(ids)
+      }
+    } else {
+      setDeleteIds([])
+      setIsCheck(false)
+      let checkboxes = document.querySelectorAll('.checkboxes')
+      checkboxes.forEach(function (checkbox) {
+        checkbox.checked = false
+      }, this)
+    }
+  }
   return (
     <AdminLayout>
       <>
@@ -509,9 +620,13 @@ const ManageQuiz = () => {
             <div className="flex">
               <div className="flex flex-col">
                 <strong>Manage Questions</strong>
-                {!loader && allQuestion.length > 0 && (
-                  <span className="text-sm">Total {allQuestion.length} questions added</span>
-                )}
+                {!loader &&
+                  allQuestion.length > 0 &&
+                  (showFilteredResult ? (
+                    <span className="text-sm">Total {filteredQuestion.length} questions found</span>
+                  ) : (
+                    <span className="text-sm">Total {allQuestion.length} questions added</span>
+                  ))}
               </div>
               <div className="flex ml-6 justify-between items-center w-[500px]">
                 <CFormSelect
@@ -590,19 +705,31 @@ const ManageQuiz = () => {
                 </CButton>
               </div>
             </div>
-            <CButton
-              className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
-              onClick={() => {
-                setAddModal(true)
-                setIsLoading(false)
-                reset({})
-                setQuestionId('')
-                setErrorr(false)
-                setErrorMsg('')
-              }}
-            >
-              Add Question
-            </CButton>
+            <div className="flex justify-end items-center">
+              <CButton
+                className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
+                onClick={() => {
+                  setBulkDeleteModal(true)
+                  setErrorr(false)
+                  setErrorMsg('')
+                }}
+              >
+                Bulk Delete
+              </CButton>
+              <CButton
+                className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
+                onClick={() => {
+                  setAddModal(true)
+                  setIsLoading(false)
+                  reset({})
+                  setQuestionId('')
+                  setErrorr(false)
+                  setErrorMsg('')
+                }}
+              >
+                Add Question
+              </CButton>
+            </div>
           </CCardHeader>
           <CCardBody>
             {loader ? (
@@ -613,6 +740,15 @@ const ManageQuiz = () => {
               <CTable striped className="admin-tables">
                 <CTableHead>
                   <CTableRow>
+                    <CTableHeaderCell scope="col">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        // id={q._id}
+                        // value={q._id}
+                        onChange={(e) => handleCheckboxChangeAll(e)}
+                      />
+                    </CTableHeaderCell>
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
@@ -627,6 +763,18 @@ const ManageQuiz = () => {
                       filteredQuestion && filteredQuestion.length > 0 ? (
                         filteredQuestion.map((q, idx) => (
                           <CTableRow key={idx}>
+                            <CTableDataCell>
+                              <input
+                                type="checkbox"
+                                className="form-check-input checkboxes"
+                                id={q._id}
+                                value={q._id}
+                                onChange={(e) => handleCheckboxChange(e)}
+                                // checked={
+                                //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                                // }
+                              />
+                            </CTableDataCell>
                             <CTableHeaderCell className="cursor-pointer">
                               <span
                                 id={q._id}
@@ -699,7 +847,7 @@ const ManageQuiz = () => {
                         ))
                       ) : (
                         <CTableRow>
-                          <CTableDataCell className="text-center" colSpan={5}>
+                          <CTableDataCell className="text-center" colSpan={6}>
                             No records found <br />
                             <CButton color="link" onClick={() => setShowFilteredResult(false)}>
                               Show All
@@ -710,6 +858,18 @@ const ManageQuiz = () => {
                     ) : (
                       allQuestion.map((q, idx) => (
                         <CTableRow key={idx}>
+                          <CTableDataCell>
+                            <input
+                              type="checkbox"
+                              className="form-check-input checkboxes"
+                              id={q._id}
+                              value={q._id}
+                              onChange={(e) => handleCheckboxChange(e)}
+                              // checked={
+                              //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                              // }
+                            />
+                          </CTableDataCell>
                           <CTableHeaderCell className="cursor-pointer">
                             <span
                               id={q._id}
@@ -783,7 +943,7 @@ const ManageQuiz = () => {
                     )
                   ) : (
                     <CTableRow>
-                      <CTableDataCell className="text-center" colSpan={5}>
+                      <CTableDataCell className="text-center" colSpan={6}>
                         No Questions Found
                       </CTableDataCell>
                     </CTableRow>
@@ -1006,9 +1166,11 @@ const ManageQuiz = () => {
                         <CFormInput
                           placeholder="First option explaination"
                           type="text"
-                          {...register('op1Explain', { required: true })}
-                          feedback="Explaination of Option 1 is required"
-                          invalid={errors.op1Explain ? true : false}
+                          // {...register('op1Explain', { required: true })}
+                          // feedback="Explaination of Option 1 is required"
+                          // invalid={errors.op1Explain ? true : false}
+                          onChange={(e) => setOp1Exp(e.target.value)}
+                          value={op1Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -1028,9 +1190,11 @@ const ManageQuiz = () => {
                         <CFormInput
                           placeholder="Second option explaination"
                           type="text"
-                          {...register('op2Explain', { required: true })}
-                          feedback="Explaination of Option 2 is required"
-                          invalid={errors.op2Explain ? true : false}
+                          // {...register('op2Explain', { required: true })}
+                          // feedback="Explaination of Option 2 is required"
+                          // invalid={errors.op2Explain ? true : false}
+                          onChange={(e) => setOp2Exp(e.target.value)}
+                          value={op2Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -1050,9 +1214,11 @@ const ManageQuiz = () => {
                         <CFormInput
                           placeholder="Third option explaination"
                           type="text"
-                          {...register('op3Explain', { required: true })}
-                          feedback="Explaination of Option 3 is required"
-                          invalid={errors.op3Explain ? true : false}
+                          // {...register('op3Explain', { required: true })}
+                          // feedback="Explaination of Option 3 is required"
+                          // invalid={errors.op3Explain ? true : false}
+                          onChange={(e) => setOp3Exp(e.target.value)}
+                          value={op3Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -1074,9 +1240,11 @@ const ManageQuiz = () => {
                         <CFormInput
                           placeholder="Forth option explaination"
                           type="text"
-                          {...register('op4Explain', { required: true })}
-                          feedback="Explaination of Option 4 is required"
-                          invalid={errors.op4Explain ? true : false}
+                          // {...register('op4Explain', { required: true })}
+                          // feedback="Explaination of Option 4 is required"
+                          // invalid={errors.op4Explain ? true : false}
+                          onChange={(e) => setOp4Exp(e.target.value)}
+                          value={op4Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -1098,9 +1266,11 @@ const ManageQuiz = () => {
                         <CFormInput
                           placeholder="Fifth option explaination"
                           type="text"
-                          {...register('op5Explain', { required: true })}
-                          feedback="Explaination of Option 5 is required"
-                          invalid={errors.op5Explain ? true : false}
+                          // {...register('op5Explain', { required: true })}
+                          // feedback="Explaination of Option 5 is required"
+                          // invalid={errors.op5Explain ? true : false}
+                          onChange={(e) => setOp5Exp(e.target.value)}
+                          value={op5Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -1242,6 +1412,17 @@ const ManageQuiz = () => {
                 )}
                 {/* <CRow className="mb-3">
                   <CCol md={12}>
+                    <p className="form-label">Video</p>
+                    <DropBox
+                      file={questionId && video ? `${API_URL}uploads/videos/${video}` : video}
+                      setFile={setVideo}
+                      fileEnter={fileEnter}
+                      setFileEnter={setFileEnter}
+                    />
+                  </CCol>
+                </CRow> */}
+                {/* <CRow className="mb-3">
+                  <CCol md={12}>
                     <CFormInput
                       type="file"
                       id="formFile"
@@ -1294,6 +1475,30 @@ const ManageQuiz = () => {
               No
             </CButton>
             <CButton color="primary" onClick={deleteQuestion} disabled={loading ? true : false}>
+              {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
+            </CButton>
+          </CModalFooter>
+        </CModal>
+        {/* bulk delete modal */}
+        <CModal
+          alignment="center"
+          visible={bulkDeleteModal}
+          onClose={() => setBulkDeleteModal(false)}
+          aria-labelledby="VerticallyCenteredExample"
+          backdrop="static"
+        >
+          <CModalHeader>
+            <CModalTitle id="VerticallyCenteredExample">Delete Questions</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Are you sure to delete all selected questions?
+            {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => setBulkDeleteModal(false)}>
+              No
+            </CButton>
+            <CButton color="primary" onClick={bulkdeleteQuestion} disabled={loading ? true : false}>
               {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
             </CButton>
           </CModalFooter>
@@ -1388,19 +1593,40 @@ const ManageQuiz = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A. {getValues('op1Explain')}</span>
-                <br />
-                <span>B. {getValues('op2Explain')}</span>
-                <br />
-                <span>C. {getValues('op3Explain')}</span>
-                <br />
-                <span>D. {getValues('op4Explain')}</span>
-                <br />
-                <span>E. {getValues('op5Explain')}</span>
+                {op1Exp && (
+                  <>
+                    <span>A. {op1Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op2Exp && (
+                  <>
+                    <span>B. {op2Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op3Exp && (
+                  <>
+                    <span>C. {op3Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op4Exp && (
+                  <>
+                    <span>D. {op4Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op5Exp && (
+                  <>
+                    <span>E. {op5Exp}</span>
+                    <br />
+                  </>
+                )}
                 {op6Exp && (
                   <>
-                    <br />
                     <span>F. {op6Exp}</span>
+                    <br />
                   </>
                 )}
               </CCol>

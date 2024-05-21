@@ -36,6 +36,8 @@ import moment from 'moment'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import JoditEditor from 'jodit-react'
+import { FaRegEye } from 'react-icons/fa'
+import { RiEyeLine } from 'react-icons/ri'
 const Comments = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -86,6 +88,11 @@ const Comments = () => {
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [op6, setOp6] = useState('')
+  const [op1Exp, setOp1Exp] = useState('')
+  const [op2Exp, setOp2Exp] = useState('')
+  const [op3Exp, setOp3Exp] = useState('')
+  const [op4Exp, setOp4Exp] = useState('')
+  const [op5Exp, setOp5Exp] = useState('')
   const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [comments, setComments] = useState([])
@@ -118,11 +125,6 @@ const Comments = () => {
       op5: '',
       correct: '',
       explaination: '',
-      op1Explain: '',
-      op2Explain: '',
-      op3Explain: '',
-      op4Explain: '',
-      op5Explain: '',
     },
   })
 
@@ -196,13 +198,13 @@ const Comments = () => {
             op4: result.data.optionFour,
             op5: result.data.optionFive,
             correct: result.data.correctAnswer,
-            op1Explain: result.data.optionOneExplanation,
-            op2Explain: result.data.optionTwoExplanation,
-            op3Explain: result.data.optionThreeExplanation,
-            op4Explain: result.data.optionFourExplanation,
-            op5Explain: result.data.optionFiveExplanation,
           })
           setOp6(result.data.optionSix)
+          setOp1Exp(result.data.optionOneExplanation)
+          setOp2Exp(result.data.optionTwoExplanation)
+          setOp3Exp(result.data.optionThreeExplanation)
+          setOp4Exp(result.data.optionFourExplanation)
+          setOp5Exp(result.data.optionFiveExplanation)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
           setVideoSrc(result.data.video)
@@ -269,11 +271,21 @@ const Comments = () => {
     if (op6) {
       formdata.append('optionSix', op6)
     }
-    formdata.append('optionOneExplanation', data.op1Explain)
-    formdata.append('optionTwoExplanation', data.op2Explain)
-    formdata.append('optionThreeExplanation', data.op3Explain)
-    formdata.append('optionFourExplanation', data.op4Explain)
-    formdata.append('optionFiveExplanation', data.op5Explain)
+    if (op1Exp) {
+      formdata.append('optionOneExplanation', op1Exp)
+    }
+    if (op2Exp) {
+      formdata.append('optionTwoExplanation', op2Exp)
+    }
+    if (op3Exp) {
+      formdata.append('optionThreeExplanation', op3Exp)
+    }
+    if (op4Exp) {
+      formdata.append('optionFourExplanation', op4Exp)
+    }
+    if (op5Exp) {
+      formdata.append('optionFiveExplanation', op5Exp)
+    }
     if (op6Exp) {
       formdata.append('optionSixExplanation', op6Exp)
     }
@@ -426,14 +438,14 @@ const Comments = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableHeaderCell className="cursor-pointer">
+                        <CTableHeaderCell>
                           <span
-                            id={q._id}
-                            onClick={(e) => {
-                              setDetailModal(true)
-                              setComments(q.comments)
-                              setQuestionId(e.currentTarget.id)
-                            }}
+                            // id={q._id}
+                            // onClick={(e) => {
+                            //   setDetailModal(true)
+                            //   setComments(q.comments)
+                            //   setQuestionId(e.currentTarget.id)
+                            // }}
                             dangerouslySetInnerHTML={{
                               __html:
                                 q.question.length > 100
@@ -456,7 +468,20 @@ const Comments = () => {
                           />
                         </CTableDataCell> */}
                         <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell className="flex justify-center items-center">
+                        <CTableDataCell className="flex justify-start items-center">
+                          <CButton
+                            color="primary"
+                            className="text-white my-2 mr-2 py-2"
+                            id={q._id}
+                            onClick={(e) => {
+                              setDetailModal(true)
+                              setComments(q.comments)
+                              setQuestionId(e.currentTarget.id)
+                              console.log('view called', questionId, 'id', e.currentTarget.id)
+                            }}
+                          >
+                            <RiEyeLine className="text-[20px]" />
+                          </CButton>
                           <CButton
                             color="info"
                             className="text-white mr-1 my-2"
@@ -711,9 +736,11 @@ const Comments = () => {
                         <CFormInput
                           placeholder="First option explaination"
                           type="text"
-                          {...register('op1Explain', { required: true })}
-                          feedback="Explaination of Option 1 is required"
-                          invalid={errors.op1Explain ? true : false}
+                          // {...register('op1Explain', { required: true })}
+                          // feedback="Explaination of Option 1 is required"
+                          // invalid={errors.op1Explain ? true : false}
+                          onChange={(e) => setOp1Exp(e.target.value)}
+                          value={op1Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -733,9 +760,11 @@ const Comments = () => {
                         <CFormInput
                           placeholder="Second option explaination"
                           type="text"
-                          {...register('op2Explain', { required: true })}
-                          feedback="Explaination of Option 2 is required"
-                          invalid={errors.op2Explain ? true : false}
+                          // {...register('op2Explain', { required: true })}
+                          // feedback="Explaination of Option 2 is required"
+                          // invalid={errors.op2Explain ? true : false}
+                          onChange={(e) => setOp2Exp(e.target.value)}
+                          value={op2Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -755,9 +784,11 @@ const Comments = () => {
                         <CFormInput
                           placeholder="Third option explaination"
                           type="text"
-                          {...register('op3Explain', { required: true })}
-                          feedback="Explaination of Option 3 is required"
-                          invalid={errors.op3Explain ? true : false}
+                          // {...register('op3Explain', { required: true })}
+                          // feedback="Explaination of Option 3 is required"
+                          // invalid={errors.op3Explain ? true : false}
+                          onChange={(e) => setOp3Exp(e.target.value)}
+                          value={op3Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -779,9 +810,11 @@ const Comments = () => {
                         <CFormInput
                           placeholder="Forth option explaination"
                           type="text"
-                          {...register('op4Explain', { required: true })}
-                          feedback="Explaination of Option 4 is required"
-                          invalid={errors.op4Explain ? true : false}
+                          // {...register('op4Explain', { required: true })}
+                          // feedback="Explaination of Option 4 is required"
+                          // invalid={errors.op4Explain ? true : false}
+                          onChange={(e) => setOp4Exp(e.target.value)}
+                          value={op4Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -803,9 +836,11 @@ const Comments = () => {
                         <CFormInput
                           placeholder="Fifth option explaination"
                           type="text"
-                          {...register('op5Explain', { required: true })}
-                          feedback="Explaination of Option 5 is required"
-                          invalid={errors.op5Explain ? true : false}
+                          // {...register('op5Explain', { required: true })}
+                          // feedback="Explaination of Option 5 is required"
+                          // invalid={errors.op5Explain ? true : false}
+                          onChange={(e) => setOp5Exp(e.target.value)}
+                          value={op5Exp}
                           className="mb-2"
                         />
                       </CCol>
@@ -990,14 +1025,14 @@ const Comments = () => {
           backdrop="static"
           onClose={() => {
             setDetailModal(false)
-            reset({})
-            setImage('')
-            setOp6('')
-            setOp6Exp('')
-            setComments([])
+            // reset({})
+            // setImage('')
+            // setOp6('')
+            // setOp6Exp('')
+            // setComments([])
           }}
           aria-labelledby="VerticallyCenteredExample"
-          size="lg"
+          size="xl"
         >
           <CModalHeader>
             <CModalTitle id="VerticallyCenteredExample">Question Details</CModalTitle>
@@ -1060,7 +1095,11 @@ const Comments = () => {
                 <strong>Explanation</strong>
               </CCol>
               <CCol md={10}>
-                <span>{getValues('explaination')}</span>
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: getValues('explaination'),
+                  }}
+                ></span>
               </CCol>
             </CRow>
             <CRow className="mb-2">
@@ -1068,15 +1107,36 @@ const Comments = () => {
                 <strong>Explained Options</strong>
               </CCol>
               <CCol md={10}>
-                <span>A. {getValues('op1Explain')}</span>
-                <br />
-                <span>B. {getValues('op2Explain')}</span>
-                <br />
-                <span>C. {getValues('op3Explain')}</span>
-                <br />
-                <span>D. {getValues('op4Explain')}</span>
-                <br />
-                <span>E. {getValues('op5Explain')}</span>
+                {op1Exp && (
+                  <>
+                    <span>A. {op1Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op2Exp && (
+                  <>
+                    <span>B. {op2Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op3Exp && (
+                  <>
+                    <span>C. {op3Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op4Exp && (
+                  <>
+                    <span>D. {op4Exp}</span>
+                    <br />
+                  </>
+                )}
+                {op5Exp && (
+                  <>
+                    <span>E. {op5Exp}</span>
+                    <br />
+                  </>
+                )}
                 {op6Exp && (
                   <>
                     <br />
@@ -1093,7 +1153,7 @@ const Comments = () => {
                 <span>{getValues('correct')}</span>
               </CCol>
             </CRow>
-            <CRow className="mb-2">
+            <CRow className="bg-red-300 p-2 rounded-md mb-2">
               <CCol md={2}>
                 <strong>Comments</strong>
               </CCol>
@@ -1128,11 +1188,11 @@ const Comments = () => {
               color="secondary"
               onClick={() => {
                 setDetailModal(false)
-                reset({})
-                setImage('')
-                setOp6('')
-                setOp6Exp('')
-                setComments([])
+                // reset({})
+                // setImage('')
+                // setOp6('')
+                // setOp6Exp('')
+                // setComments([])
               }}
             >
               Close

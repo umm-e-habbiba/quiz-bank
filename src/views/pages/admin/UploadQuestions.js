@@ -68,7 +68,47 @@ const UploadQuestions = () => {
     }
   }, [])
   const uploadQuestion = (data) => {
-    console.log(data)
+    console.log('upload function called', data)
+    setIsLoading(true)
+    setErrorr(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('file', data.excelfile[0])
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'upload-questions', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setIsLoading(false)
+        if (result.success) {
+          reset({})
+          setSuccess(true)
+          setSuccessMsg('Questions added successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+            navigate('/manage-quiz')
+          }, 3000)
+        } else {
+          setErrorr(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
   }
   return (
     <AdminLayout>
@@ -165,7 +205,7 @@ const UploadQuestions = () => {
           </CRow>
           {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
           <CButton color="primary" type="submit" disabled={loading ? true : false}>
-            {loading ? <CSpinner color="light" size="sm" /> : 'Add'}
+            {loading ? <CSpinner color="light" size="sm" /> : 'Upload'}
           </CButton>
         </CForm>
       </div>

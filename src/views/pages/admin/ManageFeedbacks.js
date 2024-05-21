@@ -37,6 +37,7 @@ import AdminLayout from 'src/layout/AdminLayout'
 import moment from 'moment'
 import { FaRegEye } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
+import { RiEyeLine } from 'react-icons/ri'
 const ManageFeedbacks = () => {
   const navigate = useNavigate()
   const [allFeedbacks, setAllFeedbacks] = useState([])
@@ -192,7 +193,7 @@ const ManageFeedbacks = () => {
                             className="text-white my-2 mr-2 py-2"
                             onClick={() => openFeedbackModal(feedback)}
                           >
-                            <FaRegEye className="text-[20px]" />
+                            <RiEyeLine className="text-[20px]" />
                           </CButton>
                           <CButton
                             color="danger"
