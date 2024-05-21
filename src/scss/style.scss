@@ -88,6 +88,54 @@
   position: fixed !important;
   right: 0;
   bottom: 0;
+  width: 250px !important;
+  height: 250px !important;
+}
+.react-stickies-wrapper .note-body {
+  height: 250px !important;
+  overflow-y: auto !important;
+}
+/* width */
+.react-stickies-wrapper .note-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+.react-stickies-wrapper .note-body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+}
+
+/* Handle */
+.react-stickies-wrapper .note-body::-webkit-scrollbar-thumb {
+  background: gray;
+}
+
+/* Handle on hover */
+// .react-stickies-wrapper .note-body::-webkit-scrollbar-thumb:hover {
+//   background: #b30000;
+// }
+.react-grid-item.cssTransforms {
+  height: auto !important;
+}
+
+// new notes
+.rs-notes--navbar,
+.rs-notes--header--button__add,
+.rs-notes--header--button__trash,
+.rs-notes--header--button__hideshow {
+  display: none !important;
+}
+
+.rs-notes {
+  position: fixed !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 300px !important;
+  height: 300px !important;
+  z-index: 50;
+}
+.rs-notes--note,
+.rs-notes--note__body {
   width: 300px !important;
   height: 300px !important;
 }
