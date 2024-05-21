@@ -9,6 +9,7 @@ import Donations from './views/pages/dashboard/Donations'
 import Feedback from './views/pages/dashboard/Feedback'
 import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
+import UploadQuestions from './views/pages/admin/UploadQuestions'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -26,6 +27,7 @@ const routes = [
   { path: '/feedback', name: 'Feedback', element: Feedback },
   { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
   { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
+  { path: '/upload-questions', name: 'Upload Questions', element: UploadQuestions },
 ]
 
 export default routes

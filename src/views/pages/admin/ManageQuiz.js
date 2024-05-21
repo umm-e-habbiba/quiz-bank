@@ -28,7 +28,7 @@ import {
   CAlert,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilPencil, cilTrash } from '@coreui/icons'
+import { cilFilter, cilPencil, cilTrash } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
@@ -66,6 +66,7 @@ const ManageQuiz = () => {
   //////
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
+  const [filteredQuestion, setFilteredQuestion] = useState([])
   const [addModal, setAddModal] = useState(false)
   const [detailModal, setDetailModal] = useState(false)
   const [viewModal, setViewModal] = useState(false)
@@ -96,6 +97,9 @@ const ManageQuiz = () => {
   const [op6Exp, setOp6Exp] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
+  const [filterUsmle, setFilterUsmle] = useState('')
+  const [filterCategory, setFilterCategory] = useState('')
+  const [showFilteredResult, setShowFilteredResult] = useState(false)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -476,16 +480,115 @@ const ManageQuiz = () => {
     // setVideoSrc(url)
     // console.log('video url', url)
   }
+  const getFilteredQuestions = () => {
+    console.log('step', filterUsmle, 'category', filterCategory)
+    let filtered_result = []
+    if (filterUsmle && filterCategory) {
+      filtered_result = allQuestion.filter(
+        (ques) => ques.usmleStep == filterUsmle && ques.USMLE == filterCategory,
+      )
+      setShowFilteredResult(true)
+    } else {
+      if (filterUsmle) {
+        filtered_result = allQuestion.filter((ques) => ques.usmleStep == filterUsmle)
+        setShowFilteredResult(true)
+      }
+      if (filterCategory) {
+        filtered_result = allQuestion.filter((ques) => ques.USMLE == filterCategory)
+        setShowFilteredResult(true)
+      }
+    }
+    setFilteredQuestion(filtered_result)
+    console.log(filtered_result)
+  }
   return (
     <AdminLayout>
       <>
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
-            <div className="flex flex-col">
-              <strong>Manage Questions</strong>
-              {!loader && allQuestion.length > 0 && (
-                <span className="text-sm">Total {allQuestion.length} questions added</span>
-              )}
+            <div className="flex">
+              <div className="flex flex-col">
+                <strong>Manage Questions</strong>
+                {!loader && allQuestion.length > 0 && (
+                  <span className="text-sm">Total {allQuestion.length} questions added</span>
+                )}
+              </div>
+              <div className="flex ml-6 justify-between items-center w-[500px]">
+                <CFormSelect
+                  aria-label="usmle step"
+                  id="usmleStep"
+                  options={[
+                    { label: 'USMLE Step', value: '' },
+                    { label: 'Step 1', value: '1' },
+                    { label: 'Step 2', value: '2' },
+                    { label: 'Step 3', value: '3' },
+                  ]}
+                  value={filterUsmle}
+                  onChange={(e) => {
+                    setFilterUsmle(e.target.value)
+                    setFilterCategory('')
+                  }}
+                  className="mr-3 w-full"
+                />
+                <CFormSelect
+                  aria-label="usmle category"
+                  id="usmleCategory"
+                  defaultValue={getValues('usmleCategory')}
+                  className="mr-3 w-full"
+                  options={
+                    filterUsmle == '1'
+                      ? [
+                          { label: 'USMLE Category', value: '' },
+                          { label: 'Microbiology', value: 'Microbiology' },
+                          { label: 'Immunology', value: 'Immunology' },
+                          { label: 'Histology', value: 'Histology' },
+                          { label: 'Anatomy', value: 'Anatomy' },
+                          { label: 'Physiology', value: 'Physiology' },
+                          { label: 'Embryology', value: 'Embryology' },
+                          { label: 'Biochemistry', value: 'Biochemistry' },
+                        ]
+                      : filterUsmle == '2'
+                        ? [
+                            { label: 'USMLE Category', value: '' },
+                            { label: 'Internal Medicine', value: 'Internal Medicine' },
+                            { label: 'Surgery', value: 'Surgery' },
+                            { label: 'Pediatrics', value: 'Pediatrics' },
+                            {
+                              label: 'Obstetrics and Gynecology',
+                              value: 'Obstetrics and Gynecology',
+                            },
+                            { label: 'Psychiatry', value: 'Psychiatry' },
+                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                            { label: 'Family Medicine', value: 'Family Medicine' },
+                          ]
+                        : filterUsmle == '3'
+                          ? [
+                              { label: 'USMLE Category', value: '' },
+                              { label: 'Internal Medicine', value: 'Internal Medicine' },
+                              { label: 'Surgery', value: 'Surgery' },
+                              { label: 'Pediatrics', value: 'Pediatrics' },
+                              {
+                                label: 'Obstetrics and Gynecology',
+                                value: 'Obstetrics and Gynecology',
+                              },
+                              { label: 'Psychiatry', value: 'Psychiatry' },
+                              { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                              { label: 'Family Medicine', value: 'Family Medicine' },
+                            ]
+                          : [{ label: 'USMLE Category', value: '' }]
+                  }
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                />
+                <CButton
+                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
+                  onClick={() => {
+                    getFilteredQuestions()
+                  }}
+                >
+                  <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
+                </CButton>
+              </div>
             </div>
             <CButton
               className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
@@ -520,78 +623,164 @@ const ManageQuiz = () => {
                 </CTableHead>
                 <CTableBody>
                   {allQuestion && allQuestion.length > 0 ? (
-                    allQuestion.map((q, idx) => (
-                      <CTableRow key={idx}>
-                        <CTableHeaderCell className="cursor-pointer">
-                          <span
-                            id={q._id}
-                            onClick={(e) => {
-                              setDetailModal(true)
-                              setQuestionId(e.currentTarget.id)
-                            }}
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                q.question.length > 100
-                                  ? q.question.substring(0, 100) + '...'
-                                  : q.question,
-                            }}
-                          >
-                            {/* {q.question.length > 100
+                    showFilteredResult ? (
+                      filteredQuestion && filteredQuestion.length > 0 ? (
+                        filteredQuestion.map((q, idx) => (
+                          <CTableRow key={idx}>
+                            <CTableHeaderCell className="cursor-pointer">
+                              <span
+                                id={q._id}
+                                onClick={(e) => {
+                                  setDetailModal(true)
+                                  setQuestionId(e.currentTarget.id)
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    q.question.length > 100
+                                      ? q.question.substring(0, 100) + '...'
+                                      : q.question,
+                                }}
+                              >
+                                {/* {q.question.length > 100
+                                ? q.question.substring(0, 100) + '...'
+                                : q.question} */}
+                              </span>
+                            </CTableHeaderCell>
+                            <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                            <CTableDataCell>{q.USMLE}</CTableDataCell>
+                            {/* <CTableDataCell>
+                            <img
+                              src={`${API_URL}uploads/${q.image}`}
+                              alt="mcq img"
+                              className="w-6 h-6 rounded-full"
+                            />
+                          </CTableDataCell> */}
+                            <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                            <CTableDataCell className="flex justify-start items-center">
+                              <CButton
+                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setViewModal(true)
+                                  setQuestionId(e.currentTarget.id)
+                                }}
+                                title="View"
+                              >
+                                <RiEyeLine className="my-1" />
+                              </CButton>
+                              <CButton
+                                color="info"
+                                className="text-white mr-3 my-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setAddModal(true)
+                                  setQuestionId(e.currentTarget.id)
+                                  setErrorr(false)
+                                  setErrorMsg('')
+                                }}
+                              >
+                                <CIcon icon={cilPencil} />
+                              </CButton>
+                              <CButton
+                                color="danger"
+                                className="text-white my-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setDeleteModal(true)
+                                  setQuestionId(e.currentTarget.id)
+                                  setErrorr(false)
+                                  setErrorMsg('')
+                                }}
+                              >
+                                <CIcon icon={cilTrash} />
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))
+                      ) : (
+                        <CTableRow>
+                          <CTableDataCell className="text-center" colSpan={5}>
+                            No records found <br />
+                            <CButton color="link" onClick={() => setShowFilteredResult(false)}>
+                              Show All
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      )
+                    ) : (
+                      allQuestion.map((q, idx) => (
+                        <CTableRow key={idx}>
+                          <CTableHeaderCell className="cursor-pointer">
+                            <span
+                              id={q._id}
+                              onClick={(e) => {
+                                setDetailModal(true)
+                                setQuestionId(e.currentTarget.id)
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  q.question.length > 100
+                                    ? q.question.substring(0, 100) + '...'
+                                    : q.question,
+                              }}
+                            >
+                              {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                          </span>
-                        </CTableHeaderCell>
-                        <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                        <CTableDataCell>{q.USMLE}</CTableDataCell>
-                        {/* <CTableDataCell>
+                            </span>
+                          </CTableHeaderCell>
+                          <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                          <CTableDataCell>{q.USMLE}</CTableDataCell>
+                          {/* <CTableDataCell>
                           <img
                             src={`${API_URL}uploads/${q.image}`}
                             alt="mcq img"
                             className="w-6 h-6 rounded-full"
                           />
                         </CTableDataCell> */}
-                        <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell className="flex justify-start items-center">
-                          <CButton
-                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setViewModal(true)
-                              setQuestionId(e.currentTarget.id)
-                            }}
-                            title="View"
-                          >
-                            <RiEyeLine className="my-1" />
-                          </CButton>
-                          <CButton
-                            color="info"
-                            className="text-white mr-3 my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setAddModal(true)
-                              setQuestionId(e.currentTarget.id)
-                              setErrorr(false)
-                              setErrorMsg('')
-                            }}
-                          >
-                            <CIcon icon={cilPencil} />
-                          </CButton>
-                          <CButton
-                            color="danger"
-                            className="text-white my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setDeleteModal(true)
-                              setQuestionId(e.currentTarget.id)
-                              setErrorr(false)
-                              setErrorMsg('')
-                            }}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
-                        </CTableDataCell>
-                      </CTableRow>
-                    ))
+                          <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                          <CTableDataCell className="flex justify-start items-center">
+                            <CButton
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setViewModal(true)
+                                setQuestionId(e.currentTarget.id)
+                              }}
+                              title="View"
+                            >
+                              <RiEyeLine className="my-1" />
+                            </CButton>
+                            <CButton
+                              color="info"
+                              className="text-white mr-3 my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setAddModal(true)
+                                setQuestionId(e.currentTarget.id)
+                                setErrorr(false)
+                                setErrorMsg('')
+                              }}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                            <CButton
+                              color="danger"
+                              className="text-white my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setDeleteModal(true)
+                                setQuestionId(e.currentTarget.id)
+                                setErrorr(false)
+                                setErrorMsg('')
+                              }}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))
+                    )
                   ) : (
                     <CTableRow>
                       <CTableDataCell className="text-center" colSpan={5}>
