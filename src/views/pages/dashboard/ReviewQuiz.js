@@ -576,15 +576,16 @@ const ReviewQuiz = () => {
                         allQuestion[currentQuestion].questionId.video && (
                           <video controls ref={videoRef} className="my-3"></video>
                         )}
-                      {/* {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId.image ? (
-                <img
-                  src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.image}`}
-                  alt="question image"
-                  className="w-96 h-64"
-                />
-              ) : (
-                ''
-              )} */}
+                      {allQuestion[currentQuestion] &&
+                      allQuestion[currentQuestion].questionId.imageTwo ? (
+                        <img
+                          src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                          alt="question explanation image"
+                          className="my-3"
+                        />
+                      ) : (
+                        ''
+                      )}
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionOneExplanation ? (
                         <p className="mb-3">
