@@ -26,6 +26,8 @@ import {
   CSpinner,
   CFormTextarea,
   CAlert,
+  CProgress,
+  CProgressBar,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilPencil, cilTrash } from '@coreui/icons'
@@ -41,6 +43,7 @@ const UploadQuestions = () => {
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [loading, setIsLoading] = useState(false)
+  const [percent, setPercent] = useState(0)
   const {
     register,
     handleSubmit,
@@ -85,8 +88,39 @@ const UploadQuestions = () => {
       headers: myHeaders,
       redirect: 'follow',
     }
-
+    // const fill = document.querySelector('.progress-bar-fill')
+    // const text = document.querySelector('.progress-text')
     fetch(API_URL + 'upload-questions', requestOptions)
+      .then((response) => {
+        const contentLength = response.headers.get('content-length')
+        let loaded = 0
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              const reader = response.body.getReader()
+              read()
+              function read() {
+                reader.read().then((progressEvent) => {
+                  if (progressEvent.done) {
+                    controller.close()
+                    return
+                  }
+                  loaded += progressEvent.value.byteLength
+
+                  const percentageComplete = Math.round((loaded / contentLength) * 100)
+                  setPercent(percentageComplete)
+                  // fill.style.width = percentageComplete
+                  // text.innerText = percentageComplete
+                  // Calculates % complete and updates progress bar and print text to DOM
+                  console.log(percentageComplete)
+                  controller.enqueue(progressEvent.value)
+                  read()
+                })
+              }
+            },
+          }),
+        )
+      })
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -204,6 +238,15 @@ const UploadQuestions = () => {
             </CCol>
           </CRow>
           {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
+          {/* {loading ? (
+            <CProgress color="primary" value={percent} className="my-3">
+              <CProgressBar>{percent}%</CProgressBar>
+            </CProgress>
+          ) : (
+            <CButton color="primary" type="submit" disabled={loading ? true : false}>
+              {loading ? <CSpinner color="light" size="sm" /> : 'Upload'}
+            </CButton>
+          )} */}
           <CButton color="primary" type="submit" disabled={loading ? true : false}>
             {loading ? <CSpinner color="light" size="sm" /> : 'Upload'}
           </CButton>

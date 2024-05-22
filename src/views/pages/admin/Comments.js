@@ -70,8 +70,10 @@ const Comments = () => {
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [imgLoader, setImgLoader] = useState(false)
+  const [img2Loader, setImg2Loader] = useState(false)
   const [questionId, setQuestionId] = useState('')
   const [image, setImage] = useState('')
+  const [image2, setImage2] = useState('')
   const [videoLoader, setVideoLoader] = useState(false)
   const [videoSrc, setVideoSrc] = useState('')
   const [video, setVideo] = useState('')
@@ -207,6 +209,7 @@ const Comments = () => {
           setOp5Exp(result.data.optionFiveExplanation)
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
+          setImage2(result.data.imageTwo)
           setVideoSrc(result.data.video)
           setVideo(result.data.video)
         }
@@ -263,6 +266,7 @@ const Comments = () => {
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
     formdata.append('image', image)
+    formdata.append('imageTwo', image2)
     formdata.append('video', video)
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
@@ -306,6 +310,7 @@ const Comments = () => {
           getAllQuest()
           setQuestionId('')
           setImage('')
+          setImage2('')
           setVideo('')
           setVideoSrc('')
           setOp6('')
@@ -364,6 +369,42 @@ const Comments = () => {
       .catch((error) => {
         console.error(error)
         setImgLoader(false)
+      })
+  }
+  const deleteImage2 = () => {
+    console.log('delete image', questionId)
+    setImg2Loader(true)
+    setError(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setImg2Loader(false)
+          getQuestion()
+          setSuccess(true)
+          setSuccessMsg('Image deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setImg2Loader(false)
       })
   }
   const deleteVideo = () => {
@@ -937,6 +978,46 @@ const Comments = () => {
                         id="formFile"
                         label="Image"
                         onChange={(e) => setImage(e.target.files[0])}
+                      />
+                    </CCol>
+                  </CRow>
+                )}
+                {image2 ? (
+                  <CRow className="mb-3">
+                    <CCol md={6}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Change Explanation Image"
+                        onChange={(e) => setImage2(e.target.files[0])}
+                      />
+                      <CButton
+                        color="danger"
+                        onClick={deleteImage2}
+                        className="mt-3"
+                        disabled={img2Loader ? true : false}
+                      >
+                        {img2Loader ? <CSpinner color="light" size="sm" /> : 'Delete Image'}
+                      </CButton>
+                    </CCol>
+                    <CCol md={6}>
+                      <center>
+                        <img
+                          src={`${API_URL}uploads/${image2}`}
+                          alt="image"
+                          className="w-52 h-36 rounded-full"
+                        />
+                      </center>
+                    </CCol>
+                  </CRow>
+                ) : (
+                  <CRow className="mb-3">
+                    <CCol md={12}>
+                      <CFormInput
+                        type="file"
+                        id="formFile"
+                        label="Explanation Image"
+                        onChange={(e) => setImage2(e.target.files[0])}
                       />
                     </CCol>
                   </CRow>
