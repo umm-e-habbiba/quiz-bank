@@ -421,10 +421,10 @@ const QuizLayout = () => {
       filteredQuestionBackup,
     )
     let start = true
-    if (totalQuest > 100 || totalQuest < 1) {
+    if (totalQuest < 1) {
       start = false
       setError(true)
-      setErrorMsg('Please enter number between 1 and 100')
+      setErrorMsg('Please enter number greater than 1')
       setTimeout(() => {
         setError(false)
         setErrorMsg('')
