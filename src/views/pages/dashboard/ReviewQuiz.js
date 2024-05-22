@@ -304,11 +304,18 @@ const ReviewQuiz = () => {
                       : ''} */}
                           </p>
                           {allQuestion[currentQuestion].questionId.image && (
-                            <img
-                              src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
-                              alt="question image"
-                              className="mb-3"
-                            />
+                            <div>
+                              <img
+                                src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
+                                alt="question image"
+                                className="mb-3"
+                              />
+                              <img
+                                src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                                alt="question image"
+                                className="mb-3"
+                              />
+                            </div>
                           )}
                           {/* {allQuestion[currentQuestion].questionId.video && (
                             <video controls>
