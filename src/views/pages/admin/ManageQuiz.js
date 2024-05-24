@@ -749,6 +749,7 @@ const ManageQuiz = () => {
                     onClick={() => {
                       setFilterUsmle('')
                       setFilterCategory('')
+                      setShowFilteredResult(false)
                     }}
                   >
                     Clear
