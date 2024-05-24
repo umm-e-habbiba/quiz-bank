@@ -201,6 +201,7 @@ const AttemptedQuestions = () => {
               <CNavLink
                 href="#!"
                 active={activeKey === 1}
+                className={activeKey === 1 ? 'active' : 'text-gray-400'}
                 onClick={() => {
                   setActiveKey(1)
                   setShowstep1Topics(true)
@@ -211,13 +212,14 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step One <span className="text-yellow-800">({step1Questions} Qs)</span>
+                USMLE Step 1 <span className="text-yellow-800">({step1Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
             <CNavItem>
               <CNavLink
                 href="#!"
                 active={activeKey === 2}
+                className={activeKey === 2 ? 'active' : 'text-gray-400'}
                 onClick={() => {
                   setActiveKey(2)
                   setShowstep1Topics(false)
@@ -228,12 +230,13 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step Two <span className="text-yellow-800">({step2Questions} Qs)</span>
+                USMLE Step 2 <span className="text-yellow-800">({step2Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
             <CNavItem>
               <CNavLink
                 href="#!"
+                className={activeKey === 3 ? 'active' : 'text-gray-400'}
                 active={activeKey === 3}
                 onClick={() => {
                   setActiveKey(3)
@@ -245,7 +248,7 @@ const AttemptedQuestions = () => {
                   setShowstep3Ques(false)
                 }}
               >
-                Step Three <span className="text-yellow-800">({step3Questions} Qs)</span>
+                USMLE Step 3 <span className="text-yellow-800">({step3Questions} Qs)</span>
               </CNavLink>
             </CNavItem>
           </CNav>
