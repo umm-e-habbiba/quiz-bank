@@ -1910,6 +1910,7 @@ const ManageQuiz = () => {
           </CAlert>
         )}
       </>
+
     </AdminLayout>
   )
 }
