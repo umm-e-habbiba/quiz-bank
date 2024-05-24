@@ -772,14 +772,14 @@ const ManageQuiz = () => {
               )}
               {deleteIds && deleteIds.length > 0 && (
                 <CButton
-                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
+                  className="text-white bg-red-600  hover:bg-red-700 mr-3"
                   onClick={() => {
                     setBulkDeleteModal(true)
                     setErrorr(false)
                     setErrorMsg('')
                   }}
                 >
-                  Bulk Delete
+                  Delete Selected Questions
                 </CButton>
               )}
               <CButton
@@ -1425,7 +1425,7 @@ const ManageQuiz = () => {
                         <img
                           src={`${API_URL}uploads/images/${image}`}
                           alt="image"
-                          className="w-52 h-36 rounded-full"
+                          className="w-52 h-36 rounded-lg"
                         />
                       </center>
                     </CCol>
@@ -1465,7 +1465,7 @@ const ManageQuiz = () => {
                         <img
                           src={`${API_URL}uploads/${image2}`}
                           alt="image"
-                          className="w-52 h-36 rounded-full"
+                          className="w-52 h-36 rounded-lg"
                         />
                       </center>
                     </CCol>

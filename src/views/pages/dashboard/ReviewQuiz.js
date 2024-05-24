@@ -310,11 +310,11 @@ const ReviewQuiz = () => {
                                 alt="question image"
                                 className="mb-3"
                               />
-                              <img
-                                src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                              {/* <img
+                                src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
                                 alt="question image"
                                 className="mb-3"
-                              />
+                              /> */}
                             </div>
                           )}
                           {/* {allQuestion[currentQuestion].questionId.video && (
@@ -586,9 +586,9 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.imageTwo ? (
                         <img
-                          src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
-                          alt="question explanation image"
-                          className="my-3"
+                          src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                          alt="question image"
+                          className="mb-3"
                         />
                       ) : (
                         ''

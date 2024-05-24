@@ -154,7 +154,9 @@ const Login = () => {
               Forgot password?
             </Link>
             <br />
+            <div className='mt-2'>
             {loginError && <span className="text-red-400 my-3">{loginErrorValue}</span>}
+            </div>
             {/* {verifyEmail && (
               <span className="text-red-400 mt-3">
                 Email not verified.

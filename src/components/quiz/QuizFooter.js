@@ -130,7 +130,7 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) 
       <CFooter className="quiz-footer">
         {/* <div className="text-xl">Time Left : {showQues ? convertSeconds(totalSeconds) : '00:00'}</div> */}
         {isTimer && <div className="text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>}
-        <div className="text-xl opacity-40">USMLE Question Bank</div>
+        <div className="text-xl opacity-40">ZAP-70 Q-Bank</div>
         {showQues && (
           <div
             className="cursor-pointer text-xl flex justify-center items-center"

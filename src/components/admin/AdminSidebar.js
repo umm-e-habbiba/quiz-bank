@@ -34,7 +34,7 @@ const AdminSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/" className="sidebar-brand">
-          Admin Quiz Bank
+          Admin ZAP-70
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"

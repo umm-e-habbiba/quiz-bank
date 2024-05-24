@@ -38,7 +38,7 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/" className="sidebar-brand">
-          Quiz Bank
+          ZAP-70
         </CSidebarBrand>
         <CCloseButton
           className="d-lg-none"
