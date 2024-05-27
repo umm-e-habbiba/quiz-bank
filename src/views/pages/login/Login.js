@@ -104,8 +104,8 @@ const Login = () => {
   }
   return (
     <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <div className="auth-wrapper">
-        <div className="inner">
+      <div className="auth-wrapper ">
+        <div className="inner ">
           {/* <img src={img1} alt="" className="image-1" /> */}
           {/* <img src={img3} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(login)} className="form">
@@ -154,8 +154,8 @@ const Login = () => {
               Forgot password?
             </Link>
             <br />
-            <div className='mt-2'>
-            {loginError && <span className="text-red-400 my-3">{loginErrorValue}</span>}
+            <div className="mt-2">
+              {loginError && <span className="text-red-400 my-3">{loginErrorValue}</span>}
             </div>
             {/* {verifyEmail && (
               <span className="text-red-400 mt-3">
