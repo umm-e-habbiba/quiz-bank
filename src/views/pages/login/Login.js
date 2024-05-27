@@ -10,6 +10,7 @@ import img2 from '../../../assets/images/green-one-eye.png'
 import img3 from '../../../assets/images/blue-icon.png'
 // import img2 from '../../../assets/images/image-2.png'
 import { API_URL } from 'src/store'
+import AuthFooter from '../AuthFooter'
 const Login = () => {
   const navigate = useNavigate()
   const [queryParameters] = useSearchParams()
@@ -103,9 +104,12 @@ const Login = () => {
       })
   }
   return (
-    <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
-      <div className="auth-wrapper ">
-        <div className="inner ">
+    <div className="bg-body-tertiary min-vh-100 ">
+      <div className="auth-wrapper flex flex-col dark:bg-black">
+        <h2 className="dark:text-white ">
+          Welcome to <span className="text-[#35b18c]">ZAP-70!</span>
+        </h2>
+        <div className="inner rounded-lg">
           {/* <img src={img1} alt="" className="image-1" /> */}
           {/* <img src={img3} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(login)} className="form">
@@ -180,12 +184,16 @@ const Login = () => {
           </CForm>
           <img src={img2} alt="" className="image-2" />
         </div>
+        {/* <span className="created">
+          Created by <Link to="https://themksolution.com/">The MK Solution</Link>
+        </span> */}
       </div>
       {success && (
         <CAlert color="success" className="success-alert uppercase">
           Login successful!
         </CAlert>
       )}
+      <AuthFooter />
     </div>
   )
 }

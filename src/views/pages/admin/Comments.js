@@ -1003,7 +1003,7 @@ const Comments = () => {
                     <CCol md={6}>
                       <center>
                         <img
-                          src={`${API_URL}uploads/${image2}`}
+                          src={`${API_URL}uploads/images/${image2}`}
                           alt="image"
                           className="w-52 h-36 rounded-full"
                         />

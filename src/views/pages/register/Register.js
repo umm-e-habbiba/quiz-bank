@@ -16,6 +16,7 @@ import img1 from '../../../assets/images/image-1.png'
 // import img2 from '../../../assets/images/image-2.png'
 import img2 from '../../../assets/images/green-one-eye.png'
 import { API_URL } from 'src/store'
+import AuthFooter from '../AuthFooter'
 const Register = () => {
   const navigate = useNavigate()
   const [registerError, setRegisterError] = useState(false)
@@ -99,8 +100,11 @@ const Register = () => {
   }
 
   return (
-    <div className="bg-body-tertiary min-vh-100 h-full d-flex flex-row align-items-center">
-      <div className="auth-wrapper">
+    <div className="bg-body-tertiary min-vh-100 h-full">
+      <div className="auth-wrapper flex flex-col">
+        <h2>
+          Welcome to <span className="text-[#35b18c]">ZAP-70!</span>
+        </h2>
         <div className="inner">
           {/* <img src={img1} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(signup)} className="form">
@@ -207,6 +211,7 @@ const Register = () => {
           User Registration Successful! Please Login.
         </CAlert>
       )} */}
+      <AuthFooter />
     </div>
   )
 }

@@ -27,6 +27,7 @@ import {
   CFormTextarea,
   CAlert,
   CFormCheck,
+  CProgress,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilFilter, cilPencil, cilTrash } from '@coreui/icons'
@@ -114,6 +115,7 @@ const ManageQuiz = () => {
   const [file, setFile] = useState()
   const [fileEnter, setFileEnter] = useState(false)
   const [showCheck, setShowCheck] = useState(false)
+  const [progress, setProgress] = useState(0)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -164,6 +166,9 @@ const ManageQuiz = () => {
     }
   }, [])
   useEffect(() => {
+    console.log(progress)
+  }, [progress])
+  useEffect(() => {
     getQuestion()
   }, [questionId])
   useEffect(() => {
@@ -180,6 +185,33 @@ const ManageQuiz = () => {
       redirect: 'follow',
     }
     fetch(API_URL + 'mcqs', requestOptions)
+      .then((response) => {
+        const contentLength = response.headers.get('content-length')
+        let loaded = 0
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              const reader = response.body.getReader()
+              read()
+              function read() {
+                reader.read().then((progressEvent) => {
+                  if (progressEvent.done) {
+                    controller.close()
+                    return
+                  }
+                  loaded += progressEvent.value.byteLength
+
+                  const percentageComplete = Math.round((loaded / contentLength) * 100)
+                  setProgress(percentageComplete)
+
+                  controller.enqueue(progressEvent.value)
+                  read()
+                })
+              }
+            },
+          }),
+        )
+      })
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -655,68 +687,75 @@ const ManageQuiz = () => {
   return (
     <AdminLayout>
       <>
-        <CCard className="mb-4 mx-4">
-          <CCardHeader className="flex justify-between items-center">
-            <div className="flex">
-              <div className="flex flex-col">
-                <strong>Manage Questions</strong>
-                {!loader &&
-                  allQuestion.length > 0 &&
-                  (showFilteredResult ? (
-                    <span className="text-sm">Total {filteredQuestion.length} questions found</span>
-                  ) : (
-                    <span className="text-sm">Total {allQuestion.length} questions added</span>
-                  ))}
+        {loader ? (
+          <div>
+            <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
+              <div className="lds-spinner -ml-8">
+                {[...Array(12)].map((_, index) => (
+                  <div key={index}></div>
+                ))}
               </div>
-              <div className="flex ml-6 justify-between items-center w-[600px]">
-                <CFormSelect
-                  aria-label="usmle step"
-                  id="usmleStep"
-                  options={[
-                    { label: 'USMLE Step', value: '' },
-                    { label: 'Step 1', value: '1' },
-                    { label: 'Step 2', value: '2' },
-                    { label: 'Step 3', value: '3' },
-                  ]}
-                  value={filterUsmle}
-                  onChange={(e) => {
-                    setFilterUsmle(e.target.value)
-                    setFilterCategory('')
-                  }}
-                  className="mr-3 w-full"
-                />
-                <CFormSelect
-                  aria-label="usmle category"
-                  id="usmleCategory"
-                  defaultValue={getValues('usmleCategory')}
-                  className="mr-3 w-full"
-                  options={
-                    filterUsmle == '1'
-                      ? [
-                          { label: 'USMLE Category', value: '' },
-                          { label: 'Microbiology', value: 'Microbiology' },
-                          { label: 'Immunology', value: 'Immunology' },
-                          { label: 'Histology', value: 'Histology' },
-                          { label: 'Anatomy', value: 'Anatomy' },
-                          { label: 'Physiology', value: 'Physiology' },
-                          { label: 'Embryology', value: 'Embryology' },
-                          { label: 'Biochemistry', value: 'Biochemistry' },
-                        ]
-                      : filterUsmle == '2'
+              <div className="text-sm font-medium text-gray-500 mt-2">
+                <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
+                get`s completed...
+              </div>
+              {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
+           <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
+         </div> */}
+              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
+            </div>
+          </div>
+        ) : (
+          <CCard className="mb-4 mx-4">
+            <CCardHeader className="flex justify-between items-center">
+              <div className="flex">
+                <div className="flex flex-col">
+                  <strong>Manage Questions</strong>
+                  {!loader &&
+                    allQuestion.length > 0 &&
+                    (showFilteredResult ? (
+                      <span className="text-sm">
+                        Total {filteredQuestion.length} questions found
+                      </span>
+                    ) : (
+                      <span className="text-sm">Total {allQuestion.length} questions added</span>
+                    ))}
+                </div>
+                <div className="flex ml-6 justify-between items-center w-[600px]">
+                  <CFormSelect
+                    aria-label="usmle step"
+                    id="usmleStep"
+                    options={[
+                      { label: 'USMLE Step', value: '' },
+                      { label: 'Step 1', value: '1' },
+                      { label: 'Step 2', value: '2' },
+                      { label: 'Step 3', value: '3' },
+                    ]}
+                    value={filterUsmle}
+                    onChange={(e) => {
+                      setFilterUsmle(e.target.value)
+                      setFilterCategory('')
+                    }}
+                    className="mr-3 w-full"
+                  />
+                  <CFormSelect
+                    aria-label="usmle category"
+                    id="usmleCategory"
+                    defaultValue={getValues('usmleCategory')}
+                    className="mr-3 w-full"
+                    options={
+                      filterUsmle == '1'
                         ? [
                             { label: 'USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
+                            { label: 'Microbiology', value: 'Microbiology' },
+                            { label: 'Immunology', value: 'Immunology' },
+                            { label: 'Histology', value: 'Histology' },
+                            { label: 'Anatomy', value: 'Anatomy' },
+                            { label: 'Physiology', value: 'Physiology' },
+                            { label: 'Embryology', value: 'Embryology' },
+                            { label: 'Biochemistry', value: 'Biochemistry' },
                           ]
-                        : filterUsmle == '3'
+                        : filterUsmle == '2'
                           ? [
                               { label: 'USMLE Category', value: '' },
                               { label: 'Internal Medicine', value: 'Internal Medicine' },
@@ -730,79 +769,93 @@ const ManageQuiz = () => {
                               { label: 'Preventive Medicine', value: 'Preventive Medicine' },
                               { label: 'Family Medicine', value: 'Family Medicine' },
                             ]
-                          : [{ label: 'USMLE Category', value: '' }]
-                  }
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                />
-                <CButton
-                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
-                  onClick={() => {
-                    getFilteredQuestions()
-                  }}
-                >
-                  <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
-                </CButton>
-                {filterUsmle || filterCategory ? (
+                          : filterUsmle == '3'
+                            ? [
+                                { label: 'USMLE Category', value: '' },
+                                { label: 'Internal Medicine', value: 'Internal Medicine' },
+                                { label: 'Surgery', value: 'Surgery' },
+                                { label: 'Pediatrics', value: 'Pediatrics' },
+                                {
+                                  label: 'Obstetrics and Gynecology',
+                                  value: 'Obstetrics and Gynecology',
+                                },
+                                { label: 'Psychiatry', value: 'Psychiatry' },
+                                { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                                { label: 'Family Medicine', value: 'Family Medicine' },
+                              ]
+                            : [{ label: 'USMLE Category', value: '' }]
+                    }
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                  />
                   <CButton
-                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] ml-3 flex"
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
                     onClick={() => {
-                      setFilterUsmle('')
-                      setFilterCategory('')
-                      setShowFilteredResult(false)
+                      getFilteredQuestions()
                     }}
                   >
-                    Clear
+                    <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
                   </CButton>
-                ) : (
-                  ''
-                )}
+                  {filterUsmle || filterCategory ? (
+                    <CButton
+                      className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] ml-3 flex"
+                      onClick={() => {
+                        setFilterUsmle('')
+                        setFilterCategory('')
+                        setShowFilteredResult(false)
+                      }}
+                    >
+                      Clear
+                    </CButton>
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end items-center">
-              {!showCheck && (
+              <div className="flex justify-end items-center">
+                {!showCheck && (
+                  <CButton
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
+                    onClick={() => {
+                      setShowCheck(true)
+                    }}
+                  >
+                    Select to Delete
+                  </CButton>
+                )}
+                {deleteIds && deleteIds.length > 0 && (
+                  <CButton
+                    className="text-white bg-red-600  hover:bg-red-700 mr-3"
+                    onClick={() => {
+                      setBulkDeleteModal(true)
+                      setErrorr(false)
+                      setErrorMsg('')
+                    }}
+                  >
+                    Delete Selected Questions
+                  </CButton>
+                )}
                 <CButton
-                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
+                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
                   onClick={() => {
-                    setShowCheck(true)
-                  }}
-                >
-                  Select to Delete
-                </CButton>
-              )}
-              {deleteIds && deleteIds.length > 0 && (
-                <CButton
-                  className="text-white bg-red-600  hover:bg-red-700 mr-3"
-                  onClick={() => {
-                    setBulkDeleteModal(true)
+                    setAddModal(true)
+                    setIsLoading(false)
+                    reset({})
+                    setQuestionId('')
                     setErrorr(false)
                     setErrorMsg('')
                   }}
                 >
-                  Delete Selected Questions
+                  Add Question
                 </CButton>
-              )}
-              <CButton
-                className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
-                onClick={() => {
-                  setAddModal(true)
-                  setIsLoading(false)
-                  reset({})
-                  setQuestionId('')
-                  setErrorr(false)
-                  setErrorMsg('')
-                }}
-              >
-                Add Question
-              </CButton>
-            </div>
-          </CCardHeader>
-          <CCardBody>
-            {loader ? (
+              </div>
+            </CCardHeader>
+            <CCardBody>
+              {/* {loader ? (
               <div className="text-center">
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
-            ) : (
+            ) : ( */}
               <CTable striped className="admin-tables">
                 <CTableHead>
                   <CTableRow>
@@ -1022,9 +1075,10 @@ const ManageQuiz = () => {
                   )}
                 </CTableBody>
               </CTable>
-            )}
-          </CCardBody>
-        </CCard>
+              {/* )} */}
+            </CCardBody>
+          </CCard>
+        )}
         {/* add / edit modal */}
         <CModal
           alignment="center"
@@ -1463,7 +1517,7 @@ const ManageQuiz = () => {
                     <CCol md={6}>
                       <center>
                         <img
-                          src={`${API_URL}uploads/${image2}`}
+                          src={`${API_URL}uploads/images/${image2}`}
                           alt="image"
                           className="w-52 h-36 rounded-lg"
                         />
