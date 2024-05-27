@@ -8,7 +8,6 @@ h6,
 ul {
   margin: 0;
 }
-
 img {
   max-width: 100%;
 }
@@ -27,7 +26,7 @@ a {
 }
 
 .auth-wrapper {
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,6 +34,10 @@ a {
   /* background: #a0e3cf; */
   background: #fff;
   width: 100vw;
+  /* background-image: url('../../assets/images/zap70.png');
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: cover; */
 }
 
 .inner {
@@ -69,10 +72,17 @@ a {
   -o-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
 }
 
+h2 {
+  text-transform: uppercase;
+  font-size: 30px;
+  color: #333;
+  letter-spacing: 3px;
+  text-align: center;
+  margin-bottom: 33px;
+}
 h3 {
   text-transform: uppercase;
   font-size: 25px;
-  font-family: 'Muli-SemiBold';
   color: #333;
   letter-spacing: 3px;
   text-align: center;
@@ -106,7 +116,6 @@ h3 {
   background: none;
   padding: 3px 42px 0px;
   color: #333 !important;
-  font-family: 'Muli-SemiBold';
   font-size: 16px;
 }
 .form-input::-webkit-input-placeholder {
@@ -154,7 +163,6 @@ h3 {
   background: #89dcc3;
   color: #000;
   text-transform: uppercase;
-  font-family: 'Muli-SemiBold';
   font-size: 15px;
   letter-spacing: 2px;
   transition: all 0.5s;

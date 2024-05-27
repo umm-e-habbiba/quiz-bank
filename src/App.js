@@ -46,7 +46,7 @@ const App = () => {
     }
 
     setColorMode(storedTheme)
-  }, []) 
+  }, [])
 
   return (
     <Router>

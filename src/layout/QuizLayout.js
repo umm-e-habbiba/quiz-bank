@@ -12,6 +12,7 @@ import {
   CModalFooter,
   CFormSelect,
   CFormSwitch,
+  CProgress,
 } from '@coreui/react'
 import React, { useState, useEffect, useRef } from 'react'
 import { GoChevronRight } from 'react-icons/go'
@@ -41,7 +42,6 @@ const QuizLayout = () => {
   const [loader, setLoader] = useState(true)
   const [loading, setLoading] = useState(true)
   const [progress, setProgress] = useState(0)
-
   const [showSelectors, setShowSelectors] = useState(true)
   const [showQues, setShowQues] = useState(false)
   const [isTimer, setIsTimer] = useState(true)
@@ -129,22 +129,29 @@ const QuizLayout = () => {
   }, [quizEnd])
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 4000))
-      setLoading(false)
+    if (progress >= 100) {
+      setLoader(false)
     }
+    console.log(progress)
+  }, [progress])
 
-    fetchQuestions()
+  // useEffect(() => {
+  //   const fetchQuestions = async () => {
+  //     await new Promise((resolve) => setTimeout(resolve, 4000))
+  //     setLoading(false)
+  //   }
 
-    const timer = setInterval(() => {
-      setProgress((prevProgress) => {
-        const newProgress = prevProgress + 1
-        return Math.min(newProgress, 100)
-      })
-    }, 40)
+  //   fetchQuestions()
 
-    return () => clearInterval(timer)
-  }, [])
+  //   const timer = setInterval(() => {
+  //     setProgress((prevProgress) => {
+  //       const newProgress = prevProgress + 1
+  //       return Math.min(newProgress, 100)
+  //     })
+  //   }, 40)
+
+  //   return () => clearInterval(timer)
+  // }, [])
 
   const getAllQuest = () => {
     setLoader(true)
@@ -157,6 +164,33 @@ const QuizLayout = () => {
     }
 
     fetch(API_URL + 'mcqs', requestOptions)
+      .then((response) => {
+        const contentLength = response.headers.get('content-length')
+        let loaded = 0
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              const reader = response.body.getReader()
+              read()
+              function read() {
+                reader.read().then((progressEvent) => {
+                  if (progressEvent.done) {
+                    controller.close()
+                    return
+                  }
+                  loaded += progressEvent.value.byteLength
+
+                  const percentageComplete = Math.round((loaded / contentLength) * 100)
+                  setProgress(percentageComplete)
+
+                  controller.enqueue(progressEvent.value)
+                  read()
+                })
+              }
+            },
+          }),
+        )
+      })
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -168,7 +202,7 @@ const QuizLayout = () => {
           setStep2Questions(filterStep2Questions.length)
           const filterStep3Questions = result.data.filter((ques) => ques.usmleStep == 3)
           setStep3Questions(filterStep3Questions.length)
-          setLoader(false)
+          // setLoader(false)
         }
       })
       .catch((error) => {
@@ -789,9 +823,9 @@ const QuizLayout = () => {
 
         <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
           {/* new layout */}
-          {loading ? (
+          {loader ? (
             <div>
-              <div className="flex flex-col gap-10 justify-center items-center mt-[35vh]">
+              <div className="flex flex-col gap-10 items-center mt-[35vh] mx-[25%]">
                 <div className="lds-spinner -ml-8">
                   {[...Array(12)].map((_, index) => (
                     <div key={index}></div>
@@ -801,9 +835,10 @@ const QuizLayout = () => {
                   <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while
                   it get`s completed...
                 </div>
-                <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
+                {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
                   <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
-                </div>
+                </div> */}
+                <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
               </div>
             </div>
           ) : (
