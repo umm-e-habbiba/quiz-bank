@@ -1119,6 +1119,7 @@ const QuizLayout = () => {
                               src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
                               alt="question image"
                               className="mb-3"
+                              loading="eager"
                             />
                           )}
                           {/* {filteredQuestion[currentQuestion]?.video && (
@@ -1525,6 +1526,7 @@ const QuizLayout = () => {
                     src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
                     alt="image"
                     className="w-52 h-36 rounded-full"
+                    loading="eager"
                   />
                 </CCol>
               </CRow>

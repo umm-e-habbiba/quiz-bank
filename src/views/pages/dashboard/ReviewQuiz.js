@@ -309,6 +309,7 @@ const ReviewQuiz = () => {
                                 src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
                                 alt="question image"
                                 className="mb-3"
+                                loading="eager"
                               />
                               {/* <img
                                 src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
@@ -589,6 +590,7 @@ const ReviewQuiz = () => {
                           src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
                           alt="question image"
                           className="mb-3"
+                          loading="eager"
                         />
                       ) : (
                         ''
