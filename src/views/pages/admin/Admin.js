@@ -106,7 +106,7 @@ const Admin = () => {
     fetch(API_URL + 'users', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllUsers(result.data)
@@ -272,7 +272,8 @@ const Admin = () => {
                                 </div>
                                 <CProgress
                                   thin
-                                  color="#4f4ea0"
+                                  // color="#4f4ea0"
+                                  color="primary"
                                   value={user.attemptedQuizzes.length}
                                 />
                               </CTableDataCell>

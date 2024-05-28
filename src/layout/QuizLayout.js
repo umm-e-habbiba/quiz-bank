@@ -114,11 +114,12 @@ const QuizLayout = () => {
     }
   }, [])
   useEffect(() => {
-    console.log('rows', totalRows)
+    console.log('rows')
+    // console.log('rows', totalRows)
   }, [totalRows])
 
   useEffect(() => {
-    console.log(saveQuestionArray)
+    console.log('saveQuestionArray')
   }, [saveQuestionArray])
 
   useEffect(() => {
@@ -132,7 +133,7 @@ const QuizLayout = () => {
     if (progress >= 100) {
       setLoader(false)
     }
-    console.log(progress)
+    // console.log(progress)
   }, [progress])
 
   // useEffect(() => {
@@ -193,7 +194,7 @@ const QuizLayout = () => {
       })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.data) {
           setAllQuestion(result.data)
           const filterStep1Questions = result.data.filter((ques) => ques.usmleStep == 1)
@@ -222,7 +223,7 @@ const QuizLayout = () => {
     fetch(API_URL + 'user-attempted-questions/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('getAllAttemptedQuest', result)
+        // console.log('getAllAttemptedQuest', result)
         if (result.data) {
           setAllAttemptedQuestion(result.data)
         }
@@ -257,7 +258,7 @@ const QuizLayout = () => {
         )
         const filterUsmle = filterSteps.filter((ques) => ques.USMLE == value)
         if (filterUsmle.length > 0) {
-          console.log('filteredQuestion array', filteredQuestion, 'new array', filterUsmle)
+          // console.log('filteredQuestion array', filteredQuestion, 'new array', filterUsmle)
           if (filteredQuestion.length > 0) {
             setFilteredQuestion((ques) => [...ques, ...filterUsmle])
             setFilteredQuestionBackup((ques) => [...ques, ...filterUsmle])
@@ -295,15 +296,15 @@ const QuizLayout = () => {
     setOpt6Marked(false)
 
     const already = saveQuestionArray.filter((q) => q.questionId == id)
-    console.log('already', already)
+    // console.log('already', already)
     if (already.length > 0) {
       checkAnswer(value)
       const valueIndex = saveQuestionArray.findIndex((obj) => obj.questionId == id)
       saveQuestionArray[valueIndex].selectedOption = value
-      console.log('already present', valueIndex)
+      // console.log('already present', valueIndex)
       setSaveQuestionArray((prevQues) => [...prevQues])
     } else {
-      console.log('not present')
+      // console.log('not present')
       checkAnswer(value)
       // handleNextQuestion()
       const questionObj = {
@@ -332,7 +333,7 @@ const QuizLayout = () => {
   }
 
   const saveQuiz = () => {
-    console.log('user id', userID, 'selected option', selectedOption)
+    // console.log('user id', userID, 'selected option', selectedOption)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
@@ -360,7 +361,7 @@ const QuizLayout = () => {
     fetch(API_URL + 'save-quizzes', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setSelectedOption('')
       })
       .catch((error) => {
@@ -439,21 +440,21 @@ const QuizLayout = () => {
     // setTotalRows(rows)
     // totalRows.splice(index, 1)
     // setTotalRows(totalRows.splice(index, 1))
-    console.log(index)
+    // console.log(index)
     const list = [...totalRows]
     list.splice(index, 1)
     setTotalRows(list)
   }
 
   const startexam = async () => {
-    console.log(
-      'total Questions',
-      totalQuest,
-      'filtererd array',
-      filteredQuestion,
-      'bakcup array',
-      filteredQuestionBackup,
-    )
+    // console.log(
+    //   'total Questions',
+    //   totalQuest,
+    //   'filtererd array',
+    //   filteredQuestion,
+    //   'bakcup array',
+    //   filteredQuestionBackup,
+    // )
     let start = true
     if (totalQuest < 1) {
       start = false
@@ -545,15 +546,15 @@ const QuizLayout = () => {
                 allCorrected,
               )
 
-              console.log(
-                'all attempted array',
+              // console.log(
+              //   'all attempted array',
 
-                allAttemptedQuestion,
-                'all corrected',
-                allCorrected,
-                'all corrected filtered',
-                filteredAttemptedQuestions,
-              )
+              //   allAttemptedQuestion,
+              //   'all corrected',
+              //   allCorrected,
+              //   'all corrected filtered',
+              //   filteredAttemptedQuestions,
+              // )
               if (
                 filteredAttemptedQuestions.length > 0 &&
                 filteredAttemptedQuestions.length >= row.number
@@ -663,7 +664,7 @@ const QuizLayout = () => {
         setSaveQuestionArray(partialQuestionDetails)
         setFilteredQuestion(quesArray)
         setTotalQuest(quesArray.length)
-        console.log('final array', finalArray, 'new Array', quesArray)
+        // console.log('final array', finalArray, 'new Array', quesArray)
       } else {
         start = false
       }

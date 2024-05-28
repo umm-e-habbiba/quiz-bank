@@ -214,7 +214,7 @@ const ManageQuiz = () => {
       })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
@@ -226,10 +226,10 @@ const ManageQuiz = () => {
       })
   }
   const addQuestion = (data) => {
-    console.log('add function called', data, '...', stepSelected)
+    // console.log('add function called', data, '...', stepSelected)
     if (getValues('question') == '') {
       setError('question', true)
-      console.log('question not entered')
+      // console.log('question not entered')
     }
     setIsLoading(true)
     setErrorr(false)
@@ -282,7 +282,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'add-mcqs', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setAddModal(false)
@@ -322,7 +322,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('ques detail', result)
+        // console.log('ques detail', result)
         if (result.data) {
           reset({
             usmleStep: result.data.usmleStep,
@@ -356,7 +356,7 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
-    console.log(questionId)
+    // console.log(questionId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
@@ -374,7 +374,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'delete-multiple-mcqs', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setBulkDeleteModal(false)
@@ -432,7 +432,7 @@ const ManageQuiz = () => {
       .catch((error) => console.log('error', error))
   }
   const editQuestion = (data) => {
-    console.log('edit function called', data)
+    // console.log('edit function called', data)
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
@@ -484,7 +484,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
@@ -515,7 +515,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteImage = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImgLoader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -530,7 +530,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImgLoader(false)
           getQuestion()
@@ -551,7 +551,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteImage2 = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImg2Loader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -566,7 +566,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImg2Loader(false)
           getQuestion()
@@ -587,7 +587,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteVideo = () => {
-    console.log('delete video', questionId)
+    // console.log('delete video', questionId)
     setVideoLoader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -602,7 +602,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setVideoLoader(false)
           getQuestion()
@@ -625,13 +625,13 @@ const ManageQuiz = () => {
   const handleVideoChange = (file) => {
     var reader = new FileReader()
     setVideo(file)
-    console.log(file)
+    // console.log(file)
     // var url = URL.createObjectURL(file)
     // setVideoSrc(url)
     // console.log('video url', url)
   }
   const getFilteredQuestions = () => {
-    console.log('step', filterUsmle, 'category', filterCategory)
+    // console.log('step', filterUsmle, 'category', filterCategory)
     let filtered_result = []
     if (filterUsmle && filterCategory) {
       filtered_result = allQuestion.filter(
@@ -649,7 +649,7 @@ const ManageQuiz = () => {
       }
     }
     setFilteredQuestion(filtered_result)
-    console.log(filtered_result)
+    // console.log(filtered_result)
   }
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {

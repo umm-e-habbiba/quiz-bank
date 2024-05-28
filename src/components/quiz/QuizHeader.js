@@ -114,7 +114,7 @@ const QuizHeader = ({
 
   const onSave = () => {
     // Make sure to delete the editorState before saving to backend
-    console.log('save function called', notes)
+    // console.log('save function called', notes)
     const notes = notes
     notes.map((note) => {
       delete note.editorState
@@ -189,7 +189,7 @@ const QuizHeader = ({
   }
 
   const addComment = () => {
-    console.log('comment', commentValue)
+    // console.log('comment', commentValue)
     setIsLoading(true)
 
     // Get the ID of the current question
@@ -222,7 +222,7 @@ const QuizHeader = ({
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setCommentModal(false)
           setIsLoading(false)

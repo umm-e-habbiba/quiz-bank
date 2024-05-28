@@ -115,7 +115,7 @@ const PreviousTests = () => {
     fetch(API_URL + 'user-quizzes/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.data) {
           setAllQuiz(result.data)
         }
@@ -131,7 +131,7 @@ const PreviousTests = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    console.log(quizId)
+    // console.log(quizId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -143,7 +143,7 @@ const PreviousTests = () => {
     fetch(API_URL + 'delete-quiz/' + userID + '/' + quizId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)

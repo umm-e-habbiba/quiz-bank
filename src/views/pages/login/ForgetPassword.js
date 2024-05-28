@@ -61,7 +61,7 @@ const ForgetPassword = () => {
       fetch(API_URL + 'forgot-password', requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log(result)
+          // console.log(result)
           setIsLoading(false)
           if (result.success) {
             setEmailSent(true)
@@ -80,7 +80,7 @@ const ForgetPassword = () => {
   }
 
   const resetPassword = (data) => {
-    console.log(data, token)
+    // console.log(data, token)
     setError(false)
     setErrorValue('')
     setIsLoading(true)
@@ -105,7 +105,7 @@ const ForgetPassword = () => {
       fetch(API_URL + 'reset-password/' + userId + '/' + token, requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log(result)
+          // console.log(result)
           setIsLoading(false)
           if (result.success) {
             setSuccess(true)

@@ -71,7 +71,7 @@ const UploadQuestions = () => {
     }
   }, [])
   const uploadQuestion = (data) => {
-    console.log('upload function called', data)
+    // console.log('upload function called', data)
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
@@ -112,7 +112,7 @@ const UploadQuestions = () => {
                   // fill.style.width = percentageComplete
                   // text.innerText = percentageComplete
                   // Calculates % complete and updates progress bar and print text to DOM
-                  console.log(percentageComplete)
+                  // console.log(percentageComplete)
                   controller.enqueue(progressEvent.value)
                   read()
                 })
@@ -123,7 +123,7 @@ const UploadQuestions = () => {
       })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           reset({})

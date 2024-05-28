@@ -56,7 +56,7 @@ const QuizPerformance = () => {
     fetch(API_URL + 'latest-quiz/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('latest quiz', result)
+        // console.log('latest quiz', result)
         setLoading(false)
         if (result.success) {
           if (result.message === 'User has not attempted any quiz') {
