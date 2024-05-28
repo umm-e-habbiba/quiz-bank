@@ -202,38 +202,42 @@ const PreviousTests = () => {
                   </CTableHead>
                   <CTableBody>
                     {allQuiz && allQuiz.length > 0 ? (
-                      allQuiz.map((q, idx) => (
-                        <CTableRow key={idx}>
-                          <CTableDataCell>{q.obtainedScore}</CTableDataCell>
-                          <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
-                          <CTableDataCell>{q.totalScore}</CTableDataCell>
-                          <CTableDataCell>
-                            {moment(q.createdAt).format('MMMM Do YYYY')}
-                          </CTableDataCell>
-                          <CTableDataCell className="flex justify-start items-center" scope="row">
-                            <Link to={`/review-quiz/${q._id}`}>
+                      allQuiz
+                        .sort((a, b) => {
+                          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        })
+                        .map((q, idx) => (
+                          <CTableRow key={idx}>
+                            <CTableDataCell>{q.obtainedScore}</CTableDataCell>
+                            <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
+                            <CTableDataCell>{q.totalScore}</CTableDataCell>
+                            <CTableDataCell>
+                              {moment(q.createdAt).format('MMMM Do YYYY')}
+                            </CTableDataCell>
+                            <CTableDataCell className="flex justify-start items-center" scope="row">
+                              <Link to={`/review-quiz/${q._id}`}>
+                                <CButton
+                                  color="success"
+                                  className="text-white"
+                                  // id={q._id}
+                                >
+                                  Review
+                                </CButton>
+                              </Link>
                               <CButton
-                                color="success"
-                                className="text-white"
-                                // id={q._id}
+                                color="danger"
+                                className="text-white ml-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setDeleteModal(true)
+                                  setQuizId(e.currentTarget.id)
+                                }}
                               >
-                                Review
+                                <CIcon icon={cilTrash} />
                               </CButton>
-                            </Link>
-                            <CButton
-                              color="danger"
-                              className="text-white ml-2"
-                              id={q._id}
-                              onClick={(e) => {
-                                setDeleteModal(true)
-                                setQuizId(e.currentTarget.id)
-                              }}
-                            >
-                              <CIcon icon={cilTrash} />
-                            </CButton>
-                          </CTableDataCell>
-                        </CTableRow>
-                      ))
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))
                     ) : (
                       <CTableRow>
                         <CTableDataCell className="text-center" colSpan={6}>
