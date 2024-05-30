@@ -177,6 +177,7 @@ const UploadQuestions = () => {
                 aria-label="usmle category"
                 id="usmleCategory"
                 defaultValue={getValues('usmleCategory')}
+                placeholder="Select USMLE Category"
                 // options={
                 //   step == '1'
                 //     ? [
@@ -223,7 +224,7 @@ const UploadQuestions = () => {
                 feedback="Please select USMLE Category."
                 invalid={errors.usmleCategory ? true : false}
               >
-                <option>Select USMLE Category</option>
+                <option value="">Select USMLE Category</option>
                 {step == '1' ? (
                   step1Categories.map((category, idx) => (
                     <option key={idx} value={category}>

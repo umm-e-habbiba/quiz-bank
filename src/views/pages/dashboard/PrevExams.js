@@ -34,64 +34,23 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import { AppHeader, AppSidebar } from 'src/components'
-const PreviousTests = () => {
+const PrevExams = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
-  const [allQuiz, setAllQuiz] = useState([])
+  const [allExams, setAllExams] = useState([])
   const [addModal, setAddModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
-  const [quizId, setQuizId] = useState('')
-  const [image, setImage] = useState('')
-  // const [usmleStep, setUsmleStep] = useState('')
-  // const [usmleCategory, setUsmleCategory] = useState('')
-  // const [question, setQuestion] = useState('')
-  // const [op1, setOp1] = useState('')
-  // const [op2, setOp2] = useState('')
-  // const [op3, setOp3] = useState('')
-  // const [op4, setOp4] = useState('')
-  // const [correct, setCorrect] = useState('')
+  const [examId, setExamId] = useState('')
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    watch,
-    setValue,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      usmleStep: '',
-      usmleCategory: '',
-      question: '',
-      op1: '',
-      op2: '',
-      op3: '',
-      op4: '',
-      correct: '',
-      explaination: '',
-      op1Explain: '',
-      op2Explain: '',
-      op3Explain: '',
-      op4Explain: '',
-    },
-  })
-
-  const stepSelected = watch('usmleStep')
-  const option1 = watch('op1')
-  const option2 = watch('op2')
-  const option3 = watch('op3')
-  const option4 = watch('op4')
-
   useEffect(() => {
-    getAllQuiz()
+    getAllExams()
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
@@ -102,7 +61,7 @@ const PreviousTests = () => {
     }
   }, [])
 
-  const getAllQuiz = () => {
+  const getAllExams = () => {
     setLoader(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -112,12 +71,12 @@ const PreviousTests = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'user-quizzes/' + userID, requestOptions)
+    fetch(API_URL + 'user-tests/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
-        if (result.data) {
-          setAllQuiz(result.data)
+        if (result.success) {
+          setAllExams(result.tests)
         }
         setLoader(false)
       })
@@ -127,11 +86,11 @@ const PreviousTests = () => {
       })
   }
 
-  const deleteQuiz = () => {
+  const deleteExam = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    // console.log(quizId)
+    // console.log(examId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -140,15 +99,15 @@ const PreviousTests = () => {
       headers: myHeaders,
     }
 
-    fetch(API_URL + 'delete-quiz/' + userID + '/' + quizId, requestOptions)
+    fetch(API_URL + 'delete-users-test/' + examId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)
-          setQuizId('')
-          getAllQuiz()
+          setExamId('')
+          getAllExams()
           setSuccess(true)
           setSuccessMsg('Exam deleted successfully')
           setTimeout(() => {
@@ -170,18 +129,18 @@ const PreviousTests = () => {
         <div className="body flex-grow-1">
           <CCard className="mb-4 mx-4">
             <CCardHeader className="flex justify-between items-center">
-              <strong>Previous Quizzes</strong>
+              <strong>Previous Exams</strong>
               {/* <CButton
-              color="success"
-              className="text-white"
-              onClick={() => {
-                setAddModal(true)
-                setIsLoading(false)
-                reset({})
-              }}
-            >
-              Add Question
-            </CButton> */}
+            color="success"
+            className="text-white"
+            onClick={() => {
+              setAddModal(true)
+              setIsLoading(false)
+              reset({})
+            }}
+          >
+            Add Question
+          </CButton> */}
             </CCardHeader>
             <CCardBody>
               {loader ? (
@@ -192,30 +151,34 @@ const PreviousTests = () => {
                 <CTable striped className="admin-tables">
                   <CTableHead>
                     <CTableRow>
+                      <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                       {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {allQuiz && allQuiz.length > 0 ? (
-                      allQuiz
+                    {allExams && allExams.length > 0 ? (
+                      allExams
                         .sort((a, b) => {
                           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                         })
                         .map((q, idx) => (
                           <CTableRow key={idx}>
+                            <CTableDataCell>{q.test?.testName}</CTableDataCell>
                             <CTableDataCell>{q.obtainedScore}</CTableDataCell>
                             <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
                             <CTableDataCell>{q.totalScore}</CTableDataCell>
+                            <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
                             <CTableDataCell>
                               {moment(q.createdAt).format('MMMM Do YYYY')}
                             </CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center" scope="row">
-                              <Link to={`/review-quiz/${q._id}`}>
+                              {/* <Link to={`/review-quiz/${q._id}`}>
                                 <CButton
                                   color="success"
                                   className="text-white"
@@ -223,14 +186,14 @@ const PreviousTests = () => {
                                 >
                                   Review
                                 </CButton>
-                              </Link>
+                              </Link> */}
                               <CButton
                                 color="danger"
                                 className="text-white ml-2"
                                 id={q._id}
                                 onClick={(e) => {
                                   setDeleteModal(true)
-                                  setQuizId(e.currentTarget.id)
+                                  setExamId(e.currentTarget.id)
                                 }}
                               >
                                 <CIcon icon={cilTrash} />
@@ -268,7 +231,7 @@ const PreviousTests = () => {
               <CButton color="secondary" onClick={() => setDeleteModal(false)}>
                 No
               </CButton>
-              <CButton color="primary" onClick={deleteQuiz} disabled={loading ? true : false}>
+              <CButton color="primary" onClick={deleteExam} disabled={loading ? true : false}>
                 {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
               </CButton>
             </CModalFooter>
@@ -284,4 +247,4 @@ const PreviousTests = () => {
     </div>
   )
 }
-export default PreviousTests
+export default PrevExams

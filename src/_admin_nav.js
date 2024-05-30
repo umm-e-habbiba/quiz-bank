@@ -48,6 +48,12 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
+    name: 'Manage Exam',
+    to: '/manage-exam',
+    icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Upload Full Length Exam',
     to: '/upload-full-length-exam',
     icon: <CIcon icon={cilCloud} customClassName="nav-icon" />,
