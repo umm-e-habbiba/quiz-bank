@@ -23,6 +23,7 @@ import {
   cilStarHalf,
   cilList,
   cilCloudUpload,
+  cilCloud,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -44,6 +45,12 @@ const _admin_nav = [
     name: 'Upload Questions',
     to: '/upload-questions',
     icon: <CIcon icon={cilCloudUpload} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Upload Full Length Exam',
+    to: '/upload-full-length-exam',
+    icon: <CIcon icon={cilCloud} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

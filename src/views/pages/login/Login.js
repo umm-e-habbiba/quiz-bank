@@ -48,7 +48,7 @@ const Login = () => {
     setLoginErrorValue('')
     setIsLoading(true)
     setVerifyEmail(false)
-    console.log(data)
+    // console.log(data)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
 
@@ -67,7 +67,7 @@ const Login = () => {
     fetch(API_URL + 'user-login', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.token) {
           localStorage.setItem('token', result.token)

@@ -38,6 +38,7 @@ import 'react-quill/dist/quill.snow.css'
 import JoditEditor from 'jodit-react'
 import { FaRegEye } from 'react-icons/fa'
 import { RiEyeLine } from 'react-icons/ri'
+import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 const Comments = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -164,7 +165,7 @@ const Comments = () => {
     fetch(API_URL + 'mcqs-with-comments', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
@@ -187,7 +188,7 @@ const Comments = () => {
     fetch(API_URL + 'mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('ques detail', result)
+        // console.log('ques detail', result)
         if (result.data) {
           reset({
             usmleStep: result.data.usmleStep,
@@ -220,7 +221,7 @@ const Comments = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    console.log(questionId)
+    // console.log(questionId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -232,7 +233,7 @@ const Comments = () => {
     fetch(API_URL + 'delete-mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)
@@ -251,7 +252,7 @@ const Comments = () => {
       .catch((error) => console.log('error', error))
   }
   const editQuestion = (data) => {
-    console.log('edit function called', data)
+    // console.log('edit function called', data)
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
@@ -303,7 +304,7 @@ const Comments = () => {
     fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
@@ -333,7 +334,7 @@ const Comments = () => {
       })
   }
   const deleteImage = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImgLoader(true)
     setError(false)
     setErrorMsg('')
@@ -351,7 +352,7 @@ const Comments = () => {
     fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImgLoader(false)
           getQuestion()
@@ -372,7 +373,7 @@ const Comments = () => {
       })
   }
   const deleteImage2 = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImg2Loader(true)
     setError(false)
     setErrorMsg('')
@@ -387,7 +388,7 @@ const Comments = () => {
     fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImg2Loader(false)
           getQuestion()
@@ -408,7 +409,7 @@ const Comments = () => {
       })
   }
   const deleteVideo = () => {
-    console.log('delete video', questionId)
+    // console.log('delete video', questionId)
     setVideoLoader(true)
     setError(false)
     setErrorMsg('')
@@ -423,7 +424,7 @@ const Comments = () => {
     fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setVideoLoader(false)
           getQuestion()
@@ -446,7 +447,7 @@ const Comments = () => {
   const handleVideoChange = (file) => {
     var reader = new FileReader()
     setVideo(file)
-    console.log(file)
+    // console.log(file)
     // var url = URL.createObjectURL(file)
     // setVideoSrc(url)
     // console.log('video url', url)
@@ -518,7 +519,7 @@ const Comments = () => {
                               setDetailModal(true)
                               setComments(q.comments)
                               setQuestionId(e.currentTarget.id)
-                              console.log('view called', questionId, 'id', e.currentTarget.id)
+                              // console.log('view called', questionId, 'id', e.currentTarget.id)
                             }}
                           >
                             <RiEyeLine className="text-[20px]" />
@@ -609,21 +610,28 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Microbiology', value: 'Microbiology' },
-                            { label: 'Immunology', value: 'Immunology' },
-                            { label: 'Histology', value: 'Histology' },
-                            { label: 'Anatomy', value: 'Anatomy' },
-                            { label: 'Physiology', value: 'Physiology' },
-                            { label: 'Embryology', value: 'Embryology' },
-                            { label: 'Biochemistry', value: 'Biochemistry' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Microbiology', value: 'Microbiology' },
+                          //   { label: 'Immunology', value: 'Immunology' },
+                          //   { label: 'Histology', value: 'Histology' },
+                          //   { label: 'Anatomy', value: 'Anatomy' },
+                          //   { label: 'Physiology', value: 'Physiology' },
+                          //   { label: 'Embryology', value: 'Embryology' },
+                          //   { label: 'Biochemistry', value: 'Biochemistry' },
+                          // ]}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step1Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -633,24 +641,31 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step2Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -660,24 +675,31 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step3Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}

@@ -91,7 +91,7 @@ const AttemptedQuestions = () => {
     fetch(API_URL + 'mcqs', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
@@ -145,7 +145,7 @@ const AttemptedQuestions = () => {
     fetch(API_URL + 'all-questions', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('attempted analysis', result)
+        // console.log('attempted analysis', result)
         setLoader(false)
         if (result.data) {
           setAllAttemptedQuestion(result.data)

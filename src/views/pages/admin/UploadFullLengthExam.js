@@ -34,8 +34,7 @@ import { cilPencil, cilTrash } from '@coreui/icons'
 import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
-import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
-const UploadQuestions = () => {
+const UploadFullLengthExam = () => {
   const navigate = useNavigate()
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
@@ -57,7 +56,6 @@ const UploadQuestions = () => {
   } = useForm({
     defaultValues: {
       usmleStep: '',
-      usmleCategory: '',
       excelfile: '',
     },
   })
@@ -71,7 +69,7 @@ const UploadQuestions = () => {
       navigate('/login')
     }
   }, [])
-  const uploadQuestion = (data) => {
+  const uploadExam = (data) => {
     // console.log('upload function called', data)
     setIsLoading(true)
     setErrorr(false)
@@ -81,7 +79,6 @@ const UploadQuestions = () => {
 
     const formdata = new FormData()
     formdata.append('usmleStep', data.usmleStep)
-    formdata.append('USMLE', data.usmleCategory)
     formdata.append('file', data.excelfile[0])
     const requestOptions = {
       method: 'POST',
@@ -129,7 +126,7 @@ const UploadQuestions = () => {
         if (result.success) {
           reset({})
           setSuccess(true)
-          setSuccessMsg('Questions added successfully')
+          setSuccessMsg('Exam added successfully')
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
@@ -148,8 +145,8 @@ const UploadQuestions = () => {
   return (
     <AdminLayout>
       <div className="mx-4">
-        <p className="text-2xl">Upload Questions</p>
-        <CForm onSubmit={handleSubmit(uploadQuestion)} className="my-3">
+        <p className="text-2xl">Upload Full Length Exam</p>
+        <CForm onSubmit={handleSubmit(uploadExam)} className="my-3">
           <CRow className="mb-3">
             <CCol md={12}>
               <CFormSelect
@@ -168,84 +165,6 @@ const UploadQuestions = () => {
                 defaultValue={getValues('usmleStep')}
                 // onChange={(e) => setUsmleStep(e.target.value)}
               />
-            </CCol>
-          </CRow>
-          <CRow className="mb-3">
-            <CCol md={12}>
-              <CFormSelect
-                label="USMLE Category"
-                aria-label="usmle category"
-                id="usmleCategory"
-                defaultValue={getValues('usmleCategory')}
-                // options={
-                //   step == '1'
-                //     ? [
-                //         { label: 'Select USMLE Category', value: '' },
-                //         { label: 'Microbiology', value: 'Microbiology' },
-                //         { label: 'Immunology', value: 'Immunology' },
-                //         { label: 'Histology', value: 'Histology' },
-                //         { label: 'Anatomy', value: 'Anatomy' },
-                //         { label: 'Physiology', value: 'Physiology' },
-                //         { label: 'Embryology', value: 'Embryology' },
-                //         { label: 'Biochemistry', value: 'Biochemistry' },
-                //       ]
-                //     : step == '2'
-                //       ? [
-                //           { label: 'Select USMLE Category', value: '' },
-                //           { label: 'Internal Medicine', value: 'Internal Medicine' },
-                //           { label: 'Surgery', value: 'Surgery' },
-                //           { label: 'Pediatrics', value: 'Pediatrics' },
-                //           {
-                //             label: 'Obstetrics and Gynecology',
-                //             value: 'Obstetrics and Gynecology',
-                //           },
-                //           { label: 'Psychiatry', value: 'Psychiatry' },
-                //           { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                //           { label: 'Family Medicine', value: 'Family Medicine' },
-                //         ]
-                //       : step == '3'
-                //         ? [
-                //             { label: 'Select USMLE Category', value: '' },
-                //             { label: 'Internal Medicine', value: 'Internal Medicine' },
-                //             { label: 'Surgery', value: 'Surgery' },
-                //             { label: 'Pediatrics', value: 'Pediatrics' },
-                //             {
-                //               label: 'Obstetrics and Gynecology',
-                //               value: 'Obstetrics and Gynecology',
-                //             },
-                //             { label: 'Psychiatry', value: 'Psychiatry' },
-                //             { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                //             { label: 'Family Medicine', value: 'Family Medicine' },
-                //           ]
-                //         : [{ label: 'Select USMLE Category', value: '' }]
-                // }
-                {...register('usmleCategory', { required: true })}
-                feedback="Please select USMLE Category."
-                invalid={errors.usmleCategory ? true : false}
-              >
-                <option>Select USMLE Category</option>
-                {step == '1' ? (
-                  step1Categories.map((category, idx) => (
-                    <option key={idx} value={category}>
-                      {category}
-                    </option>
-                  ))
-                ) : step == '2' ? (
-                  step2Categories.map((category, idx) => (
-                    <option key={idx} value={category}>
-                      {category}
-                    </option>
-                  ))
-                ) : step == '3' ? (
-                  step3Categories.map((category, idx) => (
-                    <option key={idx} value={category}>
-                      {category}
-                    </option>
-                  ))
-                ) : (
-                  <option>Select USMLE Category</option>
-                )}
-              </CFormSelect>
             </CCol>
           </CRow>
           <CRow className="mb-3">
@@ -285,4 +204,4 @@ const UploadQuestions = () => {
     </AdminLayout>
   )
 }
-export default UploadQuestions
+export default UploadFullLengthExam

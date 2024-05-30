@@ -100,7 +100,7 @@ const Feedback = () => {
     fetch(API_URL + 'feedback/' + feedbackId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('ques detail', result)
+        // console.log('ques detail', result)
         if (result.data) {
           reset({
             name: result.data.name,
@@ -126,7 +126,7 @@ const Feedback = () => {
     fetch(API_URL + 'feedbacks', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.data) {
           // Filter out feedbacks from the current user
           setAllFeedbacks(result.data.filter((feedback) => feedback.userId !== userID))
@@ -152,7 +152,7 @@ const Feedback = () => {
     fetch(API_URL + 'user-feedbacks/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.data) {
           setMyFeedbacks(result.data)
           reset({
@@ -176,7 +176,7 @@ const Feedback = () => {
     setSpinner(true)
     setError(false)
     setErrorMsg('')
-    console.log('data', data)
+    // console.log('data', data)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Authorization', token)
@@ -198,7 +198,7 @@ const Feedback = () => {
     fetch(API_URL + 'add-feedback/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setFeedbackModal(false)
           setSpinner(false)
@@ -227,7 +227,7 @@ const Feedback = () => {
     setSpinner(true)
     setError(false)
     setErrorMsg('')
-    console.log('data', data)
+    // console.log('data', data)
     const myHeaders = new Headers()
     myHeaders.append('Content-Type', 'application/json')
     myHeaders.append('Authorization', token)
@@ -249,7 +249,7 @@ const Feedback = () => {
     fetch(API_URL + 'edit-feedback/' + feedbackId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           reset({
             name: result.data.feedbacks[0].name,

@@ -35,7 +35,7 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) 
   }, [totalQues])
 
   useEffect(() => {
-    console.log(saveQuestionArray)
+    console.log('saveQuestionArray')
   }, [saveQuestionArray])
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) 
     fetch(API_URL + 'save-quizzes', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        console.log('result')
       })
       .catch((error) => {
         console.error(error)

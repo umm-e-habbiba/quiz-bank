@@ -77,7 +77,7 @@ const ManageFeedbacks = () => {
     fetch(API_URL + 'all-feedbacks', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllFeedbacks(result.data)
@@ -93,7 +93,7 @@ const ManageFeedbacks = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    console.log(feedbackId)
+    // console.log(feedbackId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -105,7 +105,7 @@ const ManageFeedbacks = () => {
     fetch(API_URL + 'feedback/' + feedbackId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)

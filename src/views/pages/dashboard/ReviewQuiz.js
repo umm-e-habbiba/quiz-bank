@@ -47,7 +47,7 @@ const ReviewQuiz = () => {
   })
 
   useEffect(() => {
-    console.log('quiz id', id)
+    // console.log('quiz id', id)
     const getToken = localStorage.getItem('token')
     if (getToken) {
       if (id) {
@@ -64,7 +64,7 @@ const ReviewQuiz = () => {
   }, [])
 
   useEffect(() => {
-    console.log('all questions array', allQuestion)
+    console.log('all questions array')
   }, [allQuestion])
 
   useEffect(() => {
@@ -86,17 +86,17 @@ const ReviewQuiz = () => {
     fetch(API_URL + 'latest-quiz/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoading(false)
         if (result.data) {
           setLoading(false)
           setAllQuestion(result.data.questions)
-          console.log(
-            'all questions ',
-            result.data.questions,
-            'current',
-            allQuestion[currentQuestion],
-          )
+          // console.log(
+          //   'all questions ',
+          //   result.data.questions,
+          //   'current',
+          //   allQuestion[currentQuestion],
+          // )
         }
       })
       .catch((error) => {
@@ -116,17 +116,17 @@ const ReviewQuiz = () => {
     fetch(API_URL + 'user-quiz/' + userID + '/' + quizId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoading(false)
         if (result.data) {
           setLoading(false)
           setAllQuestion(result.data.questions)
-          console.log(
-            'all questions ',
-            result.data.questions,
-            'current',
-            allQuestion[currentQuestion],
-          )
+          // console.log(
+          //   'all questions ',
+          //   result.data.questions,
+          //   'current',
+          //   allQuestion[currentQuestion],
+          // )
         }
       })
       .catch((error) => {
@@ -309,6 +309,7 @@ const ReviewQuiz = () => {
                                 src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
                                 alt="question image"
                                 className="mb-3"
+                                loading="eager"
                               />
                               {/* <img
                                 src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
@@ -589,6 +590,7 @@ const ReviewQuiz = () => {
                           src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
                           alt="question image"
                           className="mb-3"
+                          loading="eager"
                         />
                       ) : (
                         ''

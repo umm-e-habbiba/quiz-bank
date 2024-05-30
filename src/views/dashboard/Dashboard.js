@@ -88,7 +88,7 @@ const Dashboard = () => {
     fetch(API_URL + 'user-quizzes/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.data) {
           setAllQuiz(result.data)
@@ -271,7 +271,8 @@ const Dashboard = () => {
                                   <CProgress
                                     height={10}
                                     // bg-[#6261CC] text-white hover:bg-[#484796]
-                                    color="#6261CC"
+                                    // color="#6261CC"
+                                    color="primary"
                                     value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
                                   >
                                     <CProgressBar>

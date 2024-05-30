@@ -43,6 +43,7 @@ import { RiEyeLine } from 'react-icons/ri'
 import '../../../../node_modules/video-react/dist/video-react.css' // import css
 import { Player } from 'video-react'
 import DropBox from 'src/components/admin/DropBox'
+import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -85,6 +86,7 @@ const ManageQuiz = () => {
   const [videoLoader, setVideoLoader] = useState(false)
   const [videoSrc, setVideoSrc] = useState('')
   const [video, setVideo] = useState('')
+  const [prevVideo, setPrevVideo] = useState(false)
   // const [usmleStep, setUsmleStep] = useState('')
   // const [usmleCategory, setUsmleCategory] = useState('')
   // const [question, setQuestion] = useState('')
@@ -214,7 +216,7 @@ const ManageQuiz = () => {
       })
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
@@ -226,10 +228,10 @@ const ManageQuiz = () => {
       })
   }
   const addQuestion = (data) => {
-    console.log('add function called', data, '...', stepSelected)
+    // console.log('add function called', data, '...', stepSelected)
     if (getValues('question') == '') {
       setError('question', true)
-      console.log('question not entered')
+      // console.log('question not entered')
     }
     setIsLoading(true)
     setErrorr(false)
@@ -282,7 +284,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'add-mcqs', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setAddModal(false)
@@ -322,7 +324,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('ques detail', result)
+        // console.log('ques detail', result)
         if (result.data) {
           reset({
             usmleStep: result.data.usmleStep,
@@ -345,8 +347,13 @@ const ManageQuiz = () => {
           setOp6Exp(result.data.optionSixExplanation)
           setImage(result.data.image)
           setImage2(result.data.imageTwo)
-          setVideoSrc(result.data.video)
-          setVideo(result.data.video)
+          if (result.data.video != null) {
+            setVideoSrc(result.data.video)
+            setVideo(result.data.video)
+            setPrevVideo(true)
+          } else {
+            setPrevVideo(false)
+          }
         }
       })
       .catch((error) => console.log('error', error))
@@ -356,7 +363,7 @@ const ManageQuiz = () => {
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
-    console.log(questionId)
+    // console.log(questionId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
@@ -374,7 +381,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'delete-multiple-mcqs', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setBulkDeleteModal(false)
@@ -432,7 +439,7 @@ const ManageQuiz = () => {
       .catch((error) => console.log('error', error))
   }
   const editQuestion = (data) => {
-    console.log('edit function called', data)
+    // console.log('edit function called', data)
     setIsLoading(true)
     setErrorr(false)
     setErrorMsg('')
@@ -484,7 +491,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
@@ -515,7 +522,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteImage = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImgLoader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -530,7 +537,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImgLoader(false)
           getQuestion()
@@ -551,7 +558,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteImage2 = () => {
-    console.log('delete image', questionId)
+    // console.log('delete image', questionId)
     setImg2Loader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -566,7 +573,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setImg2Loader(false)
           getQuestion()
@@ -587,7 +594,7 @@ const ManageQuiz = () => {
       })
   }
   const deleteVideo = () => {
-    console.log('delete video', questionId)
+    // console.log('delete video', questionId)
     setVideoLoader(true)
     setErrorr(false)
     setErrorMsg('')
@@ -602,7 +609,7 @@ const ManageQuiz = () => {
     fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
           setVideoLoader(false)
           getQuestion()
@@ -625,13 +632,13 @@ const ManageQuiz = () => {
   const handleVideoChange = (file) => {
     var reader = new FileReader()
     setVideo(file)
-    console.log(file)
+    // console.log(file)
     // var url = URL.createObjectURL(file)
     // setVideoSrc(url)
     // console.log('video url', url)
   }
   const getFilteredQuestions = () => {
-    console.log('step', filterUsmle, 'category', filterCategory)
+    // console.log('step', filterUsmle, 'category', filterCategory)
     let filtered_result = []
     if (filterUsmle && filterCategory) {
       filtered_result = allQuestion.filter(
@@ -649,7 +656,7 @@ const ManageQuiz = () => {
       }
     }
     setFilteredQuestion(filtered_result)
-    console.log(filtered_result)
+    // console.log(filtered_result)
   }
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {
@@ -743,51 +750,74 @@ const ManageQuiz = () => {
                     id="usmleCategory"
                     defaultValue={getValues('usmleCategory')}
                     className="mr-3 w-full"
-                    options={
-                      filterUsmle == '1'
-                        ? [
-                            { label: 'USMLE Category', value: '' },
-                            { label: 'Microbiology', value: 'Microbiology' },
-                            { label: 'Immunology', value: 'Immunology' },
-                            { label: 'Histology', value: 'Histology' },
-                            { label: 'Anatomy', value: 'Anatomy' },
-                            { label: 'Physiology', value: 'Physiology' },
-                            { label: 'Embryology', value: 'Embryology' },
-                            { label: 'Biochemistry', value: 'Biochemistry' },
-                          ]
-                        : filterUsmle == '2'
-                          ? [
-                              { label: 'USMLE Category', value: '' },
-                              { label: 'Internal Medicine', value: 'Internal Medicine' },
-                              { label: 'Surgery', value: 'Surgery' },
-                              { label: 'Pediatrics', value: 'Pediatrics' },
-                              {
-                                label: 'Obstetrics and Gynecology',
-                                value: 'Obstetrics and Gynecology',
-                              },
-                              { label: 'Psychiatry', value: 'Psychiatry' },
-                              { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                              { label: 'Family Medicine', value: 'Family Medicine' },
-                            ]
-                          : filterUsmle == '3'
-                            ? [
-                                { label: 'USMLE Category', value: '' },
-                                { label: 'Internal Medicine', value: 'Internal Medicine' },
-                                { label: 'Surgery', value: 'Surgery' },
-                                { label: 'Pediatrics', value: 'Pediatrics' },
-                                {
-                                  label: 'Obstetrics and Gynecology',
-                                  value: 'Obstetrics and Gynecology',
-                                },
-                                { label: 'Psychiatry', value: 'Psychiatry' },
-                                { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                                { label: 'Family Medicine', value: 'Family Medicine' },
-                              ]
-                            : [{ label: 'USMLE Category', value: '' }]
-                    }
+                    // options={
+                    //   filterUsmle == '1'
+                    //     ? [
+                    //         { label: 'USMLE Category', value: '' },
+                    //         { label: 'Microbiology', value: 'Microbiology' },
+                    //         { label: 'Immunology', value: 'Immunology' },
+                    //         { label: 'Histology', value: 'Histology' },
+                    //         { label: 'Anatomy', value: 'Anatomy' },
+                    //         { label: 'Physiology', value: 'Physiology' },
+                    //         { label: 'Embryology', value: 'Embryology' },
+                    //         { label: 'Biochemistry', value: 'Biochemistry' },
+                    //       ]
+                    //     : filterUsmle == '2'
+                    //       ? [
+                    //           { label: 'USMLE Category', value: '' },
+                    //           { label: 'Internal Medicine', value: 'Internal Medicine' },
+                    //           { label: 'Surgery', value: 'Surgery' },
+                    //           { label: 'Pediatrics', value: 'Pediatrics' },
+                    //           {
+                    //             label: 'Obstetrics and Gynecology',
+                    //             value: 'Obstetrics and Gynecology',
+                    //           },
+                    //           { label: 'Psychiatry', value: 'Psychiatry' },
+                    //           { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                    //           { label: 'Family Medicine', value: 'Family Medicine' },
+                    //         ]
+                    //       : filterUsmle == '3'
+                    //         ? [
+                    //             { label: 'USMLE Category', value: '' },
+                    //             { label: 'Internal Medicine', value: 'Internal Medicine' },
+                    //             { label: 'Surgery', value: 'Surgery' },
+                    //             { label: 'Pediatrics', value: 'Pediatrics' },
+                    //             {
+                    //               label: 'Obstetrics and Gynecology',
+                    //               value: 'Obstetrics and Gynecology',
+                    //             },
+                    //             { label: 'Psychiatry', value: 'Psychiatry' },
+                    //             { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                    //             { label: 'Family Medicine', value: 'Family Medicine' },
+                    //           ]
+                    //         : [{ label: 'USMLE Category', value: '' }]
+                    // }
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
-                  />
+                  >
+                    <option>Select USMLE Category</option>
+                    {filterUsmle == '1' ? (
+                      step1Categories.map((category, idx) => (
+                        <option key={idx} value={category}>
+                          {category}
+                        </option>
+                      ))
+                    ) : filterUsmle == '2' ? (
+                      step2Categories.map((category, idx) => (
+                        <option key={idx} value={category}>
+                          {category}
+                        </option>
+                      ))
+                    ) : filterUsmle == '3' ? (
+                      step3Categories.map((category, idx) => (
+                        <option key={idx} value={category}>
+                          {category}
+                        </option>
+                      ))
+                    ) : (
+                      <option>Select USMLE Category</option>
+                    )}
+                  </CFormSelect>
                   <CButton
                     className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
                     onClick={() => {
@@ -1126,21 +1156,28 @@ const ManageQuiz = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Microbiology', value: 'Microbiology' },
-                            { label: 'Immunology', value: 'Immunology' },
-                            { label: 'Histology', value: 'Histology' },
-                            { label: 'Anatomy', value: 'Anatomy' },
-                            { label: 'Physiology', value: 'Physiology' },
-                            { label: 'Embryology', value: 'Embryology' },
-                            { label: 'Biochemistry', value: 'Biochemistry' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Microbiology', value: 'Microbiology' },
+                          //   { label: 'Immunology', value: 'Immunology' },
+                          //   { label: 'Histology', value: 'Histology' },
+                          //   { label: 'Anatomy', value: 'Anatomy' },
+                          //   { label: 'Physiology', value: 'Physiology' },
+                          //   { label: 'Embryology', value: 'Embryology' },
+                          //   { label: 'Biochemistry', value: 'Biochemistry' },
+                          // ]}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step1Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -1150,24 +1187,31 @@ const ManageQuiz = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step2Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -1177,24 +1221,31 @@ const ManageQuiz = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step3Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -1580,11 +1631,38 @@ const ManageQuiz = () => {
                   <CCol md={12}>
                     <p className="form-label">Video</p>
                     <DropBox
-                      file={questionId && video ? `${API_URL}uploads/videos/${video}` : video}
+                      file={prevVideo ? `${API_URL}uploads/videos/${video}` : video}
+                      // file={questionId && videoSrc ? `${API_URL}uploads/videos/${video}` : video}
                       setFile={setVideo}
                       fileEnter={fileEnter}
                       setFileEnter={setFileEnter}
+                      setVideoSrc={setVideoSrc}
                     />
+                    <div className="flex justify-center items-center mt-3">
+                      {video && (
+                        <CButton
+                          onClick={() => {
+                            setVideo('')
+                            setVideoSrc('')
+                            setPrevVideo(false)
+                          }}
+                          color="danger"
+                          // className="px-4 mt-10 uppercase py-2 tracking-widest outline-none bg-red-600 text-white rounded"
+                        >
+                          Reset
+                        </CButton>
+                      )}
+                      {questionId && video && (
+                        <CButton
+                          color="danger"
+                          onClick={deleteVideo}
+                          className="ml-3"
+                          disabled={videoLoader ? true : false}
+                        >
+                          {videoLoader ? <CSpinner color="light" size="sm" /> : 'Delete Video'}
+                        </CButton>
+                      )}
+                    </div>
                   </CCol>
                 </CRow> */}
                 {/* <CRow className="mb-3">

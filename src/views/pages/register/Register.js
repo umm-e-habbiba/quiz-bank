@@ -50,7 +50,7 @@ const Register = () => {
     setRegisterError(false)
     setRegisterErrorValue('')
     setIsLoading(true)
-    console.log(data)
+    // console.log(data)
 
     if (data.password == data.repeatPassword) {
       const myHeaders = new Headers()
@@ -74,7 +74,7 @@ const Register = () => {
       fetch(API_URL + 'user-signup', requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log(result)
+          // console.log(result)
           setIsLoading(false)
           if (result.success) {
             setSuccess(true)

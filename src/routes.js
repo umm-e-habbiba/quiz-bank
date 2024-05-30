@@ -10,6 +10,7 @@ import Feedback from './views/pages/dashboard/Feedback'
 import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
 import UploadQuestions from './views/pages/admin/UploadQuestions'
+import UploadFullLengthExam from './views/pages/admin/UploadFullLengthExam'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -28,6 +29,11 @@ const routes = [
   { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
   { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
   { path: '/upload-questions', name: 'Upload Questions', element: UploadQuestions },
+  {
+    path: '/upload-full-length-exam',
+    name: 'Upload Full Length Exam',
+    element: UploadFullLengthExam,
+  },
 ]
 
 export default routes
