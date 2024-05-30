@@ -104,9 +104,9 @@ const Login = () => {
       })
   }
   return (
-    <div className="bg-body-tertiary min-vh-100 ">
+    <div className="bg-body-tertiary min-vh-100">
       <div className="auth-wrapper flex flex-col dark:bg-black">
-        <h2 className="dark:text-white ">
+        <h2 className="dark:text-white">
           Welcome to <span className="text-[#35b18c]">ZAP-70!</span>
         </h2>
         <div className="inner rounded-lg">
