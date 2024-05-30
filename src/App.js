@@ -20,6 +20,7 @@ import Donations from './views/pages/dashboard/Donations'
 import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
 import UploadQuestions from './views/pages/admin/UploadQuestions'
+import UploadFullLengthExam from './views/pages/admin/UploadFullLengthExam'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -76,6 +77,11 @@ const App = () => {
           <Route path="/feedback" name="Feedback" element={<Feedback />} />
           <Route path="/manage-feedback" name="Manage Feedback" element={<ManageFeedbacks />} />
           <Route path="/upload-questions" name="Upload Questions" element={<UploadQuestions />} />
+          <Route
+            path="/upload-full-length-exam"
+            name="Upload Full Length Exam"
+            element={<UploadFullLengthExam />}
+          />
           <Route path="/forget-password" name="Forget Password" element={<ForgetPassword />} />
           <Route
             path="/attempted-questions"

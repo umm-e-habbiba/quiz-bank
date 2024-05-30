@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DropBox = ({ file, setFile, fileEnter, setFileEnter }) => {
+const DropBox = ({ file, setFile, fileEnter, setFileEnter, setVideoSrc }) => {
   return (
     <div className="container px-4 max-w-5xl mx-auto">
       {!file ? (
@@ -53,6 +53,8 @@ const DropBox = ({ file, setFile, fileEnter, setFileEnter }) => {
               if (files && files[0]) {
                 let blobUrl = URL.createObjectURL(files[0])
                 setFile(blobUrl)
+                setVideoSrc(files[0])
+                console.log('bloburl', blobUrl)
               }
             }}
           />
@@ -64,12 +66,15 @@ const DropBox = ({ file, setFile, fileEnter, setFileEnter }) => {
             data={file}
             type="image/png" //need to be updated based on type of file
           />
-          <button
-            onClick={() => setFile('')}
+          {/* <button
+            onClick={() => {
+              setFile('')
+              setVideoSrc('')
+            }}
             className="px-4 mt-10 uppercase py-2 tracking-widest outline-none bg-red-600 text-white rounded"
           >
             Reset
-          </button>
+          </button> */}
         </div>
       )}
     </div>

@@ -38,6 +38,7 @@ import 'react-quill/dist/quill.snow.css'
 import JoditEditor from 'jodit-react'
 import { FaRegEye } from 'react-icons/fa'
 import { RiEyeLine } from 'react-icons/ri'
+import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 const Comments = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -609,21 +610,28 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Microbiology', value: 'Microbiology' },
-                            { label: 'Immunology', value: 'Immunology' },
-                            { label: 'Histology', value: 'Histology' },
-                            { label: 'Anatomy', value: 'Anatomy' },
-                            { label: 'Physiology', value: 'Physiology' },
-                            { label: 'Embryology', value: 'Embryology' },
-                            { label: 'Biochemistry', value: 'Biochemistry' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Microbiology', value: 'Microbiology' },
+                          //   { label: 'Immunology', value: 'Immunology' },
+                          //   { label: 'Histology', value: 'Histology' },
+                          //   { label: 'Anatomy', value: 'Anatomy' },
+                          //   { label: 'Physiology', value: 'Physiology' },
+                          //   { label: 'Embryology', value: 'Embryology' },
+                          //   { label: 'Biochemistry', value: 'Biochemistry' },
+                          // ]}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step1Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -633,24 +641,31 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step2Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
@@ -660,24 +675,31 @@ const Comments = () => {
                           aria-label="usmle category"
                           id="usmleCategory"
                           defaultValue={getValues('usmleCategory')}
-                          options={[
-                            { label: 'Select USMLE Category', value: '' },
-                            { label: 'Internal Medicine', value: 'Internal Medicine' },
-                            { label: 'Surgery', value: 'Surgery' },
-                            { label: 'Pediatrics', value: 'Pediatrics' },
-                            {
-                              label: 'Obstetrics and Gynecology',
-                              value: 'Obstetrics and Gynecology',
-                            },
-                            { label: 'Psychiatry', value: 'Psychiatry' },
-                            { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                            { label: 'Family Medicine', value: 'Family Medicine' },
-                          ]}
+                          // options={[
+                          //   { label: 'Select USMLE Category', value: '' },
+                          //   { label: 'Internal Medicine', value: 'Internal Medicine' },
+                          //   { label: 'Surgery', value: 'Surgery' },
+                          //   { label: 'Pediatrics', value: 'Pediatrics' },
+                          //   {
+                          //     label: 'Obstetrics and Gynecology',
+                          //     value: 'Obstetrics and Gynecology',
+                          //   },
+                          //   { label: 'Psychiatry', value: 'Psychiatry' },
+                          //   { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                          //   { label: 'Family Medicine', value: 'Family Medicine' },
+                          // ]}
                           // onChange={(e) => setUsmleCategory(e.target.value)}
                           {...register('usmleCategory', { required: true })}
                           feedback="Please select USMLE Category."
                           invalid={errors.usmleCategory ? true : false}
-                        />
+                        >
+                          <option>Select USMLE Category</option>
+                          {step3Categories.map((category, idx) => (
+                            <option key={idx} value={category}>
+                              {category}
+                            </option>
+                          ))}
+                        </CFormSelect>
                       ) : (
                         ''
                       )}
