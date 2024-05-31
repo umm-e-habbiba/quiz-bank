@@ -178,16 +178,26 @@ const PrevExams = () => {
                               {moment(q.createdAt).format('MMMM Do YYYY')}
                             </CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center" scope="row">
-                              {/* <Link to={`/review-quiz/${q._id}`}>
-                                <CButton
-                                  color="success"
-                                  className="text-white"
-                                  // id={q._id}
-                                >
-                                  Review
-                                </CButton>
-                              </Link> */}
+                              {/* <Link to={`/review-quiz/${q._id}`}> */}
                               <CButton
+                                color="success"
+                                className="text-white"
+                                // id={q._id}
+                              >
+                                Review
+                              </CButton>
+                              {/* </Link> */}
+                              {/* <Link to={`/review-quiz/${q._id}`}> */}
+                              <CButton
+                                color="info"
+                                className="text-white ml-2"
+                                // id={q._id}
+                              >
+                                Retake
+                              </CButton>
+                              {/* </Link> */}
+                              {/*
+                             <CButton
                                 color="danger"
                                 className="text-white ml-2"
                                 id={q._id}
@@ -198,6 +208,7 @@ const PrevExams = () => {
                               >
                                 <CIcon icon={cilTrash} />
                               </CButton>
+                             */}
                             </CTableDataCell>
                           </CTableRow>
                         ))
