@@ -36,6 +36,7 @@ const FullLengthExam = () => {
   const navigate = useNavigate()
   let { id } = useParams()
   const [allExam, setAllExam] = useState([])
+  const [allSections, setAllSections] = useState([])
   const [detailModal, setDetailModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
@@ -52,6 +53,8 @@ const FullLengthExam = () => {
   const [showExamList, setShowExamList] = useState(true)
   const [showQues, setShowQues] = useState(false)
   const [totalQuest, setTotalQuest] = useState('')
+  const [usmleStep, setUsmleStep] = useState('')
+  const [testName, setTestName] = useState('')
   const [filteredQuestion, setFilteredQuestion] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [markedQuestions, setMarkedQuestions] = useState([])
@@ -66,6 +69,10 @@ const FullLengthExam = () => {
   const [opt4Marked, setOpt4Marked] = useState(false)
   const [opt5Marked, setOpt5Marked] = useState(false)
   const [opt6Marked, setOpt6Marked] = useState(false)
+  const [startScreen, setStartScreen] = useState(false)
+  const [endScreen, setEndScreen] = useState(false)
+  const [showSections, setShowSections] = useState(false)
+  const [selectError, setSelectError] = useState(false)
   const questionText = useRef()
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -74,10 +81,16 @@ const FullLengthExam = () => {
       setUSerID(getUserId)
       getAllExams()
       setToken(getToken)
+      console.log('exam id', id)
       if (id) {
-        setExamId(id)
+        setShowSections(true)
         setShowExamList(false)
-        setShowQues(true)
+        setExamId(id)
+        // // setStartScreen(true)
+        // setTimeout(() => {
+        //   setShowQues(true)
+        //   setStartScreen(false)
+        // }, 2000)
       }
     } else {
       navigate('/login')
@@ -88,8 +101,12 @@ const FullLengthExam = () => {
   }, [examId])
   useEffect(() => {
     if (quizEnd) {
-      navigate('/previous-exams')
-      saveExam()
+      setEndScreen(true)
+      setTimeout(() => {
+        setStartScreen(false)
+        navigate('/previous-exams')
+        saveExam()
+      }, 2000)
     }
   }, [quizEnd])
 
@@ -131,16 +148,25 @@ const FullLengthExam = () => {
         // console.log('ques detail', result)
         if (result.data) {
           console.log('getExam', result)
-          setShowQues(true)
+          // setStartScreen(true)
+          // setTimeout(() => {
+          //   setShowQues(true)
+          //   setStartScreen(false)
+          //   setShowExamList(false)
+          // }, 2000)
+          // setFilteredQuestion(result.data.questions)
+          setAllSections(result.data.sections)
+          setUsmleStep(result.data.usmleStep)
+          setTestName(result.data.testName)
           setShowExamList(false)
-          setFilteredQuestion(result.data.questions)
-          setTotalQuest(result.data.questions?.length)
-          let allFilteredIds = result.data.questions.map(({ _id }) => _id)
-          const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
-            res.push({ questionId: item, selectedOption: '' })
-            return res
-          }, [])
-          setSaveQuestionArray(partialQuestionDetails)
+          setShowSections(true)
+          // setTotalQuest(result.data.questions?.length)
+          // let allFilteredIds = result.data.questions.map(({ _id }) => _id)
+          // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+          //   res.push({ questionId: item, selectedOption: '' })
+          //   return res
+          // }, [])
+          // setSaveQuestionArray(partialQuestionDetails)
         }
       })
       .catch((error) => console.log('error', error))
@@ -185,6 +211,7 @@ const FullLengthExam = () => {
     }
   }
   const handleFormSubmit = (e, id, value) => {
+    setSelectError(false)
     // e.preventDefault()
     setOpt1Marked(false)
     setOpt2Marked(false)
@@ -192,15 +219,18 @@ const FullLengthExam = () => {
     setOpt4Marked(false)
     setOpt5Marked(false)
     setOpt6Marked(false)
-
     const already = saveQuestionArray.filter((q) => q.questionId == id)
-    // console.log('already', already)
+    console.log('already', already)
     if (already.length > 0) {
-      checkAnswer(value)
-      const valueIndex = saveQuestionArray.findIndex((obj) => obj.questionId == id)
-      saveQuestionArray[valueIndex].selectedOption = value
-      // console.log('already present', valueIndex)
-      setSaveQuestionArray((prevQues) => [...prevQues])
+      if (already[0].selectedOption == '') {
+        setSelectError(true)
+      } else {
+        checkAnswer(value)
+        const valueIndex = saveQuestionArray.findIndex((obj) => obj.questionId == id)
+        saveQuestionArray[valueIndex].selectedOption = value
+        // console.log('already present', valueIndex)
+        setSaveQuestionArray((prevQues) => [...prevQues])
+      }
     } else {
       // console.log('not present')
       checkAnswer(value)
@@ -252,6 +282,18 @@ const FullLengthExam = () => {
       .catch((error) => {
         console.error(error)
       })
+  }
+  const percentage = (partialValue, totalValue) => {
+    return Math.round((100 * partialValue) / totalValue)
+  }
+  const startSection = () => {
+    setStartScreen(true)
+    setTimeout(() => {
+      setShowQues(true)
+      setShowSections(false)
+      setStartScreen(false)
+      setShowExamList(false)
+    }, 2000)
   }
   return (
     <div className="">
@@ -347,45 +389,53 @@ const FullLengthExam = () => {
               {showExamList && (
                 <div className={`mx-40 mb-5 flex flex-col justify-center items-center  mt-10`}>
                   {allExam && allExam.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
-                      {allExam.map((row, id) => (
-                        <CRow
-                          key={id}
-                          className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
-                        >
-                          <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
-                            <span className="text-4xl font-semibold">{row.testName}</span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className="flex flex-row w-full gap-1 text-xl">
-                            <span>USMLE Step</span>
-                            <span>{row.usmleStep}</span>
-                          </CCol>
-                          <CCol
-                            xs={1}
-                            md={3}
-                            lg={3}
-                            className=" w-full gap-1 text-md whitespace-normal"
+                    <>
+                      <p className="text-4xl font-semibold">All Exams</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
+                        {allExam.map((row, id) => (
+                          <CRow
+                            key={id}
+                            className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
                           >
-                            <span>{row.testDescription}</span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className=" font-medium">
-                            <span>{row.questions?.length} Questions </span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className="w-full mt-2">
-                            <button
-                              className={`mx-auto px-5 py-2 w-full rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
-                              color="secondary"
-                              id={row._id}
-                              onClick={(e) => {
-                                setExamId(e.currentTarget.id)
-                              }}
+                            <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
+                              <span className="text-3xl font-semibold">{row.testName}</span>
+                            </CCol>
+                            <CCol
+                              xs={1}
+                              md={3}
+                              lg={3}
+                              className="flex flex-row w-full gap-1 text-xl"
                             >
-                              Start Exam
-                            </button>
-                          </CCol>
-                        </CRow>
-                      ))}
-                    </div>
+                              <span>USMLE Step</span>
+                              <span>{row.usmleStep}</span>
+                            </CCol>
+                            <CCol
+                              xs={1}
+                              md={3}
+                              lg={3}
+                              className=" w-full gap-1 text-md whitespace-normal"
+                            >
+                              <span>{row.testDescription}</span>
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3} className=" font-medium">
+                              <span>{row.questions?.length} Questions </span>
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3} className="w-full mt-2">
+                              <button
+                                className={`mx-auto px-5 py-2 w-full rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                                color="secondary"
+                                id={row._id}
+                                onClick={(e) => {
+                                  setExamId(e.currentTarget.id)
+                                }}
+                              >
+                                Start Exam
+                              </button>
+                            </CCol>
+                          </CRow>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     ''
                   )}
@@ -672,11 +722,104 @@ const FullLengthExam = () => {
                         ''
                       )}
                     </div>
+                    {selectError && (
+                      <p className="mb-4 text-red-600">Kindly select on option to proceed</p>
+                    )}
                     <CButton color="primary" className="mx-auto px-5 rounded-full" type="submit">
                       {currentQuestion + 1 != totalQuest ? 'Next' : 'Submit'}
                     </CButton>
                   </CForm>
                 </div>
+              )}
+              {showSections && allSections && allSections.length > 0 && (
+                <div className="mx-40 mb-5 flex flex-col justify-center items-center  mt-10">
+                  <p className="text-4xl font-semibold">Sections of {testName}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
+                    {allSections.map((section, id) => (
+                      <CRow
+                        key={id}
+                        className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
+                      >
+                        <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
+                          <span className="text-3xl font-semibold">{section.section}</span>
+                        </CCol>
+                        <CCol xs={1} md={3} lg={3} className="flex flex-row w-full gap-1 text-xl">
+                          <span>USMLE Step</span>
+                          <span>{usmleStep}</span>
+                        </CCol>
+                        <CCol xs={1} md={3} lg={3} className=" font-medium">
+                          <span>{section.questions?.length} Questions </span>
+                        </CCol>
+                        <CCol xs={1} md={3} lg={3} className="w-full mt-2">
+                          <button
+                            className={`mx-auto px-5 py-2 w-full rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                            color="secondary"
+                            id={section.section}
+                            onClick={(e) => {
+                              setFilteredQuestion(section.questions)
+                              setTotalQuest(section.questions?.length)
+                              let allFilteredIds = section.questions.map(({ _id }) => _id)
+                              const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
+                                res.push({ questionId: item, selectedOption: '' })
+                                return res
+                              }, [])
+                              startSection()
+                              setSaveQuestionArray(partialQuestionDetails)
+                            }}
+                          >
+                            Start Exam
+                          </button>
+                        </CCol>
+                      </CRow>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {startScreen && (
+                <CModal
+                  alignment="center"
+                  visible={startScreen}
+                  onClose={() => setStartScreen(false)}
+                  aria-labelledby="VerticallyCenteredExample"
+                  backdrop="static"
+                >
+                  <CModalBody className="p-6 flex flex-col justify-center items-center">
+                    <span className="goodluck text-5xl mt-9">Good Luck </span>
+                    <span className="text-xl">for your exam</span>
+                    <p className="text-base">By AJmonics</p>
+                  </CModalBody>
+                </CModal>
+              )}
+              {endScreen && (
+                <CModal
+                  alignment="center"
+                  visible={endScreen}
+                  onClose={() => setEndScreen(false)}
+                  aria-labelledby="VerticallyCenteredExample"
+                  backdrop="static"
+                >
+                  <CModalBody className="p-6 flex flex-col justify-center items-center">
+                    {usmleStep == '1' &&
+                      (percentage(quizScore, totalQuest) > 70 ? (
+                        <>
+                          <span className="goodluck text-5xl mt-9 text-green-600">
+                            Congratulations
+                          </span>
+                          <span className="text-xl">
+                            You passed this exam with {percentage(quizScore, totalQuest)}%
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
+                          <span className="text-xl">
+                            You failed this exam your precentage is:{' '}
+                            {percentage(quizScore, totalQuest)}%
+                          </span>
+                        </>
+                      ))}
+                  </CModalBody>
+                </CModal>
               )}
             </>
           )}

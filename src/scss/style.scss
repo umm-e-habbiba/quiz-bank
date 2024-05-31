@@ -14,7 +14,7 @@
 @import 'custom';
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400);
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
-
+@import url('https://fonts.googleapis.com/css2?family=Borel&display=swap');
 .quiz-wrapper {
   height: calc(100vh - 80px - 80px);
 }
@@ -339,4 +339,17 @@ table th {
   width: 0%; /* Starts at 0%, updates with download progress */
 
   transition: width 30ms ease-in-out;
+}
+
+// start or end screen message
+.goodluck {
+  font-family: 'Borel', cursive;
+}
+.start-screen {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  -ms-transform: translateY(-50%, -50%);
+  transform: translateY(-50%, -50%);
 }
