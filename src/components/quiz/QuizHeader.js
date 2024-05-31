@@ -368,7 +368,8 @@ const QuizHeader = ({
             ''
           )}
           {/* {location.pathname == '/review-quiz' ? ( */}
-          {location.pathname.includes('review-quiz') ? (
+          {location.pathname.includes('review-quiz') ||
+          location.pathname.includes('full-length-exam') ? (
             <FiSettings className="quiz-icons cursor-pointer" />
           ) : (
             <CDropdown alignment="end">

@@ -58,12 +58,18 @@ const _nav = [
       // },
     ],
   },
-  // {
-  //   component: CNavItem,
-  //   name: 'Notes',
-  //   to: '/notes',
-  //   icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
-  // },
+  {
+    component: CNavItem,
+    name: 'Full Length Exam',
+    to: '/full-length-exam',
+    icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Previous Exams',
+    to: '/previous-exams',
+    icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+  },
   // {
   //   component: CNavItem,
   //   name: 'FlashCards',

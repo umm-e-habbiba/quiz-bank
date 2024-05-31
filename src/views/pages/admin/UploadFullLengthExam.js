@@ -57,6 +57,7 @@ const UploadFullLengthExam = () => {
     defaultValues: {
       usmleStep: '',
       excelfile: '',
+      testName: '',
     },
   })
   const step = watch('usmleStep')
@@ -80,6 +81,8 @@ const UploadFullLengthExam = () => {
     const formdata = new FormData()
     formdata.append('usmleStep', data.usmleStep)
     formdata.append('file', data.excelfile[0])
+    formdata.append('testName', data.testName)
+
     const requestOptions = {
       method: 'POST',
       body: formdata,
@@ -88,7 +91,7 @@ const UploadFullLengthExam = () => {
     }
     // const fill = document.querySelector('.progress-bar-fill')
     // const text = document.querySelector('.progress-text')
-    fetch(API_URL + 'upload-questions', requestOptions)
+    fetch(API_URL + 'upload-test', requestOptions)
       .then((response) => {
         const contentLength = response.headers.get('content-length')
         let loaded = 0
@@ -130,7 +133,7 @@ const UploadFullLengthExam = () => {
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
-            navigate('/manage-quiz')
+            navigate('/manage-exam')
           }, 3000)
         } else {
           setErrorr(true)
@@ -147,6 +150,19 @@ const UploadFullLengthExam = () => {
       <div className="mx-4">
         <p className="text-2xl">Upload Full Length Exam</p>
         <CForm onSubmit={handleSubmit(uploadExam)} className="my-3">
+          <CRow className="mb-3">
+            <CCol md={12}>
+              <CFormInput
+                placeholder="Enter exam name"
+                label="Exam Name"
+                type="text"
+                {...register('testName', { required: true })}
+                feedback="Exam name is required"
+                invalid={errors.testName ? true : false}
+                className=" text-[#252b36] placeholder:text-[#252b36]"
+              />
+            </CCol>
+          </CRow>
           <CRow className="mb-3">
             <CCol md={12}>
               <CFormSelect

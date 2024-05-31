@@ -11,6 +11,9 @@ import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
 import UploadQuestions from './views/pages/admin/UploadQuestions'
 import UploadFullLengthExam from './views/pages/admin/UploadFullLengthExam'
+import ManageExams from './views/pages/admin/ManageExams'
+import FullLengthExam from './views/pages/dashboard/FullLengthExam'
+import PrevExams from './views/pages/dashboard/PrevExams'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -27,8 +30,11 @@ const routes = [
   { path: '/donations', name: 'Donations', element: Donations },
   { path: '/feedback', name: 'Feedback', element: Feedback },
   { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
+  { path: '/manage-exam', name: 'Manage Exam', element: ManageExams },
   { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
   { path: '/upload-questions', name: 'Upload Questions', element: UploadQuestions },
+  { path: '/full-length-exam', name: 'Full Length Exam', element: FullLengthExam },
+  { path: '/previous-exams', name: 'Previous Exams', element: PrevExams },
   {
     path: '/upload-full-length-exam',
     name: 'Upload Full Length Exam',

@@ -21,6 +21,9 @@ import ManageFeedbacks from './views/pages/admin/ManageFeedbacks'
 import AttemptedQuestions from './views/pages/admin/AttemptedQuestions'
 import UploadQuestions from './views/pages/admin/UploadQuestions'
 import UploadFullLengthExam from './views/pages/admin/UploadFullLengthExam'
+import ManageExams from './views/pages/admin/ManageExams'
+import FullLengthExam from './views/pages/dashboard/FullLengthExam'
+import PrevExams from './views/pages/dashboard/PrevExams'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -76,7 +79,10 @@ const App = () => {
           <Route path="/donations" name="Donations" element={<Donations />} />
           <Route path="/feedback" name="Feedback" element={<Feedback />} />
           <Route path="/manage-feedback" name="Manage Feedback" element={<ManageFeedbacks />} />
+          <Route path="/full-length-exam" name="Full Length Exam" element={<FullLengthExam />} />
+          <Route path="/manage-exam" name="Manage Exam" element={<ManageExams />} />
           <Route path="/upload-questions" name="Upload Questions" element={<UploadQuestions />} />
+          <Route path="/previous-exams" name="Previous Exams" element={<PrevExams />} />
           <Route
             path="/upload-full-length-exam"
             name="Upload Full Length Exam"
