@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   CCard,
   CCardBody,
@@ -34,6 +34,7 @@ import { GoChevronLeft, GoChevronRight } from 'react-icons/go'
 import markIcon from '../../../assets/images/mark-icon.svg'
 const FullLengthExam = () => {
   const navigate = useNavigate()
+  let { id } = useParams()
   const [allExam, setAllExam] = useState([])
   const [detailModal, setDetailModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
@@ -73,6 +74,11 @@ const FullLengthExam = () => {
       setUSerID(getUserId)
       getAllExams()
       setToken(getToken)
+      if (id) {
+        setExamId(id)
+        setShowExamList(false)
+        setShowQues(true)
+      }
     } else {
       navigate('/login')
     }
@@ -82,7 +88,7 @@ const FullLengthExam = () => {
   }, [examId])
   useEffect(() => {
     if (quizEnd) {
-      navigate('/quiz-performance')
+      navigate('/previous-exams')
       saveExam()
     }
   }, [quizEnd])
@@ -690,6 +696,7 @@ const FullLengthExam = () => {
         score={quizScore}
         saveQuestionArray={saveQuestionArray}
         isTimer={true}
+        examId={examId}
       />
     </div>
   )

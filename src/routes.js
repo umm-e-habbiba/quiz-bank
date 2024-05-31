@@ -14,6 +14,7 @@ import UploadFullLengthExam from './views/pages/admin/UploadFullLengthExam'
 import ManageExams from './views/pages/admin/ManageExams'
 import FullLengthExam from './views/pages/dashboard/FullLengthExam'
 import PrevExams from './views/pages/dashboard/PrevExams'
+import ReviewExam from './views/pages/dashboard/ReviewExam'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -34,6 +35,8 @@ const routes = [
   { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
   { path: '/upload-questions', name: 'Upload Questions', element: UploadQuestions },
   { path: '/full-length-exam', name: 'Full Length Exam', element: FullLengthExam },
+  { path: '/full-length-exam/:id', name: 'Full Length Exam', element: FullLengthExam },
+  { path: '/review-exam/:id', name: 'Review Exam', element: ReviewExam },
   { path: '/previous-exams', name: 'Previous Exams', element: PrevExams },
   {
     path: '/upload-full-length-exam',

@@ -8,10 +8,11 @@ import {
   CModalFooter,
   CButton,
 } from '@coreui/react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { API_URL } from 'src/store'
-const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) => {
+const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer, examId }) => {
   const navigate = useNavigate()
+  const location = useLocation()
   const [endModal, setEndModal] = useState(false)
   // const [totalSeconds, setTotalSeconds] = useState(0)
   const [totalSeconds, setTotalSeconds] = useState(0)
@@ -64,9 +65,15 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) 
   }, [totalSeconds, isTimer, timeLeft])
 
   const endQuiz = () => {
-    navigate('/quiz-performance')
-    setTimeLeft('00:00')
-    saveQuiz()
+    if (location.pathname.includes('full-length-exam')) {
+      navigate('/previous-exams')
+      setTimeLeft('00:00')
+      saveExam()
+    } else {
+      navigate('/quiz-performance')
+      setTimeLeft('00:00')
+      saveQuiz()
+    }
   }
 
   const saveQuiz = () => {
@@ -95,6 +102,36 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer }) 
     }
 
     fetch(API_URL + 'save-quizzes', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('result')
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  const saveExam = () => {
+    // console.log('user id', userID, 'selected option', selectedOption)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+
+    const raw = JSON.stringify({
+      userId: userID,
+      testId: examId,
+      totalMarks: totalQues,
+      obtainedMarks: score,
+    })
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'save-test-attempt', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log('result')
