@@ -109,7 +109,7 @@ const Login = () => {
         <h2 className="dark:text-white">
           Welcome to <span className="text-[#35b18c]">ZAP-70!</span>
         </h2>
-        <div className="inner">
+        <div className="inner rounded-lg">
           {/* <img src={img1} alt="" className="image-1" /> */}
           {/* <img src={img3} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(login)} className="form">
