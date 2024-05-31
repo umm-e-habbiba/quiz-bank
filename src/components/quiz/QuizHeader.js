@@ -317,7 +317,7 @@ const QuizHeader = ({
           <CNavItem>
             <CNavLink
               as={NavLink}
-              className={`flex flex-col justify-center items-center mr-2 ${showQues && currentQuestion >= 1 ? '' : 'opacity-30'}`}
+              className={`flex flex-col justify-center items-center mr-2 ${showQues && currentQuestion >= 1 ? '' : 'opacity-0'}`}
               disabled={showQues && currentQuestion >= 1 ? false : true}
               onClick={handlePrevQuestion}
             >
@@ -328,7 +328,7 @@ const QuizHeader = ({
           <CNavItem>
             <CNavLink
               as={NavLink}
-              className={`flex flex-col justify-center items-center ${showQues && currentQuestion + 1 != totalQues ? '' : 'opacity-30'}`}
+              className={`flex flex-col justify-center items-center ${showQues && currentQuestion + 1 != totalQues ? '' : 'opacity-0'}`}
               disabled={showQues && currentQuestion + 1 != totalQues ? false : true}
               onClick={handleNextQuestion}
             >
