@@ -10,13 +10,23 @@ import {
 } from '@coreui/react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { API_URL } from 'src/store'
-const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer, examId }) => {
+const QuizFooter = ({
+  showQues,
+  totalQues,
+  score,
+  saveQuestionArray,
+  isTimer,
+  examId,
+  timeLeft,
+  setTimeLeft,
+  timeInSeconds,
+}) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [endModal, setEndModal] = useState(false)
   // const [totalSeconds, setTotalSeconds] = useState(0)
   const [totalSeconds, setTotalSeconds] = useState(0)
-  const [timeLeft, setTimeLeft] = useState('00:00')
+  // const [timeLeft, setTimeLeft] = useState('00:00')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
 
@@ -32,7 +42,11 @@ const QuizFooter = ({ showQues, totalQues, score, saveQuestionArray, isTimer, ex
   }, [])
 
   useEffect(() => {
-    setTotalSeconds(Number(totalQues) * 90)
+    if (timeInSeconds == 0) {
+      setTotalSeconds(Number(totalQues) * 90)
+    } else {
+      setTotalSeconds(timeInSeconds + Number(totalQues) * 90)
+    }
   }, [totalQues])
 
   useEffect(() => {

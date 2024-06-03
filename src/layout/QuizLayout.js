@@ -73,6 +73,7 @@ const QuizLayout = () => {
   const [step1Questions, setStep1Questions] = useState('')
   const [step2Questions, setStep2Questions] = useState('')
   const [step3Questions, setStep3Questions] = useState('')
+  const [timeLeft, setTimeLeft] = useState('00:00')
   const [totalRows, setTotalRows] = useState([
     {
       step: '',
@@ -268,7 +269,7 @@ const QuizLayout = () => {
           }
         } else {
           setError(true)
-          setErrorMsg('No Questions avaialable for this USMLE, Kindly select another')
+          setErrorMsg('No Questions available for this USMLE, Kindly select another')
           setTimeout(() => {
             setError(false)
             setErrorMsg('')
@@ -278,7 +279,7 @@ const QuizLayout = () => {
     } else {
       // if no questions found for selected step send back to select steps
       setError(true)
-      setErrorMsg('No Questions avaialable for this Step, Kindly select another')
+      setErrorMsg('No Questions available for this Step, Kindly select another')
       setTimeout(() => {
         setError(false)
         setErrorMsg('')
@@ -922,7 +923,7 @@ const QuizLayout = () => {
                                           (ques) => ques.USMLE == category && ques.usmleStep == 1,
                                         ).length
                                       }{' '}
-                                      Questions avaialable)
+                                      Questions available)
                                     </option>
                                   ))
                                 ) : totalRows[id].step == '2' ? (
@@ -944,7 +945,7 @@ const QuizLayout = () => {
                                           (ques) => ques.USMLE == category && ques.usmleStep == 2,
                                         ).length
                                       }{' '}
-                                      Questions avaialable)
+                                      Questions available)
                                     </option>
                                   ))
                                 ) : totalRows[id].step == '3' ? (
@@ -966,7 +967,7 @@ const QuizLayout = () => {
                                           (ques) => ques.USMLE == category && ques.usmleStep == 3,
                                         ).length
                                       }{' '}
-                                      Questions avaialable)
+                                      Questions available)
                                     </option>
                                   ))
                                 ) : (
@@ -1427,6 +1428,9 @@ const QuizLayout = () => {
         score={quizScore}
         saveQuestionArray={saveQuestionArray}
         isTimer={isTimer}
+        timeLeft={timeLeft}
+        setTimeLeft={setTimeLeft}
+        timeInSeconds={0}
       />
       {/* error alert */}
       {error && (
