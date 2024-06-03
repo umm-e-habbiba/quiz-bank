@@ -144,6 +144,7 @@ const FullLengthExam = () => {
             setSectionValue(result.testAttempt?.sectionInfo)
             setNumberOfSeconds(result.testAttempt?.timeInSeconds)
             getQuestionsOfSection(result.testAttempt?.sectionInfo)
+            setQuizScore(result.testAttempt?.obtainedScore)
           }
         }
       })
