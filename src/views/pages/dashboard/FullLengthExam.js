@@ -341,16 +341,21 @@ const FullLengthExam = () => {
               {showExamList && (
                 <div className={`mx-40 mb-5 flex flex-col justify-center items-center  mt-10`}>
                   {allExam && allExam.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
+                    <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-x-14 gap-y-1 w-screen px-10 md:px-10 lg:px-20 xl:px-20 2xl:px-40 py-10 ">
                       {allExam.map((row, id) => (
                         <CRow
                           key={id}
-                          className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
+                          className="dark:bg-gray-700 cursor-pointer transition-all hover:scale-[1.03] bg-gray-200 hover:shadow-2xl dark:text-white shadow-black rounded-xl mb-5 relative  flex flex-col gap-2 text-black p-3 "
                         >
                           <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
-                            <span className="text-4xl font-semibold">{row.testName}</span>
+                            <span className="text-4xl font-semibold ">{row.testName}</span>
                           </CCol>
-                          <CCol xs={1} md={3} lg={3} className="flex flex-row w-full gap-1 text-xl">
+                          <CCol
+                            xs={1}
+                            md={3}
+                            lg={3}
+                            className="flex flex-row w-full gap-1 text-lg mt-2"
+                          >
                             <span>USMLE Step</span>
                             <span>{row.usmleStep}</span>
                           </CCol>
@@ -362,8 +367,8 @@ const FullLengthExam = () => {
                           >
                             <span>{row.testDescription}</span>
                           </CCol>
-                          <CCol xs={1} md={3} lg={3} className=" font-medium">
-                            <span>{row.questions?.length} Questions </span>
+                          <CCol xs={1} md={3} lg={3} className=" font-medium w-full">
+                            <span>{row.questions?.length} Total Questions </span>
                           </CCol>
                           <CCol xs={1} md={3} lg={3} className="w-full mt-2">
                             <button
