@@ -183,7 +183,7 @@ const QuizLayoutOld = () => {
           }
           setShowTotal(false)
           setError(true)
-          setErrorMsg('No Questions avaialable for this USMLE, Kindly select another')
+          setErrorMsg('No Questions available for this USMLE, Kindly select another')
           setTimeout(() => {
             setError(false)
             setErrorMsg('')
@@ -195,7 +195,7 @@ const QuizLayoutOld = () => {
       setShowTotal(false)
       setSteps(true)
       setError(true)
-      setErrorMsg('No Questions avaialable for this Step, Kindly select another')
+      setErrorMsg('No Questions available for this Step, Kindly select another')
       setTimeout(() => {
         setError(false)
         setErrorMsg('')

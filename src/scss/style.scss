@@ -14,7 +14,7 @@
 @import 'custom';
 @import url(https://fonts.googleapis.com/css?family=Roboto:300,400);
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
-
+@import url('https://fonts.googleapis.com/css2?family=Borel&display=swap');
 .quiz-wrapper {
   height: calc(100vh - 80px - 80px);
 }
@@ -339,4 +339,105 @@ table th {
   width: 0%; /* Starts at 0%, updates with download progress */
 
   transition: width 30ms ease-in-out;
+}
+
+// start or end screen message
+.goodluck {
+  font-family: 'Borel', cursive;
+}
+.start-screen {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  -ms-transform: translateY(-50%, -50%);
+  transform: translateY(-50%, -50%);
+}
+
+// sections css
+.olcards,
+.olcards * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.olcards {
+  list-style: none;
+  counter-reset: cardCount;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  --cardsGap: 1rem;
+  gap: var(--cardsGap);
+  padding-bottom: var(--cardsGap);
+}
+.olcards li {
+  counter-increment: cardCount;
+  display: flex;
+  color: black;
+  --labelOffset: 1rem;
+  --arrowClipSize: 1.5rem;
+  margin-top: var(--labelOffset);
+}
+
+.olcards li::before {
+  content: counter(cardCount, decimal-leading-zero);
+  background: #ebe9e9;
+  color: black;
+  font-size: 2em;
+  font-weight: 700;
+  transform: translateY(calc(-1 * var(--labelOffset)));
+  margin-right: calc(-1 * var(--labelOffset));
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 0.5em;
+}
+
+.olcards li .olcards-content {
+  // background-color: #e5e7eb;
+  --inlinePadding: 1em;
+  --boxPadding: 0.5em;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  width: 500px;
+  padding: var(--boxPadding) calc(var(--inlinePadding) + var(--arrowClipSize)) var(--boxPadding)
+    calc(var(--inlinePadding) + var(--labelOffset));
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--arrowClipSize)) 0,
+    100% 50%,
+    calc(100% - var(--arrowClipSize)) 100%,
+    calc(100% - var(--arrowClipSize)) calc(100% + var(--cardsGap)),
+    0 calc(100% + var(--cardsGap))
+  );
+  position: relative;
+}
+.olcards li .olcards-content::before {
+  content: '';
+  position: absolute;
+  width: var(--labelOffset);
+  height: var(--labelOffset);
+  background: #e5e7eb;
+  left: 0;
+  bottom: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  filter: brightness(0.75);
+}
+.olcards li .olcards-content::after {
+  content: '';
+  position: absolute;
+  height: var(--cardsGap);
+  width: var(--cardsGap);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), transparent 50%);
+  left: 0;
+  top: 100%;
+}
+.olcards li .olcards-content .olcards-title {
+  font-size: 1.25em;
+  /* font-weight: 700; */
 }

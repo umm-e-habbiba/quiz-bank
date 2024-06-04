@@ -121,6 +121,9 @@ const PrevExams = () => {
       })
       .catch((error) => console.log('error', error))
   }
+  const percentage = (partialValue, totalValue) => {
+    return Math.round((100 * partialValue) / totalValue)
+  }
   return (
     <div>
       <AppSidebar />
@@ -152,10 +155,11 @@ const PrevExams = () => {
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Result</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                       {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
@@ -170,32 +174,41 @@ const PrevExams = () => {
                         .map((q, idx) => (
                           <CTableRow key={idx}>
                             <CTableDataCell>{q.test?.testName}</CTableDataCell>
+                            <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
+                            <CTableDataCell>
+                              {q.test?.usmleStep == '1' &&
+                                (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                  <span className="text-success font-bold">Pass</span>
+                                ) : (
+                                  <span className="text-danger font-bold">Fail</span>
+                                ))}
+                            </CTableDataCell>
                             <CTableDataCell>{q.obtainedScore}</CTableDataCell>
                             <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
                             <CTableDataCell>{q.totalScore}</CTableDataCell>
-                            <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
+
                             <CTableDataCell>
                               {moment(q.createdAt).format('MMMM Do YYYY')}
                             </CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center" scope="row">
-                              {/* <Link to={`/review-quiz/${q._id}`}> */}
-                              <CButton
-                                color="success"
-                                className="text-white"
-                                // id={q._id}
-                              >
-                                Review
-                              </CButton>
-                              {/* </Link> */}
-                              {/* <Link to={`/review-quiz/${q._id}`}> */}
-                              <CButton
-                                color="info"
-                                className="text-white ml-2"
-                                // id={q._id}
-                              >
-                                Retake
-                              </CButton>
-                              {/* </Link> */}
+                              <Link to={`/review-exam/${q.test?._id}`}>
+                                <CButton
+                                  color="success"
+                                  className="text-white"
+                                  // id={q._id}
+                                >
+                                  Review
+                                </CButton>
+                              </Link>
+                              <Link to={`/full-length-exam/${q.test?._id}`}>
+                                <CButton
+                                  color="info"
+                                  className="text-white ml-2"
+                                  // id={q._id}
+                                >
+                                  Retake
+                                </CButton>
+                              </Link>
                               {/*
                              <CButton
                                 color="danger"
@@ -214,8 +227,8 @@ const PrevExams = () => {
                         ))
                     ) : (
                       <CTableRow>
-                        <CTableDataCell className="text-center" colSpan={6}>
-                          No quiz attempted yet
+                        <CTableDataCell className="text-center" colSpan={8}>
+                          No Exams attempted yet
                         </CTableDataCell>
                       </CTableRow>
                     )}

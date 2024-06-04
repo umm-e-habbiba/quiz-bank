@@ -58,6 +58,7 @@ const UploadFullLengthExam = () => {
       usmleStep: '',
       excelfile: '',
       testName: '',
+      testDesc: '',
     },
   })
   const step = watch('usmleStep')
@@ -82,6 +83,7 @@ const UploadFullLengthExam = () => {
     formdata.append('usmleStep', data.usmleStep)
     formdata.append('file', data.excelfile[0])
     formdata.append('testName', data.testName)
+    formdata.append('testDescription', data.testDesc)
 
     const requestOptions = {
       method: 'POST',
@@ -159,6 +161,19 @@ const UploadFullLengthExam = () => {
                 {...register('testName', { required: true })}
                 feedback="Exam name is required"
                 invalid={errors.testName ? true : false}
+                className=" text-[#252b36] placeholder:text-[#252b36]"
+              />
+            </CCol>
+          </CRow>
+          <CRow className="mb-3">
+            <CCol md={12}>
+              <CFormInput
+                placeholder="Enter exam description"
+                label="Description"
+                type="text"
+                {...register('testDesc', { required: true })}
+                feedback="Exam description is required"
+                invalid={errors.testDesc ? true : false}
                 className=" text-[#252b36] placeholder:text-[#252b36]"
               />
             </CCol>
