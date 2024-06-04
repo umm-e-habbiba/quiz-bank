@@ -26,6 +26,8 @@ import FullLengthExam from './views/pages/dashboard/FullLengthExam'
 import PrevExams from './views/pages/dashboard/PrevExams'
 import ReviewExam from './views/pages/dashboard/ReviewExam'
 import ManageUserQuestions from './views/pages/admin/ManageUserQuestions'
+import LatestExam from './views/pages/dashboard/LatestExam'
+import AddQuestion from './views/pages/dashboard/AddQuestion'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -91,6 +93,8 @@ const App = () => {
           <Route path="/manage-exam" name="Manage Exam" element={<ManageExams />} />
           <Route path="/upload-questions" name="Upload Questions" element={<UploadQuestions />} />
           <Route path="/previous-exams" name="Previous Exams" element={<PrevExams />} />
+          <Route path="/latest-exam" name="Latest Exam" element={<LatestExam />} />
+          <Route path="/add-question" name="Add Question" element={<AddQuestion />} />
           <Route
             path="/manage-user-questions"
             name="Questions By Users"

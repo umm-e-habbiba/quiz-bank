@@ -12,14 +12,14 @@ import {
   CSpinner,
 } from '@coreui/react'
 import { API_URL } from 'src/store'
-
-const QuizPerformance = () => {
+const LatestExam = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [noQuiz, setNoQuiz] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [percent, setPercent] = useState('')
+  const [examId, setExamId] = useState('')
   const [marks, setMarks] = useState('')
   const [total, setTotal] = useState('')
 
@@ -36,14 +36,14 @@ const QuizPerformance = () => {
 
   useEffect(() => {
     const timerId = setTimeout(() => {
-      getAllQuest()
+      getLatestExam()
     }, 1000)
 
     // Clear the timer when the component unmounts or when the dependency changes
     return () => clearTimeout(timerId)
   }, [token, userID])
 
-  const getAllQuest = () => {
+  const getLatestExam = () => {
     setLoading(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -53,7 +53,7 @@ const QuizPerformance = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'latest-quiz/' + userID, requestOptions)
+    fetch(API_URL + 'users-latest-test/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log('latest quiz', result)
@@ -65,6 +65,7 @@ const QuizPerformance = () => {
             setMarks(result.data.obtainedScore)
             setTotal(result.data.totalScore)
             setPercent(percentage(result.data.obtainedScore, result.data.totalScore))
+            setExamId(result.data.test?._id)
           }
         }
       })
@@ -87,10 +88,10 @@ const QuizPerformance = () => {
           <div className="body flex-grow-1">
             <CCard className="mb-4 mx-4">
               <CCardHeader className="flex justify-between items-center">
-                <strong>Your Last Quiz Performance</strong>
+                <strong>Your Last Exam Performance</strong>
                 <CButton
                   color="success"
-                  onClick={() => navigate('/review-quiz')}
+                  onClick={() => navigate(`/review-exam/${examId}`)}
                   disabled={noQuiz ? true : false}
                 >
                   Review
@@ -107,7 +108,7 @@ const QuizPerformance = () => {
                   ) : (
                     <CCol md={12}>
                       {noQuiz ? (
-                        <div>No quizzes attempted yet</div>
+                        <div>No exams attempted yet</div>
                       ) : (
                         <div className="progress-group">
                           <div className="progress-group-header">
@@ -133,5 +134,4 @@ const QuizPerformance = () => {
     </div>
   )
 }
-
-export default QuizPerformance
+export default LatestExam

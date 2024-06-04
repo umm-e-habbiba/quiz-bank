@@ -254,6 +254,11 @@ const Dashboard = () => {
                         <CCol xs={4}>
                           <div className="py-1 px-3 mb-3 flex justify-end items-center">
                             <Link to="/previous-tests">
+                              <CButton className="bg-[#6261CC] text-white hover:bg-[#484796] mr-3">
+                                Previous Quizzes
+                              </CButton>
+                            </Link>
+                            <Link to="/previous-exams">
                               <CButton className="bg-[#6261CC] text-white hover:bg-[#484796]">
                                 Previous Exams
                               </CButton>
