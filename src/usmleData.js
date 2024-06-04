@@ -12,18 +12,26 @@ export const step1Categories = [
   'Behavioral sciences',
   'Biostatistics and epidemiology',
   'Ethics',
+  'Statistics',
   'Cardiology',
+  'Cardiovascular',
+  'Endocrine',
   'Musculoskeletal',
   'Neurology',
   'Psychiatry',
   'Gastrointestinal',
+  'Heme/Onc',
   'OB/GYN',
+  'Renal',
+  'Reproductive',
+  'Respiratory',
   'Nephrology/Urology',
   'Dermatology',
   'Pulmonology',
   'Hematology/Oncology',
   'Endocrinology',
   'Ophthalmology',
+  'Radiology',
 ]
 
 export const step2Categories = [
@@ -44,6 +52,7 @@ export const step2Categories = [
   'Geriatrics',
   'Ethics and Legal Issues in Medicine',
   'Ethics',
+  'Statistics',
   'Cardiology',
   'Musculoskeletal',
   'Neurology',
@@ -56,6 +65,7 @@ export const step2Categories = [
   'Hematology/Oncology',
   'Endocrinology',
   'Ophthalmology',
+  'Epidemiology',
 ]
 
 export const step3Categories = [
@@ -76,6 +86,7 @@ export const step3Categories = [
   'Geriatrics',
   'Ethics and Legal Issues in Medicine',
   'Ethics',
+  'Statistics',
   'Cardiology',
   'Musculoskeletal',
   'Neurology',
@@ -88,4 +99,5 @@ export const step3Categories = [
   'Hematology/Oncology',
   'Endocrinology',
   'Ophthalmology',
+  'Epidemiology',
 ]

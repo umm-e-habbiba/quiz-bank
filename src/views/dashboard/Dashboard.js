@@ -59,6 +59,7 @@ const Dashboard = () => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuiz, setAllQuiz] = useState([])
+  const [allExam, setAllExam] = useState([])
   const [lastQuiz, setLastQuiz] = useState([])
   const [loading, setIsLoading] = useState(false)
 
@@ -85,13 +86,14 @@ const Dashboard = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'user-quizzes/' + userID, requestOptions)
+    fetch(API_URL + 'user-tests-and-quizes/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
         setIsLoading(false)
-        if (result.data) {
-          setAllQuiz(result.data)
+        if (result.success) {
+          setAllQuiz(result.quizes)
+          setAllExam(result.tests)
           setLastQuiz(result.data.slice(Math.max(result.data.length - 5, 0)))
         }
       })
@@ -233,15 +235,23 @@ const Dashboard = () => {
                   <CRow>
                     <CCol xs={12} md={12} xl={12}>
                       <CRow className="mb-0 pb-3">
-                        <CCol xs={6}>
+                        <CCol xs={4}>
                           <div className="border-start border-start-4 border-start-info py-1 px-3">
                             <div className="text-body-secondary text-truncate small">
-                              Exams Attempted
+                              Quiz Attempted
                             </div>
                             <div className="fs-5 fw-semibold">{allQuiz.length}</div>
                           </div>
                         </CCol>
-                        <CCol xs={6}>
+                        <CCol xs={4}>
+                          <div className="border-start border-start-4 border-start-warning py-1 px-3">
+                            <div className="text-body-secondary text-truncate small">
+                              Exams Attempted
+                            </div>
+                            <div className="fs-5 fw-semibold">{allExam.length}</div>
+                          </div>
+                        </CCol>
+                        <CCol xs={4}>
                           <div className="py-1 px-3 mb-3 flex justify-end items-center">
                             <Link to="/previous-tests">
                               <CButton className="bg-[#6261CC] text-white hover:bg-[#484796]">
@@ -289,7 +299,41 @@ const Dashboard = () => {
                             ))}
                           </>
                         ) : (
-                          <CProgress thin color="info" value={0} />
+                          <p>No Quizzes attempted yet</p>
+                        )}
+                        {allExam && allExam.length > 0 ? (
+                          <>
+                            <h4 className="my-2">Last attempted exams</h4>
+                            {allExam.slice(Math.max(allExam.length - 5, 0)).map((exam, idx) => (
+                              <div className="progress-group mb-4" key={idx}>
+                                <div className="progress-group-prepend">
+                                  <span className="text-body-secondary small mr-2">
+                                    {moment(exam.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                  </span>
+                                </div>
+                                <div className="progress-group-bars">
+                                  <CProgress
+                                    height={10}
+                                    // bg-[#6261CC] text-white hover:bg-[#484796]
+                                    // color="#6261CC"
+                                    color="primary"
+                                    value={Math.round((100 * exam.obtainedScore) / exam.totalScore)}
+                                  >
+                                    <CProgressBar>
+                                      {Math.round((100 * exam.obtainedScore) / exam.totalScore)}%
+                                    </CProgressBar>
+                                  </CProgress>
+                                  {/* <CProgress
+                              height={10}
+                              color="info"
+                              value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
+                            /> */}
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <p>No Exams attempted yet</p>
                         )}
                         {/* {progressGroupExample1.map((item, index) => (
                       <div className="progress-group mb-4" key={index}>
