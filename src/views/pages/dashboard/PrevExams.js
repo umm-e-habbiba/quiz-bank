@@ -34,6 +34,7 @@ import { API_URL } from 'src/store'
 import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import { AppHeader, AppSidebar } from 'src/components'
+import { step2score } from 'src/Step2ScoreConversion'
 const PrevExams = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
@@ -157,9 +158,10 @@ const PrevExams = () => {
                       <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
                       <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Result</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
+                      {/* <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell> */}
+                      <CTableHeaderCell scope="col">Score</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
                       {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
@@ -176,7 +178,26 @@ const PrevExams = () => {
                             <CTableDataCell>{q.test?.testName}</CTableDataCell>
                             <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
                             <CTableDataCell>
-                              {q.testInfo
+                              {q.testInfo ? (
+                                q.test?.usmleStep == '1' ? (
+                                  percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                    <span className="text-success font-bold">Pass</span>
+                                  ) : (
+                                    <span className="text-danger font-bold">Fail</span>
+                                  )
+                                ) : q.test?.usmleStep == '2' ? (
+                                  q.obtainedScore <= 191 ? (
+                                    <span className="text-danger font-bold">Fail</span>
+                                  ) : (
+                                    <span className="text-success font-bold">Pass</span>
+                                  )
+                                ) : (
+                                  ''
+                                )
+                              ) : (
+                                'Pending'
+                              )}
+                              {/* {q.testInfo
                                 ? q.test?.usmleStep == '1' &&
                                   (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
                                     <span className="text-success font-bold">Pass</span>
@@ -184,15 +205,33 @@ const PrevExams = () => {
                                     <span className="text-danger font-bold">Fail</span>
                                   ))
                                 : 'Pending'}
+                              {q.testInfo ? (
+                                q.test?.usmleStep == '2' && q.obtainedScore <= 191 ? (
+                                  <span className="text-danger font-bold">Fail</span>
+                                ) : (
+                                  <span className="text-success font-bold">Pass</span>
+                                )
+                              ) : (
+                                'Pending'
+                              )} */}
                             </CTableDataCell>
-                            <CTableDataCell>
+                            {/* <CTableDataCell>
                               {q.testInfo ? q.obtainedScore : 'Pending'}
                             </CTableDataCell>
                             <CTableDataCell>
                               {q.testInfo ? q.totalScore - q.obtainedScore : 'Pending'}
                             </CTableDataCell>
 
-                            <CTableDataCell>{q.totalScore}</CTableDataCell>
+                            <CTableDataCell>{q.totalScore}</CTableDataCell> */}
+                            <CTableDataCell>
+                              {q.testInfo
+                                ? q.test?.usmleStep == '1'
+                                  ? `${percentage(q.obtainedScore, q.totalScore)}%`
+                                  : q.test?.usmleStep == '2'
+                                    ? q.obtainedScore
+                                    : ''
+                                : 'Pending'}
+                            </CTableDataCell>
 
                             <CTableDataCell>
                               {moment(q.createdAt).format('MMMM Do YYYY')}
@@ -223,7 +262,7 @@ const PrevExams = () => {
                                 <Link to={`/full-length-exam/${q.test?._id}`}>
                                   <CButton
                                     color="warning"
-                                    className="text-white ml-2"
+                                    className="text-white"
                                     // id={q._id}
                                   >
                                     Continue
