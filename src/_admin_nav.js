@@ -24,6 +24,8 @@ import {
   cilList,
   cilCloudUpload,
   cilCloud,
+  cilUserX,
+  cilUserPlus,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -75,6 +77,12 @@ const _admin_nav = [
     name: 'Feedbacks',
     to: '/manage-feedback',
     icon: <CIcon icon={cilStarHalf} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Questions By Users',
+    to: '/manage-user-questions',
+    icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
   },
 ]
 

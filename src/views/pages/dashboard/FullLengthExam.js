@@ -132,10 +132,7 @@ const FullLengthExam = () => {
       .then((result) => {
         console.log('user exam', result)
         if (result.error) {
-          setIsExamEnded(false)
-          setSectionValue('Section 1')
-          setNumberOfSeconds(0)
-          getQuestionsOfSection('Section 1')
+          setIsExamEnded(true)
         } else {
           console.log('get user exam', result)
           if (result.testAttempt?.testInfo) {
@@ -145,15 +142,13 @@ const FullLengthExam = () => {
             setNumberOfSeconds(result.testAttempt?.timeInSeconds)
             getQuestionsOfSection(result.testAttempt?.sectionInfo)
             setQuizScore(result.testAttempt?.obtainedScore)
+            setIsExamEnded(false)
           }
         }
       })
       .catch((error) => {
         console.log('error', error)
-        setIsExamEnded(false)
-        setSectionValue('Section 1')
-        setNumberOfSeconds(0)
-        getQuestionsOfSection('Section 1')
+        setIsExamEnded(true)
       })
   }
   const getAllExams = () => {
@@ -406,10 +401,10 @@ const FullLengthExam = () => {
       setStartScreen(false)
       setShowExamList(false)
     }, 2000)
-    saveExam()
-    // if (isExamEnded) {
-    //   saveExam()
-    // }
+    // saveExam()
+    if (isExamEnded) {
+      saveExam()
+    }
   }
   const getQuestionsOfSection = (sectionNumber) => {
     console.log('section number', sectionNumber)
@@ -469,43 +464,43 @@ const FullLengthExam = () => {
         nextSection = 'Section 2'
       }
     } else if (sectionValue.includes('2')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 2) {
         quizEnd = true
       } else {
         nextSection = 'Section 3'
       }
     } else if (sectionValue.includes('3')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 3) {
         quizEnd = true
       } else {
         nextSection = 'Section 4'
       }
     } else if (sectionValue.includes('4')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 4) {
         quizEnd = true
       } else {
         nextSection = 'Section 5'
       }
     } else if (sectionValue.includes('5')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 5) {
         quizEnd = true
       } else {
         nextSection = 'Section 6'
       }
     } else if (sectionValue.includes('6')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 6) {
         quizEnd = true
       } else {
         nextSection = 'Section 7'
       }
     } else if (sectionValue.includes('7')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 7) {
         quizEnd = true
       } else {
         nextSection = 'Section 8'
       }
     } else if (sectionValue.includes('8')) {
-      if (allSections.length <= 1) {
+      if (allSections.length <= 8) {
         quizEnd = true
       } else {
         nextSection = 'Section 9'
@@ -535,7 +530,7 @@ const FullLengthExam = () => {
       body: raw,
       redirect: 'follow',
     }
-
+    console.log('update-user-test', raw)
     fetch(API_URL + 'update-users-test', requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -997,7 +992,7 @@ const FullLengthExam = () => {
                       </li>
                     ))}
                   </ol>
-                  {isExamEnded == true ? (
+                  {isExamEnded && (
                     <button
                       className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                       // type="submit"
@@ -1007,7 +1002,8 @@ const FullLengthExam = () => {
                     >
                       Start Exam
                     </button>
-                  ) : (
+                  )}
+                  {!isExamEnded && (
                     <button
                       className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                       // type="submit"
@@ -1039,7 +1035,7 @@ const FullLengthExam = () => {
                       Continue
                     </button>
                     <span className="mb-2">or</span>
-                    <Link to="/">
+                    <Link to="/previous-exams">
                       <button
                         className={`mx-auto px-5 py-2 rounded-lg text-xl bg-[#e5e7eb] transition-all text-black hover:bg-[#848689]`}
                         // type="submit"

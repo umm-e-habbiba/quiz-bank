@@ -176,39 +176,60 @@ const PrevExams = () => {
                             <CTableDataCell>{q.test?.testName}</CTableDataCell>
                             <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
                             <CTableDataCell>
-                              {q.test?.usmleStep == '1' &&
-                                (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
-                                  <span className="text-success font-bold">Pass</span>
-                                ) : (
-                                  <span className="text-danger font-bold">Fail</span>
-                                ))}
+                              {q.testInfo
+                                ? q.test?.usmleStep == '1' &&
+                                  (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                    <span className="text-success font-bold">Pass</span>
+                                  ) : (
+                                    <span className="text-danger font-bold">Fail</span>
+                                  ))
+                                : 'Pending'}
                             </CTableDataCell>
-                            <CTableDataCell>{q.obtainedScore}</CTableDataCell>
-                            <CTableDataCell>{q.totalScore - q.obtainedScore}</CTableDataCell>
+                            <CTableDataCell>
+                              {q.testInfo ? q.obtainedScore : 'Pending'}
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              {q.testInfo ? q.totalScore - q.obtainedScore : 'Pending'}
+                            </CTableDataCell>
+
                             <CTableDataCell>{q.totalScore}</CTableDataCell>
 
                             <CTableDataCell>
                               {moment(q.createdAt).format('MMMM Do YYYY')}
                             </CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center" scope="row">
-                              <Link to={`/review-exam/${q.test?._id}`}>
-                                <CButton
-                                  color="success"
-                                  className="text-white"
-                                  // id={q._id}
-                                >
-                                  Review
-                                </CButton>
-                              </Link>
-                              <Link to={`/full-length-exam/${q.test?._id}`}>
-                                <CButton
-                                  color="info"
-                                  className="text-white ml-2"
-                                  // id={q._id}
-                                >
-                                  Retake
-                                </CButton>
-                              </Link>
+                              {q.testInfo ? (
+                                <>
+                                  <Link to={`/review-exam/${q.test?._id}`}>
+                                    <CButton
+                                      color="success"
+                                      className="text-white"
+                                      // id={q._id}
+                                    >
+                                      Review
+                                    </CButton>
+                                  </Link>
+                                  <Link to={`/full-length-exam/${q.test?._id}`}>
+                                    <CButton
+                                      color="info"
+                                      className="text-white ml-2"
+                                      // id={q._id}
+                                    >
+                                      Retake
+                                    </CButton>
+                                  </Link>
+                                </>
+                              ) : (
+                                <Link to={`/full-length-exam/${q.test?._id}`}>
+                                  <CButton
+                                    color="warning"
+                                    className="text-white ml-2"
+                                    // id={q._id}
+                                  >
+                                    Continue
+                                  </CButton>
+                                </Link>
+                              )}
                               {/*
                              <CButton
                                 color="danger"

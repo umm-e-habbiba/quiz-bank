@@ -174,7 +174,7 @@ const ManageQuiz = () => {
     getQuestion()
   }, [questionId])
   useEffect(() => {
-    console.log('delete id array is chnaged')
+    console.log('delete id array is changed')
   }, [deleteIds])
 
   const getAllQuest = () => {
