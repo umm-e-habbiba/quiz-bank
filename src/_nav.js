@@ -13,6 +13,7 @@ import {
   cilInfo,
   cilStarHalf,
   cilMoney,
+  cilPlus,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -25,7 +26,7 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Create Test',
+    name: 'Create Quiz',
     to: '/quiz',
     icon: <CIcon icon={cilPencil} customClassName="nav-icon" />,
   },
@@ -37,18 +38,18 @@ const _nav = [
   // },
   {
     component: CNavGroup,
-    name: 'Performance',
+    name: 'Quiz Performance',
     to: '/',
     icon: <CIcon icon={cilBarChart} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Latest Exam',
+        name: 'Latest Quiz',
         to: '/quiz-performance',
       },
       {
         component: CNavItem,
-        name: 'All Exams',
+        name: 'All Quizzes',
         to: '/previous-tests',
       },
       // {
@@ -65,11 +66,40 @@ const _nav = [
     icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
   },
   {
-    component: CNavItem,
-    name: 'Previous Exams',
-    to: '/previous-exams',
+    component: CNavGroup,
+    name: 'Exam Performance',
+    to: '/',
     icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Latest Exam',
+        to: '/latest-exam',
+      },
+      {
+        component: CNavItem,
+        name: 'All Exams',
+        to: '/previous-exams',
+      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Graphs',
+      //   to: '/graphs',
+      // },
+    ],
   },
+  {
+    component: CNavItem,
+    name: 'Add Question',
+    to: '/add-question',
+    icon: <CIcon icon={cilPlus} customClassName="nav-icon" />,
+  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Previous Exams',
+  //   to: '/previous-exams',
+  //   icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+  // },
   // {
   //   component: CNavItem,
   //   name: 'FlashCards',
