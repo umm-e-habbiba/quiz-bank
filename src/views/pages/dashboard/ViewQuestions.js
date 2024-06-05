@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { API_URL } from 'src/store'
 import { AppHeader, AppSidebar } from 'src/components'
-import { CSpinner } from '@coreui/react'
+import { CAlert, CSpinner } from '@coreui/react'
 import ReviewExamAccordion from './ReviewExamAccordion'
 const ViewQuestions = () => {
   const navigate = useNavigate()
@@ -68,8 +68,7 @@ const ViewQuestions = () => {
             <div className="mx-10 mb-5">
               <p className="text-2xl mb-1">Your Questions</p>
               {/* <p className="text-xl mb-1">{testName}</p> */}
-              {allQuestions &&
-                allQuestions.length > 0 &&
+              {allQuestions && allQuestions.length > 0 ? (
                 allQuestions.map((q, index) => (
                   <ReviewExamAccordion
                     key={index}
@@ -94,7 +93,12 @@ const ViewQuestions = () => {
                     imageTwo={q.imageTwo ? q.imageTwo : ''}
                     video={q.video ? q.video : ''}
                   />
-                ))}
+                ))
+              ) : (
+                <CAlert color="danger" className="middle-alert">
+                  No questions added yet
+                </CAlert>
+              )}
             </div>
           )}
         </div>

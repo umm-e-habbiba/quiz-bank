@@ -40,7 +40,8 @@ const ReviewExamAccordion = ({
         <p
           className="question-content text-xl font-normal"
           dangerouslySetInnerHTML={{
-            __html: question.length > 120 ? question.substring(0, 120) + '...' : question,
+            __html: question,
+            // __html: question.length > 120 ? question.substring(0, 120) + '...' : question,
           }}
         ></p>
         <div className="flex justify-end items-center">
@@ -48,7 +49,7 @@ const ReviewExamAccordion = ({
         </div>
       </button>
 
-      <div ref={contentHeight} className="answer-container border-t" style={contentHeightStyle}>
+      <div ref={contentHeight} className="answer-container" style={contentHeightStyle}>
         <p className="text-xl mb-1">Question</p>
         {image ? (
           <CRow className="mb-3">
@@ -153,6 +154,7 @@ const ReviewExamAccordion = ({
             <span className="font-bold">(Choice F)</span> {op6Exp}
           </p>
         )}
+        <br />
       </div>
     </div>
   )

@@ -764,7 +764,9 @@ const FullLengthExam = () => {
                       </div>
                     </>
                   ) : (
-                    ''
+                    <CAlert color="danger" className="middle-alert">
+                      No exams added yet
+                    </CAlert>
                   )}
                 </div>
               )}
@@ -1168,7 +1170,7 @@ const FullLengthExam = () => {
                         <>
                           <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
                           <span className="text-xl">
-                            You failed this exam your precentage is:{' '}
+                            You failed this exam your percentage is:{' '}
                             {percentage(quizScore, totalExamQuest)}%
                           </span>
                         </>
