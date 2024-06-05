@@ -99,47 +99,35 @@ const AddQuestion = () => {
     setErrorMsg('')
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
-
-    const formdata = new FormData()
-    formdata.append('usmleStep', data.usmleStep)
-    formdata.append('USMLE', data.usmleCategory)
-    formdata.append('question', data.question)
-    formdata.append('correctAnswer', data.correct)
-    formdata.append('questionExplanation', data.explaination)
-    formdata.append('optionOne', data.op1)
-    formdata.append('optionTwo', data.op2)
-    formdata.append('optionThree', data.op3)
-    formdata.append('optionFour', data.op4)
-    formdata.append('optionFive', data.op5)
-    if (op6) {
-      formdata.append('optionSix', op6)
-    }
-    if (op1Exp) {
-      formdata.append('optionOneExplanation', op1Exp)
-    }
-    if (op2Exp) {
-      formdata.append('optionTwoExplanation', op2Exp)
-    }
-    if (op3Exp) {
-      formdata.append('optionThreeExplanation', op3Exp)
-    }
-    if (op4Exp) {
-      formdata.append('optionFourExplanation', op4Exp)
-    }
-    if (op5Exp) {
-      formdata.append('optionFiveExplanation', op5Exp)
-    }
-    if (op6Exp) {
-      formdata.append('optionSixExplanation', op6Exp)
-    }
+    myHeaders.append('Content-Type', 'application/json')
+    const raw = JSON.stringify({
+      userId: userID,
+      usmleStep: data.usmleStep,
+      USMLE: data.usmleCategory,
+      question: data.question,
+      correctAnswer: data.correct,
+      questionExplanation: data.explaination,
+      optionOne: data.op1,
+      optionTwo: data.op2,
+      optionThree: data.op3,
+      optionFour: data.op4,
+      optionFive: data.op5,
+      optionSix: op6 ? op6 : '',
+      optionOneExplanation: op1Exp ? op1Exp : '',
+      optionTwoExplanation: op2Exp ? op2Exp : '',
+      optionThreeExplanation: op3Exp ? op3Exp : '',
+      optionFourExplanation: op4Exp ? op4Exp : '',
+      optionFiveExplanation: op5Exp ? op5Exp : '',
+      optionSixExplanation: op6Exp ? op6Exp : '',
+    })
     const requestOptions = {
       method: 'POST',
-      body: formdata,
+      body: raw,
       headers: myHeaders,
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'add-mcqs', requestOptions)
+    fetch(API_URL + 'add-question-by-user', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
@@ -442,7 +430,7 @@ const AddQuestion = () => {
                           rows={4}
                           defaultValue={getValues('explaination')}
                           {...register('explaination', { required: true })}
-                          feedback="Please enter question."
+                          feedback="Please enter question explanation."
                           invalid={errors.explaination ? true : false}
                           placeholder="Enter question explanation here"
                           className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -534,6 +522,14 @@ const AddQuestion = () => {
                       </div>
                     </div>
                   </div>
+                  {error && <p className="text-red-600 my-3 px-4">{errorMsg}</p>}
+                  <button
+                    className="w-full bg-[#6261CC] text-white hover:bg-[#464592] font-bold uppercase text-xs mt-3 px-4 py-3 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                    type="Submit"
+                    disabled={spinner ? true : false}
+                  >
+                    {spinner ? <CSpinner color="light" size="sm" /> : 'Add Question'}
+                  </button>
                 </CForm>
               </div>
             </div>
