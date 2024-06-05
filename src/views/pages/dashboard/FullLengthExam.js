@@ -32,6 +32,7 @@ import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go'
 import markIcon from '../../../assets/images/mark-icon.svg'
+import { step2score } from 'src/Step2ScoreConversion'
 const FullLengthExam = () => {
   const navigate = useNavigate()
   let { id } = useParams()
@@ -79,6 +80,7 @@ const FullLengthExam = () => {
   const [timeLeft, setTimeLeft] = useState('01:30')
   const [numberOfSeconds, setNumberOfSeconds] = useState(0)
   const [isExamEnded, setIsExamEnded] = useState(false)
+  const [step2Score, setStep2Score] = useState('')
   const questionText = useRef()
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -510,6 +512,23 @@ const FullLengthExam = () => {
     }
 
     const seconds = timeLeft.split(':').reduce((acc, time) => 60 * acc + +time)
+    let examScore
+    if (usmleStep == '1') {
+      examScore = quizScore
+    } else if (usmleStep == '2') {
+      if (quizScore <= 191) {
+        examScore = quizScore
+      } else {
+        examScore =
+          step2score.filter((s) => s.correct == quizScore).length > 0
+            ? step2score.filter((s) => s.correct == quizScore)[0].score
+            : ''
+      }
+    } else {
+      examScore = 0
+    }
+    setStep2Score(examScore)
+    console.log('exam score', examScore)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
@@ -519,7 +538,7 @@ const FullLengthExam = () => {
       testId: examId,
       updatedQuestions: saveQuestionArray,
       timeInSeconds: seconds,
-      obtainedScore: quizScore,
+      obtainedScore: examScore,
       sectionInfo: nextSection,
       testInfo: quizEnd ? true : false,
     })
@@ -530,7 +549,6 @@ const FullLengthExam = () => {
       body: raw,
       redirect: 'follow',
     }
-    console.log('update-user-test', raw)
     fetch(API_URL + 'update-users-test', requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -540,6 +558,69 @@ const FullLengthExam = () => {
       .catch((error) => {
         console.error(error)
       })
+  }
+  const endSectionFromFooter = (e) => {
+    e.preventDefault()
+    updateUserTest()
+    if (sectionValue.includes('1')) {
+      if (allSections.length <= 1) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('2')) {
+      if (allSections.length <= 2) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('3')) {
+      if (allSections.length <= 3) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('4')) {
+      if (allSections.length <= 4) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('5')) {
+      if (allSections.length <= 5) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('6')) {
+      if (allSections.length <= 6) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('7')) {
+      if (allSections.length <= 7) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else if (sectionValue.includes('8')) {
+      if (allSections.length <= 8) {
+        setQuizEnd(true)
+      } else {
+        setShowNextSection(true)
+        setShowQues(false)
+      }
+    } else {
+      setQuizEnd(true)
+    }
   }
   return (
     <div className="">
@@ -1065,8 +1146,8 @@ const FullLengthExam = () => {
                   backdrop="static"
                 >
                   <CModalBody className="p-6 flex flex-col justify-center items-center">
-                    {usmleStep == '1' &&
-                      (percentage(quizScore, totalExamQuest) > 70 ? (
+                    {usmleStep == '1' ? (
+                      percentage(quizScore, totalExamQuest) > 70 ? (
                         <>
                           <span className="goodluck text-5xl mt-9 text-green-600">
                             Congratulations
@@ -1083,7 +1164,29 @@ const FullLengthExam = () => {
                             {percentage(quizScore, totalExamQuest)}%
                           </span>
                         </>
-                      ))}
+                      )
+                    ) : usmleStep == '2' ? (
+                      step2Score > 191 ? (
+                        <>
+                          <span className="goodluck text-5xl mt-9 text-green-600">
+                            Congratulations
+                          </span>
+                          <span className="text-xl">
+                            You passed this exam with {percentage(step2Score, totalQuest)}%
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
+                          <span className="text-xl">
+                            You failed this exam your percentage is:{' '}
+                            {percentage(step2Score, totalExamQuest)}%
+                          </span>
+                        </>
+                      )
+                    ) : (
+                      ''
+                    )}
                   </CModalBody>
                 </CModal>
               )}
@@ -1101,6 +1204,7 @@ const FullLengthExam = () => {
         timeLeft={timeLeft}
         setTimeLeft={setTimeLeft}
         timeInSeconds={numberOfSeconds}
+        handleNextQuestion={(e) => endSectionFromFooter(e)}
       />
     </div>
   )

@@ -76,6 +76,12 @@ const AddQuestion = () => {
     },
   })
   const stepSelected = watch('usmleStep')
+  const step1 = watch('op1')
+  const step2 = watch('op2')
+  const step3 = watch('op3')
+  const step4 = watch('op4')
+  const step5 = watch('op5')
+  const step6 = watch('op6')
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
@@ -86,6 +92,83 @@ const AddQuestion = () => {
       navigate('/login')
     }
   }, [])
+  const addQuestion = (data) => {
+    console.log('add function called', data)
+    setSpinner(true)
+    setError(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const formdata = new FormData()
+    formdata.append('usmleStep', data.usmleStep)
+    formdata.append('USMLE', data.usmleCategory)
+    formdata.append('question', data.question)
+    formdata.append('correctAnswer', data.correct)
+    formdata.append('questionExplanation', data.explaination)
+    formdata.append('optionOne', data.op1)
+    formdata.append('optionTwo', data.op2)
+    formdata.append('optionThree', data.op3)
+    formdata.append('optionFour', data.op4)
+    formdata.append('optionFive', data.op5)
+    if (op6) {
+      formdata.append('optionSix', op6)
+    }
+    if (op1Exp) {
+      formdata.append('optionOneExplanation', op1Exp)
+    }
+    if (op2Exp) {
+      formdata.append('optionTwoExplanation', op2Exp)
+    }
+    if (op3Exp) {
+      formdata.append('optionThreeExplanation', op3Exp)
+    }
+    if (op4Exp) {
+      formdata.append('optionFourExplanation', op4Exp)
+    }
+    if (op5Exp) {
+      formdata.append('optionFiveExplanation', op5Exp)
+    }
+    if (op6Exp) {
+      formdata.append('optionSixExplanation', op6Exp)
+    }
+    const requestOptions = {
+      method: 'POST',
+      body: formdata,
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'add-mcqs', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result)
+        setSpinner(false)
+        if (result.success) {
+          reset({})
+          setOp6('')
+          setOp1Exp('')
+          setOp2Exp('')
+          setOp3Exp('')
+          setOp4Exp('')
+          setOp5Exp('')
+          setOp6Exp('')
+          setSuccess(true)
+          setSuccessMsg('Question added successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setSpinner(false)
+      })
+  }
   return (
     <div>
       <AppSidebar />
@@ -106,7 +189,7 @@ const AddQuestion = () => {
                 </div>
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                <form>
+                <CForm onSubmit={handleSubmit(addQuestion)}>
                   <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                     Question Details
                   </h6>
@@ -296,6 +379,51 @@ const AddQuestion = () => {
                     </div>
                   </div>
                   <hr className="mt-6 border-b-1 border-blueGray-300" />
+                  <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+                    Correct Answer
+                  </h6>
+                  <div className="flex flex-wrap">
+                    <div className="w-full px-4">
+                      <div className="relative w-full mb-3">
+                        <label
+                          className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                          htmlFor="correct"
+                        >
+                          Correct Answer
+                        </label>
+                        <CFormSelect
+                          aria-label="correct option"
+                          id="correct"
+                          defaultValue={getValues('correct')}
+                          options={
+                            op6
+                              ? [
+                                  { label: 'Select Correct Option', value: '' },
+                                  { label: getValues('op1'), value: getValues('op1') },
+                                  { label: getValues('op2'), value: getValues('op2') },
+                                  { label: getValues('op3'), value: getValues('op3') },
+                                  { label: getValues('op4'), value: getValues('op4') },
+                                  { label: getValues('op5'), value: getValues('op5') },
+                                  { label: op6, value: op6 },
+                                ]
+                              : [
+                                  { label: 'Select Correct Option', value: '' },
+                                  { label: getValues('op1'), value: getValues('op1') },
+                                  { label: getValues('op2'), value: getValues('op2') },
+                                  { label: getValues('op3'), value: getValues('op3') },
+                                  { label: getValues('op4'), value: getValues('op4') },
+                                  { label: getValues('op5'), value: getValues('op5') },
+                                ]
+                          }
+                          {...register('correct', { required: true })}
+                          feedback="Please select correct option"
+                          invalid={errors.correct ? true : false}
+                          className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <hr className="mt-6 border-b-1 border-blueGray-300" />
 
                   <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
                     Explanation
@@ -406,7 +534,7 @@ const AddQuestion = () => {
                       </div>
                     </div>
                   </div>
-                </form>
+                </CForm>
               </div>
             </div>
           </section>

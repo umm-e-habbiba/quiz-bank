@@ -20,6 +20,7 @@ const QuizFooter = ({
   timeLeft,
   setTimeLeft,
   timeInSeconds,
+  handleNextQuestion,
 }) => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -199,16 +200,33 @@ const QuizFooter = ({
         aria-labelledby="VerticallyCenteredExample"
       >
         <CModalHeader className="bg-red-600">
-          <CModalTitle id="VerticallyCenteredExample">End Exam</CModalTitle>
+          <CModalTitle id="VerticallyCenteredExample">
+            End {location.pathname.includes('full-length-exam') ? 'Section' : 'Exam'}
+          </CModalTitle>
         </CModalHeader>
-        <CModalBody>Are you sure you want to end this exam?</CModalBody>
+        <CModalBody>
+          Are you sure you want to end this{' '}
+          {location.pathname.includes('full-length-exam') ? 'section?' : 'exam?'}
+        </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setEndModal(false)}>
             No
           </CButton>
-          <CButton color="primary" onClick={endQuiz}>
-            Yes
-          </CButton>
+          {location.pathname.includes('full-length-exam') ? (
+            <CButton
+              color="primary"
+              onClick={(e) => {
+                handleNextQuestion(e)
+                setEndModal(false)
+              }}
+            >
+              Yes
+            </CButton>
+          ) : (
+            <CButton color="primary" onClick={endQuiz}>
+              Yes
+            </CButton>
+          )}
         </CModalFooter>
       </CModal>
     </>

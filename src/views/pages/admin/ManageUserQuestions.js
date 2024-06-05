@@ -643,7 +643,7 @@ const ManageUserQuestions = () => {
                       <span className="text-sm">Total {allQuestion.length} questions added</span>
                     ))}
                 </div>
-                <div className="flex ml-6 justify-between items-center w-[600px]">
+                {/* <div className="flex ml-6 justify-between items-center w-[600px]">
                   <CFormSelect
                     aria-label="usmle step"
                     id="usmleStep"
@@ -755,9 +755,9 @@ const ManageUserQuestions = () => {
                   ) : (
                     ''
                   )}
-                </div>
+                </div> */}
               </div>
-              <div className="flex justify-end items-center">
+              {/* <div className="flex justify-end items-center">
                 {!showCheck && (
                   <CButton
                     className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
@@ -780,7 +780,7 @@ const ManageUserQuestions = () => {
                     Delete Selected Questions
                   </CButton>
                 )}
-              </div>
+              </div> */}
             </CCardHeader>
             <CCardBody>
               {/* {loader ? (
