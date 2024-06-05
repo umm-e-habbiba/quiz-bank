@@ -38,7 +38,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 //////////
 import JoditEditor from 'jodit-react'
-import { RiEyeLine } from 'react-icons/ri'
+import { RiCheckDoubleLine, RiEyeLine } from 'react-icons/ri'
 /// video player
 import '../../../../node_modules/video-react/dist/video-react.css' // import css
 import { Player } from 'video-react'
@@ -75,6 +75,7 @@ const ManageUserQuestions = () => {
   const [detailModal, setDetailModal] = useState(false)
   const [viewModal, setViewModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [approveModal, setApproveModal] = useState(false)
   const [bulkDeleteModal, setBulkDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
@@ -186,7 +187,8 @@ const ManageUserQuestions = () => {
       headers: myHeaders,
       redirect: 'follow',
     }
-    fetch(API_URL + 'mcqs', requestOptions)
+    // fetch(API_URL + 'mcqs/', requestOptions)
+    fetch(API_URL + 'questions-by-user', requestOptions)
       .then((response) => {
         const contentLength = response.headers.get('content-length')
         let loaded = 0
@@ -236,7 +238,7 @@ const ManageUserQuestions = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'mcq/' + questionId, requestOptions)
+    fetch(API_URL + 'users-single-question/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log('ques detail', result)
@@ -260,15 +262,15 @@ const ManageUserQuestions = () => {
           setOp4Exp(result.data.optionFourExplanation)
           setOp5Exp(result.data.optionFiveExplanation)
           setOp6Exp(result.data.optionSixExplanation)
-          setImage(result.data.image)
-          setImage2(result.data.imageTwo)
-          if (result.data.video != null) {
-            setVideoSrc(result.data.video)
-            setVideo(result.data.video)
-            setPrevVideo(true)
-          } else {
-            setPrevVideo(false)
-          }
+          // setImage(result.data.image)
+          // setImage2(result.data.imageTwo)
+          // if (result.data.video != null) {
+          //   setVideoSrc(result.data.video)
+          //   setVideo(result.data.video)
+          //   setPrevVideo(true)
+          // } else {
+          //   setPrevVideo(false)
+          // }
         }
       })
       .catch((error) => console.log('error', error))
@@ -332,7 +334,7 @@ const ManageUserQuestions = () => {
       headers: myHeaders,
     }
 
-    fetch(API_URL + 'delete-mcq/' + questionId, requestOptions)
+    fetch(API_URL + 'question-by-user/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -353,6 +355,39 @@ const ManageUserQuestions = () => {
       })
       .catch((error) => console.log('error', error))
   }
+  const approveQuestion = () => {
+    setIsLoading(true)
+    setErrorr(false)
+    setErrorMsg('')
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+    }
+
+    fetch(API_URL + 'approve-question/' + questionId, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setIsLoading(false)
+        if (result.success) {
+          setApproveModal(false)
+          getAllQuest()
+          setSuccess(true)
+          setSuccessMsg('Question approved successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setErrorr(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
   const editQuestion = (data) => {
     // console.log('edit function called', data)
     setIsLoading(true)
@@ -360,50 +395,33 @@ const ManageUserQuestions = () => {
     setErrorMsg('')
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
-
-    const formdata = new FormData()
-    formdata.append('usmleStep', data.usmleStep)
-    formdata.append('USMLE', data.usmleCategory)
-    formdata.append('question', data.question)
-    formdata.append('optionOne', data.op1)
-    formdata.append('correctAnswer', data.correct)
-    formdata.append('questionExplanation', data.explaination)
-    formdata.append('image', image)
-    formdata.append('imageTwo', image2)
-    formdata.append('video', video)
-    formdata.append('optionTwo', data.op2)
-    formdata.append('optionThree', data.op3)
-    formdata.append('optionFour', data.op4)
-    formdata.append('optionFive', data.op5)
-    if (op6) {
-      formdata.append('optionSix', op6)
-    }
-    if (op1Exp) {
-      formdata.append('optionOneExplanation', op1Exp)
-    }
-    if (op2Exp) {
-      formdata.append('optionTwoExplanation', op2Exp)
-    }
-    if (op3Exp) {
-      formdata.append('optionThreeExplanation', op3Exp)
-    }
-    if (op4Exp) {
-      formdata.append('optionFourExplanation', op4Exp)
-    }
-    if (op5Exp) {
-      formdata.append('optionFiveExplanation', op5Exp)
-    }
-    if (op6Exp) {
-      formdata.append('optionSixExplanation', op6Exp)
-    }
+    const raw = JSON.stringify({
+      usmleStep: data.usmleStep,
+      USMLE: data.usmleCategory,
+      question: data.question,
+      correctAnswer: data.correct,
+      questionExplanation: data.explaination,
+      optionOne: data.op1,
+      optionTwo: data.op2,
+      optionThree: data.op3,
+      optionFour: data.op4,
+      optionFive: data.op5,
+      optionSix: op6 ? op6 : '',
+      optionOneExplanation: op1Exp ? op1Exp : '',
+      optionTwoExplanation: op2Exp ? op2Exp : '',
+      optionThreeExplanation: op3Exp ? op3Exp : '',
+      optionFourExplanation: op4Exp ? op4Exp : '',
+      optionFiveExplanation: op5Exp ? op5Exp : '',
+      optionSixExplanation: op6Exp ? op6Exp : '',
+    })
     const requestOptions = {
       method: 'PUT',
-      body: formdata,
+      body: raw,
       headers: myHeaders,
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'edit-mcqs/' + questionId, requestOptions)
+    fetch(API_URL + 'update-user-questions/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
@@ -412,10 +430,10 @@ const ManageUserQuestions = () => {
           setIsLoading(false)
           getAllQuest()
           setQuestionId('')
-          setImage('')
-          setImage2('')
-          setVideo('')
-          setVideoSrc('')
+          // setImage('')
+          // setImage2('')
+          // setVideo('')
+          // setVideoSrc('')
           setOp6('')
           setOp6Exp('')
           reset({})
@@ -436,114 +454,114 @@ const ManageUserQuestions = () => {
         setIsLoading(false)
       })
   }
-  const deleteImage = () => {
-    // console.log('delete image', questionId)
-    setImgLoader(true)
-    setErrorr(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
+  // const deleteImage = () => {
+  //   // console.log('delete image', questionId)
+  //   setImgLoader(true)
+  //   setErrorr(false)
+  //   setErrorMsg('')
+  //   const myHeaders = new Headers()
+  //   myHeaders.append('Authorization', token)
 
-    const requestOptions = {
-      method: 'DELETE',
-      headers: myHeaders,
-      redirect: 'follow',
-    }
-    fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        // console.log(result)
-        if (result.success) {
-          setImgLoader(false)
-          getQuestion()
-          setSuccess(true)
-          setSuccessMsg('Image deleted successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
-        } else {
-          setErrorr(true)
-          setErrorMsg(result.message)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setImgLoader(false)
-      })
-  }
-  const deleteImage2 = () => {
-    // console.log('delete image', questionId)
-    setImg2Loader(true)
-    setErrorr(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
+  //   const requestOptions = {
+  //     method: 'DELETE',
+  //     headers: myHeaders,
+  //     redirect: 'follow',
+  //   }
+  //   fetch(API_URL + 'mcq/' + questionId + '/image', requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       // console.log(result)
+  //       if (result.success) {
+  //         setImgLoader(false)
+  //         getQuestion()
+  //         setSuccess(true)
+  //         setSuccessMsg('Image deleted successfully')
+  //         setTimeout(() => {
+  //           setSuccess(false)
+  //           setSuccessMsg('')
+  //         }, 3000)
+  //       } else {
+  //         setErrorr(true)
+  //         setErrorMsg(result.message)
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setImgLoader(false)
+  //     })
+  // }
+  // const deleteImage2 = () => {
+  //   // console.log('delete image', questionId)
+  //   setImg2Loader(true)
+  //   setErrorr(false)
+  //   setErrorMsg('')
+  //   const myHeaders = new Headers()
+  //   myHeaders.append('Authorization', token)
 
-    const requestOptions = {
-      method: 'DELETE',
-      headers: myHeaders,
-      redirect: 'follow',
-    }
-    fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        // console.log(result)
-        if (result.success) {
-          setImg2Loader(false)
-          getQuestion()
-          setSuccess(true)
-          setSuccessMsg('Image deleted successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
-        } else {
-          setErrorr(true)
-          setErrorMsg(result.message)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setImg2Loader(false)
-      })
-  }
-  const deleteVideo = () => {
-    // console.log('delete video', questionId)
-    setVideoLoader(true)
-    setErrorr(false)
-    setErrorMsg('')
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', token)
+  //   const requestOptions = {
+  //     method: 'DELETE',
+  //     headers: myHeaders,
+  //     redirect: 'follow',
+  //   }
+  //   fetch(API_URL + 'mcq/' + questionId + '/imageTwo', requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       // console.log(result)
+  //       if (result.success) {
+  //         setImg2Loader(false)
+  //         getQuestion()
+  //         setSuccess(true)
+  //         setSuccessMsg('Image deleted successfully')
+  //         setTimeout(() => {
+  //           setSuccess(false)
+  //           setSuccessMsg('')
+  //         }, 3000)
+  //       } else {
+  //         setErrorr(true)
+  //         setErrorMsg(result.message)
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setImg2Loader(false)
+  //     })
+  // }
+  // const deleteVideo = () => {
+  //   // console.log('delete video', questionId)
+  //   setVideoLoader(true)
+  //   setErrorr(false)
+  //   setErrorMsg('')
+  //   const myHeaders = new Headers()
+  //   myHeaders.append('Authorization', token)
 
-    const requestOptions = {
-      method: 'DELETE',
-      headers: myHeaders,
-      redirect: 'follow',
-    }
-    fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        // console.log(result)
-        if (result.success) {
-          setVideoLoader(false)
-          getQuestion()
-          setSuccess(true)
-          setSuccessMsg('Video deleted successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
-        } else {
-          setErrorr(true)
-          setErrorMsg(result.message)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-        setVideoLoader(false)
-      })
-  }
+  //   const requestOptions = {
+  //     method: 'DELETE',
+  //     headers: myHeaders,
+  //     redirect: 'follow',
+  //   }
+  //   fetch(API_URL + 'mcq/' + questionId + '/video', requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       // console.log(result)
+  //       if (result.success) {
+  //         setVideoLoader(false)
+  //         getQuestion()
+  //         setSuccess(true)
+  //         setSuccessMsg('Video deleted successfully')
+  //         setTimeout(() => {
+  //           setSuccess(false)
+  //           setSuccessMsg('')
+  //         }, 3000)
+  //       } else {
+  //         setErrorr(true)
+  //         setErrorMsg(result.message)
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //       setVideoLoader(false)
+  //     })
+  // }
   const handleVideoChange = (file) => {
     var reader = new FileReader()
     setVideo(file)
@@ -807,6 +825,7 @@ const ManageUserQuestions = () => {
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
                     {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
                     <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Approved</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -859,6 +878,7 @@ const ManageUserQuestions = () => {
                             />
                           </CTableDataCell> */}
                             <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                            <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center">
                               <CButton
                                 className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
@@ -870,6 +890,19 @@ const ManageUserQuestions = () => {
                                 title="View"
                               >
                                 <RiEyeLine className="my-1" />
+                              </CButton>
+                              <CButton
+                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setApproveModal(true)
+                                  setQuestionId(e.currentTarget.id)
+                                  setErrorr(false)
+                                  setErrorMsg('')
+                                }}
+                                title="Approve"
+                              >
+                                <RiCheckDoubleLine className="my-1" />
                               </CButton>
                               <CButton
                                 color="info"
@@ -956,6 +989,7 @@ const ManageUserQuestions = () => {
                           />
                         </CTableDataCell> */}
                           <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                          <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell>
                           <CTableDataCell className="flex justify-start items-center">
                             <CButton
                               className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
@@ -967,6 +1001,19 @@ const ManageUserQuestions = () => {
                               title="View"
                             >
                               <RiEyeLine className="my-1" />
+                            </CButton>
+                            <CButton
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setApproveModal(true)
+                                setQuestionId(e.currentTarget.id)
+                                setErrorr(false)
+                                setErrorMsg('')
+                              }}
+                              title="Approve"
+                            >
+                              <RiCheckDoubleLine className="my-1" />
                             </CButton>
                             <CButton
                               color="info"
@@ -1011,7 +1058,7 @@ const ManageUserQuestions = () => {
             </CCardBody>
           </CCard>
         )}
-        {/* add / edit modal */}
+        {/* edit modal */}
         <CModal
           alignment="center"
           visible={addModal}
@@ -1407,7 +1454,7 @@ const ManageUserQuestions = () => {
                     />
                   </CCol>
                 </CRow>
-                {questionId && image ? (
+                {/* {questionId && image ? (
                   <CRow className="mb-3">
                     <CCol md={6}>
                       <CFormInput
@@ -1526,59 +1573,6 @@ const ManageUserQuestions = () => {
                       />
                     </CCol>
                   </CRow>
-                )}
-                {/* <CRow className="mb-3">
-                  <CCol md={12}>
-                    <p className="form-label">Video</p>
-                    <DropBox
-                      file={prevVideo ? `${API_URL}uploads/videos/${video}` : video}
-                      // file={questionId && videoSrc ? `${API_URL}uploads/videos/${video}` : video}
-                      setFile={setVideo}
-                      fileEnter={fileEnter}
-                      setFileEnter={setFileEnter}
-                      setVideoSrc={setVideoSrc}
-                    />
-                    <div className="flex justify-center items-center mt-3">
-                      {video && (
-                        <CButton
-                          onClick={() => {
-                            setVideo('')
-                            setVideoSrc('')
-                            setPrevVideo(false)
-                          }}
-                          color="danger"
-                          // className="px-4 mt-10 uppercase py-2 tracking-widest outline-none bg-red-600 text-white rounded"
-                        >
-                          Reset
-                        </CButton>
-                      )}
-                      {questionId && video && (
-                        <CButton
-                          color="danger"
-                          onClick={deleteVideo}
-                          className="ml-3"
-                          disabled={videoLoader ? true : false}
-                        >
-                          {videoLoader ? <CSpinner color="light" size="sm" /> : 'Delete Video'}
-                        </CButton>
-                      )}
-                    </div>
-                  </CCol>
-                </CRow> */}
-                {/* <CRow className="mb-3">
-                  <CCol md={12}>
-                    <CFormInput
-                      type="file"
-                      id="formFile"
-                      label="Upload Video"
-                      onChange={(e) => handleVideoChange(e.target.files[0])}
-                    />
-                  </CCol>
-                </CRow>
-                {videoSrc && (
-                  <center>
-                    <Player playsInline src={videoSrc} fluid={false} width={480} height={272} />
-                  </center>
                 )} */}
               </CForm>
               {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
@@ -1623,6 +1617,30 @@ const ManageUserQuestions = () => {
             </CButton>
           </CModalFooter>
         </CModal>
+        {/* approve modal */}
+        <CModal
+          alignment="center"
+          visible={approveModal}
+          onClose={() => setApproveModal(false)}
+          aria-labelledby="VerticallyCenteredExample"
+          backdrop="static"
+        >
+          <CModalHeader>
+            <CModalTitle id="VerticallyCenteredExample">Approve Question</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            Are you sure to approve this question?
+            {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => setApproveModal(false)}>
+              No
+            </CButton>
+            <CButton color="primary" onClick={approveQuestion} disabled={loading ? true : false}>
+              {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
+            </CButton>
+          </CModalFooter>
+        </CModal>
         {/* bulk delete modal */}
         <CModal
           alignment="center"
@@ -1655,7 +1673,7 @@ const ManageUserQuestions = () => {
           onClose={() => {
             setDetailModal(false)
             reset({})
-            setImage('')
+            // setImage('')
             setOp6('')
             setOp6Exp('')
           }}
@@ -1783,7 +1801,7 @@ const ManageUserQuestions = () => {
                 <span>{getValues('correct')}</span>
               </CCol>
             </CRow>
-            {image && (
+            {/* {image && (
               <CRow>
                 <CCol md={2}>
                   <strong>Image</strong>
@@ -1796,7 +1814,7 @@ const ManageUserQuestions = () => {
                   />
                 </CCol>
               </CRow>
-            )}
+            )} */}
           </CModalBody>
           <CModalFooter>
             <CButton
@@ -1804,7 +1822,7 @@ const ManageUserQuestions = () => {
               onClick={() => {
                 setDetailModal(false)
                 reset({})
-                setImage('')
+                // setImage('')
                 setOp6('')
                 setOp6Exp('')
               }}
