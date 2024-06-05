@@ -28,6 +28,7 @@ import ReviewExam from './views/pages/dashboard/ReviewExam'
 import ManageUserQuestions from './views/pages/admin/ManageUserQuestions'
 import LatestExam from './views/pages/dashboard/LatestExam'
 import AddQuestion from './views/pages/dashboard/AddQuestion'
+import ViewQuestions from './views/pages/dashboard/ViewQuestions'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -95,6 +96,7 @@ const App = () => {
           <Route path="/previous-exams" name="Previous Exams" element={<PrevExams />} />
           <Route path="/latest-exam" name="Latest Exam" element={<LatestExam />} />
           <Route path="/add-question" name="Add Question" element={<AddQuestion />} />
+          <Route path="/view-questions" name="View All" element={<ViewQuestions />} />
           <Route
             path="/manage-user-questions"
             name="Questions By Users"

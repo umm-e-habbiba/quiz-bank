@@ -89,10 +89,22 @@ const _nav = [
     ],
   },
   {
-    component: CNavItem,
-    name: 'Add Question',
-    to: '/add-question',
+    component: CNavGroup,
+    name: 'Added Questions ',
+    to: '/',
     icon: <CIcon icon={cilPlus} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Add New',
+        to: '/add-question',
+      },
+      {
+        component: CNavItem,
+        name: 'View All',
+        to: '/view-questions',
+      },
+    ],
   },
   // {
   //   component: CNavItem,

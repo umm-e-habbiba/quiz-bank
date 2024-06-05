@@ -35,12 +35,14 @@ import { useForm } from 'react-hook-form'
 import AdminLayout from 'src/layout/AdminLayout'
 import { AppHeader, AppSidebar } from 'src/components'
 import { step2score } from 'src/Step2ScoreConversion'
+import '../../../../src/scss/certificate.css'
 const PrevExams = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
   const [allExams, setAllExams] = useState([])
   const [addModal, setAddModal] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [showCertificate, setShowCertificate] = useState(false)
   const [loader, setLoader] = useState(false)
   const [loading, setIsLoading] = useState(false)
   const [examId, setExamId] = useState('')
@@ -48,8 +50,13 @@ const PrevExams = () => {
   const [errorMsg, setErrorMsg] = useState('')
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
+  const [username, setUsername] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
+  const [certificateStep, setCertificateStep] = useState('')
+  const [certificateMarks, setCertificateMarks] = useState('')
+  const [certificateExam, setCertificateExam] = useState('')
+  const [certificateDate, setCertificateDate] = useState('')
   useEffect(() => {
     getAllExams()
     const getToken = localStorage.getItem('token')
@@ -78,6 +85,7 @@ const PrevExams = () => {
         // console.log(result)
         if (result.success) {
           setAllExams(result.tests)
+          setUsername(result.firstName + ' ' + result.lastName)
         }
         setLoader(false)
       })
@@ -257,6 +265,45 @@ const PrevExams = () => {
                                       Retake
                                     </CButton>
                                   </Link>
+                                  {q.test?.usmleStep == '1'
+                                    ? percentage(q.obtainedScore, q.totalScore) >= 70 && (
+                                        <CButton
+                                          color="primary"
+                                          className="text-white ml-2"
+                                          onClick={() => {
+                                            setShowCertificate(true)
+                                            setCertificateStep(q.test?.usmleStep)
+                                            setCertificateMarks(
+                                              percentage(q.obtainedScore, q.totalScore),
+                                            )
+                                            setCertificateExam(q.test?.testName)
+                                            setCertificateDate(
+                                              moment(q.createdAt).format('MMMM Do YYYY'),
+                                            )
+                                          }}
+                                        >
+                                          Certificate
+                                        </CButton>
+                                      )
+                                    : q.test?.usmleStep == '2'
+                                      ? q.obtainedScore > 192 && (
+                                          <CButton
+                                            color="primary"
+                                            className="text-white ml-2"
+                                            onClick={() => {
+                                              setShowCertificate(true)
+                                              setCertificateStep(q.test?.usmleStep)
+                                              setCertificateMarks(q.obtainedScore)
+                                              setCertificateExam(q.test?.testName)
+                                              setCertificateDate(
+                                                moment(q.createdAt).format('MMMM Do YYYY'),
+                                              )
+                                            }}
+                                          >
+                                            Certificate
+                                          </CButton>
+                                        )
+                                      : ''}
                                 </>
                               ) : (
                                 <Link to={`/full-length-exam/${q.test?._id}`}>
@@ -319,6 +366,94 @@ const PrevExams = () => {
                 {loading ? <CSpinner color="light" size="sm" /> : 'Yes'}
               </CButton>
             </CModalFooter>
+          </CModal>
+          {/* certificate modal */}
+          <CModal
+            alignment="center"
+            visible={showCertificate}
+            onClose={() => setShowCertificate(false)}
+            aria-labelledby="VerticallyCenteredExample"
+            size="lg"
+          >
+            <CModalBody className="p-0">
+              <div className="container pm-certificate-container">
+                <div className="outer-border"></div>
+                <div className="inner-border"></div>
+
+                <div className="pm-certificate-border col-xs-12">
+                  <div className="row pm-certificate-header">
+                    <div className="pm-certificate-title cursive col-xs-12 text-center">
+                      <h2>ZAP-70 AJmonics</h2>
+                    </div>
+                  </div>
+
+                  <div className="row pm-certificate-body">
+                    <div className="pm-certificate-block">
+                      <div className="col-xs-12">
+                        <div className="row">
+                          <div className="col-xs-2"></div>
+                          <div className="pm-certificate-name margin-0 col-xs-8 text-center">
+                            <span className="pm-name-text bold uppercase">{username}</span>
+                          </div>
+                          <div className="col-xs-2"></div>
+                        </div>
+                      </div>
+
+                      <div className="col-xs-12">
+                        <div className="row">
+                          <div className="col-xs-2"></div>
+                          <div className="pm-earned col-xs-8 text-center">
+                            <span className="pm-earned-text padding-0 block cursive">
+                              has passed with
+                            </span>
+                            <span className="pm-credits-text block bold sans">
+                              {certificateStep == 1
+                                ? `${certificateMarks}%`
+                                : `${certificateMarks} Scores`}
+                            </span>
+                          </div>
+                          <div className="col-xs-2"></div>
+                          <div className="col-xs-12"></div>
+                        </div>
+                      </div>
+
+                      <div className="col-xs-12">
+                        <div className="row">
+                          <div className="col-xs-2"></div>
+                          <div className="pm-course-title col-xs-8 text-center">
+                            <span className="pm-earned-text block cursive">of exam entitled</span>
+                          </div>
+                          <div className="col-xs-2"></div>
+                        </div>
+                      </div>
+
+                      <div className="col-xs-12">
+                        <div className="row">
+                          <div className="col-xs-2"></div>
+                          <div className="pm-course-title col-xs-8 text-center">
+                            <span className="pm-credits-text block bold sans">
+                              {certificateExam}
+                            </span>
+                          </div>
+                          <div className="col-xs-2"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-xs-12">
+                      <div className="row">
+                        <div className="pm-certificate-footer">
+                          <div className="col-xs-4"></div>
+                          <div className="col-xs-4 pm-certified col-xs-4 text-center">
+                            <span className="pm-credits-text block sans">{certificateDate}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CModalBody>
           </CModal>
           {/* success alert */}
           {success && (
