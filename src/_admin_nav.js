@@ -44,6 +44,12 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
+    name: 'Questions Statistics',
+    to: '/attempted-questions',
+    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
     name: 'Upload Questions',
     to: '/upload-questions',
     icon: <CIcon icon={cilCloudUpload} customClassName="nav-icon" />,
@@ -59,12 +65,6 @@ const _admin_nav = [
     name: 'Upload Full Length Exam',
     to: '/upload-full-length-exam',
     icon: <CIcon icon={cilCloud} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Questions Statistics',
-    to: '/attempted-questions',
-    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,

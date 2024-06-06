@@ -92,6 +92,7 @@ const ViewQuestions = () => {
                     image={q.image ? q.image : ''}
                     imageTwo={q.imageTwo ? q.imageTwo : ''}
                     video={q.video ? q.video : ''}
+                    isapproved={q.isApproved}
                   />
                 ))
               ) : (

@@ -33,6 +33,7 @@ import QuizHeader from 'src/components/quiz/QuizHeader'
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go'
 import markIcon from '../../../assets/images/mark-icon.svg'
 import { step2score } from 'src/Step2ScoreConversion'
+import { RiCheckDoubleFill } from 'react-icons/ri'
 const FullLengthExam = () => {
   const navigate = useNavigate()
   let { id } = useParams()
@@ -81,6 +82,7 @@ const FullLengthExam = () => {
   const [numberOfSeconds, setNumberOfSeconds] = useState(0)
   const [isExamEnded, setIsExamEnded] = useState(false)
   const [step2Score, setStep2Score] = useState('')
+  const [spinner, setSpinner] = useState(false)
   const questionText = useRef()
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -137,6 +139,7 @@ const FullLengthExam = () => {
           setIsExamEnded(true)
         } else {
           console.log('get user exam', result)
+
           if (result.testAttempt?.testInfo) {
             setIsExamEnded(true)
           } else {
@@ -177,6 +180,9 @@ const FullLengthExam = () => {
       })
   }
   const getExam = () => {
+    if (examId) {
+      setSpinner(true)
+    }
     console.log('exam id', examId)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -206,6 +212,7 @@ const FullLengthExam = () => {
           setTotalExamQuest(result.data.totalQuestions)
           setShowExamList(false)
           setShowSections(true)
+          setSpinner(false)
           // setTotalQuest(result.data.questions?.length)
           // let allFilteredIds = result.data.questions.map(({ _id }) => _id)
           // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
@@ -756,7 +763,11 @@ const FullLengthExam = () => {
                                   setExamId(e.currentTarget.id)
                                 }}
                               >
-                                Start Exam
+                                {spinner && examId == row._id ? (
+                                  <CSpinner color="light" size="sm" />
+                                ) : (
+                                  'Start Exam'
+                                )}
                               </button>
                             </CCol>
                           </CRow>
@@ -1066,11 +1077,18 @@ const FullLengthExam = () => {
                   <ol className="olcards my-4">
                     {allSections.map((section, idx) => (
                       <li key={idx}>
-                        <div className={`olcards-content bg-[#e5e7eb]`}>
-                          <div className="olcards-title">{section.section}</div>
-                          <div className="olcards-text">
-                            Number of questions: {section.questions?.length}
+                        <div className={`olcards-content flex-row bg-[#e5e7eb]`}>
+                          <div>
+                            <div className="olcards-title">{section.section}</div>
+                            <div className="olcards-text">
+                              Number of questions: {section.questions?.length}
+                            </div>
                           </div>
+                          {idx + 1 < sectionValue.match(/(\d+)/)[0] && (
+                            <div className="absolute right-9 top-5 text-green-600 text-3xl">
+                              <RiCheckDoubleFill />
+                            </div>
+                          )}
                         </div>
                       </li>
                     ))}

@@ -161,7 +161,7 @@ const UploadFullLengthExam = () => {
                 {...register('testName', { required: true })}
                 feedback="Exam name is required"
                 invalid={errors.testName ? true : false}
-                className=" text-[#252b36] placeholder:text-[#252b36]"
+                // className=" text-[#252b36] placeholder:text-[#252b36]"
               />
             </CCol>
           </CRow>
@@ -188,7 +188,7 @@ const UploadFullLengthExam = () => {
                   { label: 'Select USMLE Step', value: '' },
                   { label: 'Step 1', value: '1' },
                   { label: 'Step 2', value: '2' },
-                  { label: 'Step 3', value: '3' },
+                  // { label: 'Step 3', value: '3' },
                 ]}
                 {...register('usmleStep', { required: true })}
                 feedback="Please select USMLE Step"
