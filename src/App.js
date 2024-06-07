@@ -30,6 +30,7 @@ import LatestExam from './views/pages/dashboard/LatestExam'
 import AddQuestion from './views/pages/dashboard/AddQuestion'
 import ViewQuestions from './views/pages/dashboard/ViewQuestions'
 import ChangeAbout from './views/pages/admin/ChangeAbout'
+import Notifications from './views/pages/dashboard/Notifications'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -88,6 +89,7 @@ const App = () => {
           <Route path="/change-about" name="Change About Text" element={<ChangeAbout />} />
           <Route path="/review-exam/:id" name="Review Exam" element={<ReviewExam />} />
           <Route path="/full-length-exam" name="Full Length Exam" element={<FullLengthExam />} />
+          <Route path="/notifications" name="Notifications" element={<Notifications />} />
           <Route
             path="/full-length-exam/:id"
             name="Full Length Exam"
