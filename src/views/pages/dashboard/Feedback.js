@@ -396,15 +396,18 @@ const Feedback = () => {
             {myFeedbacks && myFeedbacks.length > 0 ? (
               ''
             ) : (
-              <CButton
-                onClick={(e) => {
-                  setFeedbackModal(true)
-                  reset({})
-                }}
-                className="bg-[#6261CC] text-white hover:bg-[#4b4999]"
-              >
-                Add Feedback
-              </CButton>
+              <>
+                <CButton
+                  onClick={(e) => {
+                    setFeedbackModal(true)
+                    reset({})
+                  }}
+                  className="bg-[#6261CC] text-white hover:bg-[#4b4999] float-right"
+                >
+                  Add Feedback
+                </CButton>
+                <br />
+              </>
             )}
             <div className="flex justify-between items-center my-2 mt-4">
               <hr className="h-1 w-full dark:bg-white bg-black rounded-2xl" />
