@@ -235,7 +235,7 @@ const Dashboard = () => {
                   <CRow>
                     <CCol xs={12} md={12} xl={12}>
                       <CRow className="mb-0 pb-3">
-                        <CCol xs={4}>
+                        <CCol xs={6} md={4} lg={4}>
                           <div className="border-start border-start-4 border-start-info py-1 px-3">
                             <div className="text-body-secondary text-truncate small">
                               Quiz Attempted
@@ -243,7 +243,7 @@ const Dashboard = () => {
                             <div className="fs-5 fw-semibold">{allQuiz.length}</div>
                           </div>
                         </CCol>
-                        <CCol xs={4}>
+                        <CCol xs={6} md={4} lg={4}>
                           <div className="border-start border-start-4 border-start-warning py-1 px-3">
                             <div className="text-body-secondary text-truncate small">
                               Exams Attempted
@@ -251,8 +251,8 @@ const Dashboard = () => {
                             <div className="fs-5 fw-semibold">{allExam.length}</div>
                           </div>
                         </CCol>
-                        <CCol xs={4}>
-                          <div className="py-1 px-3 mb-3 flex justify-end items-center">
+                        <CCol xs={12} md={4} lg={4}>
+                          <div className="mt-3 lg:mt-0 py-1 px-3 mb-3 flex justify-center lg:justify-end items-center">
                             <Link to="/previous-tests">
                               <CButton className="bg-[#6261CC] text-white hover:bg-[#484796] mr-3">
                                 Previous Quizzes

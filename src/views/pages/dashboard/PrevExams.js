@@ -160,7 +160,7 @@ const PrevExams = () => {
                   <CSpinner color="success" variant="grow" />
                 </div>
               ) : (
-                <CTable striped className="admin-tables">
+                <CTable striped className="admin-tables" responsive>
                   <CTableHead>
                     <CTableRow>
                       <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>

@@ -162,7 +162,7 @@ const AddQuestion = () => {
       <AppSidebar />
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
-        <div className="body flex-grow-1 mx-[10%] ">
+        <div className="body flex-grow-1 mx-4 lg:mx-[10%] ">
           <section className=" py-1 bg-blueGray-50">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               <div className="rounded-t  mb-0 px-6 py-6">
@@ -195,7 +195,7 @@ const AddQuestion = () => {
                     Question Details
                   </h6>
                   <div className="flex flex-wrap">
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
@@ -220,7 +220,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
@@ -262,7 +262,7 @@ const AddQuestion = () => {
                         </CFormSelect>
                       </div>
                     </div>
-                    <div className="w-full px-4">
+                    <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
@@ -289,7 +289,7 @@ const AddQuestion = () => {
                     Options
                   </h6>
                   <div className="flex flex-wrap">
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option One
@@ -304,7 +304,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option Two
@@ -319,7 +319,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option Three
@@ -334,7 +334,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option Four
@@ -349,7 +349,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option Five
@@ -364,7 +364,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Option Six
@@ -384,7 +384,7 @@ const AddQuestion = () => {
                     Correct Answer
                   </h6>
                   <div className="flex flex-wrap">
-                    <div className="w-full px-4">
+                    <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
@@ -430,7 +430,7 @@ const AddQuestion = () => {
                     Explanation
                   </h6>
                   <div className="flex flex-wrap">
-                    <div className="w-full px-4">
+                    <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
                           className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
@@ -450,7 +450,7 @@ const AddQuestion = () => {
                         ></CFormTextarea>
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option One
@@ -464,7 +464,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option Two
@@ -478,7 +478,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option Three
@@ -492,7 +492,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option Four
@@ -506,7 +506,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option Five
@@ -520,7 +520,7 @@ const AddQuestion = () => {
                         />
                       </div>
                     </div>
-                    <div className="w-full lg:w-6/12 px-4">
+                    <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
                           Explain Option Six

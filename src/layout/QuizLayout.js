@@ -761,7 +761,7 @@ const QuizLayout = () => {
         {showQues && (
           <div className="relative">
             <div
-              className={` ${sidebarOpen ? 'w-20' : 'w-5'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+              className={` ${sidebarOpen ? 'md:w-20 w-12' : 'w-5'} bg-[#212631]  sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
               style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
             >
               {/* {sidebarOpen && (
@@ -812,18 +812,18 @@ const QuizLayout = () => {
         )}
         {showQues && (
           <button
-            className="sidebar-toggle-btn  h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+            className="sidebar-toggle-btn z-50 h-10 sm:h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
-              <GoChevronRight className="text-[40px] rotate-180 text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] rotate-180 text-white" />
             ) : (
-              <GoChevronRight className="text-[40px] text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] text-white" />
             )}
           </button>
         )}
 
-        <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper">
+        <div className="flex flex-col  quiz-wrapper  wrapper">
           {/* new layout */}
           {loader ? (
             <div>
@@ -853,17 +853,17 @@ const QuizLayout = () => {
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
-                    <div className="mx-40 mb-5 flex flex-col justify-center items-start">
+                    <div className="selector-margin-1 flex flex-col justify-center items-start">
                       {totalRows.map((row, id) => (
                         <div
-                          className={`mx-40 mb-5 ${id === totalRows.length - 1 ? 'w-[87.1%]' : 'w-[85%]'} flex justify-center items-center`}
+                          className={`selector-margin-2 mb-3 ${id === totalRows.length - 1 ? 'w-[95%] lg:w-[87.1%]' : 'w-[95%] lg:w-[85%]'} flex justify-center items-center`}
                           key={id}
                         >
                           <CRow
                             key={id}
-                            className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-10"
+                            className="bg-gray-200 rounded-lg relative border-3 w-full flex justify-center items-center border-solid border-gray-400 text-black p-4 mr-0 lg:mr-10"
                           >
-                            <CCol xs={1} md={3} lg={3}>
+                            <CCol xs={12} md={3} lg={3} className="mb-3 lg:mb-0">
                               <CFormSelect
                                 aria-label="Select Exam"
                                 className="w-full"
@@ -893,7 +893,7 @@ const QuizLayout = () => {
                                 value={row.step}
                               />
                             </CCol>
-                            <CCol xs={1} md={3} lg={3}>
+                            <CCol xs={12} md={3} lg={3} className="mb-3 lg:mb-0">
                               <CFormSelect
                                 aria-label="Select Category"
                                 className="w-full"
@@ -975,7 +975,7 @@ const QuizLayout = () => {
                                 )}
                               </CFormSelect>
                             </CCol>
-                            <CCol xs={1} md={3} lg={3}>
+                            <CCol xs={12} md={3} lg={3} className="mb-3 lg:mb-0">
                               <CFormInput
                                 type="number"
                                 name="number"
@@ -991,7 +991,7 @@ const QuizLayout = () => {
                                 onChange={(e) => setQues(e.target.value, id)}
                               />
                             </CCol>
-                            <CCol xs={1} md={3} lg={3} className="flex flex-col">
+                            <CCol xs={12} md={3} lg={3} className="flex flex-col mb-3 lg:mb-0">
                               <CFormSwitch
                                 size="xl"
                                 label="Correct Attempted Questions"
@@ -1060,7 +1060,7 @@ const QuizLayout = () => {
                               </CButton>
                             )} */}
                           {totalRows.length - 1 === id ? (
-                            <div className="flex justify-center items-center">
+                            <div className="justify-center items-center hidden lg:flex">
                               <CButton
                                 className="w-9 h-9 p-3 text-white  bg-[#6261CC] hover:bg-[#474694] text-2xl flex justify-center items-center"
                                 onClick={addRows}
@@ -1074,9 +1074,24 @@ const QuizLayout = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex justify-center items-center flex-col">
+                    <div className="flex justify-center items-center mt-5 mb-20 lg:mb-0">
+                      {/* <CButton
+                        className="w-10 h-10 mr-3 text-white  bg-[#6261CC] hover:bg-[#474694] text-2xl flex lg:hidden justify-center items-center "
+                        onClick={addRows}
+                      >
+                        <span className="-mt-1">+</span>
+                      </CButton> */}
                       <button
-                        className={`mx-auto px-5 py-2 rounded-lg mb-3 text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                        className={`mr-[10px] mb-0 lg:mb-3 lg:hidden px-3 lg:px-5 py-2 rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                        // type="submit"
+                        color="secondary"
+                        onClick={addRows}
+                        // disabled={disableExam ? true : false}
+                      >
+                        Add Row
+                      </button>
+                      <button
+                        className={`mx-0 mb-0 lg:mx-auto px-3 lg:px-5 py-2 rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
                         // type="submit"
                         color="secondary"
                         onClick={startexam}
@@ -1092,10 +1107,13 @@ const QuizLayout = () => {
                 )}
                 {/* Questions */}
                 {showQues && (
-                  <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
+                  <div
+                    className="sm:px-16 px-3 pt-5 ml-[-9%] sm:ml-0"
+                    style={{ fontSize: `${fontSize}px` }}
+                  >
                     {filteredQuestion[currentQuestion] &&
                     filteredQuestion[currentQuestion].image ? (
-                      <CRow className="mb-5">
+                      <CRow className="mb-7">
                         <CCol md={8}>
                           <p
                             dangerouslySetInnerHTML={createMarkup(
@@ -1113,6 +1131,7 @@ const QuizLayout = () => {
                             onClick={() => console.log('clicked')}
                           ></p>
                         </CCol>
+
                         <CCol md={4}>
                           {filteredQuestion[currentQuestion]?.image && (
                             <img
@@ -1120,7 +1139,7 @@ const QuizLayout = () => {
                               // src={`${API_URL}uploads/${filteredQuestion[currentQuestion].image}`}
                               src={`${API_URL}uploads/images/${filteredQuestion[currentQuestion].image}`}
                               alt="question image"
-                              className="mb-3"
+                              className=" mt-3"
                               loading="eager"
                             />
                           )}
@@ -1137,7 +1156,7 @@ const QuizLayout = () => {
                         </CCol>
                       </CRow>
                     ) : (
-                      <CRow className="mb-5">
+                      <CRow className="">
                         <CCol md={12}>
                           <p
                             dangerouslySetInnerHTML={createMarkup(
@@ -1157,7 +1176,6 @@ const QuizLayout = () => {
                         </CCol>
                       </CRow>
                     )}
-                    <div></div>
                     <CForm onSubmit={(e) => handleNextQuestion(e)}>
                       {/* <CForm onSubmit={(e) => handleFormSubmit(e, filteredQuestion[currentQuestion]._id)}> */}
                       <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 min-w-64 w-fit">

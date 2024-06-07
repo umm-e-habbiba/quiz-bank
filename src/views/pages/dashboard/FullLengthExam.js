@@ -1,36 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import {
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CTable,
-  CTableBody,
-  CTableDataCell,
-  CTableHead,
-  CTableHeaderCell,
-  CTableRow,
-  CModal,
-  CModalBody,
-  CModalFooter,
-  CModalHeader,
-  CModalTitle,
-  CButton,
-  CSpinner,
-  CAlert,
-  CProgress,
-  CRow,
-  CCol,
-  CForm,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilTrash } from '@coreui/icons'
+import { CModal, CModalBody, CButton, CSpinner, CAlert, CRow, CCol, CForm } from '@coreui/react'
 import { API_URL } from 'src/store'
-import AdminLayout from 'src/layout/AdminLayout'
-import moment from 'moment'
 import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
-import { GoChevronLeft, GoChevronRight } from 'react-icons/go'
+import { GoChevronRight } from 'react-icons/go'
 import markIcon from '../../../assets/images/mark-icon.svg'
 import { step2score } from 'src/Step2ScoreConversion'
 import { RiCheckDoubleFill } from 'react-icons/ri'
@@ -39,15 +13,8 @@ const FullLengthExam = () => {
   let { id } = useParams()
   const [allExam, setAllExam] = useState([])
   const [allSections, setAllSections] = useState([])
-  const [detailModal, setDetailModal] = useState(false)
-  const [deleteModal, setDeleteModal] = useState(false)
   const [loader, setLoader] = useState(false)
-  const [loading, setIsLoading] = useState(false)
   const [examId, setExamId] = useState('')
-  const [error, setErrorr] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
-  const [success, setSuccess] = useState(false)
-  const [successMsg, setSuccessMsg] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [fontSize, setFontSize] = useState(16)
@@ -262,11 +229,11 @@ const FullLengthExam = () => {
     e.preventDefault()
     setSelectError(false)
     if (currentQuestion + 1 < totalQuest) {
-      // if (selectedOption) {
-      setCurrentQuestion(currentQuestion + 1)
-      // } else {
-      //   setSelectError(true)
-      // }
+      if (selectedOption) {
+        setCurrentQuestion(currentQuestion + 1)
+      } else {
+        setSelectError(true)
+      }
     } else {
       console.log('sections length', allSections.length)
       updateUserTest()
@@ -652,17 +619,17 @@ const FullLengthExam = () => {
         {showQues && (
           <div className="relative">
             <div
-              className={` ${sidebarOpen ? 'w-20' : 'w-5'} bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+              className={` ${sidebarOpen ? 'md:w-20 w-12' : 'w-5'} bg-[#212631]  sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
               style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
             >
               {/* {sidebarOpen && (
-                <button
-                  className={`pb-4 text-[20px] px-3 ml-8 bg- text-center ${sidebarOpen ? '' : 'hidden'}`}
-                  onClick={toggleSidebar}
-                >
-                  <GoChevronRight className="text-[40px] rotate-180" />
-                </button>
-              )} */}
+              <button
+                className={`pb-4 text-[20px] px-3 ml-8 bg- text-center ${sidebarOpen ? '' : 'hidden'}`}
+                onClick={toggleSidebar}
+              >
+                <GoChevronRight className="text-[40px] rotate-180" />
+              </button>
+            )} */}
               <ul className={`${sidebarOpen ? 'block' : 'hidden'} pt-5`}>
                 {saveQuestionArray.map((question, index) => (
                   <li
@@ -692,28 +659,28 @@ const FullLengthExam = () => {
             </div>
             {/* {/ Close button outside sidebar /} */}
             {/* {sidebarOpen && (
-              <button
-                className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
-                onClick={toggleSidebar}
-              >
-                <GoChevronRight className="text-[40px] rotate-180 text-white" />
-              </button>
-            )} */}
+            <button
+              className="absolute -top-5 left-[100%] text-[25px] px-1 py-1 mt-4  mr-4 text-white bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+              onClick={toggleSidebar}
+            >
+              <GoChevronRight className="text-[40px] rotate-180 text-white" />
+            </button>
+          )} */}
           </div>
         )}
         {showQues && (
           <button
-            className="sidebar-toggle-btn  h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+            className="sidebar-toggle-btn h-10 sm:h-12 z-50 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
-              <GoChevronLeft className="text-[40px] rotate-180 text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] rotate-180 text-white" />
             ) : (
-              <GoChevronRight className="text-[40px] text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] text-white" />
             )}
           </button>
         )}
-        <div className="flex flex-col quiz-wrapper overflow-y-auto wrapper overflow-x-hidden">
+        <div className="flex flex-col quiz-wrapper  sm:ml-0 overflow-y-auto wrapper overflow-x-hidden">
           {loader ? (
             <div className="text-center">
               <CSpinner color="success" variant="grow" />
@@ -721,7 +688,9 @@ const FullLengthExam = () => {
           ) : (
             <>
               {showExamList && (
-                <div className={`mx-40 mb-5 flex flex-col justify-center items-center  mt-10`}>
+                <div
+                  className={`mx-4 lg:mx-40 mb-5 flex flex-col justify-center items-center  mt-10`}
+                >
                   {allExam && allExam.length > 0 ? (
                     <>
                       <p className="text-4xl font-semibold">All Exams</p>
@@ -782,7 +751,7 @@ const FullLengthExam = () => {
                 </div>
               )}
               {showQues && (
-                <div className="px-16 pt-5" style={{ fontSize: `${fontSize}px` }}>
+                <div className="px-16 pt-5 ml-[-12%] sm:ml-0" style={{ fontSize: `${fontSize}px` }}>
                   {filteredQuestion[currentQuestion] && filteredQuestion[currentQuestion].image ? (
                     <CRow className="mb-5">
                       <CCol md={8}>
@@ -1072,7 +1041,7 @@ const FullLengthExam = () => {
                 </div>
               )}
               {showSections && allSections && allSections.length > 0 && (
-                <div className="mx-40 mb-5 flex flex-col justify-center items-center  mt-10">
+                <div className="mx-4 lg:mx-40 mb-5 flex flex-col justify-center items-center  mt-10">
                   <p className="text-4xl font-semibold">Sections of {testName}</p>
                   <ol className="olcards my-4">
                     {allSections.map((section, idx) => (

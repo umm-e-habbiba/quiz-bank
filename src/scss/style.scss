@@ -441,3 +441,19 @@ table th {
   font-size: 1.25em;
   /* font-weight: 700; */
 }
+.selector-margin-1,
+.selector-margin-2 {
+  margin: 0 160px;
+}
+
+@media (max-width: $breakpoint-mobile) {
+  .selector-margin-1 {
+    margin: 0 0 0 16px;
+  }
+  .selector-margin-2 {
+    margin: 0 16px;
+  }
+  .olcards li .olcards-content {
+    width: 280px;
+  }
+}

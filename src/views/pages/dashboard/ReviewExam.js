@@ -69,7 +69,7 @@ const ReviewExam = () => {
               <CSpinner color="success" variant="grow" />
             </div>
           ) : (
-            <div className="mx-10 mb-5">
+            <div className="mx-4 lg:mx-10 mb-5">
               <p className="text-2xl mb-1">Review exam {testName}</p>
               {/* <p className="text-xl mb-1">{testName}</p> */}
               {allSections &&

@@ -211,11 +211,10 @@ h3 {
 }
 @media (max-width: 767px) {
   .inner {
-    width: 100%;
+    width: 350px;
     left: 0;
   }
 
-  
   .image-1,
   .image-2 {
     display: none;
