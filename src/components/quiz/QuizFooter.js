@@ -181,14 +181,16 @@ const QuizFooter = ({
     <>
       <CFooter className="quiz-footer">
         {/* <div className="text-xl">Time Left : {showQues ? convertSeconds(totalSeconds) : '00:00'}</div> */}
-        {isTimer && <div className="text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>}
-        <div className="text-xl opacity-40">ZAP-70 Q-Bank</div>
+        {isTimer && (
+          <div className="text-md md:text-xl">Time Left : {showQues ? timeLeft : '00:00'}</div>
+        )}
+        <div className="text-md md:text-xl  opacity-40">ZAP-70 Q-Bank</div>
         {showQues && (
           <div
-            className="cursor-pointer text-xl flex justify-center items-center"
+            className="cursor-pointer text-md md:text-xl flex justify-center items-center"
             onClick={() => setEndModal(true)}
           >
-            End<span className="ml-3 w-7 h-7 rounded-full bg-red-600 "></span>
+            End<span className="ml-2 md:ml-3 h-5 w-5 md:w-7 md:h-7 rounded-full bg-red-600 "></span>
           </div>
         )}
       </CFooter>

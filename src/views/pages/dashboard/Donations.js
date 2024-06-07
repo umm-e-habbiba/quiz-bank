@@ -11,7 +11,7 @@ const Donations = () => {
       <div className="wrapper d-flex flex-column min-vh-100">
         <AppHeader />
         <div className="body flex-grow-1">
-          <div className="flex justify-center items-center flex-col mx-40 my-20">
+          <div className="flex justify-center items-center flex-col mx-4 lg:mx-40 my-4 lg:my-20">
             <p className="text-3xl mb-1">Donations</p>
             <p className="text-base/loose text-center">
               No pressure, but if you have benefitted from my work

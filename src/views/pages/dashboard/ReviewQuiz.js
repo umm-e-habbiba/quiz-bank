@@ -1,50 +1,25 @@
-import { CButton, CForm, CFormCheck, CFormInput, CAlert, CRow, CCol, CSpinner } from '@coreui/react'
+import { CButton, CForm, CFormCheck, CAlert, CRow, CCol, CSpinner } from '@coreui/react'
 import React, { useState, useEffect, useRef } from 'react'
-import QuizFooter from 'src/components/quiz/QuizFooter'
 import QuizHeader from 'src/components/quiz/QuizHeader'
-import { useForm } from 'react-hook-form'
-import { useNavigate, NavLink, Link, useParams, useSearchParams } from 'react-router-dom'
-import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
-import CIcon from '@coreui/icons-react'
-import { cilBarChart, cilCalendar, cilClock } from '@coreui/icons'
+import { useNavigate, Link, useParams } from 'react-router-dom'
 import { API_URL } from 'src/store'
 import ReviewQuizFooter from 'src/components/quiz/ReviewQuizFooter'
-import { ImCross } from 'react-icons/im'
 import markIcon from '../../../assets/images/mark-flag.png'
-import { FaBars } from 'react-icons/fa'
 import { GoChevronRight } from 'react-icons/go'
 const ReviewQuiz = () => {
   const navigate = useNavigate()
   let { id } = useParams()
-  const [queryParameters] = useSearchParams()
   // let quizId = queryParameters.get('id')
   const [loading, setLoading] = useState(false)
   const [showQues, setShowQues] = useState(true)
-  const [isTimer, setIsTimer] = useState(false)
-  const [usmleCategory, setUsmleCategory] = useState('')
-  const [usmleStep, setUsmleStep] = useState('')
-  const [showTotal, setShowTotal] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuestion, setAllQuestion] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [quizEnd, setQuizEnd] = useState(false)
-  const [error, setError] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
-  const [quizScore, setQuizScore] = useState(0)
   const [fontSize, setFontSize] = useState(16)
   const [markedQuestions, setMarkedQuestions] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      total: 1,
-    },
-  })
 
   useEffect(() => {
     // console.log('quiz id', id)
@@ -150,12 +125,6 @@ const ReviewQuiz = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
-  const imgStyle = {
-    width: '300px',
-    height: '300px',
-    margin: '10px 0px',
-  }
-
   const videoRef = useRef(null)
 
   useEffect(() => {
@@ -202,9 +171,7 @@ const ReviewQuiz = () => {
       <div className="flex flex-row">
         <div className="relative">
           <div
-            className={` ${
-              sidebarOpen ? 'w-20' : 'w-5'
-            } bg-[#212631] absolute sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
+            className={` ${sidebarOpen ? 'md:w-20 w-12' : 'w-5'} bg-[#212631]  sm:static sidebar-wrapper shadow-xl shadow-black overflow-auto overflow-x-hidden transition-width duration-300 ease-in-out`}
             style={{ scrollbarWidth: 'thin', scrollbarColor: '#4B5563 #2C313D' }}
           >
             {/* {sidebarOpen && (
@@ -237,7 +204,7 @@ const ReviewQuiz = () => {
             </ul>
             {sidebarOpen && currentQuestion !== null && (
               <div
-                className="fixed top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
+                className=" top-[10vh] right-0 bg-gray-800 text-white p-2 rounded"
                 style={{ transform: 'translateX(100%)' }}
               >
                 {currentQuestion + 1}
@@ -263,17 +230,18 @@ const ReviewQuiz = () => {
         </div>
         {showQues && (
           <button
-            className="sidebar-toggle-btn  h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
+            className="sidebar-toggle-btn h-10 z-50 sm:h-12 text-[25px] -ml-1 px-2  bg-[#212631] rounded-r-lg shadow-black shadow-lg"
             onClick={toggleSidebar}
           >
             {sidebarOpen ? (
-              <GoChevronRight className="text-[40px] rotate-180 text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] rotate-180 text-white" />
             ) : (
-              <GoChevronRight className="text-[40px] text-white" />
+              <GoChevronRight className="text-[30px] sm:text-[40px] text-white" />
             )}
           </button>
         )}
-        <div className="wrapper relative p-4 d-flex flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
+
+        <div className="wrapper relative p-4 d-flex ml-[-9%] sm:ml-0 flex-column quiz-wrapper overflow-x-hidden overflow-y-auto">
           {loading ? (
             <center>
               <CSpinner color="info" variant="grow" />
@@ -286,13 +254,14 @@ const ReviewQuiz = () => {
               {/* Questions */}
               {allQuestion[currentQuestion] && allQuestion[currentQuestion].questionId ? (
                 <CRow>
-                  <CCol md={6} className="border-r-2 border-solid">
-                    <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
+                  <CCol md={6} className="sm:border-r-2 border-b-2 sm:border-b-0 border-solid">
+                    <div className="p-4 lg:p-10" style={{ fontSize: `${fontSize}px` }}>
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.image ? (
                         <div className="mb-5">
+                          <p className="mb-1 text-2xl font-bold">Question</p>
                           <p
-                            className="mb-1"
+                            className="mb-3 mt-4"
                             dangerouslySetInnerHTML={{
                               __html: allQuestion[currentQuestion]
                                 ? allQuestion[currentQuestion].questionId.question
@@ -308,7 +277,7 @@ const ReviewQuiz = () => {
                               <img
                                 src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.image}`}
                                 alt="question image"
-                                className="mb-3"
+                                className=""
                                 loading="eager"
                               />
                               {/* <img
@@ -343,8 +312,8 @@ const ReviewQuiz = () => {
                     : ''} */}
                         </p>
                       )}
-                      <CForm onSubmit={handleFormSubmit}>
-                        <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-5 min-w-64 w-fit">
+                      <CForm className="-mt-8 ms:mt-0" onSubmit={handleFormSubmit}>
+                        <div className="bg-gray-200 border-3 border-solid border-gray-400 text-black p-4 mb-3 lg:mb-5 min-w-64 w-fit">
                           <CFormCheck
                             type="radio"
                             id={
@@ -521,7 +490,7 @@ const ReviewQuiz = () => {
                         </div>
                         {allQuestion.length > 0 && allQuestion[currentQuestion] ? (
                           <CRow
-                            className={`py-2 px-1 ml-[1px] border-l-4 border-solid ${allQuestion[currentQuestion].questionId.correctAnswer == allQuestion[currentQuestion].selectedOption ? 'border-green-600' : 'border-red-600'}  answer-stat-box bg-gray-200`}
+                            className={`sm:py-2 px-1 ml-[1px] border-l-4 border-solid ${allQuestion[currentQuestion].questionId.correctAnswer == allQuestion[currentQuestion].selectedOption ? 'border-green-600' : 'border-red-600'}  answer-stat-box bg-gray-200`}
                           >
                             <CCol md={12} className="flex justify-start flex-col ">
                               {allQuestion[currentQuestion].questionId.correctAnswer ==
@@ -566,10 +535,10 @@ const ReviewQuiz = () => {
                     </div>
                   </CCol>
                   <CCol md={6}>
-                    <div className="p-10" style={{ fontSize: `${fontSize}px` }}>
+                    <div className="p-4 lg:p-10" style={{ fontSize: `${fontSize}px` }}>
                       <p className="mb-1 text-2xl font-bold">Explanation</p>
                       <p
-                        className="mb-1"
+                        className="mb-3 mt-4"
                         dangerouslySetInnerHTML={{
                           __html: allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.questionExplanation
@@ -587,7 +556,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.imageTwo ? (
                         <img
-                          src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                          src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
                           alt="question image"
                           className="mb-3"
                           loading="eager"
