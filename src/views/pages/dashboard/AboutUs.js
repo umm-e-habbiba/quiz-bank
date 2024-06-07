@@ -1,6 +1,46 @@
-import React from 'react'
+import { CSpinner } from '@coreui/react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AppHeader, AppSidebar } from 'src/components'
+import { API_URL } from 'src/store'
 const AboutUs = () => {
+  const navigate = useNavigate()
+  const [about, setAbout] = useState('')
+  const [loader, setLoader] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  useEffect(() => {
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      getAbout()
+      setToken(getToken)
+    } else {
+      navigate('/login')
+    }
+  }, [])
+  const getAbout = () => {
+    setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'about-us', requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result)
+        setLoader(false)
+        if (result.aboutUsText) {
+          setAbout(result.aboutUsText)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setLoader(false)
+      })
+  }
   return (
     <div>
       <AppSidebar />
@@ -9,15 +49,19 @@ const AboutUs = () => {
         <div className="body flex-grow-1">
           <div className="flex justify-center items-center flex-col mx-40 my-20">
             <p className="text-3xl mb-3">About US</p>
-            <p className="text-base/loose">
-              The ZAP-70 Question Bank was produced by AJ, creator of AJmonics. AJ is a medical
-              student whose life mission is to elevate the world with kindness, goodness, and insane
-              creativity. He believes that medical students should not be paying a fraction of the
-              portion that they pay - for the (often) inefficient and boring education that they
-              get. This is why, after producing AJmonics.com, a platform of pixar-style animated
-              video to enhance education and fun, he created ZAP-70, a free question bank for
-              students to learn (and often have a good time too!).
-            </p>
+            {loader ? (
+              <div role="status" className="w-full animate-pulse">
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
+              </div>
+            ) : (
+              <p className="text-base/loose">{about}</p>
+            )}
           </div>
         </div>
       </div>

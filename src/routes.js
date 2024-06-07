@@ -19,6 +19,7 @@ import ManageUserQuestions from './views/pages/admin/ManageUserQuestions'
 import LatestExam from './views/pages/dashboard/LatestExam'
 import AddQuestion from './views/pages/dashboard/AddQuestion'
 import ViewQuestions from './views/pages/dashboard/ViewQuestions'
+import ChangeAbout from './views/pages/admin/ChangeAbout'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -35,6 +36,7 @@ const routes = [
   { path: '/donations', name: 'Donations', element: Donations },
   { path: '/feedback', name: 'Feedback', element: Feedback },
   { path: '/manage-feedback', name: 'Manage Feedback', element: ManageFeedbacks },
+  { path: '/change-about', name: 'Change About Text', element: ChangeAbout },
   { path: '/manage-exam', name: 'Manage Exam', element: ManageExams },
   { path: '/attempted-questions', name: 'Questions Statistics', element: AttemptedQuestions },
   { path: '/upload-questions', name: 'Upload Questions', element: UploadQuestions },

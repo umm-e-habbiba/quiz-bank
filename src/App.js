@@ -29,6 +29,7 @@ import ManageUserQuestions from './views/pages/admin/ManageUserQuestions'
 import LatestExam from './views/pages/dashboard/LatestExam'
 import AddQuestion from './views/pages/dashboard/AddQuestion'
 import ViewQuestions from './views/pages/dashboard/ViewQuestions'
+import ChangeAbout from './views/pages/admin/ChangeAbout'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -84,6 +85,7 @@ const App = () => {
           <Route path="/donations" name="Donations" element={<Donations />} />
           <Route path="/feedback" name="Feedback" element={<Feedback />} />
           <Route path="/manage-feedback" name="Manage Feedback" element={<ManageFeedbacks />} />
+          <Route path="/change-about" name="Change About Text" element={<ChangeAbout />} />
           <Route path="/review-exam/:id" name="Review Exam" element={<ReviewExam />} />
           <Route path="/full-length-exam" name="Full Length Exam" element={<FullLengthExam />} />
           <Route
