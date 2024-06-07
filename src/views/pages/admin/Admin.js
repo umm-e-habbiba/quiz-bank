@@ -213,6 +213,9 @@ const Admin = () => {
                         <CTableHeaderCell className="bg-body-tertiary">
                           Quiz Attempted
                         </CTableHeaderCell>
+                        <CTableHeaderCell className="bg-body-tertiary">
+                          Exams Attempted
+                        </CTableHeaderCell>
                       </CTableRow>
                     </CTableHead>
                     <CTableBody>
@@ -249,37 +252,57 @@ const Admin = () => {
                         </CTableDataCell>
                       </CTableRow>
                     ))} */}
-                      {allUsers && allUsers.length > 0
-                        ? allUsers.map((user, index) => (
-                            <CTableRow v-for="item in tableItems" key={index}>
-                              <CTableDataCell className="text-center">
-                                <CAvatar size="md" color="primary" textColor="white">
-                                  {user.firstName.substring(0, 2)}
-                                </CAvatar>
-                              </CTableDataCell>
-                              <CTableDataCell>
-                                <div>{user.firstName + user.lastName}</div>
-                                <div className="small text-body-secondary text-nowrap">
-                                  {user.email}
-                                </div>
-                              </CTableDataCell>
-                              <CTableDataCell>
-                                <div className="d-flex justify-content-between text-nowrap">
-                                  <div className="fw-semibold">{user.attemptedQuizzes.length}</div>
-                                  {/* <div className="ms-3">
+                      {allUsers && allUsers.length > 0 ? (
+                        allUsers.map((user, index) => (
+                          <CTableRow v-for="item in tableItems" key={index}>
+                            <CTableDataCell className="text-center">
+                              <CAvatar size="md" color="primary" textColor="white">
+                                {user.firstName.substring(0, 2)}
+                              </CAvatar>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <div>{user.firstName + user.lastName}</div>
+                              <div className="small text-body-secondary text-nowrap">
+                                {user.email}
+                              </div>
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <div className="d-flex justify-content-between text-nowrap">
+                                <div className="fw-semibold">{user.attemptedQuizzes.length}</div>
+                                {/* <div className="ms-3">
                            <small className="text-body-secondary">{item.usage.period}</small>
                          </div> */}
-                                </div>
-                                <CProgress
-                                  thin
-                                  // color="#4f4ea0"
-                                  color="primary"
-                                  value={user.attemptedQuizzes.length}
-                                />
-                              </CTableDataCell>
-                            </CTableRow>
-                          ))
-                        : 'No users registered yet'}
+                              </div>
+                              <CProgress
+                                thin
+                                // color="#4f4ea0"
+                                color="primary"
+                                value={user.attemptedQuizzes.length}
+                              />
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              <div className="d-flex justify-content-between text-nowrap">
+                                <div className="fw-semibold">{user.attemptedTests.length}</div>
+                                {/* <div className="ms-3">
+                           <small className="text-body-secondary">{item.usage.period}</small>
+                         </div> */}
+                              </div>
+                              <CProgress
+                                thin
+                                // color="#4f4ea0"
+                                color="primary"
+                                value={user.attemptedTests.length}
+                              />
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))
+                      ) : (
+                        <CTableRow>
+                          <CTableDataCell className="text-center" colSpan={4}>
+                            No users registered yet
+                          </CTableDataCell>
+                        </CTableRow>
+                      )}
                     </CTableBody>
                   </CTable>
                 </CCardBody>

@@ -23,6 +23,7 @@ const ReviewExamAccordion = ({
   video,
   isOpen,
   onClick,
+  isapproved,
 }) => {
   const contentHeight = useRef()
   const [contentHeightStyle, setContentHeightStyle] = useState({ height: '0px' })
@@ -45,6 +46,7 @@ const ReviewExamAccordion = ({
           }}
         ></p>
         <div className="flex justify-end items-center">
+          {isapproved && <span className="text-green-600 text-sm mr-1">Approved by Admin</span>}
           <RiArrowDropDownLine className={`arrow ${isOpen ? 'active' : ''}`} />
         </div>
       </button>
@@ -154,6 +156,7 @@ const ReviewExamAccordion = ({
             <span className="font-bold">(Choice F)</span> {op6Exp}
           </p>
         )}
+        <br />
       </div>
     </div>
   )

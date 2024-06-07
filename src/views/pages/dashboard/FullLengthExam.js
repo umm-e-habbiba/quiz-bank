@@ -33,6 +33,7 @@ import QuizHeader from 'src/components/quiz/QuizHeader'
 import { GoChevronLeft, GoChevronRight } from 'react-icons/go'
 import markIcon from '../../../assets/images/mark-icon.svg'
 import { step2score } from 'src/Step2ScoreConversion'
+import { RiCheckDoubleFill } from 'react-icons/ri'
 const FullLengthExam = () => {
   const navigate = useNavigate()
   let { id } = useParams()
@@ -81,6 +82,7 @@ const FullLengthExam = () => {
   const [numberOfSeconds, setNumberOfSeconds] = useState(0)
   const [isExamEnded, setIsExamEnded] = useState(false)
   const [step2Score, setStep2Score] = useState('')
+  const [spinner, setSpinner] = useState(false)
   const questionText = useRef()
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -137,6 +139,7 @@ const FullLengthExam = () => {
           setIsExamEnded(true)
         } else {
           console.log('get user exam', result)
+
           if (result.testAttempt?.testInfo) {
             setIsExamEnded(true)
           } else {
@@ -177,6 +180,9 @@ const FullLengthExam = () => {
       })
   }
   const getExam = () => {
+    if (examId) {
+      setSpinner(true)
+    }
     console.log('exam id', examId)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -206,6 +212,7 @@ const FullLengthExam = () => {
           setTotalExamQuest(result.data.totalQuestions)
           setShowExamList(false)
           setShowSections(true)
+          setSpinner(false)
           // setTotalQuest(result.data.questions?.length)
           // let allFilteredIds = result.data.questions.map(({ _id }) => _id)
           // const partialQuestionDetails = allFilteredIds.reduce((res, item) => {
@@ -716,47 +723,57 @@ const FullLengthExam = () => {
               {showExamList && (
                 <div className={`mx-40 mb-5 flex flex-col justify-center items-center  mt-10`}>
                   {allExam && allExam.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
-                      {allExam.map((row, id) => (
-                        <CRow
-                          key={id}
-                          className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
-                        >
-                          <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
-                            <span className="text-4xl font-semibold">{row.testName}</span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className="flex flex-row w-full gap-1 text-xl">
-                            <span>USMLE Step</span>
-                            <span>{row.usmleStep}</span>
-                          </CCol>
-                          <CCol
-                            xs={1}
-                            md={3}
-                            lg={3}
-                            className=" w-full gap-1 text-md whitespace-normal"
+                    <>
+                      <p className="text-4xl font-semibold">All Exams</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
+                        {allExam.map((row, id) => (
+                          <CRow
+                            key={id}
+                            className="dark:bg-gray-700 bg-gray-200 shadow-xl dark:text-white shadow-black rounded-lg mb-5 relative  flex flex-col gap-2 text-black p-3 "
                           >
-                            <span>{row.testDescription}</span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className=" font-medium">
-                            <span>{row.questions?.length} Questions </span>
-                          </CCol>
-                          <CCol xs={1} md={3} lg={3} className="w-full mt-2">
-                            <button
-                              className={`mx-auto px-5 py-2 w-full rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
-                              color="secondary"
-                              id={row._id}
-                              onClick={(e) => {
-                                setExamId(e.currentTarget.id)
-                              }}
+                            <CCol xs={1} md={3} lg={3} className=" w-full pt-2">
+                              <span className="text-3xl font-semibold">{row.testName}</span>
+                            </CCol>
+                            <CCol
+                              xs={1}
+                              md={3}
+                              lg={3}
+                              className="flex flex-row w-full gap-1 text-xl"
                             >
-                              Start Exam
-                            </button>
-                          </CCol>
-                        </CRow>
-                      ))}
-                    </div>
+                              <span>USMLE Step</span>
+                              <span>{row.usmleStep}</span>
+                            </CCol>
+                            <CCol
+                              xs={1}
+                              md={3}
+                              lg={3}
+                              className=" w-full gap-1 text-md whitespace-normal"
+                            >
+                              <span>{row.testDescription}</span>
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3} className=" font-medium">
+                              <span>{row.questions?.length} Questions </span>
+                            </CCol>
+                            <CCol xs={1} md={3} lg={3} className="w-full mt-2">
+                              <button
+                                className={`mx-auto px-5 py-2 w-full rounded-lg text-xl bg-[#6261CC] transition-all text-white hover:bg-[#464592]`}
+                                color="secondary"
+                                id={row._id}
+                                onClick={(e) => {
+                                  setExamId(e.currentTarget.id)
+                                }}
+                              >
+                                Start Exam
+                              </button>
+                            </CCol>
+                          </CRow>
+                        ))}
+                      </div>
+                    </>
                   ) : (
-                    ''
+                    <CAlert color="danger" className="middle-alert">
+                      No exams added yet
+                    </CAlert>
                   )}
                 </div>
               )}
@@ -1056,11 +1073,18 @@ const FullLengthExam = () => {
                   <ol className="olcards my-4">
                     {allSections.map((section, idx) => (
                       <li key={idx}>
-                        <div className={`olcards-content bg-[#e5e7eb]`}>
-                          <div className="olcards-title">{section.section}</div>
-                          <div className="olcards-text">
-                            Number of questions: {section.questions?.length}
+                        <div className={`olcards-content flex-row bg-[#e5e7eb]`}>
+                          <div>
+                            <div className="olcards-title">{section.section}</div>
+                            <div className="olcards-text">
+                              Number of questions: {section.questions?.length}
+                            </div>
                           </div>
+                          {idx + 1 < sectionValue.match(/(\d+)/)[0] && (
+                            <div className="absolute right-9 top-5 text-green-600 text-3xl">
+                              <RiCheckDoubleFill />
+                            </div>
+                          )}
                         </div>
                       </li>
                     ))}
@@ -1160,7 +1184,7 @@ const FullLengthExam = () => {
                         <>
                           <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
                           <span className="text-xl">
-                            You failed this exam your precentage is:{' '}
+                            You failed this exam your percentage is:{' '}
                             {percentage(quizScore, totalExamQuest)}%
                           </span>
                         </>

@@ -26,6 +26,7 @@ import {
   cilCloud,
   cilUserX,
   cilUserPlus,
+  cilInfo,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -41,6 +42,12 @@ const _admin_nav = [
     name: 'Manage Quiz',
     to: '/manage-quiz',
     icon: <CIcon icon={cilListRich} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Questions Statistics',
+    to: '/attempted-questions',
+    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
@@ -62,12 +69,6 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
-    name: 'Questions Statistics',
-    to: '/attempted-questions',
-    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
     name: 'Comments',
     to: '/comments',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
@@ -83,6 +84,12 @@ const _admin_nav = [
     name: 'Questions By Users',
     to: '/manage-user-questions',
     icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Change About Text',
+    to: '/change-about',
+    icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
   },
 ]
 

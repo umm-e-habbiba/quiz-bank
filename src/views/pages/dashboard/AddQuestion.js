@@ -142,7 +142,7 @@ const AddQuestion = () => {
           setOp5Exp('')
           setOp6Exp('')
           setSuccess(true)
-          setSuccessMsg('Question added successfully')
+          setSuccessMsg('Thank you! Your question is currently under review!')
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
@@ -177,6 +177,17 @@ const AddQuestion = () => {
                     Settings
                   </button> */}
                 </div>
+                <hr className="mt-6 border-b-1 border-slate-600" />
+                <p className=" dark:text-slate-200 text-slate-600 text-base mt-3 mb-6">
+                  Feel free to add your own question to the ZAP-70 Q-Bank! You may want to use AI to
+                  polish up the language. Please recognize that you will be greatly helping us reach
+                  our project&apos;s completion faster by contributing, and you will definitely be
+                  given credit for your addition(s)!{' '}
+                  <span className="text-sm">
+                    (Note: all content will be reviewed by AJ before being published.)
+                  </span>
+                </p>
+                <hr className="mt-6 border-b-1 border-slate-600" />
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <CForm onSubmit={handleSubmit(addQuestion)}>

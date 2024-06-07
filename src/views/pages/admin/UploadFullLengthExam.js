@@ -186,7 +186,7 @@ const UploadFullLengthExam = () => {
                   { label: 'Select USMLE Step', value: '' },
                   { label: 'Step 1', value: '1' },
                   { label: 'Step 2', value: '2' },
-                  { label: 'Step 3', value: '3' },
+                  // { label: 'Step 3', value: '3' },
                 ]}
                 {...register('usmleStep', { required: true })}
                 feedback="Please select USMLE Step"

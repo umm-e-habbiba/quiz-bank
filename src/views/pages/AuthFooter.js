@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const AuthFooter = () => {
   return (
     <footer className="border-t-1 border-solid p-6  border-black/5 text-center text-surface/75 lg:text-left overflow-hidden h-[70px] flex justify-between items-center">
-      <div></div>
+      <div className="hidden lg:block"></div>
       <div>
         <span>
           © 2024{' '}
