@@ -36,6 +36,7 @@ import AdminLayout from 'src/layout/AdminLayout'
 import { AppHeader, AppSidebar } from 'src/components'
 import { step2score } from 'src/Step2ScoreConversion'
 import '../../../../src/scss/certificate.css'
+
 const PrevExams = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
@@ -57,6 +58,7 @@ const PrevExams = () => {
   const [certificateMarks, setCertificateMarks] = useState('')
   const [certificateExam, setCertificateExam] = useState('')
   const [certificateDate, setCertificateDate] = useState('')
+
   useEffect(() => {
     getAllExams()
     const getToken = localStorage.getItem('token')
@@ -82,7 +84,6 @@ const PrevExams = () => {
     fetch(API_URL + 'user-tests/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        // console.log(result)
         if (result.success) {
           setAllExams(result.tests)
           setUsername(result.firstName + ' ' + result.lastName)
@@ -99,7 +100,7 @@ const PrevExams = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-    // console.log(examId)
+
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -111,7 +112,6 @@ const PrevExams = () => {
     fetch(API_URL + 'delete-users-test/' + examId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)
@@ -130,9 +130,27 @@ const PrevExams = () => {
       })
       .catch((error) => console.log('error', error))
   }
+
   const percentage = (partialValue, totalValue) => {
     return Math.round((100 * partialValue) / totalValue)
   }
+
+  // Function to sort exams with the "Continue" button on top
+  const sortExamsWithContinueButtonOnTop = (exams) => {
+    const examsWithContinueButton = []
+    const examsWithoutContinueButton = []
+
+    exams.forEach((exam) => {
+      if (!exam.testInfo) {
+        examsWithContinueButton.push(exam)
+      } else {
+        examsWithoutContinueButton.push(exam)
+      }
+    })
+
+    return examsWithContinueButton.concat(examsWithoutContinueButton)
+  }
+
   return (
     <div>
       <AppSidebar />
@@ -142,17 +160,6 @@ const PrevExams = () => {
           <CCard className="mb-4 mx-4">
             <CCardHeader className="flex justify-between items-center">
               <strong>Previous Exams</strong>
-              {/* <CButton
-            color="success"
-            className="text-white"
-            onClick={() => {
-              setAddModal(true)
-              setIsLoading(false)
-              reset({})
-            }}
-          >
-            Add Question
-          </CButton> */}
             </CCardHeader>
             <CCardBody>
               {loader ? (
@@ -166,179 +173,112 @@ const PrevExams = () => {
                       <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
                       <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Result</CTableHeaderCell>
-                      {/* <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
-                      <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Score</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
-                      {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {allExams && allExams.length > 0 ? (
-                      allExams
-                        .sort((a, b) => {
-                          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                        })
-                        .map((q, idx) => (
-                          <CTableRow key={idx}>
-                            <CTableDataCell>{q.test?.testName}</CTableDataCell>
-                            <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
-                            <CTableDataCell>
-                              {q.testInfo ? (
-                                q.test?.usmleStep == '1' ? (
-                                  percentage(q.obtainedScore, q.totalScore) >= 70 ? (
-                                    <span className="text-success font-bold">Pass</span>
-                                  ) : (
-                                    <span className="text-danger font-bold">Fail</span>
-                                  )
-                                ) : q.test?.usmleStep == '2' ? (
-                                  q.obtainedScore <= 191 ? (
-                                    <span className="text-danger font-bold">Fail</span>
-                                  ) : (
-                                    <span className="text-success font-bold">Pass</span>
-                                  )
-                                ) : (
-                                  ''
-                                )
+                    {sortExamsWithContinueButtonOnTop(allExams).map((q, idx) => (
+                      <CTableRow key={idx}>
+                        <CTableDataCell>{q.test?.testName}</CTableDataCell>
+                        <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
+                        <CTableDataCell>
+                          {q.testInfo ? (
+                            q.test?.usmleStep == '1' ? (
+                              percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                <span className="text-success font-bold">Pass</span>
                               ) : (
-                                'Pending'
-                              )}
-                              {/* {q.testInfo
-                                ? q.test?.usmleStep == '1' &&
-                                  (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
-                                    <span className="text-success font-bold">Pass</span>
-                                  ) : (
-                                    <span className="text-danger font-bold">Fail</span>
-                                  ))
-                                : 'Pending'}
-                              {q.testInfo ? (
-                                q.test?.usmleStep == '2' && q.obtainedScore <= 191 ? (
-                                  <span className="text-danger font-bold">Fail</span>
-                                ) : (
-                                  <span className="text-success font-bold">Pass</span>
-                                )
+                                <span className="text-danger font-bold">Fail</span>
+                              )
+                            ) : q.test?.usmleStep == '2' ? (
+                              q.obtainedScore <= 191 ? (
+                                <span className="text-danger font-bold">Fail</span>
                               ) : (
-                                'Pending'
-                              )} */}
-                            </CTableDataCell>
-                            {/* <CTableDataCell>
-                              {q.testInfo ? q.obtainedScore : 'Pending'}
-                            </CTableDataCell>
-                            <CTableDataCell>
-                              {q.testInfo ? q.totalScore - q.obtainedScore : 'Pending'}
-                            </CTableDataCell>
-
-                            <CTableDataCell>{q.totalScore}</CTableDataCell> */}
-                            <CTableDataCell>
-                              {q.testInfo
-                                ? q.test?.usmleStep == '1'
-                                  ? `${percentage(q.obtainedScore, q.totalScore)}%`
-                                  : q.test?.usmleStep == '2'
-                                    ? q.obtainedScore
-                                    : ''
-                                : 'Pending'}
-                            </CTableDataCell>
-
-                            <CTableDataCell>
-                              {moment(q.createdAt).format('MMMM Do YYYY')}
-                            </CTableDataCell>
-                            <CTableDataCell className="flex justify-start items-center" scope="row">
-                              {q.testInfo ? (
-                                <>
-                                  <Link to={`/review-exam/${q.test?._id}`}>
+                                <span className="text-success font-bold">Pass</span>
+                              )
+                            ) : (
+                              ''
+                            )
+                          ) : (
+                            'Pending'
+                          )}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {q.testInfo
+                            ? q.test?.usmleStep == '1'
+                              ? `${percentage(q.obtainedScore, q.totalScore)}%`
+                              : q.test?.usmleStep == '2'
+                                ? q.obtainedScore
+                                : ''
+                            : 'Pending'}
+                        </CTableDataCell>
+                        <CTableDataCell>
+                          {moment(q.createdAt).format('MMMM Do YYYY')}
+                        </CTableDataCell>
+                        <CTableDataCell className="flex justify-start items-center" scope="row">
+                          {q.testInfo ? (
+                            <>
+                              <Link to={`/review-exam/${q.test?._id}`}>
+                                <CButton color="success" className="text-white">
+                                  Review
+                                </CButton>
+                              </Link>
+                              <Link to={`/full-length-exam/${q.test?._id}`}>
+                                <CButton color="info" className="text-white ml-2">
+                                  Retake
+                                </CButton>
+                              </Link>
+                              {q.test?.usmleStep == '1'
+                                ? percentage(q.obtainedScore, q.totalScore) >= 70 && (
                                     <CButton
-                                      color="success"
-                                      className="text-white"
-                                      // id={q._id}
-                                    >
-                                      Review
-                                    </CButton>
-                                  </Link>
-                                  <Link to={`/full-length-exam/${q.test?._id}`}>
-                                    <CButton
-                                      color="info"
+                                      color="primary"
                                       className="text-white ml-2"
-                                      // id={q._id}
-                                    >
-                                      Retake
-                                    </CButton>
-                                  </Link>
-                                  {q.test?.usmleStep == '1'
-                                    ? percentage(q.obtainedScore, q.totalScore) >= 70 && (
-                                        <CButton
-                                          color="primary"
-                                          className="text-white ml-2"
-                                          onClick={() => {
-                                            setShowCertificate(true)
-                                            setCertificateStep(q.test?.usmleStep)
-                                            setCertificateMarks(
-                                              percentage(q.obtainedScore, q.totalScore),
-                                            )
-                                            setCertificateExam(q.test?.testName)
-                                            setCertificateDate(
-                                              moment(q.createdAt).format('MMMM Do YYYY'),
-                                            )
-                                          }}
-                                        >
-                                          Certificate
-                                        </CButton>
-                                      )
-                                    : q.test?.usmleStep == '2'
-                                      ? q.obtainedScore > 192 && (
-                                          <CButton
-                                            color="primary"
-                                            className="text-white ml-2"
-                                            onClick={() => {
-                                              setShowCertificate(true)
-                                              setCertificateStep(q.test?.usmleStep)
-                                              setCertificateMarks(q.obtainedScore)
-                                              setCertificateExam(q.test?.testName)
-                                              setCertificateDate(
-                                                moment(q.createdAt).format('MMMM Do YYYY'),
-                                              )
-                                            }}
-                                          >
-                                            Certificate
-                                          </CButton>
+                                      onClick={() => {
+                                        setShowCertificate(true)
+                                        setCertificateStep(q.test?.usmleStep)
+                                        setCertificateMarks(
+                                          percentage(q.obtainedScore, q.totalScore),
                                         )
-                                      : ''}
-                                </>
-                              ) : (
-                                <Link to={`/full-length-exam/${q.test?._id}`}>
-                                  <CButton
-                                    color="warning"
-                                    className="text-white"
-                                    // id={q._id}
-                                  >
-                                    Continue
-                                  </CButton>
-                                </Link>
-                              )}
-                              {/*
-                             <CButton
-                                color="danger"
-                                className="text-white ml-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDeleteModal(true)
-                                  setExamId(e.currentTarget.id)
-                                }}
-                              >
-                                <CIcon icon={cilTrash} />
+                                        setCertificateExam(q.test?.testName)
+                                        setCertificateDate(
+                                          moment(q.createdAt).format('MMMM Do YYYY'),
+                                        )
+                                      }}
+                                    >
+                                      Certificate
+                                    </CButton>
+                                  )
+                                : q.test?.usmleStep == '2'
+                                  ? q.obtainedScore > 192 && (
+                                      <CButton
+                                        color="primary"
+                                        className="text-white ml-2"
+                                        onClick={() => {
+                                          setShowCertificate(true)
+                                          setCertificateStep(q.test?.usmleStep)
+                                          setCertificateMarks(q.obtainedScore)
+                                          setCertificateExam(q.test?.testName)
+                                          setCertificateDate(
+                                            moment(q.createdAt).format('MMMM Do YYYY'),
+                                          )
+                                        }}
+                                      >
+                                        Certificate
+                                      </CButton>
+                                    )
+                                  : ''}
+                            </>
+                          ) : (
+                            <Link to={`/full-length-exam/${q.test?._id}`}>
+                              <CButton color="warning" className="text-white">
+                                Continue
                               </CButton>
-                             */}
-                            </CTableDataCell>
-                          </CTableRow>
-                        ))
-                    ) : (
-                      <CTableRow>
-                        <CTableDataCell className="text-center" colSpan={8}>
-                          No Exams attempted yet
+                            </Link>
+                          )}
                         </CTableDataCell>
                       </CTableRow>
-                    )}
+                    ))}
                   </CTableBody>
                 </CTable>
               )}
