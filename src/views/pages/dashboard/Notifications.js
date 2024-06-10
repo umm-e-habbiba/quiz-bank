@@ -85,7 +85,7 @@ const Notifications = () => {
         setLoader(false)
       })
   }
-  const deleteNotification = () => {
+  const deleteNotification = (id) => {
     setSpinner(true)
     setError(false)
     setErrorMsg('')
@@ -97,7 +97,7 @@ const Notifications = () => {
       headers: myHeaders,
     }
 
-    fetch(API_URL + 'users/' + userID + '/' + 'notifications/' + notificationId, requestOptions)
+    fetch(API_URL + 'users/' + userID + '/' + 'notifications/' + id, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
@@ -114,6 +114,10 @@ const Notifications = () => {
         } else {
           setError(true)
           setErrorMsg(result.message)
+          setTimeout(() => {
+            setError(false)
+            setErrorMsg('')
+          }, 3000)
         }
       })
       .catch((error) => console.log('error', error))
@@ -150,13 +154,13 @@ const Notifications = () => {
                           className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
                           //   id={notification._id}
                           onClick={(e) => {
-                            setNotificationId(notification._id)
-                            setDeleteModal(true)
-                            setError(false)
-                            setErrorMsg('')
+                            deleteNotification(notification._id)
+                            // setDeleteModal(true)
+                            // setError(false)
+                            // setErrorMsg('')
                           }}
                         >
-                          <RiCloseLine />
+                          <RiCloseLine className="text-black" />
                         </button>
                         <div className="flex justify-between items-center p-4">
                           <div className="flex w-full">
@@ -167,15 +171,15 @@ const Notifications = () => {
                               <div className="bg-[#5856D6] w-8 h-8 rounded-full flex lg:hidden justify-center items-center text-white">
                                 AJ
                               </div>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-gray-900 dark:text-white">
                                 {notification.notificationTitle}
                               </p>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-gray-500 dark:text-white">
                                 {notification.notificationBody}
                               </p>
                             </div>
                           </div>
-                          <p className="text-sm text-gray-500 ml-3">
+                          <p className="text-sm text-gray-500 ml-3 dark:text-gray-200">
                             {moment(notification.createdAt).fromNow()}
                           </p>
                         </div>
@@ -192,7 +196,7 @@ const Notifications = () => {
         </div>
       </div>
       {/* delete modal */}
-      <CModal
+      {/* <CModal
         alignment="center"
         visible={deleteModal}
         onClose={() => setDeleteModal(false)}
@@ -214,11 +218,16 @@ const Notifications = () => {
             {spinner ? <CSpinner color="light" size="sm" /> : 'Yes'}
           </CButton>
         </CModalFooter>
-      </CModal>
+      </CModal> */}
       {/* success alert */}
       {success && (
         <CAlert color="success" className="success-alert">
           {successMsg}
+        </CAlert>
+      )}
+      {error && (
+        <CAlert color="success" className="success-alert">
+          {errorMsg}
         </CAlert>
       )}
     </div>
