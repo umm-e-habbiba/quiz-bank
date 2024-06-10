@@ -20,6 +20,9 @@ import LatestExam from './views/pages/dashboard/LatestExam'
 import AddQuestion from './views/pages/dashboard/AddQuestion'
 import ViewQuestions from './views/pages/dashboard/ViewQuestions'
 import ChangeAbout from './views/pages/admin/ChangeAbout'
+import Notifications from './views/pages/dashboard/Notifications'
+import AddNotification from './views/pages/admin/AddNotification'
+import ViewNotification from './views/pages/admin/ViewNotification'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -48,6 +51,9 @@ const routes = [
   { path: '/add-question', name: 'Add Question', element: AddQuestion },
   { path: '/view-questions', name: 'View All', element: ViewQuestions },
   { path: '/manage-user-questions', name: 'Questions By Users', element: ManageUserQuestions },
+  { path: '/manage-notifications', name: 'Manage Notifications', element: AddNotification },
+  { path: '/view-notifications', name: 'View Notifications', element: ViewNotification },
+  { path: '/notifications', name: 'Notifications', element: Notifications },
   {
     path: '/upload-full-length-exam',
     name: 'Upload Full Length Exam',
