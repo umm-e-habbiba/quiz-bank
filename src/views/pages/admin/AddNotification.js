@@ -243,7 +243,7 @@ const AddNotification = () => {
                           setErrorMsg('')
                         }}
                       >
-                        <RiCloseLine />
+                        <RiCloseLine className="text-black" />
                       </button>
 
                       <div className="flex justify-between items-center p-4">
@@ -252,13 +252,15 @@ const AddNotification = () => {
                             AJ
                           </CAvatar>
                           <div className="ml-3  overflow-hidden">
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-gray-900 dark:text-white">
                               {notification.notificationTitle}
                             </p>
-                            <p className="text-sm text-gray-500">{notification.notificationBody}</p>
+                            <p className="text-sm text-gray-500 dark:text-white">
+                              {notification.notificationBody}
+                            </p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500 ml-3">
+                        <p className="text-sm text-gray-500 ml-3 dark:text-white">
                           {moment(notification.createdAt).fromNow()}
                         </p>
                       </div>
