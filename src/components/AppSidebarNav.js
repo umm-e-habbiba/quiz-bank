@@ -1,13 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
-
+import { Link, useNavigate } from 'react-router-dom'
 import { CBadge, CNavLink, CSidebarNav } from '@coreui/react'
-
+import { API_URL } from 'src/store'
 export const AppSidebarNav = ({ items }) => {
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
+  const [notifications, setNotifications] = useState([])
+  // useEffect(() => {
+  //   const getToken = localStorage.getItem('token')
+  //   if (getToken) {
+  //     getMyNotifications()
+  //     setToken(getToken)
+  //     const getUserId = localStorage.getItem('userId')
+  //     setUserID(getUserId)
+  //   }
+  // }, [])
+
+  // const getMyNotifications = () => {
+  //   const myHeaders = new Headers()
+  //   myHeaders.append('Authorization', token)
+  //   const requestOptions = {
+  //     method: 'GET',
+  //     headers: myHeaders,
+  //     redirect: 'follow',
+  //   }
+  //   fetch(API_URL + 'users-notifications/' + userID, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result)
+  //       if (result.success) {
+  //         setNotifications(result.notifications.filter((n) => n.isViewed == false))
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error(error)
+  //     })
+  // }
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>

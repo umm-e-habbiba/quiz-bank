@@ -31,6 +31,8 @@ import AddQuestion from './views/pages/dashboard/AddQuestion'
 import ViewQuestions from './views/pages/dashboard/ViewQuestions'
 import ChangeAbout from './views/pages/admin/ChangeAbout'
 import Notifications from './views/pages/dashboard/Notifications'
+import AddNotification from './views/pages/admin/AddNotification'
+import ViewNotification from './views/pages/admin/ViewNotification'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -96,6 +98,11 @@ const App = () => {
             element={<FullLengthExam />}
           />
           <Route path="/manage-exam" name="Manage Exam" element={<ManageExams />} />
+          <Route
+            path="/manage-notifications"
+            name="Manage Notifications"
+            element={<AddNotification />}
+          />
           <Route path="/upload-questions" name="Upload Questions" element={<UploadQuestions />} />
           <Route path="/previous-exams" name="Previous Exams" element={<PrevExams />} />
           <Route path="/latest-exam" name="Latest Exam" element={<LatestExam />} />

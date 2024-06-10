@@ -87,9 +87,15 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
-    name: 'Change About Text',
+    name: 'About Us',
     to: '/change-about',
     icon: <CIcon icon={cilInfo} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Notifications',
+    to: '/manage-notifications',
+    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
   },
 ]
 

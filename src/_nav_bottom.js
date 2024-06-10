@@ -1,9 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CIcon from '@coreui/icons-react'
 import { cilInfo, cilStarHalf, cilMoney, cilBellExclamation } from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
-
 const _nav_bottom = [
+  {
+    component: CNavItem,
+    name: 'Notifications',
+    to: '/notifications',
+    icon: <CIcon icon={cilBellExclamation} customClassName="nav-icon" />,
+    // badge: {
+    //   color: 'primary',
+    //   text: 'New',
+    // },
+  },
   {
     component: CNavItem,
     name: 'About Us',
@@ -21,16 +30,6 @@ const _nav_bottom = [
     name: 'Feedback',
     to: '/feedback',
     icon: <CIcon icon={cilStarHalf} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Notifications',
-    to: '/notifications',
-    icon: <CIcon icon={cilBellExclamation} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'new',
-    },
   },
 ]
 

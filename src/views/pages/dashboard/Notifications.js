@@ -36,12 +36,20 @@ import {
   CAvatar,
 } from '@coreui/react'
 import { API_URL } from 'src/store'
+import { RiCloseLine } from 'react-icons/ri'
 const Notifications = () => {
   const navigate = useNavigate()
   const [loader, setLoader] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
+  const [deleteModal, setDeleteModal] = useState(false)
+  const [error, setError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [successMsg, setSuccessMsg] = useState('')
   const [allNotifications, setAllNotifications] = useState([])
+  const [notificationId, setNotificationId] = useState()
+  const [spinner, setSpinner] = useState(false)
   useEffect(() => {
     getMyNotifications()
     const getToken = localStorage.getItem('token')
@@ -55,26 +63,60 @@ const Notifications = () => {
   }, [])
 
   const getMyNotifications = () => {
-    // setLoader(true)
-    // const myHeaders = new Headers()
-    // myHeaders.append('Authorization', token)
-    // const requestOptions = {
-    //   method: 'GET',
-    //   headers: myHeaders,
-    //   redirect: 'follow',
-    // }
-    // fetch(API_URL + 'feedbacks', requestOptions)
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     if (result.data) {
-    //       setAllNotifications(result.data)
-    //     }
-    //     setLoader(false)
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //     setLoader(false)
-    //   })
+    setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'users-notifications/' + userID, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setAllNotifications(result.notifications)
+        }
+        setLoader(false)
+      })
+      .catch((error) => {
+        console.error(error)
+        setLoader(false)
+      })
+  }
+  const deleteNotification = () => {
+    setSpinner(true)
+    setError(false)
+    setErrorMsg('')
+    var myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    var requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+    }
+
+    fetch(API_URL + 'users/' + userID + '/' + 'notifications/' + notificationId, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setSpinner(false)
+        if (result.success) {
+          setDeleteModal(false)
+          getMyNotifications()
+          setSuccess(true)
+          setSuccessMsg('Notification deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => console.log('error', error))
   }
 
   return (
@@ -91,119 +133,94 @@ const Notifications = () => {
             <>
               <p className="text-3xl mb-3">Notifications</p>
               <div className="flex flex-col gap-3">
-                <div className="relative border border-gray-200 rounded-lg shadow-lg">
-                  {/* <button
-                    onClick="return this.parentNode.remove()"
-                    className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-3 h-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button> */}
-
-                  <div className="flex justify-between items-center p-4">
-                    <div className="flex">
-                      <CAvatar size="md" color="primary" textColor="white">
-                        {/* {user.firstName.substring(0, 2)} */}
-                        JO
-                      </CAvatar>
-                      <div className="ml-3 overflow-hidden">
-                        <p className="font-medium text-gray-900">John Doe</p>
-                        <p className="max-w-xs text-sm text-gray-500 truncate">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet,
-                          laborum?
-                        </p>
+                {allNotifications && allNotifications.length > 0 ? (
+                  allNotifications
+                    .sort((a, b) => {
+                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                    })
+                    .map((notification, index) => (
+                      <div
+                        key={index}
+                        className="relative border border-gray-200 rounded-lg shadow-lg"
+                      >
+                        {/* <span className="absolute flex justify-center items-center text-white w-10 h-4 me-3 bg-teal-500 rounded-full -top-1 -left-1 text-xs">
+                          New
+                        </span> */}
+                        <button
+                          className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
+                          //   id={notification._id}
+                          onClick={(e) => {
+                            setNotificationId(notification._id)
+                            setDeleteModal(true)
+                            setError(false)
+                            setErrorMsg('')
+                          }}
+                        >
+                          <RiCloseLine />
+                        </button>
+                        <div className="flex justify-between items-center p-4">
+                          <div className="flex w-full">
+                            <div className="bg-[#5856D6] w-8 h-8 rounded-full hidden lg:flex justify-center items-center text-white">
+                              AJ
+                            </div>
+                            <div className="ml-3 overflow-hidden">
+                              <div className="bg-[#5856D6] w-8 h-8 rounded-full flex lg:hidden justify-center items-center text-white">
+                                AJ
+                              </div>
+                              <p className="font-medium text-gray-900">
+                                {notification.notificationTitle}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {notification.notificationBody}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-500 ml-3">
+                            {moment(notification.createdAt).fromNow()}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <p className="max-w-xs text-sm text-gray-500 truncate">2 hours ago</p>
-                  </div>
-                </div>
-                <div className="relative border border-gray-200 rounded-lg shadow-lg">
-                  {/* <button
-                    onClick="return this.parentNode.remove()"
-                    className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-3 h-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button> */}
-
-                  <div className="flex justify-between items-center p-4">
-                    <div className="flex">
-                      <CAvatar size="md" color="primary" textColor="white">
-                        {/* {user.firstName.substring(0, 2)} */}
-                        MI
-                      </CAvatar>
-                      <div className="ml-3 overflow-hidden">
-                        <p className="font-medium text-gray-900">Mike Doe</p>
-                        <p className="max-w-xs text-sm text-gray-500 truncate">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet,
-                          laborum?
-                        </p>
-                      </div>
-                    </div>
-                    <p className="max-w-xs text-sm text-gray-500 truncate">Yesterday</p>
-                  </div>
-                </div>
-                <div className="relative border border-gray-200 rounded-lg shadow-lg">
-                  {/* <button
-                    onClick="return this.parentNode.remove()"
-                    className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-3 h-3"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </button> */}
-
-                  <div className="flex justify-between items-center p-4">
-                    <div className="flex">
-                      <CAvatar size="md" color="primary" textColor="white">
-                        {/* {user.firstName.substring(0, 2)} */}
-                        JA
-                      </CAvatar>
-                      <div className="ml-3 overflow-hidden">
-                        <p className="font-medium text-gray-900">John Doe</p>
-                        <p className="max-w-xs text-sm text-gray-500 truncate">
-                          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet,
-                          laborum?
-                        </p>
-                      </div>
-                    </div>
-                    <p className="max-w-xs text-sm text-gray-500 truncate">1 Month ago</p>
-                  </div>
-                </div>
+                    ))
+                ) : (
+                  <CAlert color="danger" className="middle-alert">
+                    No notifications found
+                  </CAlert>
+                )}
               </div>
             </>
           )}
         </div>
       </div>
+      {/* delete modal */}
+      <CModal
+        alignment="center"
+        visible={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        aria-labelledby="VerticallyCenteredExample"
+        backdrop="static"
+      >
+        <CModalHeader>
+          <CModalTitle id="VerticallyCenteredExample">Delete Notification</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          Are you sure to delete this notification?
+          {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setDeleteModal(false)}>
+            No
+          </CButton>
+          <CButton color="primary" onClick={deleteNotification} disabled={spinner ? true : false}>
+            {spinner ? <CSpinner color="light" size="sm" /> : 'Yes'}
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      {/* success alert */}
+      {success && (
+        <CAlert color="success" className="success-alert">
+          {successMsg}
+        </CAlert>
+      )}
     </div>
   )
 }
