@@ -11,36 +11,52 @@ export const AppSidebarNav = ({ items }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [notifications, setNotifications] = useState([])
-  // useEffect(() => {
-  //   const getToken = localStorage.getItem('token')
-  //   if (getToken) {
-  //     getMyNotifications()
-  //     setToken(getToken)
-  //     const getUserId = localStorage.getItem('userId')
-  //     setUserID(getUserId)
-  //   }
-  // }, [])
+  useEffect(() => {
+    const getToken = localStorage.getItem('token')
+    if (getToken) {
+      getMyNotifications()
+      setToken(getToken)
+      const getUserId = localStorage.getItem('userId')
+      setUserID(getUserId)
+    }
+    // setTimeout(() => {
+    //   updateNotifications()
+    // }, 3000)
+  }, [])
+  useEffect(() => {
+    console.log('')
+  }, [notifications])
 
-  // const getMyNotifications = () => {
-  //   const myHeaders = new Headers()
-  //   myHeaders.append('Authorization', token)
-  //   const requestOptions = {
-  //     method: 'GET',
-  //     headers: myHeaders,
-  //     redirect: 'follow',
-  //   }
-  //   fetch(API_URL + 'users-notifications/' + userID, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result)
-  //       if (result.success) {
-  //         setNotifications(result.notifications.filter((n) => n.isViewed == false))
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error(error)
-  //     })
-  // }
+  const getMyNotifications = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'users-notifications/' + userID, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          if (result.notifications.filter((n) => n.isViewed == false).length > 0) {
+            setNotifications(result.notifications.filter((n) => n.isViewed == false))
+          }
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+  window.addEventListener('storage', () => {
+    console.log('Change to local storage!')
+    if (window.localStorage.getItem('newNotifications')) {
+      setNotifications([])
+      window.localStorage.setItem('newNotifications', false)
+    }
+    // ...
+  })
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>
@@ -52,9 +68,9 @@ export const AppSidebarNav = ({ items }) => {
               </span>
             )}
         {name && name}
-        {badge && (
+        {badge && notifications.length > 0 && (
           <CBadge color={badge.color} className="ms-auto">
-            {badge.text}
+            {notifications.length}
           </CBadge>
         )}
       </>

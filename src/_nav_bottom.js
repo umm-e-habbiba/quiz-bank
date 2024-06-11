@@ -8,10 +8,9 @@ const _nav_bottom = [
     name: 'Notifications',
     to: '/notifications',
     icon: <CIcon icon={cilBellExclamation} customClassName="nav-icon" />,
-    // badge: {
-    //   color: 'primary',
-    //   text: 'New',
-    // },
+    badge: {
+      color: 'primary',
+    },
   },
   {
     component: CNavItem,
