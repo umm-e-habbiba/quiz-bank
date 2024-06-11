@@ -1126,10 +1126,12 @@ const FullLengthExam = () => {
                   onClose={() => setStartScreen(false)}
                   aria-labelledby="VerticallyCenteredExample"
                   backdrop="static"
+                  size="lg"
                 >
                   <CModalBody className="p-6 flex flex-col justify-center items-center">
-                    <span className="goodluck text-5xl mt-9">Good Luck </span>
-                    <span className="text-xl">for your exam</span>
+                    {/* <span className="goodluck text-5xl mt-9">Good luck on your exam! </span> */}
+                    <span className="text-5xl mt-9 mb-3">Good luck on your exam! </span>
+                    {/* <span className="text-xl">on your exam</span> */}
                     <p className="text-base">By AJmonics</p>
                   </CModalBody>
                 </CModal>

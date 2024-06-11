@@ -63,6 +63,9 @@ import WidgetsDropdown from 'src/views/widgets/WidgetsDropdown'
 import MainChart from 'src/views/dashboard/MainChart'
 const Admin = () => {
   const [allUsers, setAllUsers] = useState([])
+  const [totalQuestions, setTotalQuestions] = useState('')
+  const [totalExams, setTotalExams] = useState('')
+  const [totalUserQuestions, setTotalUserQuestions] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const widgetChartRef1 = useRef(null)
   const widgetChartRef2 = useRef(null)
@@ -103,13 +106,16 @@ const Admin = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'users', requestOptions)
+    fetch(API_URL + 'stats-counts', requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
         setLoader(false)
-        if (result.data) {
-          setAllUsers(result.data)
+        if (result.success) {
+          setAllUsers(result.users)
+          setTotalQuestions(result.totalMcqs)
+          setTotalUserQuestions(result.totalUserMcqs)
+          setTotalExams(result.totalTests)
         }
       })
       .catch((error) => {
@@ -127,11 +133,11 @@ const Admin = () => {
       ) : (
         <div className="mx-4">
           <CRow className="mb-4" xs={{ gutter: 4 }}>
-            <CCol sm={6} xl={4} xxl={3}>
+            <CCol sm={6} xl={3} xxl={3}>
               <CWidgetStatsA
                 color="primary"
                 value={<>{allUsers.length}</>}
-                title="Users"
+                title="Total Users"
                 chart={
                   <CChartLine
                     ref={widgetChartRef1}
@@ -190,6 +196,201 @@ const Admin = () => {
                           radius: 4,
                           hitRadius: 10,
                           hoverRadius: 4,
+                        },
+                      },
+                    }}
+                  />
+                }
+              />
+            </CCol>
+            <CCol sm={6} xl={3} xxl={3}>
+              <CWidgetStatsA
+                color="warning"
+                value={<>{totalQuestions ? totalQuestions : 0}</>}
+                title="Questions Added"
+                chart={
+                  <CChartLine
+                    className="mt-3"
+                    style={{ height: '70px' }}
+                    data={{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(255,255,255,.2)',
+                          borderColor: 'rgba(255,255,255,.55)',
+                          data: [78, 81, 80, 45, 34, 12, 40],
+                          fill: true,
+                        },
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                      },
+                      maintainAspectRatio: false,
+                      scales: {
+                        x: {
+                          display: false,
+                        },
+                        y: {
+                          display: false,
+                        },
+                      },
+                      elements: {
+                        line: {
+                          borderWidth: 2,
+                          tension: 0.4,
+                        },
+                        point: {
+                          radius: 0,
+                          hitRadius: 10,
+                          hoverRadius: 4,
+                        },
+                      },
+                    }}
+                  />
+                }
+              />
+            </CCol>
+            <CCol sm={6} xl={3} xxl={3}>
+              <CWidgetStatsA
+                color="info"
+                value={<>{totalExams ? totalExams : 0}</>}
+                title="Exams Added"
+                chart={
+                  <CChartLine
+                    ref={widgetChartRef2}
+                    className="mt-3 mx-3"
+                    style={{ height: '70px' }}
+                    data={{
+                      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'transparent',
+                          borderColor: 'rgba(255,255,255,.55)',
+                          pointBackgroundColor: getStyle('--cui-info'),
+                          data: [1, 18, 9, 17, 34, 22, 11],
+                        },
+                      ],
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                      },
+                      maintainAspectRatio: false,
+                      scales: {
+                        x: {
+                          border: {
+                            display: false,
+                          },
+                          grid: {
+                            display: false,
+                            drawBorder: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
+                        },
+                        y: {
+                          min: -9,
+                          max: 39,
+                          display: false,
+                          grid: {
+                            display: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
+                        },
+                      },
+                      elements: {
+                        line: {
+                          borderWidth: 1,
+                        },
+                        point: {
+                          radius: 4,
+                          hitRadius: 10,
+                          hoverRadius: 4,
+                        },
+                      },
+                    }}
+                  />
+                }
+              />
+            </CCol>
+            <CCol sm={6} xl={3} xxl={3}>
+              <CWidgetStatsA
+                color="danger"
+                value={<>{totalUserQuestions ? totalUserQuestions : 0}</>}
+                title="User's Questions"
+                chart={
+                  <CChartBar
+                    className="mt-3 mx-3"
+                    style={{ height: '70px' }}
+                    data={{
+                      labels: [
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                        'May',
+                        'June',
+                        'July',
+                        'August',
+                        'September',
+                        'October',
+                        'November',
+                        'December',
+                        'January',
+                        'February',
+                        'March',
+                        'April',
+                      ],
+                      datasets: [
+                        {
+                          label: 'My First dataset',
+                          backgroundColor: 'rgba(255,255,255,.2)',
+                          borderColor: 'rgba(255,255,255,.55)',
+                          data: [78, 81, 80, 45, 34, 12, 40, 85, 65, 23, 12, 98, 34, 84, 67, 82],
+                          barPercentage: 0.6,
+                        },
+                      ],
+                    }}
+                    options={{
+                      maintainAspectRatio: false,
+                      plugins: {
+                        legend: {
+                          display: false,
+                        },
+                      },
+                      scales: {
+                        x: {
+                          grid: {
+                            display: false,
+                            drawTicks: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
+                        },
+                        y: {
+                          border: {
+                            display: false,
+                          },
+                          grid: {
+                            display: false,
+                            drawBorder: false,
+                            drawTicks: false,
+                          },
+                          ticks: {
+                            display: false,
+                          },
                         },
                       },
                     }}
