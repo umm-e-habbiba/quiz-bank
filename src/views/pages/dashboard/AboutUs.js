@@ -50,7 +50,7 @@ const AboutUs = () => {
           <div className="flex justify-center items-center flex-col mx-4 lg:mx-40 my-4 lg:my-20">
             <p className="text-3xl mb-3">About US</p>
             {loader ? (
-              <div role="status" className="w-full animate-pulse">
+              <div role="status" className="w-full animate-pulse mx-4">
                 <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
                 <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
                 <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
@@ -60,7 +60,7 @@ const AboutUs = () => {
                 <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-200 w-full mb-2.5"></div>
               </div>
             ) : (
-              <p className="text-base/loose">{about}</p>
+              <p className="text-base/loose text-center mx-4">{about}</p>
             )}
           </div>
         </div>

@@ -109,7 +109,6 @@ const Notifications = () => {
       })
   }
   const deleteNotification = (id) => {
-    setSpinner(true)
     setError(false)
     setErrorMsg('')
     var myHeaders = new Headers()
@@ -124,16 +123,15 @@ const Notifications = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result)
-        setSpinner(false)
         if (result.success) {
-          setDeleteModal(false)
-          getMyNotifications()
-          setSuccess(true)
-          setSuccessMsg('Notification deleted successfully')
-          setTimeout(() => {
-            setSuccess(false)
-            setSuccessMsg('')
-          }, 3000)
+          getMyNotificationsWithoutLoader()
+          // setDeleteModal(false)
+          // setSuccess(true)
+          // setSuccessMsg('Notification deleted successfully')
+          // setTimeout(() => {
+          //   setSuccess(false)
+          //   setSuccessMsg('')
+          // }, 3000)
         } else {
           setError(true)
           setErrorMsg(result.message)
