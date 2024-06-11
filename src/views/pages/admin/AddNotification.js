@@ -219,7 +219,7 @@ const AddNotification = () => {
                   setErrorMsg('')
                 }}
               >
-                Add Notification
+                Send Notification
               </CButton>
             </div>
             <div className="flex flex-col gap-3">

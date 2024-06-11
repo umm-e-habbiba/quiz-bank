@@ -60,6 +60,9 @@ const Notifications = () => {
     } else {
       navigate('/login')
     }
+    setTimeout(() => {
+      updateNotifications()
+    }, 5000)
   }, [])
 
   const getMyNotifications = () => {
@@ -83,6 +86,26 @@ const Notifications = () => {
       .catch((error) => {
         console.error(error)
         setLoader(false)
+      })
+  }
+  const getMyNotificationsWithoutLoader = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'users-notifications/' + userID, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        if (result.success) {
+          setAllNotifications(result.notifications)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
       })
   }
   const deleteNotification = (id) => {
@@ -122,6 +145,28 @@ const Notifications = () => {
       })
       .catch((error) => console.log('error', error))
   }
+  const updateNotifications = () => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'PUT',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'update-user-notifications/' + userID, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          getMyNotificationsWithoutLoader()
+          window.localStorage.setItem('newNotifications', true)
+          window.dispatchEvent(new Event('storage'))
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
   return (
     <div>
@@ -140,16 +185,21 @@ const Notifications = () => {
                 {allNotifications && allNotifications.length > 0 ? (
                   allNotifications
                     .sort((a, b) => {
-                      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                      return (
+                        new Date(b.notification?.createdAt).getTime() -
+                        new Date(a.notification?.createdAt).getTime()
+                      )
                     })
                     .map((notification, index) => (
                       <div
                         key={index}
                         className="relative border border-gray-200 rounded-lg shadow-lg"
                       >
-                        {/* <span className="absolute flex justify-center items-center text-white w-10 h-4 me-3 bg-teal-500 rounded-full -top-1 -left-1 text-xs">
-                          New
-                        </span> */}
+                        {notification.isViewed == false && (
+                          <span className="absolute flex justify-center items-center text-white w-10 h-4 me-3 bg-red-500 rounded-full -top-1 -left-1 text-xs">
+                            New
+                          </span>
+                        )}
                         <button
                           className="absolute p-1 bg-gray-100 border border-gray-300 rounded-full -top-1 -right-1"
                           //   id={notification._id}
@@ -172,15 +222,15 @@ const Notifications = () => {
                                 AJ
                               </div>
                               <p className="font-medium text-gray-900 dark:text-white">
-                                {notification.notificationTitle}
+                                {notification.notification?.notificationTitle}
                               </p>
                               <p className="text-sm text-gray-500 dark:text-white">
-                                {notification.notificationBody}
+                                {notification.notification?.notificationBody}
                               </p>
                             </div>
                           </div>
                           <p className="text-sm text-gray-500 ml-3 dark:text-gray-200">
-                            {moment(notification.createdAt).fromNow()}
+                            {moment(notification.notification?.createdAt).fromNow()}
                           </p>
                         </div>
                       </div>

@@ -101,6 +101,8 @@ const Login = () => {
       .catch((error) => {
         console.error(error)
         setIsLoading(false)
+        // setLoginError(true)
+        // setLoginErrorValue(error)
       })
   }
   return (
