@@ -238,9 +238,12 @@ const Notifications = () => {
                       </div>
                     ))
                 ) : (
-                  <CAlert color="danger" className="middle-alert">
-                    No notifications found
-                  </CAlert>
+                  // <CAlert color="danger" className="middle-alert">
+                  //   No notifications found
+                  // </CAlert>
+                  <div className="text-center text-red-400 font-bold mt-5">
+                    No notifications yet...
+                  </div>
                 )}
               </div>
             </>

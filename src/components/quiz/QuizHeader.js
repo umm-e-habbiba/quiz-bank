@@ -410,6 +410,8 @@ const QuizHeader = ({
               </CNavLink>
             </CNavItem>
           </CHeaderNav>
+        </div>
+        <div className="hidden sm:flex">
           <CHeaderNav className="items-center">
             {fullscreen ? (
               <BiExitFullscreen

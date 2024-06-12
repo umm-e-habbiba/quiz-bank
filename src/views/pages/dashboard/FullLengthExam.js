@@ -694,6 +694,12 @@ const FullLengthExam = () => {
                   {allExam && allExam.length > 0 ? (
                     <>
                       <p className="text-4xl font-semibold">All Exams</p>
+                      <p className="text-xl text-center mx-12 mt-4">
+                        We are excited to introduce a range of new exams on ZAP-70, designed to help
+                        you achieve your academic and professional goals. Our exams cover a variety
+                        of subjects and are tailored to meet different needs and levels of
+                        expertise.
+                      </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-screen px-10 md:px-20 lg:px-20 xl:px-40  py-20 ">
                         {allExam.map((row, id) => (
                           <CRow
