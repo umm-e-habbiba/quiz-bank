@@ -504,7 +504,7 @@ const ManageExams = () => {
                       setShowAllExams(true)
                     }}
                   >
-                    Show All Exams
+                    Back to Exams
                   </CButton>
                 </CCardHeader>
                 <CCardBody>
