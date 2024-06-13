@@ -4,28 +4,31 @@ import PropTypes from 'prop-types'
 
 import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
-import { Link, useNavigate } from 'react-router-dom'
 import { CBadge, CNavLink, CSidebarNav } from '@coreui/react'
 import { API_URL } from 'src/store'
+
 export const AppSidebarNav = ({ items }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [notifications, setNotifications] = useState([])
+
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
-      getMyNotifications()
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUserID(getUserId)
+      getMyNotifications()
+      const interval = setInterval(() => {
+        getMyNotifications()
+      }, 5000)
+      return () => clearInterval(interval)
     }
-    // setTimeout(() => {
-    //   updateNotifications()
-    // }, 3000)
   }, [])
-  useEffect(() => {
-    console.log('')
-  }, [notifications])
+
+  // useEffect(() => {
+  //   console.log('')
+  // }, [notifications])
 
   const getMyNotifications = () => {
     const myHeaders = new Headers()
@@ -38,10 +41,14 @@ export const AppSidebarNav = ({ items }) => {
     fetch(API_URL + 'users-notifications/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        // console.log(result)
         if (result.success) {
-          if (result.notifications.filter((n) => n.isViewed == false).length > 0) {
-            setNotifications(result.notifications.filter((n) => n.isViewed == false))
+          const newNotifications = result.notifications.filter((n) => !n.isViewed)
+          if (newNotifications.length > 0) {
+            setNotifications(newNotifications)
+            // console.log('New notifications arrived')
+          } else {
+            // console.log('No new notifications')
           }
         }
       })
@@ -49,14 +56,15 @@ export const AppSidebarNav = ({ items }) => {
         console.error(error)
       })
   }
+
   window.addEventListener('storage', () => {
     console.log('Change to local storage!')
     if (window.localStorage.getItem('newNotifications')) {
       setNotifications([])
       window.localStorage.setItem('newNotifications', false)
     }
-    // ...
   })
+
   const navLink = (name, icon, badge, indent = false) => {
     return (
       <>
