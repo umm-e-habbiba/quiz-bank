@@ -77,6 +77,7 @@ const ManageExams = () => {
   const [successMsg, setSuccessMsg] = useState('')
   const [examDetail, setExamDetail] = useState(false)
   const [showAllExams, setShowAllExams] = useState(true)
+  const [allQuestions, setAllQuestions] = useState([])
   const [allSections, setAllSections] = useState([])
   const [usmleStep, setUsmleStep] = useState([])
   const [op6, setOp6] = useState('')
@@ -238,13 +239,14 @@ const ManageExams = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'uploaded-test/' + id, requestOptions)
+    fetch(API_URL + 'manage-test/' + id, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log('ques detail', result)
         if (result.data) {
           console.log('getExam', result)
-          setAllSections(result.data.sections)
+          setAllQuestions(result.data.questions)
+          // setAllSections(result.data.sections)
           setUsmleStep(result.data.usmleStep)
           // setTestName(result.data.testName)
           // setTotalExamQuest(result.data.totalQuestions)
@@ -353,9 +355,10 @@ const ManageExams = () => {
         if (result.data) {
           setEditModal(false)
           setIsLoading(false)
-          getAllExams()
-          setShowAllExams(true)
-          setExamDetail(false)
+          // getAllExams()
+          // setShowAllExams(true)
+          // setExamDetail(false)
+          getExam(examId)
           setQuestionId('')
           setImage('')
           setImage2('')
@@ -442,7 +445,7 @@ const ManageExams = () => {
                             <CTableDataCell className="flex justify-start items-center">
                               <CButton
                                 color="success"
-                                className="text-white py-2 mr-2"
+                                className="text-white py-1 mr-2"
                                 id={exam._id}
                                 onClick={(e) => {
                                   setShowAllExams(false)
@@ -453,7 +456,8 @@ const ManageExams = () => {
                                   getExam(e.currentTarget.id)
                                 }}
                               >
-                                <RiEyeLine />
+                                {/* <RiEyeLine /> */}
+                                Edit
                               </CButton>
                               <CButton
                                 color="danger"
@@ -493,6 +497,15 @@ const ManageExams = () => {
                       <strong>Exam Detail</strong>
                     </div>
                   </div>
+                  <CButton
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
+                    onClick={() => {
+                      setExamDetail(false)
+                      setShowAllExams(true)
+                    }}
+                  >
+                    Show All Exams
+                  </CButton>
                 </CCardHeader>
                 <CCardBody>
                   {detailLoader ? (
@@ -501,74 +514,125 @@ const ManageExams = () => {
                     </center>
                   ) : (
                     <>
-                      {allSections &&
+                      {/* {allSections &&
                         allSections.length > 0 &&
                         allSections.map((section, index) => (
                           <div key={index}>
-                            <p className="text-xl font-semibold">{section.section}</p>
-                            <CTable striped className="admin-tables">
-                              <CTableHead>
-                                <CTableRow>
-                                  <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                                  <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                                  {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                                  <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                                </CTableRow>
-                              </CTableHead>
-                              <CTableBody>
-                                {section.questions && section.questions?.length > 0 ? (
-                                  section.questions?.map((q, idx) => (
-                                    <CTableRow key={idx}>
-                                      <CTableHeaderCell className="cursor-pointer">
-                                        <span
-                                          dangerouslySetInnerHTML={{
-                                            __html:
-                                              q.question.length > 100
-                                                ? q.question.substring(0, 100) + '...'
-                                                : q.question,
-                                          }}
-                                        >
-                                          {/* {q.question.length > 100
+                            <p className="text-xl font-semibold">{section.section}</p> */}
+                      <CTable striped className="admin-tables" responsive>
+                        <CTableHead>
+                          <CTableRow>
+                            <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                            <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                            {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                            {/* <CTableHeaderCell scope="col">Section</CTableHeaderCell> */}
+                            <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                          </CTableRow>
+                        </CTableHead>
+                        <CTableBody>
+                          {allQuestions && allQuestions.length > 0 ? (
+                            allQuestions.map((q, idx) => (
+                              <>
+                                {idx + 1 == 1 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 1
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 41 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 2
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 81 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 3
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 121 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 4
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 161 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 5
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 201 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 6
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 241 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 7
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                {idx + 1 == 281 && (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                      Section 8
+                                    </CTableDataCell>
+                                  </CTableRow>
+                                )}
+                                <CTableRow key={idx}>
+                                  <CTableDataCell>{idx + 1}</CTableDataCell>
+                                  <CTableHeaderCell className="cursor-pointer">
+                                    <span
+                                      dangerouslySetInnerHTML={{
+                                        __html:
+                                          q.question.length > 100
+                                            ? q.question.substring(0, 100) + '...'
+                                            : q.question,
+                                      }}
+                                    >
+                                      {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                                        </span>
-                                      </CTableHeaderCell>
-                                      <CTableDataCell>{usmleStep}</CTableDataCell>
-                                      {/* <CTableDataCell>
-                          <img
-                            src={`${API_URL}uploads/${q.image}`}
-                            alt="mcq img"
-                            className="w-6 h-6 rounded-full"
-                          />
-                        </CTableDataCell> */}
-                                      <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                                      <CTableDataCell className="flex justify-start items-center">
-                                        <CButton
-                                          className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                          id={q._id}
-                                          onClick={(e) => {
-                                            setViewModal(true)
-                                            setQuestionId(e.currentTarget.id)
-                                          }}
-                                          title="View"
-                                        >
-                                          <RiEyeLine className="my-1" />
-                                        </CButton>
-                                        <CButton
-                                          color="info"
-                                          className="text-white mr-3 my-2"
-                                          id={q._id}
-                                          onClick={(e) => {
-                                            setEditModal(true)
-                                            setQuestionId(e.currentTarget.id)
-                                            setErrorr(false)
-                                            setErrorMsg('')
-                                          }}
-                                        >
-                                          <CIcon icon={cilPencil} />
-                                        </CButton>
-                                        {/* <CButton
+                                    </span>
+                                  </CTableHeaderCell>
+                                  <CTableDataCell>{usmleStep}</CTableDataCell>
+                                  <CTableDataCell className="flex justify-start items-center">
+                                    <CButton
+                                      className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                      id={q._id}
+                                      onClick={(e) => {
+                                        setViewModal(true)
+                                        setQuestionId(e.currentTarget.id)
+                                      }}
+                                      title="View"
+                                    >
+                                      <RiEyeLine className="my-1" />
+                                    </CButton>
+                                    <CButton
+                                      color="info"
+                                      className="text-white mr-3 my-2"
+                                      id={q._id}
+                                      onClick={(e) => {
+                                        setEditModal(true)
+                                        setQuestionId(e.currentTarget.id)
+                                        setErrorr(false)
+                                        setErrorMsg('')
+                                      }}
+                                    >
+                                      <CIcon icon={cilPencil} />
+                                    </CButton>
+                                    {/* <CButton
                                         color="danger"
                                         className="text-white my-2"
                                         id={q._id}
@@ -581,19 +645,20 @@ const ManageExams = () => {
                                       >
                                         <CIcon icon={cilTrash} />
                                       </CButton> */}
-                                      </CTableDataCell>
-                                    </CTableRow>
-                                  ))
-                                ) : (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center" colSpan={6}>
-                                      No Questions Found
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                              </CTableBody>
-                            </CTable>
-                            {/* {section.questions?.map((q, index) => (
+                                  </CTableDataCell>
+                                </CTableRow>
+                              </>
+                            ))
+                          ) : (
+                            <CTableRow>
+                              <CTableDataCell className="text-center" colSpan={4}>
+                                No Questions Found
+                              </CTableDataCell>
+                            </CTableRow>
+                          )}
+                        </CTableBody>
+                      </CTable>
+                      {/* {section.questions?.map((q, index) => (
                             <ReviewExamAccordion
                               key={index}
                               id={q}
@@ -620,8 +685,8 @@ const ManageExams = () => {
                               isapproved={false}
                             />
                           ))} */}
-                          </div>
-                        ))}
+                      {/* </div>
+                        ))} */}
                     </>
                   )}
                 </CCardBody>

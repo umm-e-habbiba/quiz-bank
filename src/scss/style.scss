@@ -445,6 +445,11 @@ table th {
 .selector-margin-2 {
   margin: 0 160px;
 }
+.section-bg {
+  background-color: #6261cc !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
 
 @media (max-width: $breakpoint-mobile) {
   .selector-margin-1 {
