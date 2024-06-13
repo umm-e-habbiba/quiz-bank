@@ -102,7 +102,7 @@ const ReviewExamAccordion = ({
               <p
                 className="question-content text-xl font-normal"
                 dangerouslySetInnerHTML={{
-                  __html: question,
+                  __html: explanation,
                 }}
               ></p>
             </CCol>

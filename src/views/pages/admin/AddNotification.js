@@ -268,7 +268,7 @@ const AddNotification = () => {
                   ))
               ) : (
                 <div className="text-center text-red-400 font-bold mt-5">
-                  No notifications added yet
+                  No notifications Sent to Users yet...
                 </div>
               )}
             </div>

@@ -51,18 +51,22 @@ const Notifications = () => {
   const [notificationId, setNotificationId] = useState()
   const [spinner, setSpinner] = useState(false)
   useEffect(() => {
-    getMyNotifications()
     const getToken = localStorage.getItem('token')
     if (getToken) {
+      getMyNotifications()
       setToken(getToken)
       const getUserId = localStorage.getItem('userId')
       setUserID(getUserId)
+      setTimeout(() => {
+        updateNotifications()
+      }, 5000)
+      const interval = setInterval(() => {
+        getMyNotificationsWithoutLoader()
+      }, 10000)
+      return () => clearInterval(interval)
     } else {
       navigate('/login')
     }
-    setTimeout(() => {
-      updateNotifications()
-    }, 5000)
   }, [])
 
   const getMyNotifications = () => {
@@ -234,9 +238,12 @@ const Notifications = () => {
                       </div>
                     ))
                 ) : (
-                  <CAlert color="danger" className="middle-alert">
-                    No notifications found
-                  </CAlert>
+                  // <CAlert color="danger" className="middle-alert">
+                  //   No notifications found
+                  // </CAlert>
+                  <div className="text-center text-red-400 font-bold mt-5">
+                    No notifications yet...
+                  </div>
                 )}
               </div>
             </>
