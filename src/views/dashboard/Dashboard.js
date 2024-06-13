@@ -60,7 +60,6 @@ const Dashboard = () => {
   const [userID, setUSerID] = useState(localStorage.getItem('userId') || '')
   const [allQuiz, setAllQuiz] = useState([])
   const [allExam, setAllExam] = useState([])
-  const [lastQuiz, setLastQuiz] = useState([])
   const [loading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -94,7 +93,6 @@ const Dashboard = () => {
         if (result.success) {
           setAllQuiz(result.quizes)
           setAllExam(result.tests)
-          setLastQuiz(result.data.slice(Math.max(result.data.length - 5, 0)))
         }
       })
       .catch((error) => {

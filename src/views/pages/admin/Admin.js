@@ -66,6 +66,8 @@ const Admin = () => {
   const [totalQuestions, setTotalQuestions] = useState('')
   const [totalExams, setTotalExams] = useState('')
   const [totalUserQuestions, setTotalUserQuestions] = useState('')
+  const [userPendingQuestions, setUserPendingQuestions] = useState('')
+  const [userApprovedQuestions, setUserApprovedQuestions] = useState('')
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const widgetChartRef1 = useRef(null)
   const widgetChartRef2 = useRef(null)
@@ -115,6 +117,8 @@ const Admin = () => {
           setAllUsers(result.users)
           setTotalQuestions(result.totalMcqs)
           setTotalUserQuestions(result.totalUserMcqs)
+          setUserApprovedQuestions(result.UserApprovedQuestions)
+          setUserPendingQuestions(result.UserPEndingQuestions)
           setTotalExams(result.totalTests)
         }
       })
@@ -327,7 +331,16 @@ const Admin = () => {
             <CCol sm={6} xl={3} xxl={3}>
               <CWidgetStatsA
                 color="danger"
-                value={<>{totalUserQuestions ? totalUserQuestions : 0}</>}
+                // value={<>{totalUserQuestions ? totalUserQuestions : 0}</>}
+                value={
+                  <>
+                    {totalUserQuestions ? totalUserQuestions : 0}{' '}
+                    <span className="fs-6 fw-normal">
+                      ({userApprovedQuestions} Approved, {userPendingQuestions} Pending
+                      {/* <CIcon icon={cilArrowTop} /> */})
+                    </span>
+                  </>
+                }
                 title="User's Questions"
                 chart={
                   <CChartBar
