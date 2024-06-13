@@ -19,10 +19,12 @@ export const AppSidebarNav = ({ items }) => {
       const getUserId = localStorage.getItem('userId')
       setUserID(getUserId)
       getMyNotifications()
-      const interval = setInterval(() => {
-        getMyNotifications()
-      }, 5000)
-      return () => clearInterval(interval)
+      if (getUserId) {
+        const interval = setInterval(() => {
+          getMyNotifications()
+        }, 5000)
+        return () => clearInterval(interval)
+      }
     }
   }, [])
 

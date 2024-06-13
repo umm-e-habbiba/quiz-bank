@@ -227,6 +227,7 @@ const ManageExams = () => {
       .catch((error) => console.log('error', error))
   }
   const getExam = (id) => {
+    setDetailLoader(true)
     setExamId(id)
     console.log('exam id', id)
     const myHeaders = new Headers()
@@ -238,33 +239,6 @@ const ManageExams = () => {
     }
 
     fetch(API_URL + 'uploaded-test/' + id, requestOptions)
-      .then((response) => {
-        const contentLength = response.headers.get('content-length')
-        let loaded = 0
-        return new Response(
-          new ReadableStream({
-            start(controller) {
-              const reader = response.body.getReader()
-              read()
-              function read() {
-                reader.read().then((progressEvent) => {
-                  if (progressEvent.done) {
-                    controller.close()
-                    return
-                  }
-                  loaded += progressEvent.value.byteLength
-
-                  const percentageComplete = Math.round((loaded / contentLength) * 100)
-                  setProgress(percentageComplete)
-
-                  controller.enqueue(progressEvent.value)
-                  read()
-                })
-              }
-            },
-          }),
-        )
-      })
       .then((response) => response.json())
       .then((result) => {
         // console.log('ques detail', result)
@@ -333,8 +307,12 @@ const ManageExams = () => {
     formdata.append('optionOne', data.op1)
     formdata.append('correctAnswer', data.correct)
     formdata.append('questionExplanation', data.explaination)
-    formdata.append('image', image)
-    formdata.append('imageTwo', image2)
+    if (image) {
+      formdata.append('image', image)
+    }
+    if (image2) {
+      formdata.append('imageTwo', image2)
+    }
     formdata.append('video', video)
     formdata.append('optionTwo', data.op2)
     formdata.append('optionThree', data.op3)
@@ -507,103 +485,90 @@ const ManageExams = () => {
                 </CCardBody>
               </CCard>
             )}
-            {examDetail &&
-              (detailLoader ? (
-                <div>
-                  <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
-                    <div className="lds-spinner -ml-8">
-                      {[...Array(12)].map((_, index) => (
-                        <div key={index}></div>
-                      ))}
+            {examDetail && (
+              <CCard className="mb-4 mx-4">
+                <CCardHeader className="flex justify-between items-center">
+                  <div className="flex">
+                    <div className="flex flex-col">
+                      <strong>Exam Detail</strong>
                     </div>
-                    <div className="text-sm font-medium text-gray-500 mt-2">
-                      <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait
-                      while it get`s completed...
-                    </div>
-                    {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
-         <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
-       </div> */}
-                    <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
                   </div>
-                </div>
-              ) : (
-                <CCard className="mb-4 mx-4">
-                  <CCardHeader className="flex justify-between items-center">
-                    <div className="flex">
-                      <div className="flex flex-col">
-                        <strong>Exam Detail</strong>
-                      </div>
-                    </div>
-                  </CCardHeader>
-                  <CCardBody>
-                    {allSections &&
-                      allSections.length > 0 &&
-                      allSections.map((section, index) => (
-                        <div key={index}>
-                          <p className="text-xl font-semibold">{section.section}</p>
-                          <CTable striped className="admin-tables">
-                            <CTableHead>
-                              <CTableRow>
-                                <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                                {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                                <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                                <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                              </CTableRow>
-                            </CTableHead>
-                            <CTableBody>
-                              {section.questions && section.questions?.length > 0 ? (
-                                section.questions?.map((q, idx) => (
-                                  <CTableRow key={idx}>
-                                    <CTableHeaderCell className="cursor-pointer">
-                                      <span
-                                        dangerouslySetInnerHTML={{
-                                          __html:
-                                            q.question.length > 100
-                                              ? q.question.substring(0, 100) + '...'
-                                              : q.question,
-                                        }}
-                                      >
-                                        {/* {q.question.length > 100
+                </CCardHeader>
+                <CCardBody>
+                  {detailLoader ? (
+                    <center>
+                      <CSpinner color="primary" variant="grow" />
+                    </center>
+                  ) : (
+                    <>
+                      {allSections &&
+                        allSections.length > 0 &&
+                        allSections.map((section, index) => (
+                          <div key={index}>
+                            <p className="text-xl font-semibold">{section.section}</p>
+                            <CTable striped className="admin-tables">
+                              <CTableHead>
+                                <CTableRow>
+                                  <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                                  <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                                  {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                                  <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                                </CTableRow>
+                              </CTableHead>
+                              <CTableBody>
+                                {section.questions && section.questions?.length > 0 ? (
+                                  section.questions?.map((q, idx) => (
+                                    <CTableRow key={idx}>
+                                      <CTableHeaderCell className="cursor-pointer">
+                                        <span
+                                          dangerouslySetInnerHTML={{
+                                            __html:
+                                              q.question.length > 100
+                                                ? q.question.substring(0, 100) + '...'
+                                                : q.question,
+                                          }}
+                                        >
+                                          {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                                      </span>
-                                    </CTableHeaderCell>
-                                    <CTableDataCell>{usmleStep}</CTableDataCell>
-                                    {/* <CTableDataCell>
+                                        </span>
+                                      </CTableHeaderCell>
+                                      <CTableDataCell>{usmleStep}</CTableDataCell>
+                                      {/* <CTableDataCell>
                           <img
                             src={`${API_URL}uploads/${q.image}`}
                             alt="mcq img"
                             className="w-6 h-6 rounded-full"
                           />
                         </CTableDataCell> */}
-                                    <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                                    <CTableDataCell className="flex justify-start items-center">
-                                      <CButton
-                                        className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                        id={q._id}
-                                        onClick={(e) => {
-                                          setViewModal(true)
-                                          setQuestionId(e.currentTarget.id)
-                                        }}
-                                        title="View"
-                                      >
-                                        <RiEyeLine className="my-1" />
-                                      </CButton>
-                                      <CButton
-                                        color="info"
-                                        className="text-white mr-3 my-2"
-                                        id={q._id}
-                                        onClick={(e) => {
-                                          setEditModal(true)
-                                          setQuestionId(e.currentTarget.id)
-                                          setErrorr(false)
-                                          setErrorMsg('')
-                                        }}
-                                      >
-                                        <CIcon icon={cilPencil} />
-                                      </CButton>
-                                      {/* <CButton
+                                      <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                                      <CTableDataCell className="flex justify-start items-center">
+                                        <CButton
+                                          className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                          id={q._id}
+                                          onClick={(e) => {
+                                            setViewModal(true)
+                                            setQuestionId(e.currentTarget.id)
+                                          }}
+                                          title="View"
+                                        >
+                                          <RiEyeLine className="my-1" />
+                                        </CButton>
+                                        <CButton
+                                          color="info"
+                                          className="text-white mr-3 my-2"
+                                          id={q._id}
+                                          onClick={(e) => {
+                                            setEditModal(true)
+                                            setQuestionId(e.currentTarget.id)
+                                            setErrorr(false)
+                                            setErrorMsg('')
+                                          }}
+                                        >
+                                          <CIcon icon={cilPencil} />
+                                        </CButton>
+                                        {/* <CButton
                                         color="danger"
                                         className="text-white my-2"
                                         id={q._id}
@@ -616,19 +581,19 @@ const ManageExams = () => {
                                       >
                                         <CIcon icon={cilTrash} />
                                       </CButton> */}
+                                      </CTableDataCell>
+                                    </CTableRow>
+                                  ))
+                                ) : (
+                                  <CTableRow>
+                                    <CTableDataCell className="text-center" colSpan={6}>
+                                      No Questions Found
                                     </CTableDataCell>
                                   </CTableRow>
-                                ))
-                              ) : (
-                                <CTableRow>
-                                  <CTableDataCell className="text-center" colSpan={6}>
-                                    No Questions Found
-                                  </CTableDataCell>
-                                </CTableRow>
-                              )}
-                            </CTableBody>
-                          </CTable>
-                          {/* {section.questions?.map((q, index) => (
+                                )}
+                              </CTableBody>
+                            </CTable>
+                            {/* {section.questions?.map((q, index) => (
                             <ReviewExamAccordion
                               key={index}
                               id={q}
@@ -655,11 +620,13 @@ const ManageExams = () => {
                               isapproved={false}
                             />
                           ))} */}
-                        </div>
-                      ))}
-                  </CCardBody>
-                </CCard>
-              ))}
+                          </div>
+                        ))}
+                    </>
+                  )}
+                </CCardBody>
+              </CCard>
+            )}
           </>
         )}
         {/* edit modal */}
