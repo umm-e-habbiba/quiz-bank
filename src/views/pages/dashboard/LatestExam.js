@@ -22,6 +22,7 @@ const LatestExam = () => {
   const [examId, setExamId] = useState('')
   const [marks, setMarks] = useState('')
   const [total, setTotal] = useState('')
+  const [completed, setCompleted] = useState(true)
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
@@ -66,6 +67,7 @@ const LatestExam = () => {
             setTotal(result.data.totalScore)
             setPercent(percentage(result.data.obtainedScore, result.data.totalScore))
             setExamId(result.data.test?._id)
+            setCompleted(result.data.testInfo)
           }
         }
       })
@@ -92,7 +94,7 @@ const LatestExam = () => {
                 <CButton
                   color="success"
                   onClick={() => navigate(`/review-exam/${examId}`)}
-                  disabled={noQuiz ? true : false}
+                  disabled={noQuiz || !completed ? true : false}
                 >
                   Review
                 </CButton>
@@ -108,8 +110,8 @@ const LatestExam = () => {
                   ) : (
                     <CCol md={12}>
                       {noQuiz ? (
-                        <div>No exams attempted yet</div>
-                      ) : (
+                        <div className="text-center">No exams attempted yet</div>
+                      ) : completed ? (
                         <div className="progress-group">
                           <div className="progress-group-header">
                             <span>Your Score</span>
@@ -121,6 +123,10 @@ const LatestExam = () => {
                           <div className="progress-group-bars">
                             <CProgress color="success" height={20} value={Number(percent)} />
                           </div>
+                        </div>
+                      ) : (
+                        <div className="text-center">
+                          Your Last exam is not completed yet. Kindly complete your exam first.
                         </div>
                       )}
                     </CCol>

@@ -334,7 +334,7 @@ const PrevExams = () => {
                         ))
                     ) : (
                       <CTableRow>
-                        <CTableDataCell className="text-center" colSpan={8}>
+                        <CTableDataCell className="text-center" colSpan={6}>
                           No Exams attempted yet
                         </CTableDataCell>
                       </CTableRow>

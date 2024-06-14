@@ -17,6 +17,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Borel&display=swap');
 .quiz-wrapper {
   height: calc(100vh - 80px - 80px);
+  overflow-y: auto;
 }
 .sidebar-wrapper {
   height: calc(100vh - 60px - 80px);
