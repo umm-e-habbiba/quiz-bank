@@ -36,7 +36,6 @@ import AdminLayout from 'src/layout/AdminLayout'
 import { AppHeader, AppSidebar } from 'src/components'
 import { step2score } from 'src/Step2ScoreConversion'
 import '../../../../src/scss/certificate.css'
-
 const PrevExams = () => {
   const navigate = useNavigate()
   const [allQuestion, setAllQuestion] = useState([])
@@ -58,7 +57,6 @@ const PrevExams = () => {
   const [certificateMarks, setCertificateMarks] = useState('')
   const [certificateExam, setCertificateExam] = useState('')
   const [certificateDate, setCertificateDate] = useState('')
-
   useEffect(() => {
     getAllExams()
     const getToken = localStorage.getItem('token')
@@ -84,6 +82,7 @@ const PrevExams = () => {
     fetch(API_URL + 'user-tests/' + userID, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        // console.log(result)
         if (result.success) {
           setAllExams(result.tests)
           setUsername(result.firstName + ' ' + result.lastName)
@@ -100,7 +99,7 @@ const PrevExams = () => {
     setIsLoading(true)
     setError(false)
     setErrorMsg('')
-
+    // console.log(examId)
     var myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -112,6 +111,7 @@ const PrevExams = () => {
     fetch(API_URL + 'delete-users-test/' + examId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        // console.log(result)
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)
@@ -130,27 +130,9 @@ const PrevExams = () => {
       })
       .catch((error) => console.log('error', error))
   }
-
   const percentage = (partialValue, totalValue) => {
     return Math.round((100 * partialValue) / totalValue)
   }
-
-  // Function to sort exams with the "Continue" button on top
-  const sortExamsWithContinueButtonOnTop = (exams) => {
-    const examsWithContinueButton = []
-    const examsWithoutContinueButton = []
-
-    exams.forEach((exam) => {
-      if (!exam.testInfo) {
-        examsWithContinueButton.push(exam)
-      } else {
-        examsWithoutContinueButton.push(exam)
-      }
-    })
-
-    return examsWithContinueButton.concat(examsWithoutContinueButton)
-  }
-
   return (
     <div>
       <AppSidebar />
@@ -160,6 +142,17 @@ const PrevExams = () => {
           <CCard className="mb-4 mx-4">
             <CCardHeader className="flex justify-between items-center">
               <strong>Previous Exams</strong>
+              {/* <CButton
+            color="success"
+            className="text-white"
+            onClick={() => {
+              setAddModal(true)
+              setIsLoading(false)
+              reset({})
+            }}
+          >
+            Add Question
+          </CButton> */}
             </CCardHeader>
             <CCardBody>
               {loader ? (
@@ -173,8 +166,12 @@ const PrevExams = () => {
                       <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
                       <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Result</CTableHeaderCell>
+                      {/* <CTableHeaderCell scope="col">Correct Answers</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Incorrect Answers</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Score</CTableHeaderCell>
                       <CTableHeaderCell scope="col">Date</CTableHeaderCell>
+                      {/* <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell> */}
                       <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
                     </CTableRow>
                   </CTableHead>
@@ -337,11 +334,11 @@ const PrevExams = () => {
                         ))
                     ) : (
                       <CTableRow>
-                        <CTableDataCell className="text-center" colSpan={8}>
+                        <CTableDataCell className="text-center" colSpan={6}>
                           No Exams attempted yet
                         </CTableDataCell>
                       </CTableRow>
-                    ))}
+                    )}
                   </CTableBody>
                 </CTable>
               )}

@@ -219,7 +219,7 @@ const PreviousTests = () => {
                                 <CButton
                                   color="success"
                                   className="text-white"
-                                  // id={q._id}
+                                // id={q._id}
                                 >
                                   Review
                                 </CButton>
@@ -249,9 +249,7 @@ const PreviousTests = () => {
                 </CTable>
               )}
             </CCardBody>
-            <div className="h-10 w-screen bg-red-500">
-              <div className="users h-60 bg-black"></div>
-            </div>
+
           </CCard>
           {/* delete modal */}
           <CModal

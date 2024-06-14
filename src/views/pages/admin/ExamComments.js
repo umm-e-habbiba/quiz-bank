@@ -555,7 +555,7 @@ const ExamComments = () => {
                   ) : (
                     <CTableRow>
                       <CTableDataCell className="text-center" colSpan={5}>
-                        No Questions Found
+                        No Questions with Comments Found
                       </CTableDataCell>
                     </CTableRow>
                   )}

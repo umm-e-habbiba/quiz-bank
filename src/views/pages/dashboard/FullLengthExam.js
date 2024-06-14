@@ -736,7 +736,11 @@ const FullLengthExam = () => {
                                   setExamId(e.currentTarget.id)
                                 }}
                               >
-                                Start Exam
+                                {spinner && examId == row._id ? (
+                                  <CSpinner color="light" size="sm" />
+                                ) : (
+                                  'Start Exam'
+                                )}
                               </button>
                             </CCol>
                           </CRow>
