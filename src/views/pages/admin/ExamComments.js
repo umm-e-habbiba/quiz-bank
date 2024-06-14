@@ -37,7 +37,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import JoditEditor from 'jodit-react'
 import { FaRegEye } from 'react-icons/fa'
-import { RiEyeLine } from 'react-icons/ri'
+import { RiDeleteBin5Fill, RiEyeLine } from 'react-icons/ri'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 const ExamComments = () => {
   const editor = useRef(null)
@@ -458,6 +458,40 @@ const ExamComments = () => {
     // var url = URL.createObjectURL(file)
     // setVideoSrc(url)
     // console.log('video url', url)
+  }
+  const deleteComment = (commentId) => {
+    setError(false)
+    setErrorMsg('')
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+
+    const requestOptions = {
+      method: 'DELETE',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+    fetch(API_URL + 'delete-comment/' + examId + '/' + questionId + '/' + commentId, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        // console.log(result)
+        if (result.success) {
+          setDetailModal(false)
+          getAllQuest(questionId, examId)
+          setSuccess(true)
+          setSuccessMsg('Comment deleted successfully')
+          setTimeout(() => {
+            setSuccess(false)
+            setSuccessMsg('')
+          }, 3000)
+        } else {
+          setError(true)
+          setErrorMsg(result.message)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setImg2Loader(false)
+      })
   }
   return (
     <AdminLayout>
@@ -1064,23 +1098,8 @@ const ExamComments = () => {
                 <span>{getValues('correct')}</span>
               </CCol>
             </CRow>
-            <CRow className="bg-red-300 p-2 rounded-md mb-2">
-              <CCol md={2}>
-                <strong>Comments</strong>
-              </CCol>
-              <CCol md={10}>
-                {comments && comments.length > 0
-                  ? comments.map((com, idx) => (
-                      <>
-                        <span key={idx}>{com.commentText}</span>
-                        <br />
-                      </>
-                    ))
-                  : 'No comments received for this question'}
-              </CCol>
-            </CRow>
             {image && (
-              <CRow>
+              <CRow className="mb-3">
                 <CCol md={2}>
                   <strong>Image</strong>
                 </CCol>
@@ -1094,7 +1113,7 @@ const ExamComments = () => {
               </CRow>
             )}
             {image2 && (
-              <CRow className="mt-3">
+              <CRow className="mb-3">
                 <CCol md={2}>
                   <strong>Explanation Image</strong>
                 </CCol>
@@ -1107,6 +1126,27 @@ const ExamComments = () => {
                 </CCol>
               </CRow>
             )}
+
+            <CRow>
+              <CCol md={2} className="flex justify-start items-center">
+                <strong>Comments</strong>
+              </CCol>
+              <CCol md={10}>
+                {comments && comments.length > 0
+                  ? comments.map((com, idx) => (
+                      <>
+                        <div className="flex justify-between items-center bg-red-300 p-2 rounded-md mb-2">
+                          <span key={idx}>{com.commentText}</span>
+                          <CButton color="light" onClick={() => deleteComment(com._id)}>
+                            Delete this Comment
+                          </CButton>
+                        </div>
+                      </>
+                    ))
+                  : 'No comments received for this question'}
+              </CCol>
+            </CRow>
+            {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
           </CModalBody>
           <CModalFooter>
             <CButton
