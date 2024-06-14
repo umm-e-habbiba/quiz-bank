@@ -53,7 +53,23 @@ const ReviewExamAccordion = ({
 
       <div ref={contentHeight} className="answer-container" style={contentHeightStyle}>
         <p className="text-xl mb-1">Question</p>
-        {image ? (
+        <p
+          className="question-content text-xl font-normal"
+          dangerouslySetInnerHTML={{
+            __html: question,
+          }}
+        ></p>
+        {image && (
+          <center>
+            <img
+              src={`${API_URL}uploads/testimages/${image}`}
+              alt="question image"
+              className="my-3"
+              loading="eager"
+            />
+          </center>
+        )}
+        {/* {image ? (
           <CRow className="mb-3">
             <CCol sm={12} md={8} lg={8}>
               <p
@@ -79,7 +95,7 @@ const ReviewExamAccordion = ({
               __html: question,
             }}
           ></p>
-        )}
+        )} */}
         <div className="answer-content">
           {[op1, op2, op3, op4, op5, op6].map(
             (option, index) =>
@@ -96,7 +112,23 @@ const ReviewExamAccordion = ({
           )}
         </div>
         <p className="text-xl mb-1">Explanation</p>
-        {imageTwo ? (
+        <p
+          className="question-content text-xl font-normal"
+          dangerouslySetInnerHTML={{
+            __html: explanation,
+          }}
+        ></p>
+        {imageTwo && (
+          <center>
+            <img
+              src={`${API_URL}uploads/testimages/${imageTwo}`}
+              alt="question image"
+              className="my-3"
+              loading="eager"
+            />
+          </center>
+        )}
+        {/* {imageTwo ? (
           <CRow className="mb-3">
             <CCol sm={12} md={8} lg={8}>
               <p
@@ -122,7 +154,7 @@ const ReviewExamAccordion = ({
               __html: explanation,
             }}
           ></p>
-        )}
+        )} */}
         {/* {video && (
           <video controls src={`${API_URL}uploads/videos/${video}`} className="my-3"></video>
         )} */}

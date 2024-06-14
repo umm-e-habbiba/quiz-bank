@@ -62,6 +62,7 @@ const QuizHeader = ({
   undoHighlight,
   highlightStack,
   toggleSidebar,
+  examId,
 }) => {
   const headerRef = useRef()
   const navigate = useNavigate()
@@ -215,8 +216,12 @@ const QuizHeader = ({
     const raw = JSON.stringify({
       commentText: commentValue,
     })
-
-    let url = `${API_URL}add-comment/${currentQuestionId}`
+    let url
+    if (location.pathname.includes('full-length-exam')) {
+      url = `${API_URL}comment-in-test/${examId}/${currentQuestionId}`
+    } else {
+      url = `${API_URL}add-comment/${currentQuestionId}`
+    }
 
     const requestOptions = {
       method: 'POST',

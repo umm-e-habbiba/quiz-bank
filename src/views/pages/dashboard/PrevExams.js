@@ -179,103 +179,166 @@ const PrevExams = () => {
                     </CTableRow>
                   </CTableHead>
                   <CTableBody>
-                    {sortExamsWithContinueButtonOnTop(allExams).map((q, idx) => (
-                      <CTableRow key={idx}>
-                        <CTableDataCell>{q.test?.testName}</CTableDataCell>
-                        <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
-                        <CTableDataCell>
-                          {q.testInfo ? (
-                            q.test?.usmleStep == '1' ? (
-                              percentage(q.obtainedScore, q.totalScore) >= 70 ? (
-                                <span className="text-success font-bold">Pass</span>
-                              ) : (
-                                <span className="text-danger font-bold">Fail</span>
-                              )
-                            ) : q.test?.usmleStep == '2' ? (
-                              q.obtainedScore <= 191 ? (
-                                <span className="text-danger font-bold">Fail</span>
-                              ) : (
-                                <span className="text-success font-bold">Pass</span>
-                              )
-                            ) : (
-                              ''
-                            )
-                          ) : (
-                            'Pending'
-                          )}
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          {q.testInfo
-                            ? q.test?.usmleStep == '1'
-                              ? `${percentage(q.obtainedScore, q.totalScore)}%`
-                              : q.test?.usmleStep == '2'
-                                ? q.obtainedScore
-                                : ''
-                            : 'Pending'}
-                        </CTableDataCell>
-                        <CTableDataCell>
-                          {moment(q.createdAt).format('MMMM Do YYYY')}
-                        </CTableDataCell>
-                        <CTableDataCell className="flex justify-start items-center" scope="row">
-                          {q.testInfo ? (
-                            <>
-                              <Link to={`/review-exam/${q.test?._id}`}>
-                                <CButton color="success" className="text-white">
-                                  Review
-                                </CButton>
-                              </Link>
-                              <Link to={`/full-length-exam/${q.test?._id}`}>
-                                <CButton color="info" className="text-white ml-2">
-                                  Retake
-                                </CButton>
-                              </Link>
-                              {q.test?.usmleStep == '1'
-                                ? percentage(q.obtainedScore, q.totalScore) >= 70 && (
-                                    <CButton
-                                      color="primary"
-                                      className="text-white ml-2"
-                                      onClick={() => {
-                                        setShowCertificate(true)
-                                        setCertificateStep(q.test?.usmleStep)
-                                        setCertificateMarks(
-                                          percentage(q.obtainedScore, q.totalScore),
-                                        )
-                                        setCertificateExam(q.test?.testName)
-                                        setCertificateDate(
-                                          moment(q.createdAt).format('MMMM Do YYYY'),
-                                        )
-                                      }}
-                                    >
-                                      Certificate
-                                    </CButton>
+                    {allExams && allExams.length > 0 ? (
+                      allExams
+                        .sort((a, b) => {
+                          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        })
+                        .map((q, idx) => (
+                          <CTableRow key={idx}>
+                            <CTableDataCell>{q.test?.testName}</CTableDataCell>
+                            <CTableDataCell>{q.test?.usmleStep}</CTableDataCell>
+                            <CTableDataCell>
+                              {q.testInfo ? (
+                                q.test?.usmleStep == '1' ? (
+                                  percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                    <span className="text-success font-bold">Pass</span>
+                                  ) : (
+                                    <span className="text-danger font-bold">Fail</span>
                                   )
-                                : q.test?.usmleStep == '2'
-                                  ? q.obtainedScore > 192 && (
-                                      <CButton
-                                        color="primary"
-                                        className="text-white ml-2"
-                                        onClick={() => {
-                                          setShowCertificate(true)
-                                          setCertificateStep(q.test?.usmleStep)
-                                          setCertificateMarks(q.obtainedScore)
-                                          setCertificateExam(q.test?.testName)
-                                          setCertificateDate(
-                                            moment(q.createdAt).format('MMMM Do YYYY'),
-                                          )
-                                        }}
-                                      >
-                                        Certificate
-                                      </CButton>
-                                    )
-                                  : ''}
-                            </>
-                          ) : (
-                            <Link to={`/full-length-exam/${q.test?._id}`}>
-                              <CButton color="warning" className="text-white">
-                                Continue
+                                ) : q.test?.usmleStep == '2' ? (
+                                  q.obtainedScore <= 191 ? (
+                                    <span className="text-danger font-bold">Fail</span>
+                                  ) : (
+                                    <span className="text-success font-bold">Pass</span>
+                                  )
+                                ) : (
+                                  ''
+                                )
+                              ) : (
+                                'Pending'
+                              )}
+                              {/* {q.testInfo
+                                ? q.test?.usmleStep == '1' &&
+                                  (percentage(q.obtainedScore, q.totalScore) >= 70 ? (
+                                    <span className="text-success font-bold">Pass</span>
+                                  ) : (
+                                    <span className="text-danger font-bold">Fail</span>
+                                  ))
+                                : 'Pending'}
+                              {q.testInfo ? (
+                                q.test?.usmleStep == '2' && q.obtainedScore <= 191 ? (
+                                  <span className="text-danger font-bold">Fail</span>
+                                ) : (
+                                  <span className="text-success font-bold">Pass</span>
+                                )
+                              ) : (
+                                'Pending'
+                              )} */}
+                            </CTableDataCell>
+                            {/* <CTableDataCell>
+                              {q.testInfo ? q.obtainedScore : 'Pending'}
+                            </CTableDataCell>
+                            <CTableDataCell>
+                              {q.testInfo ? q.totalScore - q.obtainedScore : 'Pending'}
+                            </CTableDataCell>
+
+                            <CTableDataCell>{q.totalScore}</CTableDataCell> */}
+                            <CTableDataCell>
+                              {q.testInfo
+                                ? q.test?.usmleStep == '1'
+                                  ? `${percentage(q.obtainedScore, q.totalScore)}%`
+                                  : q.test?.usmleStep == '2'
+                                    ? q.obtainedScore
+                                    : ''
+                                : 'Pending'}
+                            </CTableDataCell>
+
+                            <CTableDataCell>
+                              {moment(q.createdAt).format('MMMM Do YYYY')}
+                            </CTableDataCell>
+                            <CTableDataCell className="flex justify-start items-center" scope="row">
+                              {q.testInfo ? (
+                                <>
+                                  <Link to={`/review-exam/${q.test?._id}`}>
+                                    <CButton
+                                      color="success"
+                                      className="text-white"
+                                      // id={q._id}
+                                    >
+                                      Review
+                                    </CButton>
+                                  </Link>
+                                  <Link to={`/full-length-exam/${q.test?._id}`}>
+                                    <CButton
+                                      color="info"
+                                      className="text-white ml-2"
+                                      // id={q._id}
+                                    >
+                                      Retake
+                                    </CButton>
+                                  </Link>
+                                  {q.test?.usmleStep == '1'
+                                    ? percentage(q.obtainedScore, q.totalScore) >= 70 && (
+                                        <CButton
+                                          color="primary"
+                                          className="text-white ml-2"
+                                          onClick={() => {
+                                            setShowCertificate(true)
+                                            setCertificateStep(q.test?.usmleStep)
+                                            setCertificateMarks(
+                                              percentage(q.obtainedScore, q.totalScore),
+                                            )
+                                            setCertificateExam(q.test?.testName)
+                                            setCertificateDate(
+                                              moment(q.createdAt).format('MMMM Do YYYY'),
+                                            )
+                                          }}
+                                        >
+                                          Certificate
+                                        </CButton>
+                                      )
+                                    : q.test?.usmleStep == '2'
+                                      ? q.obtainedScore > 192 && (
+                                          <CButton
+                                            color="primary"
+                                            className="text-white ml-2"
+                                            onClick={() => {
+                                              setShowCertificate(true)
+                                              setCertificateStep(q.test?.usmleStep)
+                                              setCertificateMarks(q.obtainedScore)
+                                              setCertificateExam(q.test?.testName)
+                                              setCertificateDate(
+                                                moment(q.createdAt).format('MMMM Do YYYY'),
+                                              )
+                                            }}
+                                          >
+                                            Certificate
+                                          </CButton>
+                                        )
+                                      : ''}
+                                </>
+                              ) : (
+                                <Link to={`/full-length-exam/${q.test?._id}`}>
+                                  <CButton
+                                    color="warning"
+                                    className="text-white"
+                                    // id={q._id}
+                                  >
+                                    Continue
+                                  </CButton>
+                                </Link>
+                              )}
+                              {/*
+                             <CButton
+                                color="danger"
+                                className="text-white ml-2"
+                                id={q._id}
+                                onClick={(e) => {
+                                  setDeleteModal(true)
+                                  setExamId(e.currentTarget.id)
+                                }}
+                              >
+                                <CIcon icon={cilTrash} />
                               </CButton>
-                            </Link>
-                          )}
+                             */}
+                            </CTableDataCell>
+                          </CTableRow>
+                        ))
+                    ) : (
+                      <CTableRow>
+                        <CTableDataCell className="text-center" colSpan={8}>
+                          No Exams attempted yet
                         </CTableDataCell>
                       </CTableRow>
                     ))}

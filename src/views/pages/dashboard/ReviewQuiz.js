@@ -556,7 +556,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.imageTwo ? (
                         <img
-                          src={`${API_URL}uploads/${allQuestion[currentQuestion].questionId.imageTwo}`}
+                          src={`${API_URL}uploads/images/${allQuestion[currentQuestion].questionId.imageTwo}`}
                           alt="question image"
                           className="mb-3"
                           loading="eager"

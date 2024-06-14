@@ -23,6 +23,7 @@ import ChangeAbout from './views/pages/admin/ChangeAbout'
 import Notifications from './views/pages/dashboard/Notifications'
 import AddNotification from './views/pages/admin/AddNotification'
 import ViewNotification from './views/pages/admin/ViewNotification'
+import ExamComments from './views/pages/admin/ExamComments'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -54,6 +55,7 @@ const routes = [
   { path: '/manage-notifications', name: 'Manage Notifications', element: AddNotification },
   { path: '/view-notifications', name: 'View Notifications', element: ViewNotification },
   { path: '/notifications', name: 'Notifications', element: Notifications },
+  { path: '/exam-comments', name: 'Exam Comments', element: ExamComments },
   {
     path: '/upload-full-length-exam',
     name: 'Upload Full Length Exam',

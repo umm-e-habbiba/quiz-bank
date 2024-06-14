@@ -69,9 +69,15 @@ const _admin_nav = [
   },
   {
     component: CNavItem,
-    name: 'Comments',
+    name: 'Quiz Comments',
     to: '/comments',
     icon: <CIcon icon={cilCommentBubble} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Exam Comments',
+    to: '/exam-comments',
+    icon: <CIcon icon={cilCommentSquare} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
