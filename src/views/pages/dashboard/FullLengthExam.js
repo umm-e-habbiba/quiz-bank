@@ -63,6 +63,7 @@ const FullLengthExam = () => {
         setShowSections(true)
         setShowExamList(false)
         setExamId(id)
+        getExam(id)
         // // setStartScreen(true)
         // setTimeout(() => {
         //   setShowQues(true)
@@ -73,9 +74,9 @@ const FullLengthExam = () => {
       navigate('/login')
     }
   }, [])
-  useEffect(() => {
-    getExam()
-  }, [examId])
+  // useEffect(() => {
+  //   getExam()
+  // }, [examId])
   // useEffect(() => {
   //   getQuestionsOfSection()
   // }, [sectionValue])
@@ -89,7 +90,7 @@ const FullLengthExam = () => {
       }, 2000)
     }
   }, [quizEnd])
-  const getUserAttemptedExams = () => {
+  const getUserAttemptedExams = (id) => {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     const requestOptions = {
@@ -98,7 +99,7 @@ const FullLengthExam = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'get-test-attempt/' + userID + '/' + examId, requestOptions)
+    fetch(API_URL + 'get-test-attempt/' + userID + '/' + id, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log('user exam', result)
@@ -146,11 +147,10 @@ const FullLengthExam = () => {
         setLoader(false)
       })
   }
-  const getExam = () => {
-    if (examId) {
+  const getExam = (id) => {
+    if (id) {
       setSpinner(true)
     }
-    console.log('exam id', examId)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     const requestOptions = {
@@ -159,7 +159,7 @@ const FullLengthExam = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'uploaded-test/' + examId, requestOptions)
+    fetch(API_URL + 'uploaded-test/' + id, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log('ques detail', result)
@@ -172,7 +172,7 @@ const FullLengthExam = () => {
           //   setShowExamList(false)
           // }, 2000)
           // setFilteredQuestion(result.data.questions)
-          getUserAttemptedExams()
+          getUserAttemptedExams(id)
           setAllSections(result.data.sections)
           setUsmleStep(result.data.usmleStep)
           setTestName(result.data.testName)
@@ -734,6 +734,7 @@ const FullLengthExam = () => {
                                 id={row._id}
                                 onClick={(e) => {
                                   setExamId(e.currentTarget.id)
+                                  getExam(row._id)
                                 }}
                               >
                                 {spinner && examId == row._id ? (
@@ -1132,9 +1133,9 @@ const FullLengthExam = () => {
                   backdrop="static"
                   size="lg"
                 >
-                  <CModalBody className="p-6 flex flex-col justify-center items-center">
+                  <CModalBody className="p-9 flex flex-col justify-center items-center">
                     {/* <span className="goodluck text-5xl mt-9">Good luck on your exam! </span> */}
-                    <span className="text-5xl mt-9 mb-3">Good luck on your exam! </span>
+                    <span className="text-5xl mb-3">Good luck on your exam! </span>
                     {/* <span className="text-xl">on your exam</span> */}
                     <p className="text-base">By AJmonics</p>
                   </CModalBody>
@@ -1148,20 +1149,18 @@ const FullLengthExam = () => {
                   aria-labelledby="VerticallyCenteredExample"
                   backdrop="static"
                 >
-                  <CModalBody className="p-6 flex flex-col justify-center items-center">
+                  <CModalBody className="p-9 flex flex-col justify-center items-center">
                     {usmleStep == '1' ? (
                       percentage(quizScore, totalExamQuest) > 70 ? (
                         <>
-                          <span className="goodluck text-5xl mt-9 text-green-600">
-                            Congratulations
-                          </span>
+                          <span className="goodluck text-5xl text-green-600">Congratulations</span>
                           <span className="text-xl">
                             You passed this exam with {percentage(quizScore, totalQuest)}%
                           </span>
                         </>
                       ) : (
                         <>
-                          <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
+                          <span className="text-4xl text-red-600">Better Luck Next Time</span>
                           <span className="text-xl">
                             You failed this exam your percentage is:{' '}
                             {percentage(quizScore, totalExamQuest)}%
@@ -1171,16 +1170,14 @@ const FullLengthExam = () => {
                     ) : usmleStep == '2' ? (
                       step2Score > 191 ? (
                         <>
-                          <span className="goodluck text-5xl mt-9 text-green-600">
-                            Congratulations
-                          </span>
+                          <span className="goodluck text-5xl text-green-600">Congratulations</span>
                           <span className="text-xl">
                             You passed this exam with {percentage(step2Score, totalQuest)}%
                           </span>
                         </>
                       ) : (
                         <>
-                          <span className="text-4xl mt-9 text-red-600">Better Luck Next Time</span>
+                          <span className="text-4xl text-red-600">Better Luck Next Time</span>
                           <span className="text-xl">
                             You failed this exam your percentage is:{' '}
                             {percentage(step2Score, totalExamQuest)}%

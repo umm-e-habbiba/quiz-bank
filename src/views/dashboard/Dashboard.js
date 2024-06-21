@@ -21,6 +21,7 @@ import {
   CTableHeaderCell,
   CTableRow,
   CSpinner,
+  CWidgetStatsC,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -44,6 +45,9 @@ import {
   cilPeople,
   cilUser,
   cilUserFemale,
+  cilChartPie,
+  cilBarChart,
+  cilChartLine,
 } from '@coreui/icons'
 import { API_URL } from 'src/store'
 
@@ -272,71 +276,115 @@ const Dashboard = () => {
                       <div className="pt-3">
                         {allQuiz && allQuiz.length > 0 ? (
                           <>
-                            <h4 className="my-2">Last attempted quizzes</h4>
-                            {allQuiz.slice(Math.max(allQuiz.length - 5, 0)).map((quiz, idx) => (
-                              <div className="progress-group mb-4" key={idx}>
-                                <div className="progress-group-prepend">
-                                  <span className="text-body-secondary small mr-2">
-                                    {moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
-                                  </span>
-                                </div>
-                                <div className="progress-group-bars">
-                                  <CProgress
-                                    height={10}
-                                    // bg-[#6261CC] text-white hover:bg-[#484796]
-                                    // color="#6261CC"
-                                    color="primary"
-                                    value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
-                                  >
-                                    <CProgressBar>
-                                      {Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%
-                                    </CProgressBar>
-                                  </CProgress>
-                                  {/* <CProgress
-                              height={10}
-                              color="info"
-                              value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
-                            /> */}
-                                </div>
-                              </div>
-                            ))}
+                            <h4 className="my-2 text-xl">Last attempted quizzes</h4>
+                            <CRow>
+                              {allQuiz
+                                .slice(Math.max(allQuiz.length - 4, 0))
+                                .sort((a, b) => {
+                                  return (
+                                    new Date(b.createdAt).getTime() -
+                                    new Date(a.createdAt).getTime()
+                                  )
+                                })
+                                .map((quiz, idx) => (
+                                  //   <div className="progress-group mb-4" key={idx}>
+                                  //     <div className="progress-group-prepend">
+                                  //       <span className="text-body-secondary small mr-2">
+                                  //         {moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                  //       </span>
+                                  //     </div>
+                                  //     <div className="progress-group-bars">
+                                  //       <CProgress
+                                  //         height={10}
+                                  //         // bg-[#6261CC] text-white hover:bg-[#484796]
+                                  //         // color="#6261CC"
+                                  //         color="primary"
+                                  //         value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
+                                  //       >
+                                  //         <CProgressBar>
+                                  //           {Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%
+                                  //         </CProgressBar>
+                                  //       </CProgress>
+                                  //       {/* <CProgress
+                                  //   height={10}
+                                  //   color="info"
+                                  //   value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
+                                  // /> */}
+                                  //     </div>
+                                  //   </div>
+                                  <CCol xs={3} key={idx}>
+                                    <CWidgetStatsC
+                                      className="mb-3 text-[#6261CC]"
+                                      icon={<CIcon icon={cilChartLine} height={26} />}
+                                      progress={{
+                                        value: Math.round(
+                                          (100 * quiz.obtainedScore) / quiz.totalScore,
+                                        ),
+                                        color: 'primary',
+                                      }}
+                                      text={`${Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%`}
+                                      title={moment(quiz.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                      value={`${Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}%`}
+                                    />
+                                  </CCol>
+                                ))}
+                            </CRow>
                           </>
                         ) : (
-                          <p>No Quizzes attempted yet</p>
+                          <p className="text-center mb-3">No Quizzes attempted yet</p>
                         )}
+                        <hr />
                         {allExam && allExam.length > 0 ? (
                           <>
-                            <h4 className="my-2">Last attempted exams</h4>
-                            {allExam.slice(Math.max(allExam.length - 5, 0)).map((exam, idx) => (
-                              <div className="progress-group mb-4" key={idx}>
-                                <div className="progress-group-prepend">
-                                  <span className="text-body-secondary small mr-2">
-                                    {moment(exam.createdAt).format('DD MMMM YYYY, h:mm a')}
-                                  </span>
-                                </div>
-                                <div className="progress-group-bars">
-                                  <CProgress
-                                    height={10}
-                                    // bg-[#6261CC] text-white hover:bg-[#484796]
-                                    // color="#6261CC"
-                                    color="primary"
-                                    value={Math.round((100 * exam.obtainedScore) / exam.totalScore)}
-                                  >
-                                    <CProgressBar>
-                                      {Math.round((100 * exam.obtainedScore) / exam.totalScore)}%
-                                    </CProgressBar>
-                                  </CProgress>
-                                  {/* <CProgress
-                              height={10}
-                              color="info"
-                              value={Math.round((100 * quiz.obtainedScore) / quiz.totalScore)}
-                            /> */}
-                                </div>
-                              </div>
-                            ))}
+                            <h4 className="my-2 text-xl">Last attempted exams</h4>
+                            <CRow>
+                              {allExam
+                                .slice(Math.max(allExam.length - 4, 0))
+                                .sort((a, b) => {
+                                  return (
+                                    new Date(b.createdAt).getTime() -
+                                    new Date(a.createdAt).getTime()
+                                  )
+                                })
+                                .map((exam, idx) => (
+                                  // <div className="progress-group mb-4" key={idx}>
+                                  //   <div className="progress-group-prepend">
+                                  //     <span className="text-body-secondary small mr-2">
+                                  //       {moment(exam.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                  //     </span>
+                                  //   </div>
+                                  //   <div className="progress-group-bars">
+                                  //     <CProgress
+                                  //       height={10}
+                                  //       color="primary"
+                                  //       value={Math.round((100 * exam.obtainedScore) / exam.totalScore)}
+                                  //     >
+                                  //       <CProgressBar>
+                                  //         {Math.round((100 * exam.obtainedScore) / exam.totalScore)}%
+                                  //       </CProgressBar>
+                                  //     </CProgress>
+                                  //   </div>
+                                  // </div>
+                                  <CCol xs={3} key={idx}>
+                                    <CWidgetStatsC
+                                      className="mb-3 text-[#6261CC]"
+                                      icon={<CIcon icon={cilChartPie} height={26} />}
+                                      progress={{
+                                        value: Math.round(
+                                          (100 * exam.obtainedScore) / exam.totalScore,
+                                        ),
+                                        color: 'primary',
+                                      }}
+                                      text={`${Math.round((100 * exam.obtainedScore) / exam.totalScore)}%`}
+                                      title={moment(exam.createdAt).format('DD MMMM YYYY, h:mm a')}
+                                      value={`${Math.round((100 * exam.obtainedScore) / exam.totalScore)}%`}
+                                    />
+                                  </CCol>
+                                ))}
+                            </CRow>
                           </>
                         ) : (
-                          <p>No Exams attempted yet</p>
+                          <p className="text-center my-3">No Exams attempted yet</p>
                         )}
                         {/* {progressGroupExample1.map((item, index) => (
                       <div className="progress-group mb-4" key={index}>

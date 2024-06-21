@@ -170,6 +170,8 @@ const ExamComments = () => {
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
+        } else {
+          setAllQuestion([])
         }
       })
       .catch((error) => {
@@ -306,7 +308,7 @@ const ExamComments = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'edit-question/' + examId + '/' + questionId, requestOptions)
+    fetch(API_URL + 'edit-question/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
@@ -470,7 +472,7 @@ const ExamComments = () => {
       headers: myHeaders,
       redirect: 'follow',
     }
-    fetch(API_URL + 'delete-comment/' + examId + '/' + questionId + '/' + commentId, requestOptions)
+    fetch(API_URL + 'delete-comment/' + questionId + '/' + commentId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
@@ -521,7 +523,7 @@ const ExamComments = () => {
                   {allQuestion && allQuestion.length > 0 ? (
                     allQuestion.map((q, idx) => (
                       <CTableRow key={idx}>
-                        <CTableDataCell>{q.testName}</CTableDataCell>
+                        <CTableDataCell>{q.testId?.testName}</CTableDataCell>
                         <CTableHeaderCell>
                           <span
                             // id={q._id}
@@ -550,7 +552,7 @@ const ExamComments = () => {
                               setDetailModal(true)
                               setComments(q.comments)
                               setQuestionId(e.currentTarget.id)
-                              getQuestion(q._id, q.testId)
+                              getQuestion(q._id, q.testId?._id)
                               // console.log('view called', questionId, 'id', e.currentTarget.id)
                             }}
                           >
@@ -565,7 +567,7 @@ const ExamComments = () => {
                               setQuestionId(e.currentTarget.id)
                               setError(false)
                               setErrorMsg('')
-                              getQuestion(q._id, q.testId)
+                              getQuestion(q._id, q.testId?._id)
                             }}
                           >
                             <CIcon icon={cilPencil} />

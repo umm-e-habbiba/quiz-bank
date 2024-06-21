@@ -140,9 +140,9 @@ const ManageExams = () => {
   useEffect(() => {
     console.log(progress)
   }, [progress])
-  useEffect(() => {
-    getQuestion()
-  }, [questionId])
+  // useEffect(() => {
+  //   getQuestion()
+  // }, [questionId])
 
   const getAllExams = () => {
     setLoader(true)
@@ -245,9 +245,9 @@ const ManageExams = () => {
         // console.log('ques detail', result)
         if (result.data) {
           console.log('getExam', result)
-          setAllQuestions(result.data.questions)
+          setAllQuestions(result.data?.questions)
           // setAllSections(result.data.sections)
-          setUsmleStep(result.data.usmleStep)
+          setUsmleStep(result.data?.usmleStep)
           // setTestName(result.data.testName)
           // setTotalExamQuest(result.data.totalQuestions)
           setDetailLoader(false)
@@ -255,7 +255,8 @@ const ManageExams = () => {
       })
       .catch((error) => console.log('error', error))
   }
-  const getQuestion = () => {
+  const getQuestion = (qId) => {
+    setQuestionId(qId)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     const requestOptions = {
@@ -264,7 +265,7 @@ const ManageExams = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'get-question/' + examId + '/' + questionId, requestOptions)
+    fetch(API_URL + 'get-question/' + examId + '/' + qId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log('ques detail', result)
@@ -348,7 +349,7 @@ const ManageExams = () => {
       redirect: 'follow',
     }
 
-    fetch(API_URL + 'edit-question/' + examId + '/' + questionId, requestOptions)
+    fetch(API_URL + 'edit-question/' + questionId, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         // console.log(result)
@@ -596,8 +597,8 @@ const ManageExams = () => {
                                     <span
                                       dangerouslySetInnerHTML={{
                                         __html:
-                                          q.question.length > 100
-                                            ? q.question.substring(0, 100) + '...'
+                                          q.question?.length > 100
+                                            ? q.question?.substring(0, 100) + '...'
                                             : q.question,
                                       }}
                                     >
@@ -613,7 +614,8 @@ const ManageExams = () => {
                                       id={q._id}
                                       onClick={(e) => {
                                         setViewModal(true)
-                                        setQuestionId(e.currentTarget.id)
+                                        // setQuestionId(e.target.id)
+                                        getQuestion(q._id)
                                       }}
                                       title="View"
                                     >
@@ -625,7 +627,8 @@ const ManageExams = () => {
                                       id={q._id}
                                       onClick={(e) => {
                                         setEditModal(true)
-                                        setQuestionId(e.currentTarget.id)
+                                        // setQuestionId(e.target.id)
+                                        getQuestion(q._id)
                                         setErrorr(false)
                                         setErrorMsg('')
                                       }}
