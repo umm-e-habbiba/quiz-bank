@@ -218,7 +218,7 @@ const QuizHeader = ({
     })
     let url
     if (location.pathname.includes('full-length-exam')) {
-      url = `${API_URL}comment-in-test/${examId}/${currentQuestionId}`
+      url = `${API_URL}comment-in-test/${currentQuestionId}`
     } else {
       url = `${API_URL}add-comment/${currentQuestionId}`
     }
