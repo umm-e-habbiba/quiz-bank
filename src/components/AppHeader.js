@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { CContainer, CHeader, CHeaderNav, CHeaderToggler, CNavLink, CNavItem } from '@coreui/react'
@@ -13,6 +13,7 @@ const AppHeader = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const role = localStorage.getItem('user') || ''
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -42,7 +43,7 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
           <CHeaderNav className="d-none d-md-flex">
             <CNavItem>
-              <CNavLink to="/" as={NavLink}>
+              <CNavLink to={`${role == 'admin' ? '/admin' : '/'}`} as={NavLink}>
                 Dashboard
               </CNavLink>
             </CNavItem>

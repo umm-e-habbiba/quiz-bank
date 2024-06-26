@@ -174,7 +174,7 @@ const UploadFullLengthExam = () => {
                 {...register('testDesc', { required: true })}
                 feedback="Exam description is required"
                 invalid={errors.testDesc ? true : false}
-                className=" text-[#252b36] placeholder:text-[#252b36]"
+                // className=" text-[#252b36] placeholder:text-[#252b36]"
               />
             </CCol>
           </CRow>
