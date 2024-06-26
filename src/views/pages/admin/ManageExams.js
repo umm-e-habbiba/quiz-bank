@@ -138,6 +138,9 @@ const ManageExams = () => {
     }
   }, [])
   useEffect(() => {
+    console.log('question array changed')
+  }, [allQuestions])
+  useEffect(() => {
     console.log(progress)
   }, [progress])
   // useEffect(() => {
@@ -354,12 +357,15 @@ const ManageExams = () => {
       .then((result) => {
         // console.log(result)
         if (result.data) {
+          const valueIndex = allQuestions.findIndex((obj) => obj._id == questionId)
+          allQuestions[valueIndex] = result.data
           setEditModal(false)
           setIsLoading(false)
           // getAllExams()
           // setShowAllExams(true)
           // setExamDetail(false)
-          getExam(examId)
+          // getExam(examId)
+
           setQuestionId('')
           setImage('')
           setImage2('')
