@@ -4,7 +4,8 @@ import QuizHeader from 'src/components/quiz/QuizHeader'
 import { useNavigate, Link, useParams } from 'react-router-dom'
 import { API_URL } from 'src/store'
 import ReviewQuizFooter from 'src/components/quiz/ReviewQuizFooter'
-import markIcon from '../../../assets/images/mark-flag.png'
+// import markIcon from '../../../assets/images/mark-flag.png'
+import markIcon from '../../../assets/images/mark-icon.svg'
 import { GoChevronRight } from 'react-icons/go'
 const ReviewQuiz = () => {
   const navigate = useNavigate()
