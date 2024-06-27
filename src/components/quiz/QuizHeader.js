@@ -200,7 +200,12 @@ const QuizHeader = ({
     setIsLoading(true)
 
     // Get the ID of the current question
-    const currentQuestionId = filteredArray[currentQuestion]._id
+    let currentQuestionId = ''
+    if (location.pathname.includes('review-quiz')) {
+      currentQuestionId = filteredArray[currentQuestion].questionId?._id
+    } else {
+      currentQuestionId = filteredArray[currentQuestion]._id
+    }
 
     if (!currentQuestionId) {
       setError(true)
@@ -246,6 +251,7 @@ const QuizHeader = ({
         } else {
           setError(true)
           setErrorMsg(result.message)
+          setIsLoading(false)
         }
       })
       .catch((error) => {
