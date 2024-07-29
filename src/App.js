@@ -34,6 +34,10 @@ import Notifications from './views/pages/dashboard/Notifications'
 import AddNotification from './views/pages/admin/AddNotification'
 import ViewNotification from './views/pages/admin/ViewNotification'
 import ExamComments from './views/pages/admin/ExamComments'
+import ManageTesterQues from './views/pages/tester/ManageTesterQues'
+import ManageTesterExam from './views/pages/tester/ManageTesterExam'
+import ViewTesterQues from './views/pages/admin/ViewTesterQues'
+import AddTesterUser from './views/pages/admin/AddTesterUser'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -131,6 +135,15 @@ const App = () => {
             name="Forget Password"
             element={<ForgetPassword />}
           />
+          <Route path="/add-testing-user" name="Add Testing User" element={<AddTesterUser />} />
+          <Route
+            path="/view-tester-ques"
+            name="View Tester Questions"
+            element={<ViewTesterQues />}
+          />
+          {/* tester routes */}
+          <Route path="/tester-questions" name="Manage Questions" element={<ManageTesterQues />} />
+          <Route path="/tester-exam" name="Manage Exam" element={<ManageTesterExam />} />
         </Routes>
       </Suspense>
     </Router>

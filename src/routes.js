@@ -24,6 +24,10 @@ import Notifications from './views/pages/dashboard/Notifications'
 import AddNotification from './views/pages/admin/AddNotification'
 import ViewNotification from './views/pages/admin/ViewNotification'
 import ExamComments from './views/pages/admin/ExamComments'
+import ManageTesterQues from './views/pages/tester/ManageTesterQues'
+import ManageTesterExam from './views/pages/tester/ManageTesterExam'
+import AddTesterUser from './views/pages/admin/AddTesterUser'
+import ViewTesterQues from './views/pages/admin/ViewTesterQues'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -54,13 +58,16 @@ const routes = [
   { path: '/manage-user-questions', name: 'Questions By Users', element: ManageUserQuestions },
   { path: '/manage-notifications', name: 'Manage Notifications', element: AddNotification },
   { path: '/view-notifications', name: 'View Notifications', element: ViewNotification },
-  { path: '/notifications', name: 'Notifications', element: Notifications },
-  { path: '/exam-comments', name: 'Exam Comments', element: ExamComments },
+  { path: '/add-testing-user', name: 'Add Testing User', element: AddTesterUser },
+  { path: '/view-tester-ques', name: 'View Tester Questions', element: ViewTesterQues },
   {
     path: '/upload-full-length-exam',
     name: 'Upload Full Length Exam',
     element: UploadFullLengthExam,
   },
+  // tester routes
+  { path: '/tester-questions', name: 'Manage Questions', element: ManageTesterQues },
+  { path: '/tester-exam', name: 'Manage Exam', element: ManageTesterExam },
 ]
 
 export default routes
