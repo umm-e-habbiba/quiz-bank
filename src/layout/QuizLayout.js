@@ -448,14 +448,7 @@ const QuizLayout = () => {
   }
 
   const startexam = async () => {
-    // console.log(
-    //   'total Questions',
-    //   totalQuest,
-    //   'filtererd array',
-    //   filteredQuestion,
-    //   'bakcup array',
-    //   filteredQuestionBackup,
-    // )
+    console.log('total Questions', totalQuest)
     let start = true
     if (totalQuest < 1) {
       start = false
@@ -466,6 +459,14 @@ const QuizLayout = () => {
         setErrorMsg('')
       }, 3000)
       // setDisableExam(true)
+    } else if (totalQuest > 100) {
+      start = false
+      setError(true)
+      setErrorMsg('Quiz should be of maximum 100 questions.')
+      setTimeout(() => {
+        setError(false)
+        setErrorMsg('')
+      }, 3000)
     } else if (totalQuest > filteredQuestionBackup.length) {
       start = false
       setError(true)
@@ -853,6 +854,15 @@ const QuizLayout = () => {
               onSubmit={handleSubmit(setQues)}
               className="flex justify-center items-center flex-col"
             > */}
+                    <p className="text-4xl font-bold text-center">
+                      Create Your Own Quiz with Zap70
+                    </p>
+                    <p className="text-base text-center mx-12">
+                      You can create quizzes of different questions that will boost your learning.
+                    </p>
+                    <p className="text-center text-sm mb-4">
+                      Note: (Quiz should be of maximum 100 questions)
+                    </p>
                     <div className="selector-margin-1 flex flex-col justify-center items-start">
                       {totalRows.map((row, id) => (
                         <div

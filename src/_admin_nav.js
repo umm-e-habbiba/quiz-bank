@@ -29,6 +29,7 @@ import {
   cilInfo,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { RiEyeCloseFill } from 'react-icons/ri'
 
 const _admin_nav = [
   {
@@ -102,6 +103,18 @@ const _admin_nav = [
     name: 'Notifications',
     to: '/manage-notifications',
     icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Add Testing User',
+    to: '/add-testing-user',
+    icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'View Tester Questions',
+    to: '/view-tester-ques',
+    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
 ]
 

@@ -71,7 +71,8 @@ const Login = () => {
         setIsLoading(false)
         if (result.token) {
           localStorage.setItem('token', result.token)
-          if (result.message === 'Login successful as user') {
+          // if (result.message === 'Login successful as user') {
+          if (result.role === 'User') {
             setSuccess(true)
             setTimeout(() => {
               setSuccess(false)
@@ -80,12 +81,21 @@ const Login = () => {
             localStorage.setItem('user', 'user')
             localStorage.setItem('userId', result.userId)
           }
-          if (result.message === 'Login successful as admin') {
+          // if (result.message === 'Login successful as admin') {
+          if (result.role === 'Admin') {
             localStorage.setItem('user', 'admin')
             setSuccess(true)
             setTimeout(() => {
               setSuccess(false)
               navigate('/admin')
+            }, 2000)
+          }
+          if (result.role === 'Tester') {
+            localStorage.setItem('user', 'tester')
+            setSuccess(true)
+            setTimeout(() => {
+              setSuccess(false)
+              navigate('/tester')
             }, 2000)
           }
         }
