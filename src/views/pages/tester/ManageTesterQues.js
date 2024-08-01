@@ -1,7 +1,12 @@
 import React from 'react'
+import TesterLayout from 'src/layout/TesterLayout'
 
 const ManageTesterQues = () => {
-  return <div>ManageTesterQues</div>
+  return (
+    <TesterLayout>
+      <div>ManageTesterQues</div>
+    </TesterLayout>
+  )
 }
 
 export default ManageTesterQues

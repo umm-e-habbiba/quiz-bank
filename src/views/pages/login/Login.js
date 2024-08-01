@@ -95,7 +95,7 @@ const Login = () => {
             setSuccess(true)
             setTimeout(() => {
               setSuccess(false)
-              navigate('/tester')
+              navigate('/tester-questions')
             }, 2000)
           }
         }

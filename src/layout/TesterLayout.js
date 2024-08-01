@@ -3,7 +3,7 @@ import { AppContent, AppHeader } from '../components/index'
 import { useNavigate } from 'react-router-dom'
 import TesterSidebar from 'src/components/tester/TesterSidebar'
 
-const TesterLayout = () => {
+const TesterLayout = ({ children }) => {
   const navigate = useNavigate()
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const role = localStorage.getItem('user') || ''
