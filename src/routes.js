@@ -28,6 +28,7 @@ import ManageTesterQues from './views/pages/tester/ManageTesterQues'
 import ManageTesterExam from './views/pages/tester/ManageTesterExam'
 import AddTesterUser from './views/pages/admin/AddTesterUser'
 import ViewTesterQues from './views/pages/admin/ViewTesterQues'
+import ManageTestingUsers from './views/pages/admin/ManageTestingUsers'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 
@@ -60,6 +61,7 @@ const routes = [
   { path: '/view-notifications', name: 'View Notifications', element: ViewNotification },
   { path: '/add-testing-user', name: 'Add Testing User', element: AddTesterUser },
   { path: '/view-tester-ques', name: 'View Tester Questions', element: ViewTesterQues },
+  { path: '/manage-testing-user', name: 'Manage Doc/Students', element: ManageTestingUsers },
   {
     path: '/upload-full-length-exam',
     name: 'Upload Full Length Exam',

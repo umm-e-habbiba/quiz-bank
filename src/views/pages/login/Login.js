@@ -92,6 +92,16 @@ const Login = () => {
           }
           if (result.role === 'Tester') {
             localStorage.setItem('user', 'tester')
+            // localStorage.setItem('userId', result.userId)
+            sessionStorage.setItem('userId', result.userId)
+            const stepsAllowed = result.User.stepsAllowed
+            const subjectsAllowed = result.User.subjectsAllowed
+            const testerName = result.User.firstName // This should be an array
+
+            // Store the data in sessionStorage as JSON strings
+            sessionStorage.setItem('stepsAllowed', JSON.stringify(stepsAllowed))
+            sessionStorage.setItem('subjectsAllowed', JSON.stringify(subjectsAllowed))
+            sessionStorage.setItem('testerName', testerName)
             setSuccess(true)
             setTimeout(() => {
               setSuccess(false)

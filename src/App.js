@@ -38,6 +38,7 @@ import ManageTesterQues from './views/pages/tester/ManageTesterQues'
 import ManageTesterExam from './views/pages/tester/ManageTesterExam'
 import ViewTesterQues from './views/pages/admin/ViewTesterQues'
 import AddTesterUser from './views/pages/admin/AddTesterUser'
+import ManageTestingUsers from './views/pages/admin/ManageTestingUsers'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
@@ -140,6 +141,11 @@ const App = () => {
             path="/view-tester-ques"
             name="View Tester Questions"
             element={<ViewTesterQues />}
+          />
+          <Route
+            path="/manage-testing-user"
+            name="View Tester Questions"
+            element={<ManageTestingUsers />}
           />
           {/* tester routes */}
           <Route path="/tester-questions" name="Manage Questions" element={<ManageTesterQues />} />
