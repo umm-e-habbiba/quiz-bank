@@ -216,11 +216,7 @@ const PreviousTests = () => {
                             </CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center" scope="row">
                               <Link to={`/review-quiz/${q._id}`}>
-                                <CButton
-                                  color="success"
-                                  className="text-white"
-                                // id={q._id}
-                                >
+                                <CButton color="success" className="text-white">
                                   Review
                                 </CButton>
                               </Link>
@@ -249,7 +245,6 @@ const PreviousTests = () => {
                 </CTable>
               )}
             </CCardBody>
-
           </CCard>
           {/* delete modal */}
           <CModal

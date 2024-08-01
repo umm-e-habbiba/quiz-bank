@@ -123,7 +123,6 @@ const _admin_nav = [
     to: '/view-tester-ques',
     icon: <CIcon icon={cilList} customClassName="nav-icon" />,
   },
-
 ]
 
 export default _admin_nav

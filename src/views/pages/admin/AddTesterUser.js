@@ -47,6 +47,7 @@ const AddTesterUser = () => {
   const [success, setSuccess] = useState(false)
   const [successMsg, setSuccessMsg] = useState('')
   const [loader, setLoader] = useState(false)
+  const [subjectsSelected, setSubjectsSelected] = useState([])
   const [step1subjects, setStep1Subjects] = useState(
     step1Categories.map((cate) => ({
       name: cate,
@@ -107,6 +108,7 @@ const AddTesterUser = () => {
         allStepsFinal.map((sub) => sub),
       )
     }
+    setSubjectsSelected([])
   }, [getValues('stepsAllowed')])
 
   const removeDuplicates = (arr) => {
@@ -118,14 +120,15 @@ const AddTesterUser = () => {
       'subjectsAllowed',
       selectedList.map((sub) => sub.name),
     )
+    setSubjectsSelected(selectedList)
   }
 
   const onRemove = (selectedList, removedItem) => {
     console.log('selectedList', selectedList, removedItem)
+    setSubjectsSelected(selectedList)
   }
 
   const addTesterUser = (data) => {
-    console.log(data)
     setLoader(true)
     setError(false)
     setErrorMsg('')
@@ -157,6 +160,7 @@ const AddTesterUser = () => {
           reset({})
           setSuccess(true)
           setSuccessMsg(result.message)
+          setSubjectsSelected([])
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
@@ -230,6 +234,10 @@ const AddTesterUser = () => {
   useEffect(() => {
     getAllUsers()
   }, [])
+
+  useEffect(() => {
+    setValue('subjectsAllowed', [])
+  }, [getValues('stepsAllowed')])
   return (
     <AdminLayout>
       <div className="mx-4">
@@ -324,12 +332,11 @@ const AddTesterUser = () => {
                           : []
                   } // Options to display in the dropdown
                   showCheckbox={true}
-                  // selectedValues={selectedValue} // Preselected value to persist in dropdown
+                  selectedValues={subjectsSelected} // Preselected value to persist in dropdown
                   onSelect={onSelect} // Function will trigger on select event
-                  onRemove={onRemove} 
-                  displayValue="name" 
+                  onRemove={onRemove}
+                  displayValue="name"
                   className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-800"
-
                 />
               )}
             </CCol>
