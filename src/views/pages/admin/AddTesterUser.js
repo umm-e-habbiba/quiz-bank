@@ -241,7 +241,7 @@ const AddTesterUser = () => {
   return (
     <AdminLayout>
       <div className="mx-4">
-        <p className="text-2xl font-semibold">Add Testing User</p>
+        <p className="text-2xl font-semibold">Add Doc/Students</p>
 
         <CForm onSubmit={handleSubmit(addTesterUser)} className="my-3">
           <CRow className="mb-3">
@@ -345,7 +345,7 @@ const AddTesterUser = () => {
           {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
 
           <CButton color="primary" type="submit" disabled={loader ? true : false}>
-            {loader ? <CSpinner color="light" size="sm" /> : 'Add Tester User'}
+            {loader ? <CSpinner color="light" size="sm" /> : 'Add Doc/Student'}
           </CButton>
         </CForm>
       </div>

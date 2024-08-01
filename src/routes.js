@@ -59,7 +59,7 @@ const routes = [
   { path: '/manage-user-questions', name: 'Questions By Users', element: ManageUserQuestions },
   { path: '/manage-notifications', name: 'Manage Notifications', element: AddNotification },
   { path: '/view-notifications', name: 'View Notifications', element: ViewNotification },
-  { path: '/add-testing-user', name: 'Add Testing User', element: AddTesterUser },
+  { path: '/add-testing-user', name: 'Add Doc/Students', element: AddTesterUser },
   { path: '/view-tester-ques', name: 'View Tester Questions', element: ViewTesterQues },
   { path: '/manage-testing-user', name: 'Manage Doc/Students', element: ManageTestingUsers },
   {

@@ -104,24 +104,30 @@ const _admin_nav = [
     to: '/manage-notifications',
     icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
   },
-
   {
-    component: CNavItem,
-    name: 'Add User',
-    to: '/add-testing-user',
+    component: CNavGroup,
+    name: 'Doc/Students',
     icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'Manage Doc/Sutdents',
-    to: '/manage-testing-user',
-    icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
-  },
-  {
-    component: CNavItem,
-    name: 'View Tested Questions',
-    to: '/view-tester-ques',
-    icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Add Doc/Students',
+        to: '/add-testing-user',
+        // icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Manage Doc/Students',
+        to: '/manage-testing-user',
+        // icon: <CIcon icon={cilUserPlus} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'View Tested Questions',
+        to: '/view-tester-ques',
+        // icon: <CIcon icon={cilList} customClassName="nav-icon" />,
+      },
+    ],
   },
 ]
 
