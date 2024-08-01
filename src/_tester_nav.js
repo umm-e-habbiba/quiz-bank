@@ -10,12 +10,12 @@ const _tester_nav = [
     to: '/tester-questions',
     icon: <CIcon icon={cilListRich} customClassName="nav-icon" />,
   },
-  {
-    component: CNavItem,
-    name: 'Manage Exam',
-    to: '/tester-exam',
-    icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
-  },
+  // {
+  //   component: CNavItem,
+  //   name: 'Manage Exam',
+  //   to: '/tester-exam',
+  //   icon: <CIcon icon={cilListFilter} customClassName="nav-icon" />,
+  // },
 ]
 
 export default _tester_nav

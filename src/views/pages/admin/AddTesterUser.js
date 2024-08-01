@@ -36,7 +36,8 @@ import { useForm } from 'react-hook-form'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import AdminLayout from 'src/layout/AdminLayout'
 import Multiselect from 'multiselect-react-dropdown'
-
+import { RiEyeLine } from 'react-icons/ri'
+import axios from 'axios'
 const AddTesterUser = () => {
   const navigate = useNavigate()
   const [token, setToken] = useState(localStorage.getItem('token') || '')
@@ -171,10 +172,69 @@ const AddTesterUser = () => {
         setLoader(false)
       })
   }
+
+  const [users, setUsers] = useState([])
+  const [progress, setProgress] = useState(0)
+
+  const getAllUsers = () => {
+    setLoader(true)
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    const requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'get-tester-users', requestOptions)
+      .then((response) => {
+        const contentLength = response.headers.get('content-length')
+        let loaded = 0
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              const reader = response.body.getReader()
+              read()
+              function read() {
+                reader.read().then((progressEvent) => {
+                  if (progressEvent.done) {
+                    controller.close()
+                    return
+                  }
+                  loaded += progressEvent.value.byteLength
+                  const percentageComplete = Math.round((loaded / contentLength) * 100)
+                  setProgress(percentageComplete)
+                  controller.enqueue(progressEvent.value)
+                  read()
+                })
+              }
+            },
+          }),
+        )
+      })
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('response data:', result)
+
+        setLoader(false)
+        if (result.data) {
+          setUsers(result.data)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        setLoader(false)
+      })
+  }
+
+  useEffect(() => {
+    getAllUsers()
+  }, [])
   return (
     <AdminLayout>
       <div className="mx-4">
-        <p className="text-2xl">Add Tester User</p>
+        <p className="text-2xl font-semibold">Add Testing User</p>
+
         <CForm onSubmit={handleSubmit(addTesterUser)} className="my-3">
           <CRow className="mb-3">
             <CCol md={12}>
@@ -266,8 +326,10 @@ const AddTesterUser = () => {
                   showCheckbox={true}
                   // selectedValues={selectedValue} // Preselected value to persist in dropdown
                   onSelect={onSelect} // Function will trigger on select event
-                  onRemove={onRemove} // Function will trigger on remove event
-                  displayValue="name" // Property name to display in the dropdown options
+                  onRemove={onRemove} 
+                  displayValue="name" 
+                  className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-800"
+
                 />
               )}
             </CCol>

@@ -3,6 +3,8 @@ export const step1Categories = [
   'Immunology',
   'Histology',
   'Anatomy',
+  'Pathology',
+  'Pathophysiology',
   'Physiology',
   'Embryology',
   'Biochemistry',

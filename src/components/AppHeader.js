@@ -42,9 +42,7 @@ const AppHeader = () => {
           <CIcon icon={cilMenu} size="lg" />
           <CHeaderNav className="d-none d-md-flex">
             <CNavItem>
-              <CNavLink to="/" as={NavLink}>
-                Dashboard
-              </CNavLink>
+              <CNavLink>Dashboard</CNavLink>
             </CNavItem>
           </CHeaderNav>
         </CHeaderToggler>
