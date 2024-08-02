@@ -458,6 +458,9 @@ table th {
     background-color: #39f !important;
   }
 }
+.sidebar-nav .nav-group-items .nav-link:hover {
+  background-color: #39f !important;
+}
 
 @media (max-width: $breakpoint-mobile) {
   .selector-margin-1 {

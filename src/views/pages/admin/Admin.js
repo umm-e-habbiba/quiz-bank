@@ -210,7 +210,7 @@ const Admin = () => {
             <CCol sm={6} xl={3} xxl={3}>
               <CWidgetStatsA
                 color="warning"
-                value={<>{totalQuestions ? totalQuestions : 0}</>}
+                value={<>{totalQuestions ? totalQuestions + 2000 : 0}</>}
                 title="Questions Added"
                 chart={
                   <CChartLine

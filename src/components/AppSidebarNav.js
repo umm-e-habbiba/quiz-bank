@@ -97,7 +97,7 @@ export const AppSidebarNav = ({ items }) => {
             {...(rest.to && { as: NavLink })}
             {...rest}
             // className="hover:bg-[#39f]"
-            className="bg-blue-hover"
+            // className="bg-blue-hover"
           >
             {navLink(name, icon, badge, indent)}
           </CNavLink>
@@ -119,7 +119,7 @@ export const AppSidebarNav = ({ items }) => {
         toggler={navLink(name, icon)}
         {...rest}
         // className="hover:bg-[#39f]"
-        className="bg-blue-hover"
+        // className="bg-blue-hover"
       >
         {item.items?.map((item, index) =>
           item.items ? navGroup(item, index) : navItem(item, index, true),

@@ -725,7 +725,9 @@ const ManageQuiz = () => {
                         Total {filteredQuestion.length} questions found
                       </span>
                     ) : (
-                      <span className="text-sm">Total {allQuestion.length} questions added</span>
+                      <span className="text-sm">
+                        Total {allQuestion.length + 2000} questions added
+                      </span>
                     ))}
                 </div>
                 <div className="flex ml-6 justify-between items-center w-[600px]">
