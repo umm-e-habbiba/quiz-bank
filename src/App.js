@@ -136,7 +136,7 @@ const App = () => {
             name="Forget Password"
             element={<ForgetPassword />}
           />
-          <Route path="/add-testing-user" name="Add Testing User" element={<AddTesterUser />} />
+          <Route path="/add-testing-user" name="Add Doc/Students" element={<AddTesterUser />} />
           <Route
             path="/view-tester-ques"
             name="View Tester Questions"
