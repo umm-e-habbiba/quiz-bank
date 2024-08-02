@@ -68,6 +68,9 @@ export const step2Categories = [
   'Endocrinology',
   'Ophthalmology',
   'Epidemiology',
+  'Ambulatory Medicine',
+  'Clinical Neurology',
+  'Medicine',
 ]
 
 export const step3Categories = [

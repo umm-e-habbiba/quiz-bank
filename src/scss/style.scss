@@ -453,6 +453,12 @@ table th {
   border-radius: 10px;
 }
 
+.bg-blue-hover {
+  &:hover {
+    background-color: #39f !important;
+  }
+}
+
 @media (max-width: $breakpoint-mobile) {
   .selector-margin-1 {
     margin: 0 0 0 16px;

@@ -669,8 +669,8 @@ const ManageTesterQues = () => {
                     )}
                   </div>
                 </div> */}
-                <CCardHeader className="flex justify-between items-center">
-                  <div className="flex">
+                <CCardHeader>
+                  <div className="flex flex-col lg:flex-row">
                     <div className="flex flex-col">
                       <strong>Manage Questions</strong>
                       {!loader &&
@@ -690,7 +690,7 @@ const ManageTesterQues = () => {
                         allowedSteps.includes('1') ||
                         allowedSteps.includes('2') ||
                         allowedSteps.includes('3')) && (
-                        <div className="flex ml-6 justify-between items-center w-[600px]">
+                        <div className="flex ml-0 lg:ml-6 justify-center items-center w-full lg:w-[600px] flex-col lg:flex-row mt-2 lg:mt-0">
                           <CFormSelect
                             aria-label="usmle step"
                             id="usmleStep"
@@ -711,13 +711,13 @@ const ManageTesterQues = () => {
                               setFilterUsmle(e.target.value)
                               setFilterCategory('')
                             }}
-                            className="mr-3 w-full"
+                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
                           />
                           <CFormSelect
                             aria-label="usmle category"
                             id="usmleCategory"
                             defaultValue=""
-                            className="mr-3 w-full"
+                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
                             value={filterCategory}
                             onChange={(e) => setFilterCategory(e.target.value)}
                           >
@@ -729,16 +729,16 @@ const ManageTesterQues = () => {
                             ))}
                           </CFormSelect>
                           <CButton
-                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] flex justify-center items-center"
+                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
                             onClick={() => {
                               getFilteredQuestions()
                             }}
                           >
-                            <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
+                            <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
                           </CButton>
                           {(filterUsmle || filterCategory) && (
                             <CButton
-                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-3 flex"
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-0 lg:ml-3 mb-2 lg:mb-0 w-full lg:w-auto flex justify-center items-center"
                               onClick={() => {
                                 setFilterUsmle('')
                                 setFilterCategory('')
@@ -759,8 +759,8 @@ const ManageTesterQues = () => {
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : ( */}
-                  <CTable striped className="admin-tables">
-                    <CTableHead>
+                  <CTable striped className="admin-tables text-sm lg:text-base" responsive>
+                    <CTableHead className="text-sm lg:text-base">
                       <CTableRow>
                         {showCheck && (
                           <CTableHeaderCell scope="col">
