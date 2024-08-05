@@ -560,8 +560,16 @@ const ManageTesterQues = () => {
     fetch(API_URL + 'tester/mark-correct/' + id, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log('result', result)
-        getAllQuest()
+        console.log('result', result, 'ques array', allQuestion)
+        // getAllQuest()
+        const indexToReplace = allQuestion.findIndex((ques) => ques._id === id)
+
+        if (indexToReplace !== -1) {
+          const updatedQuestionSplice = [...allQuestion]
+          updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+          console.log(updatedQuestionSplice)
+          setAllQuestion(updatedQuestionSplice)
+        }
       })
       .catch((error) => console.log('error', error))
   }
@@ -755,7 +763,7 @@ const ManageTesterQues = () => {
                 </CCardHeader>
                 <CCardBody>
                   {/* {loader ? (
-              <div className="text-center">
+              <div className="text-center"> 
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : ( */}

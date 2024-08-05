@@ -10,7 +10,7 @@ export const step1Categories = [
   'Biochemistry',
   'Genetics',
   'General Pathology',
-  'Genreal Pharmacology',
+  'General Pharmacology',
   'Behavioral sciences',
   'Biostatistics and epidemiology',
   'Ethics',
@@ -37,6 +37,9 @@ export const step1Categories = [
 ]
 
 export const step2Categories = [
+  'Ambulatory Medicine',
+  'Clinical Neurology',
+  'Medicine',
   'Internal Medicine',
   'Surgery',
   'Pediatrics',
@@ -58,19 +61,13 @@ export const step2Categories = [
   'Cardiology',
   'Musculoskeletal',
   'Neurology',
-  'Psychiatry',
   'Gastrointestinal',
   'OB/GYN',
   'Nephrology/Urology',
-  'Dermatology',
   'Pulmonology',
   'Hematology/Oncology',
   'Endocrinology',
-  'Ophthalmology',
   'Epidemiology',
-  'Ambulatory Medicine',
-  'Clinical Neurology',
-  'Medicine',
 ]
 
 export const step3Categories = [
@@ -95,14 +92,11 @@ export const step3Categories = [
   'Cardiology',
   'Musculoskeletal',
   'Neurology',
-  'Psychiatry',
   'Gastrointestinal',
   'OB/GYN',
   'Nephrology/Urology',
-  'Dermatology',
   'Pulmonology',
   'Hematology/Oncology',
   'Endocrinology',
-  'Ophthalmology',
   'Epidemiology',
 ]

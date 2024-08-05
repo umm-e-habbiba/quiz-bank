@@ -121,9 +121,28 @@ const ManageTestingUsers = () => {
         allStepsFinal.map((sub) => sub),
       )
     } else {
-      setValue('subjectsAllowed', [])
+      // setValue('subjectsAllowed', [])
+      console.log('selected step', stepsAllowed, 'subjects allowed', subject)
+      if (stepsAllowed == 1) {
+        setValue(
+          'subjectsAllowed',
+          step1Categories.filter((x) => subject.includes(x)),
+        )
+      }
+      if (stepsAllowed == 2) {
+        setValue(
+          'subjectsAllowed',
+          step2Categories.filter((x) => subject.includes(x)),
+        )
+      }
+      if (stepsAllowed == 3) {
+        setValue(
+          'subjectsAllowed',
+          step3Categories.filter((x) => subject.includes(x)),
+        )
+      }
     }
-  }, [stepsAllowed, setValue])
+  }, [stepsAllowed])
 
   const handleStepsAllowedChange = (event) => {
     const newStep = event.target.value
@@ -214,14 +233,20 @@ const ManageTestingUsers = () => {
 
   const handleEdit = (user) => {
     setSelectedUser(user)
-    reset({
-      firstname: user.firstName,
-      lastname: user.lastName,
-      email: user.email,
-      password: user.password,
-      stepsAllowed: user.stepsAllowed,
-      subjectsAllowed: user.subjectsAllowed,
-    })
+    setValue('firstname', user.firstName)
+    setValue('lastname', user.lastName)
+    setValue('email', user.email)
+    setValue('password', user.password)
+    setValue('stepsAllowed', user.stepsAllowed)
+    setValue('subjectsAllowed', user.subjectsAllowed)
+    // reset({
+    //   firstname: user.firstName,
+    //   lastname: user.lastName,
+    //   email: user.email,
+    //   password: user.password,
+    //   stepsAllowed: user.stepsAllowed,
+    //   subjectsAllowed: user.subjectsAllowed || [],
+    // })
     setEditModalOpen(true)
   }
 
