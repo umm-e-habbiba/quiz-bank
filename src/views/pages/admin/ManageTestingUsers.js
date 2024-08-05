@@ -88,8 +88,8 @@ const ManageTestingUsers = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      firstname: '',
-      lastname: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       stepsAllowed: '',
@@ -233,8 +233,8 @@ const ManageTestingUsers = () => {
 
   const handleEdit = (user) => {
     setSelectedUser(user)
-    setValue('firstname', user.firstName)
-    setValue('lastname', user.lastName)
+    setValue('firstName', user.firstName)
+    setValue('lastName', user.lastName)
     setValue('email', user.email)
     setValue('password', user.password)
     setValue('stepsAllowed', user.stepsAllowed)
@@ -443,18 +443,18 @@ const ManageTestingUsers = () => {
               <CFormLabel htmlFor="firstname">First Name</CFormLabel>
               <CFormInput
                 id="firstname"
-                {...register('firstname', { required: 'First Name is required' })}
+                {...register('firstName', { required: 'First Name is required' })}
               />
-              {errors.firstname && (
-                <p className="text-red-500 text-sm">{errors.firstname.message}</p>
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">{errors.firstName.message}</p>
               )}
 
               <CFormLabel htmlFor="lastname">Last Name</CFormLabel>
               <CFormInput
                 id="lastname"
-                {...register('lastname', { required: 'Last Name is required' })}
+                {...register('lastName', { required: 'Last Name is required' })}
               />
-              {errors.lastname && <p className="text-red-500 text-sm">{errors.lastname.message}</p>}
+              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
 
               <CFormLabel htmlFor="email">Email</CFormLabel>
               <CFormInput
