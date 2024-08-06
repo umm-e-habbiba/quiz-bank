@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { CButton, CForm, CFormInput, CInputGroup, CSpinner, CAlert } from '@coreui/react'
 import '../auth.css'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle } from '@coreui/icons'
+import { cilLockLocked, cilEnvelopeOpen, cilCheckCircle, cilWarning } from '@coreui/icons'
 import { useForm } from 'react-hook-form'
 import img1 from '../../../assets/images/image-1.png'
 import img2 from '../../../assets/images/green-one-eye.png'
@@ -23,6 +23,7 @@ const Login = () => {
   const [successMsg, setSuccessMsg] = useState('')
   const [verifyEmail, setVerifyEmail] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const [noSignupMsg, setNoSignupMsg] = useState(false)
   const {
     register,
     handleSubmit,
@@ -128,10 +129,10 @@ const Login = () => {
   return (
     <div className="bg-body-tertiary min-vh-100">
       <div className="auth-wrapper flex flex-col dark:bg-black">
-        <h2 className="dark:text-white">
+        <h2 className="dark:text-white text-black">
           Welcome to <span className="text-[#35b18c]">ZAP-70!</span>
         </h2>
-        <div className="inner rounded-lg">
+        <div className={`${noSignupMsg ? 'opacity-50' : ''} inner rounded-lg`}>
           {/* <img src={img1} alt="" className="image-1" /> */}
           {/* <img src={img3} alt="" className="image-1" /> */}
           <CForm onSubmit={handleSubmit(login)} className="form">
@@ -193,15 +194,27 @@ const Login = () => {
               </span>
             )} */}
             <div className="d-grid">
-              <CButton type="submit" className="button">
+              <CButton
+                type="submit"
+                className="button"
+                disabled={isLoading || noSignupMsg ? true : false}
+              >
                 <span>{isLoading ? <CSpinner color="light" size="sm" /> : 'Login'}</span>
               </CButton>
             </div>
             <p className="mt-2 text-center text-xs text-black">
-              Dont have an account?{' '}
-              <Link to="/register" className="font-bold">
+              Don&apos;t have an account?{' '}
+              <span
+                onClick={() => {
+                  setNoSignupMsg(true)
+                }}
+                className="font-bold cursor-pointer"
+              >
                 Register
-              </Link>
+              </span>
+              {/* <Link to="/register" className="font-bold">
+                Register
+              </Link> */}
             </p>
           </CForm>
           <img src={img2} alt="" className="image-2" />
@@ -210,6 +223,19 @@ const Login = () => {
           Created by <Link to="https://themksolution.com/">The MK Solution</Link>
         </span> */}
       </div>
+      {noSignupMsg && (
+        <CAlert
+          color="warning"
+          className="middle-alert uppercase d-flex align-items-center"
+          dismissible
+          onClose={() => {
+            setNoSignupMsg(false)
+          }}
+        >
+          <CIcon icon={cilWarning} className="flex-shrink-0 me-2" width={24} height={24} />
+          <div>Zap 70 is under testing. You&apos;ll be able to signup soon!!</div>
+        </CAlert>
+      )}
       {success && (
         <CAlert color="success" className="success-alert uppercase">
           Login successful!

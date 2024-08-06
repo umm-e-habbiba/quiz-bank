@@ -781,6 +781,7 @@ const ManageTesterQues = () => {
                             />
                           </CTableHeaderCell>
                         )}
+                        <CTableHeaderCell scope="col">Sr No</CTableHeaderCell>
                         <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                         <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                         <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
@@ -809,6 +810,7 @@ const ManageTesterQues = () => {
                                     />
                                   </CTableDataCell>
                                 )}
+                                <CTableDataCell>{idx + 1}</CTableDataCell>
                                 <CTableHeaderCell className="cursor-pointer">
                                   <span
                                     id={q._id}
@@ -909,6 +911,7 @@ const ManageTesterQues = () => {
                                   />
                                 </CTableDataCell>
                               )}
+                              <CTableDataCell>{idx + 1}</CTableDataCell>
                               <CTableHeaderCell className="cursor-pointer">
                                 <span
                                   id={q._id}

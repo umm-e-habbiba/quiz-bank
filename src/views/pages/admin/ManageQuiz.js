@@ -38,12 +38,13 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 //////////
 import JoditEditor from 'jodit-react'
-import { RiEyeLine } from 'react-icons/ri'
+import { RiArrowLeftSLine, RiArrowRightSLine, RiEyeLine } from 'react-icons/ri'
 /// video player
 import '../../../../node_modules/video-react/dist/video-react.css' // import css
 import { Player } from 'video-react'
 import DropBox from 'src/components/admin/DropBox'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
+import ReactPaginate from 'react-paginate'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -118,6 +119,10 @@ const ManageQuiz = () => {
   const [fileEnter, setFileEnter] = useState(false)
   const [showCheck, setShowCheck] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -159,7 +164,7 @@ const ManageQuiz = () => {
   const option6 = op6
 
   useEffect(() => {
-    getAllQuest()
+    getAllQuest(1)
     const getToken = localStorage.getItem('token')
     if (getToken && role == 'admin') {
       setToken(getToken)
@@ -177,7 +182,7 @@ const ManageQuiz = () => {
     console.log('delete id array is changed')
   }, [deleteIds])
 
-  const getAllQuest = () => {
+  const getAllQuest = (pageNo) => {
     setLoader(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -186,7 +191,7 @@ const ManageQuiz = () => {
       headers: myHeaders,
       redirect: 'follow',
     }
-    fetch(API_URL + 'mcqs', requestOptions)
+    fetch(API_URL + 'paginated-mcqs?page=' + pageNo, requestOptions)
       .then((response) => {
         const contentLength = response.headers.get('content-length')
         let loaded = 0
@@ -220,6 +225,10 @@ const ManageQuiz = () => {
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
+          setCurrentPage(result.pagination?.page)
+          setTotal(result.pagination?.total)
+          setTotalPages(result.pagination?.totalPages)
+          setPageSize(result.pagination?.limit)
         }
       })
       .catch((error) => {
@@ -288,7 +297,7 @@ const ManageQuiz = () => {
         setIsLoading(false)
         if (result.success) {
           setAddModal(false)
-          getAllQuest()
+          getAllQuest(currentPage)
           reset({})
           setImage('')
           setImage2('')
@@ -386,7 +395,7 @@ const ManageQuiz = () => {
         if (result.success) {
           setBulkDeleteModal(false)
           setShowFilteredResult(false)
-          getAllQuest()
+          getAllQuest(currentPage)
           setSuccess(true)
           setDeleteIds([])
           setSuccessMsg(result.message)
@@ -424,7 +433,7 @@ const ManageQuiz = () => {
         setIsLoading(false)
         if (result.success) {
           setDeleteModal(false)
-          getAllQuest()
+          getAllQuest(currentPage)
           setSuccess(true)
           setSuccessMsg('Question deleted successfully')
           setTimeout(() => {
@@ -495,7 +504,7 @@ const ManageQuiz = () => {
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
-          getAllQuest()
+          getAllQuest(currentPage)
           setQuestionId('')
           setImage('')
           setImage2('')
@@ -691,6 +700,8 @@ const ManageQuiz = () => {
       }, this)
     }
   }
+  const showNextButton = currentPage - 1 !== totalPages - 1
+  const showPrevButton = currentPage - 1 !== 0
   return (
     <AdminLayout>
       <>
@@ -902,6 +913,7 @@ const ManageQuiz = () => {
                         />
                       </CTableHeaderCell>
                     )}
+                    <CTableHeaderCell>Sr No</CTableHeaderCell>
                     <CTableHeaderCell scope="col">Question</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
                     <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
@@ -930,7 +942,8 @@ const ManageQuiz = () => {
                                 />
                               </CTableDataCell>
                             )}
-                            <CTableHeaderCell className="cursor-pointer">
+                            <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
+                            <CTableDataCell className="cursor-pointer">
                               <span
                                 id={q._id}
                                 onClick={(e) => {
@@ -948,7 +961,7 @@ const ManageQuiz = () => {
                                 ? q.question.substring(0, 100) + '...'
                                 : q.question} */}
                               </span>
-                            </CTableHeaderCell>
+                            </CTableDataCell>
                             <CTableDataCell>{q.usmleStep}</CTableDataCell>
                             <CTableDataCell>{q.USMLE}</CTableDataCell>
                             {/* <CTableDataCell>
@@ -1027,7 +1040,8 @@ const ManageQuiz = () => {
                               />
                             </CTableDataCell>
                           )}
-                          <CTableHeaderCell className="cursor-pointer">
+                          <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
+                          <CTableDataCell className="cursor-pointer">
                             <span
                               id={q._id}
                               onClick={(e) => {
@@ -1045,7 +1059,7 @@ const ManageQuiz = () => {
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
                             </span>
-                          </CTableHeaderCell>
+                          </CTableDataCell>
                           <CTableDataCell>{q.usmleStep}</CTableDataCell>
                           <CTableDataCell>{q.USMLE}</CTableDataCell>
                           {/* <CTableDataCell>
@@ -1107,6 +1121,49 @@ const ManageQuiz = () => {
                   )}
                 </CTableBody>
               </CTable>
+              {total <= pageSize ? (
+                ''
+              ) : (
+                <ReactPaginate
+                  breakLabel={<span className="mr-4">...</span>}
+                  nextLabel={
+                    // showNextButton ? (
+                    <span
+                      className={
+                        showNextButton
+                          ? 'w-10 h-9 flex items-center page-no justify-center mr-3'
+                          : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                      }
+                    >
+                      <RiArrowRightSLine />
+                    </span>
+                  }
+                  // onPageChange={handlePageClick}
+                  onPageChange={(event) => {
+                    setCurrentPage(event.selected + 1)
+                    getAllQuest(event.selected + 1)
+                  }}
+                  pageRangeDisplayed={3}
+                  pageCount={totalPages}
+                  previousLabel={
+                    <span
+                      className={
+                        showPrevButton
+                          ? 'w-10 h-10 flex items-center page-no justify-center mr-3'
+                          : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                      }
+                    >
+                      <RiArrowLeftSLine />
+                    </span>
+                  }
+                  containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
+                  pageClassName={
+                    'block border- border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center mr-4'
+                  }
+                  activeClassName={'active-page-no'}
+                  forcePage={currentPage - 1}
+                />
+              )}
               {/* )} */}
             </CCardBody>
           </CCard>

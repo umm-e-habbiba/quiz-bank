@@ -462,6 +462,32 @@ table th {
   background-color: #39f !important;
 }
 
+// pagination
+.pagination {
+  display: flex;
+}
+.pagination li a {
+  color: #000;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination .active-page-no,
+.pagination .page-no:hover {
+  background: #5d87ff;
+  border-radius: 50%;
+}
+.pagination .page-no {
+  color: #000;
+}
+.pagination .active-page-no a,
+.pagination .page-no:hover a,
+.pagination .page-no:hover {
+  color: #fff;
+}
+
 @media (max-width: $breakpoint-mobile) {
   .selector-margin-1 {
     margin: 0 0 0 16px;
