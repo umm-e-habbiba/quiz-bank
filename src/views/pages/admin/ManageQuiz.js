@@ -799,17 +799,69 @@ const ManageQuiz = () => {
         ) : (
           <CCard className="mb-4 mx-4">
             <CCardHeader>
-              <div className="flex flex-col mb-2">
-                <strong>Manage Questions</strong>
-                {!loader &&
-                  allQuestion.length > 0 &&
-                  (showFilteredResult ? (
-                    <span className="text-sm">Total {filteredQuestion.length} questions found</span>
-                  ) : (
-                    <span className="text-sm">
-                      Total {allQuestion.length + 2000} questions added
-                    </span>
-                  ))}
+              <div className="flex justify-between items-center mb-2">
+                <div className="flex flex-col">
+                  <strong>Manage Questions</strong>
+                  {!loader &&
+                    allQuestion.length > 0 &&
+                    (showFilteredResult ? (
+                      <span className="text-sm">
+                        Total {filteredQuestion.length} questions found
+                      </span>
+                    ) : (
+                      <span className="text-sm">
+                        Total {allQuestion.length + 2000} questions added
+                      </span>
+                    ))}
+                </div>
+                {total <= pageSize ? (
+                  ''
+                ) : (
+                  <ReactPaginate
+                    breakLabel={<span className="mr-4">...</span>}
+                    nextLabel={
+                      // showNextButton ? (
+                      <span
+                        className={
+                          showNextButton
+                            ? 'w-10 h-10 flex items-center page-no justify-center border border-solid'
+                            : 'w-10 h-10 flex items-center justify-center cursor-disabled border border-solid'
+                          // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                        }
+                      >
+                        <RiArrowRightSLine />
+                      </span>
+                    }
+                    // onPageChange={handlePageClick}
+                    onPageChange={(event) => {
+                      setCurrentPage(event.selected + 1)
+                      showFilteredResult
+                        ? getFilteredQuestions(event.selected + 1)
+                        : getAllQuest(event.selected + 1)
+                    }}
+                    pageRangeDisplayed={3}
+                    pageCount={totalPages}
+                    previousLabel={
+                      <span
+                        className={
+                          showPrevButton
+                            ? 'w-10 h-10 flex items-center page-no justify-center border border-solid'
+                            : 'w-10 h-10 flex items-center justify-center cursor-disabled border border-solid'
+                        }
+                      >
+                        <RiArrowLeftSLine />
+                      </span>
+                    }
+                    containerClassName={
+                      'flex items-center justify-center mt-8 mb-4 header-pagination'
+                    }
+                    pageClassName={
+                      'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
+                    }
+                    activeClassName={'active-page-no text-white'}
+                    forcePage={currentPage - 1}
+                  />
+                )}
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex justify-between items-center">
@@ -926,8 +978,8 @@ const ManageQuiz = () => {
                     ''
                   )}
                 </div>
-                <div className="flex justify-end items-center w-[500px]">
-                  {totalPages > 1 && (
+                <div className="flex justify-end items-center w-[400px]">
+                  {/* {totalPages > 1 && (
                     <CFormSelect
                       aria-label="Select Page"
                       id="page"
@@ -950,7 +1002,8 @@ const ManageQuiz = () => {
                         </option>
                       ))}
                     </CFormSelect>
-                  )}
+                  )} */}
+
                   {!showCheck && (
                     <CButton
                       className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3 w-full"

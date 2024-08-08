@@ -129,6 +129,15 @@ const AddTesterUser = () => {
   }
 
   const addTesterUser = (data) => {
+    if (step == 'all') {
+      const step1_2 = step1Categories.concat(step2Categories)
+      const allSteps = step1_2.concat(step3Categories)
+      const allStepsFinal = removeDuplicates(allSteps)
+      setValue(
+        'subjectsAllowed',
+        allStepsFinal.map((sub) => sub),
+      )
+    }
     setLoader(true)
     setError(false)
     setErrorMsg('')
@@ -141,7 +150,7 @@ const AddTesterUser = () => {
       email: data.email,
       password: data.password,
       stepsAllowed: data.stepsAllowed,
-      subjectsAllowed: data.subjectsAllowed,
+      subjectsAllowed: getValues('subjectsAllowed'),
     })
     const requestOptions = {
       method: 'POST',

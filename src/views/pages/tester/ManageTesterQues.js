@@ -814,7 +814,7 @@ const ManageTesterQues = () => {
                         )}
                       </div>
                     </div>
-                    {totalPages > 1 && (
+                    {/* {totalPages > 1 && (
                       <CFormSelect
                         aria-label="Select Page"
                         id="page"
@@ -838,7 +838,7 @@ const ManageTesterQues = () => {
                           </option>
                         ))}
                       </CFormSelect>
-                    )}
+                    )} */}
                   </div>
                 </CCardHeader>
                 <CCardBody>

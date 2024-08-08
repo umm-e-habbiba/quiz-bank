@@ -11,7 +11,7 @@ export const AppSidebarNav = ({ items }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [userID, setUserID] = useState(localStorage.getItem('userId') || '')
   const [notifications, setNotifications] = useState([])
-
+  const role = localStorage.getItem('user') || ''
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
@@ -19,7 +19,7 @@ export const AppSidebarNav = ({ items }) => {
       const getUserId = localStorage.getItem('userId')
       setUserID(getUserId)
       getMyNotifications()
-      if (getUserId) {
+      if (role == 'user') {
         const interval = setInterval(() => {
           getMyNotifications()
         }, 5000)
