@@ -337,7 +337,15 @@ const ManageTesterQues = () => {
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
-          getAllQuest()
+          // getAllQuest()
+          const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+
+          if (indexToReplace !== -1) {
+            const updatedQuestionSplice = [...allQuestion]
+            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+            // console.log(updatedQuestionSplice)
+            setAllQuestion(updatedQuestionSplice)
+          }
           setQuestionId('')
           setImage('')
           setImage2('')

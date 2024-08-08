@@ -183,6 +183,7 @@ const ManageQuiz = () => {
   }, [deleteIds])
 
   const getAllQuest = (pageNo) => {
+    console.log('page no', pageNo, 'current page', currentPage)
     setLoader(true)
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
@@ -504,7 +505,15 @@ const ManageQuiz = () => {
         if (result.success) {
           setAddModal(false)
           setIsLoading(false)
-          getAllQuest(currentPage)
+          // getAllQuest(currentPage)
+          const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+
+          if (indexToReplace !== -1) {
+            const updatedQuestionSplice = [...allQuestion]
+            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+            // console.log(updatedQuestionSplice)
+            setAllQuestion(updatedQuestionSplice)
+          }
           setQuestionId('')
           setImage('')
           setImage2('')
@@ -725,23 +734,21 @@ const ManageQuiz = () => {
           </div>
         ) : (
           <CCard className="mb-4 mx-4">
-            <CCardHeader className="flex justify-between items-center">
-              <div className="flex">
-                <div className="flex flex-col">
-                  <strong>Manage Questions</strong>
-                  {!loader &&
-                    allQuestion.length > 0 &&
-                    (showFilteredResult ? (
-                      <span className="text-sm">
-                        Total {filteredQuestion.length} questions found
-                      </span>
-                    ) : (
-                      <span className="text-sm">
-                        Total {allQuestion.length + 2000} questions added
-                      </span>
-                    ))}
-                </div>
-                <div className="flex ml-6 justify-between items-center w-[600px]">
+            <CCardHeader>
+              <div className="flex flex-col mb-2">
+                <strong>Manage Questions</strong>
+                {!loader &&
+                  allQuestion.length > 0 &&
+                  (showFilteredResult ? (
+                    <span className="text-sm">Total {filteredQuestion.length} questions found</span>
+                  ) : (
+                    <span className="text-sm">
+                      Total {allQuestion.length + 2000} questions added
+                    </span>
+                  ))}
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center">
                   <CFormSelect
                     aria-label="usmle step"
                     id="usmleStep"
@@ -808,7 +815,7 @@ const ManageQuiz = () => {
                     value={filterCategory}
                     onChange={(e) => setFilterCategory(e.target.value)}
                   >
-                    <option>Select USMLE Category</option>
+                    <option>USMLE Category</option>
                     {filterUsmle == '1' ? (
                       step1Categories.map((category, idx) => (
                         <option key={idx} value={category}>
@@ -854,43 +861,67 @@ const ManageQuiz = () => {
                     ''
                   )}
                 </div>
-              </div>
-              <div className="flex justify-end items-center">
-                {!showCheck && (
+                <div className="flex justify-end items-center w-[500px]">
+                  {totalPages > 1 && (
+                    <CFormSelect
+                      aria-label="Select Page"
+                      id="page"
+                      className="mr-3 w-full"
+                      onChange={(e) => {
+                        setCurrentPage(e.target.value)
+                        getAllQuest(e.target.value)
+                      }}
+                    >
+                      <option disabled selected>
+                        Select Page
+                      </option>
+                      {Array.apply(null, { length: totalPages }).map((e, i) => (
+                        <option
+                          key={i}
+                          disabled={currentPage == i + 1 ? true : false}
+                          value={i + 1}
+                        >
+                          {i + 1}
+                        </option>
+                      ))}
+                    </CFormSelect>
+                  )}
+                  {!showCheck && (
+                    <CButton
+                      className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3 w-full"
+                      onClick={() => {
+                        setShowCheck(true)
+                      }}
+                    >
+                      Select to Delete
+                    </CButton>
+                  )}
+                  {deleteIds && deleteIds.length > 0 && (
+                    <CButton
+                      className="text-white bg-red-600  hover:bg-red-700 mr-3 w-full"
+                      onClick={() => {
+                        setBulkDeleteModal(true)
+                        setErrorr(false)
+                        setErrorMsg('')
+                      }}
+                    >
+                      Delete Questions
+                    </CButton>
+                  )}
                   <CButton
-                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] w-full"
                     onClick={() => {
-                      setShowCheck(true)
-                    }}
-                  >
-                    Select to Delete
-                  </CButton>
-                )}
-                {deleteIds && deleteIds.length > 0 && (
-                  <CButton
-                    className="text-white bg-red-600  hover:bg-red-700 mr-3"
-                    onClick={() => {
-                      setBulkDeleteModal(true)
+                      setAddModal(true)
+                      setIsLoading(false)
+                      reset({})
+                      setQuestionId('')
                       setErrorr(false)
                       setErrorMsg('')
                     }}
                   >
-                    Delete Selected Questions
+                    Add Question
                   </CButton>
-                )}
-                <CButton
-                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
-                  onClick={() => {
-                    setAddModal(true)
-                    setIsLoading(false)
-                    reset({})
-                    setQuestionId('')
-                    setErrorr(false)
-                    setErrorMsg('')
-                  }}
-                >
-                  Add Question
-                </CButton>
+                </div>
               </div>
             </CCardHeader>
             <CCardBody>
@@ -1132,7 +1163,8 @@ const ManageQuiz = () => {
                       className={
                         showNextButton
                           ? 'w-10 h-9 flex items-center page-no justify-center mr-3'
-                          : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                          : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3'
+                        // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
                       }
                     >
                       <RiArrowRightSLine />
@@ -1150,7 +1182,7 @@ const ManageQuiz = () => {
                       className={
                         showPrevButton
                           ? 'w-10 h-10 flex items-center page-no justify-center mr-3'
-                          : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                          : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3'
                       }
                     >
                       <RiArrowLeftSLine />
@@ -1160,7 +1192,7 @@ const ManageQuiz = () => {
                   pageClassName={
                     'block border- border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center mr-4'
                   }
-                  activeClassName={'active-page-no'}
+                  activeClassName={'active-page-no text-white'}
                   forcePage={currentPage - 1}
                 />
               )}

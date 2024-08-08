@@ -23,6 +23,7 @@ const Login = () => {
   const [successMsg, setSuccessMsg] = useState('')
   const [verifyEmail, setVerifyEmail] = useState(false)
   const [token, setToken] = useState(localStorage.getItem('token') || '')
+  const role = localStorage.getItem('user') || ''
   const [noSignupMsg, setNoSignupMsg] = useState(false)
   const {
     register,
@@ -38,9 +39,16 @@ const Login = () => {
 
   useEffect(() => {
     const getToken = localStorage.getItem('token')
-    if (getToken) {
+    if (getToken && role == 'admin') {
+      setToken(getToken)
+      navigate('/admin')
+    } else if (getToken && role == 'user') {
       setToken(getToken)
       navigate('/')
+    } else if (getToken && role == 'tester') {
+      setToken(getToken)
+      navigate('/tester-questions')
+    } else {
     }
   }, [])
 

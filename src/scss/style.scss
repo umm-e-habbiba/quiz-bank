@@ -467,7 +467,7 @@ table th {
   display: flex;
 }
 .pagination li a {
-  color: #000;
+  // color: #000;
   width: 2.5rem;
   height: 2.5rem;
   display: flex;
@@ -480,12 +480,12 @@ table th {
   border-radius: 50%;
 }
 .pagination .page-no {
-  color: #000;
+  // color: #000;
 }
 .pagination .active-page-no a,
 .pagination .page-no:hover a,
 .pagination .page-no:hover {
-  color: #fff;
+  // color: #fff;
 }
 
 @media (max-width: $breakpoint-mobile) {

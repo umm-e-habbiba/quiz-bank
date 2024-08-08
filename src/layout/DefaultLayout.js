@@ -5,11 +5,19 @@ import Dashboard from 'src/views/dashboard/Dashboard'
 const DefaultLayout = ({ children }) => {
   const navigate = useNavigate()
   const [token, setToken] = useState(localStorage.getItem('token') || '')
-
+  const role = localStorage.getItem('user') || ''
   useEffect(() => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
+      if (role == 'admin') {
+        navigate('/admin')
+      } else if (role == 'user') {
+        navigate('/')
+      } else if (role == 'tester') {
+        navigate('/tester-questions')
+      } else {
+      }
     } else {
       navigate('/login')
     }
