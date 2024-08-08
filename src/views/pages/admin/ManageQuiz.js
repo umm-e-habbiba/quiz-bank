@@ -655,25 +655,89 @@ const ManageQuiz = () => {
     // setVideoSrc(url)
     // console.log('video url', url)
   }
-  const getFilteredQuestions = () => {
+  const getFilteredQuestions = (pageNo) => {
     // console.log('step', filterUsmle, 'category', filterCategory)
-    let filtered_result = []
-    if (filterUsmle && filterCategory) {
-      filtered_result = allQuestion.filter(
-        (ques) => ques.usmleStep == filterUsmle && ques.USMLE == filterCategory,
-      )
-      setShowFilteredResult(true)
+    if (filterUsmle == '' && filterCategory == '') {
+      // do nothing
     } else {
-      if (filterUsmle) {
-        filtered_result = allQuestion.filter((ques) => ques.usmleStep == filterUsmle)
-        setShowFilteredResult(true)
+      setLoader(true)
+      const myHeaders = new Headers()
+      myHeaders.append('Authorization', token)
+      myHeaders.append('Content-Type', 'application/json')
+
+      const raw = JSON.stringify({
+        usmleStep: filterUsmle,
+        USMLE: filterCategory,
+      })
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
       }
-      if (filterCategory) {
-        filtered_result = allQuestion.filter((ques) => ques.USMLE == filterCategory)
-        setShowFilteredResult(true)
-      }
+      fetch(API_URL + 'filtered-mcqs?page=' + pageNo, requestOptions)
+        .then((response) => {
+          const contentLength = response.headers.get('content-length')
+          let loaded = 0
+          return new Response(
+            new ReadableStream({
+              start(controller) {
+                const reader = response.body.getReader()
+                read()
+                function read() {
+                  reader.read().then((progressEvent) => {
+                    if (progressEvent.done) {
+                      controller.close()
+                      return
+                    }
+                    loaded += progressEvent.value.byteLength
+
+                    const percentageComplete = Math.round((loaded / contentLength) * 100)
+                    setProgress(percentageComplete)
+
+                    controller.enqueue(progressEvent.value)
+                    read()
+                  })
+                }
+              },
+            }),
+          )
+        })
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result)
+          setLoader(false)
+          if (result.data) {
+            setShowFilteredResult(true)
+            setFilteredQuestion(result.data)
+            setCurrentPage(result.pagination?.page)
+            setTotal(result.pagination?.total)
+            setTotalPages(result.pagination?.totalPages)
+            setPageSize(result.pagination?.limit)
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setLoader(false)
+        })
     }
-    setFilteredQuestion(filtered_result)
+    // let filtered_result = []
+    // if (filterUsmle && filterCategory) {
+    //   filtered_result = allQuestion.filter(
+    //     (ques) => ques.usmleStep == filterUsmle && ques.USMLE == filterCategory,
+    //   )
+    //   setShowFilteredResult(true)
+    // } else {
+    //   if (filterUsmle) {
+    //     filtered_result = allQuestion.filter((ques) => ques.usmleStep == filterUsmle)
+    //     setShowFilteredResult(true)
+    //   }
+    //   if (filterCategory) {
+    //     filtered_result = allQuestion.filter((ques) => ques.USMLE == filterCategory)
+    //     setShowFilteredResult(true)
+    //   }
+    // }
+    // setFilteredQuestion(filtered_result)
     // console.log(filtered_result)
   }
   const handleCheckboxChange = (event) => {
@@ -839,9 +903,10 @@ const ManageQuiz = () => {
                     )}
                   </CFormSelect>
                   <CButton
+                    // disabled={filterUsmle || filterCategory ? false : true}
                     className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
                     onClick={() => {
-                      getFilteredQuestions()
+                      getFilteredQuestions(currentPage)
                     }}
                   >
                     <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
@@ -1173,7 +1238,9 @@ const ManageQuiz = () => {
                   // onPageChange={handlePageClick}
                   onPageChange={(event) => {
                     setCurrentPage(event.selected + 1)
-                    getAllQuest(event.selected + 1)
+                    showFilteredResult
+                      ? getFilteredQuestions(event.selected + 1)
+                      : getAllQuest(event.selected + 1)
                   }}
                   pageRangeDisplayed={3}
                   pageCount={totalPages}
