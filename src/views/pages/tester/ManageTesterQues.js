@@ -122,6 +122,7 @@ const ManageTesterQues = () => {
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [pageSize, setPageSize] = useState(0)
+  const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -167,6 +168,9 @@ const ManageTesterQues = () => {
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
+      const storedUserId = localStorage.getItem('userId')
+      setUserId(storedUserId)
+      getAllQuest(storedUserId)
     } else {
       navigate('/login')
     }
@@ -181,22 +185,8 @@ const ManageTesterQues = () => {
     console.log('delete id array is changed')
   }, [deleteIds])
 
-  const [userId, setUserId] = useState('')
-
-  useEffect(() => {
-    const storedUserId = localStorage.getItem('userId')
-    if (storedUserId) {
-      setUserId(storedUserId)
-
-      getAllQuest(storedUserId)
-    } else {
-      console.error('User ID is not available')
-    }
-  }, [])
-
   const getAllQuest = (pageNo) => {
     setLoader(true)
-    const userId = sessionStorage.getItem('userId')
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
 
@@ -328,8 +318,7 @@ const ManageTesterQues = () => {
     if (op4Exp) formdata.append('optionFourExplanation', op4Exp)
     if (op5Exp) formdata.append('optionFiveExplanation', op5Exp)
     if (op6Exp) formdata.append('optionSixExplanation', op6Exp)
-    const userId = sessionStorage.getItem('userId')
-    const testerName = sessionStorage.getItem('testerName')
+    const testerName = localStorage.getItem('testerName')
     if (userId) formdata.append('correctedBy', userId)
     if (testerName) formdata.append('nameOfTester', testerName)
 
@@ -498,7 +487,6 @@ const ManageTesterQues = () => {
     // console.log('video url', url)
   }
   const getFilteredQuestions = (pageNo) => {
-    const userId = sessionStorage.getItem('userId')
     // console.log('step', filterUsmle, 'category', filterCategory)
     if (filterUsmle == '' && filterCategory == '') {
       // do nothing
@@ -518,7 +506,6 @@ const ManageTesterQues = () => {
         body: raw,
         redirect: 'follow',
       }
-      // fetch(API_URL + 'tester/filtered-mcqs/' + userId + '?page=' + pageNo, requestOptions)
       fetch(`${API_URL}tester/filtered-mcqs/${userId}?page=${pageNo}`, requestOptions)
         .then((response) => {
           const contentLength = response.headers.get('content-length')
@@ -604,8 +591,7 @@ const ManageTesterQues = () => {
     const myHeaders = new Headers()
     myHeaders.append('Authorization', token)
     myHeaders.append('Content-Type', 'application/json')
-    const userId = sessionStorage.getItem('userId')
-    const testerName = sessionStorage.getItem('testerName')
+    const testerName = localStorage.getItem('testerName')
     if (!userId) {
       console.error('User ID is not found in session storage.')
       return
@@ -644,7 +630,6 @@ const ManageTesterQues = () => {
 
   useEffect(() => {
     const getUserSteps = async () => {
-      const userId = sessionStorage.getItem('userId')
       if (!userId) {
         console.error('User ID not found in session storage')
         setLoader(false)
@@ -746,87 +731,114 @@ const ManageTesterQues = () => {
                   </div>
                 </div> */}
                 <CCardHeader>
-                  <div className="flex flex-col lg:flex-row">
-                    <div className="flex flex-col">
-                      <strong>Manage Questions</strong>
-                      {!loader &&
-                        allQuestion.length > 0 &&
-                        (showFilteredResult ? (
-                          <span className="text-sm">
-                            Total {filteredQuestion.length} questions found
-                          </span>
-                        ) : (
-                          <span className="text-sm">
-                            Total {allQuestion.length} questions found
-                          </span>
-                        ))}
-                    </div>
-                    <div>
-                      {(stepsAllowed === 'all' ||
-                        allowedSteps.includes('1') ||
-                        allowedSteps.includes('2') ||
-                        allowedSteps.includes('3')) && (
-                        <div className="flex ml-0 lg:ml-6 justify-center items-center w-full lg:w-[600px] flex-col lg:flex-row mt-2 lg:mt-0">
-                          <CFormSelect
-                            aria-label="usmle step"
-                            id="usmleStep"
-                            options={[
-                              { label: 'USMLE Step', value: '' },
-                              ...(allowedSteps.includes('1')
-                                ? [{ label: 'Step 1', value: '1' }]
-                                : []),
-                              ...(allowedSteps.includes('2')
-                                ? [{ label: 'Step 2', value: '2' }]
-                                : []),
-                              ...(allowedSteps.includes('3')
-                                ? [{ label: 'Step 3', value: '3' }]
-                                : []),
-                            ]}
-                            value={filterUsmle}
-                            onChange={(e) => {
-                              setFilterUsmle(e.target.value)
-                              setFilterCategory('')
-                            }}
-                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
-                          />
-                          <CFormSelect
-                            aria-label="usmle category"
-                            id="usmleCategory"
-                            defaultValue=""
-                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
-                            value={filterCategory}
-                            onChange={(e) => setFilterCategory(e.target.value)}
-                          >
-                            <option>Select USMLE Category</option>
-                            {getAllowedCategories().map((category, idx) => (
-                              <option key={idx} value={category}>
-                                {category}
-                              </option>
-                            ))}
-                          </CFormSelect>
-                          <CButton
-                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
-                            onClick={() => {
-                              getFilteredQuestions(currentPage)
-                            }}
-                          >
-                            <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
-                          </CButton>
-                          {(filterUsmle || filterCategory) && (
-                            <CButton
-                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-0 lg:ml-3 mb-2 lg:mb-0 w-full lg:w-auto flex justify-center items-center"
-                              onClick={() => {
-                                setFilterUsmle('')
+                  <div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center">
+                    <div className="flex justify-start items-center">
+                      <div className="flex flex-col">
+                        <strong>Manage Questions</strong>
+                        {!loader &&
+                          allQuestion.length > 0 &&
+                          (showFilteredResult ? (
+                            <span className="text-sm">
+                              Total {filteredQuestion.length} questions found
+                            </span>
+                          ) : (
+                            <span className="text-sm">
+                              Total {allQuestion.length} questions found
+                            </span>
+                          ))}
+                      </div>
+                      <div>
+                        {(stepsAllowed === 'all' ||
+                          allowedSteps.includes('1') ||
+                          allowedSteps.includes('2') ||
+                          allowedSteps.includes('3')) && (
+                          <div className="flex ml-0 lg:ml-2 justify-center items-center w-full lg:w-[550px] flex-col lg:flex-row mt-2 lg:mt-0">
+                            <CFormSelect
+                              aria-label="usmle step"
+                              id="usmleStep"
+                              options={[
+                                { label: 'USMLE Step', value: '' },
+                                ...(allowedSteps.includes('1')
+                                  ? [{ label: 'Step 1', value: '1' }]
+                                  : []),
+                                ...(allowedSteps.includes('2')
+                                  ? [{ label: 'Step 2', value: '2' }]
+                                  : []),
+                                ...(allowedSteps.includes('3')
+                                  ? [{ label: 'Step 3', value: '3' }]
+                                  : []),
+                              ]}
+                              value={filterUsmle}
+                              onChange={(e) => {
+                                setFilterUsmle(e.target.value)
                                 setFilterCategory('')
-                                setShowFilteredResult(false)
+                              }}
+                              className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
+                            />
+                            <CFormSelect
+                              aria-label="usmle category"
+                              id="usmleCategory"
+                              defaultValue=""
+                              className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
+                              value={filterCategory}
+                              onChange={(e) => setFilterCategory(e.target.value)}
+                            >
+                              <option>USMLE Category</option>
+                              {getAllowedCategories().map((category, idx) => (
+                                <option key={idx} value={category}>
+                                  {category}
+                                </option>
+                              ))}
+                            </CFormSelect>
+                            <CButton
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
+                              onClick={() => {
+                                getFilteredQuestions(currentPage)
                               }}
                             >
-                              Clear
+                              <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
                             </CButton>
-                          )}
-                        </div>
-                      )}
+                            {(filterUsmle || filterCategory) && (
+                              <CButton
+                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-0 lg:ml-3 mb-2 lg:mb-0 w-full lg:w-auto flex justify-center items-center"
+                                onClick={() => {
+                                  setFilterUsmle('')
+                                  setFilterCategory('')
+                                  setShowFilteredResult(false)
+                                }}
+                              >
+                                Clear
+                              </CButton>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
+                    {totalPages > 1 && (
+                      <CFormSelect
+                        aria-label="Select Page"
+                        id="page"
+                        // className="w-[300px] float-right"
+                        className="mb-2 lg:mb-0 w-full lg:w-[200px]"
+                        onChange={(e) => {
+                          setCurrentPage(e.target.value)
+                          getAllQuest(e.target.value)
+                        }}
+                      >
+                        <option disabled selected>
+                          Select Page
+                        </option>
+                        {Array.apply(null, { length: totalPages }).map((e, i) => (
+                          <option
+                            key={i}
+                            disabled={currentPage == i + 1 ? true : false}
+                            value={i + 1}
+                          >
+                            {i + 1}
+                          </option>
+                        ))}
+                      </CFormSelect>
+                    )}
                   </div>
                 </CCardHeader>
                 <CCardBody>
