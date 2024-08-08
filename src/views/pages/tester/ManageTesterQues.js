@@ -42,7 +42,8 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 //////////
 import JoditEditor from 'jodit-react'
-import { RiEyeLine } from 'react-icons/ri'
+import { RiArrowLeftSLine, RiArrowRightSLine, RiEyeLine } from 'react-icons/ri'
+import ReactPaginate from 'react-paginate'
 /// video player
 import '../../../../node_modules/video-react/dist/video-react.css' // import css
 import { Player } from 'video-react'
@@ -117,6 +118,10 @@ const ManageTesterQues = () => {
   const [fileEnter, setFileEnter] = useState(false)
   const [showCheck, setShowCheck] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [pageSize, setPageSize] = useState(0)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -158,7 +163,7 @@ const ManageTesterQues = () => {
   const option6 = op6
 
   useEffect(() => {
-    getAllQuest()
+    getAllQuest(1)
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
@@ -189,7 +194,7 @@ const ManageTesterQues = () => {
     }
   }, [])
 
-  const getAllQuest = () => {
+  const getAllQuest = (pageNo) => {
     setLoader(true)
     const userId = sessionStorage.getItem('userId')
     const myHeaders = new Headers()
@@ -201,7 +206,7 @@ const ManageTesterQues = () => {
       redirect: 'follow',
     }
 
-    fetch(`${API_URL}tester/mcqs/${userId}`, requestOptions)
+    fetch(`${API_URL}tester/mcqs/${userId}?page=${pageNo}`, requestOptions)
       .then((response) => {
         const contentLength = response.headers.get('content-length')
         let loaded = 0
@@ -234,6 +239,10 @@ const ManageTesterQues = () => {
         setLoader(false)
         if (result.data) {
           setAllQuestion(result.data)
+          setCurrentPage(result.pagination?.page)
+          setTotal(result.pagination?.total)
+          setTotalPages(result.pagination?.totalPages)
+          setPageSize(result.pagination?.limit)
         }
       })
       .catch((error) => {
@@ -488,26 +497,74 @@ const ManageTesterQues = () => {
     // setVideoSrc(url)
     // console.log('video url', url)
   }
-  const getFilteredQuestions = () => {
+  const getFilteredQuestions = (pageNo) => {
+    const userId = sessionStorage.getItem('userId')
     // console.log('step', filterUsmle, 'category', filterCategory)
-    let filtered_result = []
-    if (filterUsmle && filterCategory) {
-      filtered_result = allQuestion.filter(
-        (ques) => ques.usmleStep == filterUsmle && ques.USMLE == filterCategory,
-      )
-      setShowFilteredResult(true)
+    if (filterUsmle == '' && filterCategory == '') {
+      // do nothing
     } else {
-      if (filterUsmle) {
-        filtered_result = allQuestion.filter((ques) => ques.usmleStep == filterUsmle)
-        setShowFilteredResult(true)
+      setLoader(true)
+      const myHeaders = new Headers()
+      myHeaders.append('Authorization', token)
+      myHeaders.append('Content-Type', 'application/json')
+
+      const raw = JSON.stringify({
+        usmleStep: filterUsmle,
+        USMLE: filterCategory,
+      })
+      const requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
       }
-      if (filterCategory) {
-        filtered_result = allQuestion.filter((ques) => ques.USMLE == filterCategory)
-        setShowFilteredResult(true)
-      }
+      // fetch(API_URL + 'tester/filtered-mcqs/' + userId + '?page=' + pageNo, requestOptions)
+      fetch(`${API_URL}tester/filtered-mcqs/${userId}?page=${pageNo}`, requestOptions)
+        .then((response) => {
+          const contentLength = response.headers.get('content-length')
+          let loaded = 0
+          return new Response(
+            new ReadableStream({
+              start(controller) {
+                const reader = response.body.getReader()
+                read()
+                function read() {
+                  reader.read().then((progressEvent) => {
+                    if (progressEvent.done) {
+                      controller.close()
+                      return
+                    }
+                    loaded += progressEvent.value.byteLength
+
+                    const percentageComplete = Math.round((loaded / contentLength) * 100)
+                    setProgress(percentageComplete)
+
+                    controller.enqueue(progressEvent.value)
+                    read()
+                  })
+                }
+              },
+            }),
+          )
+        })
+        .then((response) => response.json())
+        .then((result) => {
+          // console.log(result)
+          setLoader(false)
+          if (result.data) {
+            setShowFilteredResult(true)
+            setFilteredQuestion(result.data)
+            setCurrentPage(result.pagination?.page)
+            setTotal(result.pagination?.total)
+            setTotalPages(result.pagination?.totalPages)
+            setPageSize(result.pagination?.limit)
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setLoader(false)
+        })
     }
-    setFilteredQuestion(filtered_result)
-    // console.log(filtered_result)
   }
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {
@@ -639,6 +696,9 @@ const ManageTesterQues = () => {
     return categories
   }
 
+  const showNextButton = currentPage - 1 !== totalPages - 1
+  const showPrevButton = currentPage - 1 !== 0
+
   return (
     <div>
       <TesterSidebar />
@@ -747,7 +807,7 @@ const ManageTesterQues = () => {
                           <CButton
                             className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
                             onClick={() => {
-                              getFilteredQuestions()
+                              getFilteredQuestions(currentPage)
                             }}
                           >
                             <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
@@ -1001,6 +1061,52 @@ const ManageTesterQues = () => {
                       )}
                     </CTableBody>
                   </CTable>
+                  {total <= pageSize ? (
+                    ''
+                  ) : (
+                    <ReactPaginate
+                      breakLabel={<span className="mr-4">...</span>}
+                      nextLabel={
+                        // showNextButton ? (
+                        <span
+                          className={
+                            showNextButton
+                              ? 'w-10 h-9 flex items-center page-no justify-center mr-3'
+                              : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3'
+                            // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
+                          }
+                        >
+                          <RiArrowRightSLine />
+                        </span>
+                      }
+                      // onPageChange={handlePageClick}
+                      onPageChange={(event) => {
+                        setCurrentPage(event.selected + 1)
+                        showFilteredResult
+                          ? getFilteredQuestions(event.selected + 1)
+                          : getAllQuest(event.selected + 1)
+                      }}
+                      pageRangeDisplayed={3}
+                      pageCount={totalPages}
+                      previousLabel={
+                        <span
+                          className={
+                            showPrevButton
+                              ? 'w-10 h-10 flex items-center page-no justify-center mr-3'
+                              : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3'
+                          }
+                        >
+                          <RiArrowLeftSLine />
+                        </span>
+                      }
+                      containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
+                      pageClassName={
+                        'block border- border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center mr-4'
+                      }
+                      activeClassName={'active-page-no text-white'}
+                      forcePage={currentPage - 1}
+                    />
+                  )}
                   {/* )} */}
                 </CCardBody>
               </CCard>
