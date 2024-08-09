@@ -164,13 +164,12 @@ const ManageTesterQues = () => {
   const option6 = op6
 
   useEffect(() => {
-    getAllQuest(1)
     const getToken = localStorage.getItem('token')
     if (getToken) {
       setToken(getToken)
       const storedUserId = localStorage.getItem('userId')
       setUserId(storedUserId)
-      getAllQuest(storedUserId)
+      getAllQuest(currentPage)
     } else {
       navigate('/login')
     }
@@ -738,13 +737,9 @@ const ManageTesterQues = () => {
                         {!loader &&
                           allQuestion.length > 0 &&
                           (showFilteredResult ? (
-                            <span className="text-sm">
-                              Total {filteredQuestion.length} questions found
-                            </span>
+                            <span className="text-sm">Total {total} questions found</span>
                           ) : (
-                            <span className="text-sm">
-                              Total {allQuestion.length} questions found
-                            </span>
+                            <span className="text-sm">Total {total} questions found</span>
                           ))}
                       </div>
                       <div>
@@ -890,7 +885,7 @@ const ManageTesterQues = () => {
                                     />
                                   </CTableDataCell>
                                 )}
-                                <CTableDataCell>{idx + 1}</CTableDataCell>
+                                <CTableDataCell>{q.srNo}</CTableDataCell>
                                 <CTableHeaderCell className="cursor-pointer">
                                   <span
                                     id={q._id}
@@ -991,7 +986,7 @@ const ManageTesterQues = () => {
                                   />
                                 </CTableDataCell>
                               )}
-                              <CTableDataCell>{idx + 1}</CTableDataCell>
+                              <CTableDataCell>{q.srNo}</CTableDataCell>
                               <CTableHeaderCell className="cursor-pointer">
                                 <span
                                   id={q._id}
@@ -1077,16 +1072,14 @@ const ManageTesterQues = () => {
                     ''
                   ) : (
                     <ReactPaginate
-                      breakLabel={<span className="mr-4">...</span>}
+                      breakLabel={
+                        <span className="w-10 h-10 border border-solid">
+                          <span className="flex justify-center items-center">...</span>
+                        </span>
+                      }
                       nextLabel={
-                        // showNextButton ? (
                         <span
-                          className={
-                            showNextButton
-                              ? 'w-10 h-9 flex items-center page-no justify-center mr-3'
-                              : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3'
-                            // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
-                          }
+                          className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
                         >
                           <RiArrowRightSLine />
                         </span>
@@ -1098,22 +1091,19 @@ const ManageTesterQues = () => {
                           ? getFilteredQuestions(event.selected + 1)
                           : getAllQuest(event.selected + 1)
                       }}
+                      marginPagesDisplayed={2}
                       pageRangeDisplayed={3}
                       pageCount={totalPages}
                       previousLabel={
                         <span
-                          className={
-                            showPrevButton
-                              ? 'w-10 h-10 flex items-center page-no justify-center mr-3'
-                              : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3'
-                          }
+                          className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
                         >
                           <RiArrowLeftSLine />
                         </span>
                       }
                       containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
                       pageClassName={
-                        'block border- border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center mr-4'
+                        'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
                       }
                       activeClassName={'active-page-no text-white'}
                       forcePage={currentPage - 1}

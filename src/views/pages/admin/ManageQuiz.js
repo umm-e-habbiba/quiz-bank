@@ -799,69 +799,17 @@ const ManageQuiz = () => {
         ) : (
           <CCard className="mb-4 mx-4">
             <CCardHeader>
-              <div className="flex justify-between items-center mb-2">
-                <div className="flex flex-col">
-                  <strong>Manage Questions</strong>
-                  {!loader &&
-                    allQuestion.length > 0 &&
-                    (showFilteredResult ? (
-                      <span className="text-sm">
-                        Total {filteredQuestion.length} questions found
-                      </span>
-                    ) : (
-                      <span className="text-sm">
-                        Total {allQuestion.length + 2000} questions added
-                      </span>
-                    ))}
-                </div>
-                {total <= pageSize ? (
-                  ''
-                ) : (
-                  <ReactPaginate
-                    breakLabel={<span className="mr-4">...</span>}
-                    nextLabel={
-                      // showNextButton ? (
-                      <span
-                        className={
-                          showNextButton
-                            ? 'w-10 h-10 flex items-center page-no justify-center border border-solid'
-                            : 'w-10 h-10 flex items-center justify-center cursor-disabled border border-solid'
-                          // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
-                        }
-                      >
-                        <RiArrowRightSLine />
-                      </span>
-                    }
-                    // onPageChange={handlePageClick}
-                    onPageChange={(event) => {
-                      setCurrentPage(event.selected + 1)
-                      showFilteredResult
-                        ? getFilteredQuestions(event.selected + 1)
-                        : getAllQuest(event.selected + 1)
-                    }}
-                    pageRangeDisplayed={3}
-                    pageCount={totalPages}
-                    previousLabel={
-                      <span
-                        className={
-                          showPrevButton
-                            ? 'w-10 h-10 flex items-center page-no justify-center border border-solid'
-                            : 'w-10 h-10 flex items-center justify-center cursor-disabled border border-solid'
-                        }
-                      >
-                        <RiArrowLeftSLine />
-                      </span>
-                    }
-                    containerClassName={
-                      'flex items-center justify-center mt-8 mb-4 header-pagination'
-                    }
-                    pageClassName={
-                      'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
-                    }
-                    activeClassName={'active-page-no text-white'}
-                    forcePage={currentPage - 1}
-                  />
-                )}
+              <div className="flex flex-col mb-2">
+                <strong>Manage Questions</strong>
+                {!loader &&
+                  allQuestion.length > 0 &&
+                  (showFilteredResult ? (
+                    <span className="text-sm">Total {total} questions found</span>
+                  ) : (
+                    <span className="text-sm">
+                      Total {allQuestion.length + 2000} questions added
+                    </span>
+                  ))}
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex justify-between items-center">
@@ -978,31 +926,49 @@ const ManageQuiz = () => {
                     ''
                   )}
                 </div>
-                <div className="flex justify-end items-center w-[400px]">
-                  {/* {totalPages > 1 && (
-                    <CFormSelect
-                      aria-label="Select Page"
-                      id="page"
-                      className="mr-3 w-full"
-                      onChange={(e) => {
-                        setCurrentPage(e.target.value)
-                        getAllQuest(e.target.value)
-                      }}
-                    >
-                      <option disabled selected>
-                        Select Page
-                      </option>
-                      {Array.apply(null, { length: totalPages }).map((e, i) => (
-                        <option
-                          key={i}
-                          disabled={currentPage == i + 1 ? true : false}
-                          value={i + 1}
+                <div className="flex justify-end items-center w-[550px]">
+                  {total <= pageSize ? (
+                    ''
+                  ) : (
+                    <ReactPaginate
+                      breakLabel={
+                        <span className="w-9 h-9 border border-solid">
+                          <span className="flex justify-center items-center">...</span>
+                        </span>
+                      }
+                      marginPagesDisplayed={1}
+                      nextLabel={
+                        <span
+                          className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
                         >
-                          {i + 1}
-                        </option>
-                      ))}
-                    </CFormSelect>
-                  )} */}
+                          <RiArrowRightSLine />
+                        </span>
+                      }
+                      // onPageChange={handlePageClick}
+                      onPageChange={(event) => {
+                        setCurrentPage(event.selected + 1)
+                        showFilteredResult
+                          ? getFilteredQuestions(event.selected + 1)
+                          : getAllQuest(event.selected + 1)
+                      }}
+                      pageRangeDisplayed={1}
+                      pageCount={totalPages}
+                      previousLabel={
+                        <span
+                          className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                        >
+                          <RiArrowLeftSLine />
+                        </span>
+                      }
+                      containerClassName={'flex justify-center items-center pagination mr-3'}
+                      pageClassName={
+                        'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                      }
+                      activeClassName={'active-page-no text-white'}
+                      forcePage={currentPage - 1}
+                      // initialPage={currentPage}
+                    />
+                  )}
 
                   {!showCheck && (
                     <CButton
@@ -1274,20 +1240,19 @@ const ManageQuiz = () => {
                 ''
               ) : (
                 <ReactPaginate
-                  breakLabel={<span className="mr-4">...</span>}
+                  breakLabel={
+                    <span className="w-10 h-10 border border-solid">
+                      <span className="flex justify-center items-center">...</span>
+                    </span>
+                  }
                   nextLabel={
-                    // showNextButton ? (
                     <span
-                      className={
-                        showNextButton
-                          ? 'w-10 h-9 flex items-center page-no justify-center mr-3'
-                          : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3'
-                        // : 'w-10 h-10 flex items-center justify-center cursor-disabled mr-3 text-gray-500'
-                      }
+                      className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
                     >
                       <RiArrowRightSLine />
                     </span>
                   }
+                  marginPagesDisplayed={2}
                   // onPageChange={handlePageClick}
                   onPageChange={(event) => {
                     setCurrentPage(event.selected + 1)
@@ -1299,18 +1264,14 @@ const ManageQuiz = () => {
                   pageCount={totalPages}
                   previousLabel={
                     <span
-                      className={
-                        showPrevButton
-                          ? 'w-10 h-10 flex items-center page-no justify-center mr-3'
-                          : 'w-10 h-9 flex items-center justify-center cursor-disabled mr-3'
-                      }
+                      className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
                     >
                       <RiArrowLeftSLine />
                     </span>
                   }
                   containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
                   pageClassName={
-                    'block border- border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center mr-4'
+                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
                   }
                   activeClassName={'active-page-no text-white'}
                   forcePage={currentPage - 1}

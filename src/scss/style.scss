@@ -468,40 +468,14 @@ table th {
 }
 .pagination li a {
   // color: #000;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .pagination .active-page-no,
 .pagination .page-no:hover {
-  background: #6261cc;
-  border-radius: 50%;
-}
-.pagination .page-no {
-  // color: #000;
-}
-.pagination .active-page-no a,
-.pagination .page-no:hover a,
-.pagination .page-no:hover {
-  // color: #fff;
-}
-
-// header pagination
-.header-pagination {
-  display: flex;
-}
-.header-pagination li a {
-  // color: #000;
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.header-pagination .active-page-no,
-.header-pagination .page-no:hover {
   background: #6261cc;
   color: white;
 }
