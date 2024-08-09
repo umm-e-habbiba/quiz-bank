@@ -133,7 +133,7 @@ const UploadQuestions = () => {
           setTimeout(() => {
             setSuccess(false)
             setSuccessMsg('')
-            navigate('/manage-quiz')
+            // navigate('/manage-quiz')
           }, 3000)
         } else {
           setErrorr(true)

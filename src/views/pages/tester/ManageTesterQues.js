@@ -335,13 +335,24 @@ const ManageTesterQues = () => {
           setAddModal(false)
           setIsLoading(false)
           // getAllQuest()
-          const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+          if (showFilteredResult) {
+            const indexToReplace = filteredQuestion.findIndex((ques) => ques._id === questionId)
 
-          if (indexToReplace !== -1) {
-            const updatedQuestionSplice = [...allQuestion]
-            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
-            // console.log(updatedQuestionSplice)
-            setAllQuestion(updatedQuestionSplice)
+            if (indexToReplace !== -1) {
+              const updatedQuestionSplice = [...filteredQuestion]
+              updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+              // console.log(updatedQuestionSplice)
+              setFilteredQuestion(updatedQuestionSplice)
+            }
+          } else {
+            const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+
+            if (indexToReplace !== -1) {
+              const updatedQuestionSplice = [...allQuestion]
+              updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+              // console.log(updatedQuestionSplice)
+              setAllQuestion(updatedQuestionSplice)
+            }
           }
           setQuestionId('')
           setImage('')
@@ -537,7 +548,7 @@ const ManageTesterQues = () => {
         .then((result) => {
           // console.log(result)
           setLoader(false)
-          if (result.data) {
+          if (result.success == true) {
             setShowFilteredResult(true)
             setFilteredQuestion(result.data)
             setCurrentPage(result.pagination?.page)
@@ -612,13 +623,24 @@ const ManageTesterQues = () => {
       .then((result) => {
         console.log('result', result, 'ques array', allQuestion)
         // getAllQuest()
-        const indexToReplace = allQuestion.findIndex((ques) => ques._id === id)
+        if (showFilteredResult) {
+          const indexToReplace = filteredQuestion.findIndex((ques) => ques._id === id)
 
-        if (indexToReplace !== -1) {
-          const updatedQuestionSplice = [...allQuestion]
-          updatedQuestionSplice.splice(indexToReplace, 1, result.data)
-          console.log(updatedQuestionSplice)
-          setAllQuestion(updatedQuestionSplice)
+          if (indexToReplace !== -1) {
+            const updatedQuestionSplice = [...filteredQuestion]
+            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+            console.log(updatedQuestionSplice)
+            setFilteredQuestion(updatedQuestionSplice)
+          }
+        } else {
+          const indexToReplace = allQuestion.findIndex((ques) => ques._id === id)
+
+          if (indexToReplace !== -1) {
+            const updatedQuestionSplice = [...allQuestion]
+            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+            console.log(updatedQuestionSplice)
+            setAllQuestion(updatedQuestionSplice)
+          }
         }
       })
       .catch((error) => console.log('error', error))
@@ -920,7 +942,7 @@ const ManageTesterQues = () => {
                                   <CTooltip
                                     key={q._id}
                                     content={
-                                      q.isCorrect ? 'Already Marked Correct' : 'Mark Correct'
+                                      q.isCorrect ? 'Question already checked' : 'Question checked'
                                     }
                                   >
                                     <CButton
@@ -941,6 +963,7 @@ const ManageTesterQues = () => {
                                       {/* <IoCheckmarkDoneSharp className="my-1" /> */}
                                     </CButton>
                                   </CTooltip>
+
                                   <CTooltip content="Edit Question">
                                     <CButton
                                       color="info"
@@ -1019,7 +1042,9 @@ const ManageTesterQues = () => {
                               <CTableDataCell className="flex justify-start items-center">
                                 <CTooltip
                                   key={q._id}
-                                  content={q.isCorrect ? 'Already Marked Correct' : 'Mark Correct'}
+                                  content={
+                                    q.isCorrect ? 'Question already checked' : 'Question checked'
+                                  }
                                 >
                                   <CButton
                                     className={`text-white ${q.isCorrect ? 'bg-[#259110] opacity-30 hover:bg-[#259110] hover:cursor-not-allowed' : 'bg-[#259110] hover:bg-[#19693a]'} mr-3 my-2`}

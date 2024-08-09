@@ -506,13 +506,24 @@ const ManageQuiz = () => {
           setAddModal(false)
           setIsLoading(false)
           // getAllQuest(currentPage)
-          const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+          if (showFilteredResult) {
+            const indexToReplace = filteredQuestion.findIndex((ques) => ques._id === questionId)
 
-          if (indexToReplace !== -1) {
-            const updatedQuestionSplice = [...allQuestion]
-            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
-            // console.log(updatedQuestionSplice)
-            setAllQuestion(updatedQuestionSplice)
+            if (indexToReplace !== -1) {
+              const updatedQuestionSplice = [...filteredQuestion]
+              updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+              // console.log(updatedQuestionSplice)
+              setFilteredQuestion(updatedQuestionSplice)
+            }
+          } else {
+            const indexToReplace = allQuestion.findIndex((ques) => ques._id === questionId)
+
+            if (indexToReplace !== -1) {
+              const updatedQuestionSplice = [...allQuestion]
+              updatedQuestionSplice.splice(indexToReplace, 1, result.data)
+              // console.log(updatedQuestionSplice)
+              setAllQuestion(updatedQuestionSplice)
+            }
           }
           setQuestionId('')
           setImage('')
