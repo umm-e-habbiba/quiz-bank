@@ -82,6 +82,7 @@ const ManageQuiz = () => {
   const [imgLoader, setImgLoader] = useState(false)
   const [img2Loader, setImg2Loader] = useState(false)
   const [questionId, setQuestionId] = useState('')
+  const [srNo, setSrNo] = useState('')
   const [image, setImage] = useState('')
   const [image2, setImage2] = useState('')
   const [videoLoader, setVideoLoader] = useState(false)
@@ -470,6 +471,7 @@ const ManageQuiz = () => {
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
     formdata.append('optionFive', data.op5)
+    formdata.append('srNo', srNo)
     if (op6) {
       formdata.append('optionSix', op6)
     }
@@ -797,14 +799,11 @@ const ManageQuiz = () => {
                   <div key={index}></div>
                 ))}
               </div>
-              <div className="text-sm font-medium text-gray-500 mt-2">
+              {/* <div className="text-sm font-medium text-gray-500 mt-2">
                 <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
                 get`s completed...
               </div>
-              {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
-           <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
-         </div> */}
-              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
+              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
             </div>
           </div>
         ) : (
@@ -937,50 +936,49 @@ const ManageQuiz = () => {
                     ''
                   )}
                 </div>
-                <div className="flex justify-end items-center w-[550px]">
-                  {total <= pageSize ? (
-                    ''
-                  ) : (
-                    <ReactPaginate
-                      breakLabel={
-                        <span className="w-9 h-9 border border-solid">
-                          <span className="flex justify-center items-center">...</span>
-                        </span>
-                      }
-                      marginPagesDisplayed={1}
-                      nextLabel={
-                        <span
-                          className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
-                        >
-                          <RiArrowRightSLine />
-                        </span>
-                      }
-                      // onPageChange={handlePageClick}
-                      onPageChange={(event) => {
-                        setCurrentPage(event.selected + 1)
-                        showFilteredResult
-                          ? getFilteredQuestions(event.selected + 1)
-                          : getAllQuest(event.selected + 1)
-                      }}
-                      pageRangeDisplayed={1}
-                      pageCount={totalPages}
-                      previousLabel={
-                        <span
-                          className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
-                        >
-                          <RiArrowLeftSLine />
-                        </span>
-                      }
-                      containerClassName={'flex justify-center items-center pagination mr-3'}
-                      pageClassName={
-                        'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
-                      }
-                      activeClassName={'active-page-no text-white'}
-                      forcePage={currentPage - 1}
-                      // initialPage={currentPage}
-                    />
-                  )}
-
+                {total <= pageSize ? (
+                  ''
+                ) : (
+                  <ReactPaginate
+                    breakLabel={
+                      <span className="w-9 h-9 border border-solid">
+                        <span className="flex justify-center items-center">...</span>
+                      </span>
+                    }
+                    marginPagesDisplayed={1}
+                    nextLabel={
+                      <span
+                        className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                      >
+                        <RiArrowRightSLine />
+                      </span>
+                    }
+                    // onPageChange={handlePageClick}
+                    onPageChange={(event) => {
+                      setCurrentPage(event.selected + 1)
+                      showFilteredResult
+                        ? getFilteredQuestions(event.selected + 1)
+                        : getAllQuest(event.selected + 1)
+                    }}
+                    pageRangeDisplayed={1}
+                    pageCount={totalPages}
+                    previousLabel={
+                      <span
+                        className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                      >
+                        <RiArrowLeftSLine />
+                      </span>
+                    }
+                    containerClassName={'flex justify-center items-center pagination mr-3'}
+                    pageClassName={
+                      'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                    }
+                    activeClassName={'active-page-no text-white'}
+                    forcePage={currentPage - 1}
+                    // initialPage={currentPage}
+                  />
+                )}
+                <div className="flex justify-end items-center w-[305px]">
                   {!showCheck && (
                     <CButton
                       className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3 w-full"
@@ -1119,6 +1117,7 @@ const ManageQuiz = () => {
                                   setQuestionId(e.currentTarget.id)
                                   setErrorr(false)
                                   setErrorMsg('')
+                                  setSrNo(q.srNo)
                                 }}
                               >
                                 <CIcon icon={cilPencil} />
@@ -1217,6 +1216,7 @@ const ManageQuiz = () => {
                                 setQuestionId(e.currentTarget.id)
                                 setErrorr(false)
                                 setErrorMsg('')
+                                setSrNo(q.srNo)
                               }}
                             >
                               <CIcon icon={cilPencil} />
@@ -1252,18 +1252,18 @@ const ManageQuiz = () => {
               ) : (
                 <ReactPaginate
                   breakLabel={
-                    <span className="w-10 h-10 border border-solid">
+                    <span className="w-9 h-9 border border-solid">
                       <span className="flex justify-center items-center">...</span>
                     </span>
                   }
+                  marginPagesDisplayed={1}
                   nextLabel={
                     <span
-                      className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
+                      className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
                     >
                       <RiArrowRightSLine />
                     </span>
                   }
-                  marginPagesDisplayed={2}
                   // onPageChange={handlePageClick}
                   onPageChange={(event) => {
                     setCurrentPage(event.selected + 1)
@@ -1271,21 +1271,22 @@ const ManageQuiz = () => {
                       ? getFilteredQuestions(event.selected + 1)
                       : getAllQuest(event.selected + 1)
                   }}
-                  pageRangeDisplayed={3}
+                  pageRangeDisplayed={1}
                   pageCount={totalPages}
                   previousLabel={
                     <span
-                      className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
+                      className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
                     >
                       <RiArrowLeftSLine />
                     </span>
                   }
-                  containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
+                  containerClassName={'flex justify-center items-center pagination mr-3'}
                   pageClassName={
-                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
+                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
                   }
                   activeClassName={'active-page-no text-white'}
                   forcePage={currentPage - 1}
+                  // initialPage={currentPage}
                 />
               )}
               {/* )} */}

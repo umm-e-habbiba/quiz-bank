@@ -702,14 +702,11 @@ const ViewTesterQues = () => {
                   <div key={index}></div>
                 ))}
               </div>
-              <div className="text-sm font-medium text-gray-500 mt-2">
+              {/* <div className="text-sm font-medium text-gray-500 mt-2">
                 <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
                 get`s completed...
               </div>
-              {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
-           <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
-         </div> */}
-              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
+              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
             </div>
           </div>
         ) : (

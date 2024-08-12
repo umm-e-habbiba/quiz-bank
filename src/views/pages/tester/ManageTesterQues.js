@@ -89,6 +89,7 @@ const ManageTesterQues = () => {
   const [imgLoader, setImgLoader] = useState(false)
   const [img2Loader, setImg2Loader] = useState(false)
   const [questionId, setQuestionId] = useState('')
+  const [srNo, setSrNo] = useState('')
   const [image, setImage] = useState('')
   const [image2, setImage2] = useState('')
   const [videoLoader, setVideoLoader] = useState(false)
@@ -310,6 +311,7 @@ const ManageTesterQues = () => {
     formdata.append('optionThree', data.op3)
     formdata.append('optionFour', data.op4)
     formdata.append('optionFive', data.op5)
+    formdata.append('srNo', srNo)
     if (op6) formdata.append('optionSix', op6)
     if (op1Exp) formdata.append('optionOneExplanation', op1Exp)
     if (op2Exp) formdata.append('optionTwoExplanation', op2Exp)
@@ -624,23 +626,29 @@ const ManageTesterQues = () => {
         console.log('result', result, 'ques array', allQuestion)
         // getAllQuest()
         if (showFilteredResult) {
-          const indexToReplace = filteredQuestion.findIndex((ques) => ques._id === id)
-
-          if (indexToReplace !== -1) {
-            const updatedQuestionSplice = [...filteredQuestion]
-            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
-            console.log(updatedQuestionSplice)
-            setFilteredQuestion(updatedQuestionSplice)
-          }
+          setFilteredQuestion(
+            filteredQuestion.map((ques) => {
+              if (ques._id === id) {
+                // Create a *new* object with changes
+                return { ...ques, isCorrect: true }
+              } else {
+                // No changes
+                return ques
+              }
+            }),
+          )
         } else {
-          const indexToReplace = allQuestion.findIndex((ques) => ques._id === id)
-
-          if (indexToReplace !== -1) {
-            const updatedQuestionSplice = [...allQuestion]
-            updatedQuestionSplice.splice(indexToReplace, 1, result.data)
-            console.log(updatedQuestionSplice)
-            setAllQuestion(updatedQuestionSplice)
-          }
+          setAllQuestion(
+            allQuestion.map((ques) => {
+              if (ques._id === id) {
+                // Create a *new* object with changes
+                return { ...ques, isCorrect: true }
+              } else {
+                // No changes
+                return ques
+              }
+            }),
+          )
         }
       })
       .catch((error) => console.log('error', error))
@@ -720,14 +728,11 @@ const ManageTesterQues = () => {
                       <div key={index}></div>
                     ))}
                   </div>
-                  <div className="text-sm font-medium text-gray-500 mt-2">
+                  {/* <div className="text-sm font-medium text-gray-500 mt-2">
                     <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while
                     it get`s completed...
                   </div>
-                  {/* <div className="w-[30%] h-2 bg-gray-400 rounded overflow-hidden ">
-           <div className="h-full bg-[#6261CC]" style={{ width: `${progress}%` }}></div>
-         </div> */}
-                  <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress>
+                  <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
                 </div>
               </div>
             ) : (
@@ -972,6 +977,7 @@ const ManageTesterQues = () => {
                                       onClick={(e) => {
                                         setAddModal(true)
                                         setQuestionId(e.currentTarget.id)
+                                        setSrNo(q.srNo)
                                         setErrorr(false)
                                         setErrorMsg('')
                                       }}
@@ -1075,6 +1081,7 @@ const ManageTesterQues = () => {
                                       setQuestionId(e.currentTarget.id)
                                       setErrorr(false)
                                       setErrorMsg('')
+                                      setSrNo(q.srNo)
                                     }}
                                   >
                                     <CIcon icon={cilPencil} />
