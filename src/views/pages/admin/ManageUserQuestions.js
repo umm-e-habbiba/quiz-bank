@@ -628,28 +628,12 @@ const ManageUserQuestions = () => {
   return (
     <AdminLayout>
       <>
-        {loader ? (
-          <div>
-            <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
-              <div className="lds-spinner -ml-8">
-                {[...Array(12)].map((_, index) => (
-                  <div key={index}></div>
-                ))}
-              </div>
-              {/* <div className="text-sm font-medium text-gray-500 mt-2">
-                <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
-                get`s completed...
-              </div>
-              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
-            </div>
-          </div>
-        ) : (
-          <CCard className="mb-4 mx-4">
-            <CCardHeader className="flex justify-between items-center">
-              <div className="flex">
-                <div className="flex flex-col">
-                  <strong>Manage Questions</strong>
-                  {/* {!loader &&
+        <CCard className="mb-4 mx-4">
+          <CCardHeader className="flex justify-between items-center">
+            <div className="flex">
+              <div className="flex flex-col">
+                <strong>Manage User Questions</strong>
+                {/* {!loader &&
                     allQuestion.length > 0 &&
                     (showFilteredResult ? (
                       <span className="text-sm">
@@ -658,8 +642,8 @@ const ManageUserQuestions = () => {
                     ) : (
                       <span className="text-sm">Total {allQuestion.length} questions added</span>
                     ))} */}
-                </div>
-                {/* <div className="flex ml-6 justify-between items-center w-[600px]">
+              </div>
+              {/* <div className="flex ml-6 justify-between items-center w-[600px]">
                   <CFormSelect
                     aria-label="usmle step"
                     id="usmleStep"
@@ -772,8 +756,8 @@ const ManageUserQuestions = () => {
                     ''
                   )}
                 </div> */}
-              </div>
-              {/* <div className="flex justify-end items-center">
+            </div>
+            {/* <div className="flex justify-end items-center">
                 {!showCheck && (
                   <CButton
                     className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3"
@@ -797,276 +781,287 @@ const ManageUserQuestions = () => {
                   </CButton>
                 )}
               </div> */}
-            </CCardHeader>
-            <CCardBody>
-              {/* {loader ? (
+          </CCardHeader>
+          <CCardBody>
+            {/* {loader ? (
               <div className="text-center">
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : ( */}
-              <CTable striped className="admin-tables">
-                <CTableHead>
+            <CTable striped className="admin-tables">
+              <CTableHead>
+                <CTableRow>
+                  {showCheck && (
+                    <CTableHeaderCell scope="col">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        // id={q._id}
+                        // value={q._id}
+                        onChange={(e) => handleCheckboxChangeAll(e)}
+                      />
+                    </CTableHeaderCell>
+                  )}
+                  <CTableHeaderCell scope="col">Added by</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                  {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                  <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                  {/* <CTableHeaderCell scope="col">Approved</CTableHeaderCell> */}
+                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {loader ? (
                   <CTableRow>
-                    {showCheck && (
-                      <CTableHeaderCell scope="col">
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          // id={q._id}
-                          // value={q._id}
-                          onChange={(e) => handleCheckboxChangeAll(e)}
-                        />
-                      </CTableHeaderCell>
-                    )}
-                    <CTableHeaderCell scope="col">Added by</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
-                    {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                    <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                    {/* <CTableHeaderCell scope="col">Approved</CTableHeaderCell> */}
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                    <CTableDataCell className="text-center" colSpan={6}>
+                      <div className="text-center">
+                        <CSpinner color="success" variant="grow" />
+                      </div>
+                    </CTableDataCell>
                   </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {allQuestion && allQuestion.length > 0 ? (
-                    showFilteredResult ? (
-                      filteredQuestion && filteredQuestion.length > 0 ? (
-                        filteredQuestion.map((q, idx) => (
-                          <CTableRow key={idx}>
-                            {showCheck && (
-                              <CTableDataCell>
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input checkboxes"
+                ) : (
+                  <>
+                    {allQuestion && allQuestion.length > 0 ? (
+                      showFilteredResult ? (
+                        filteredQuestion && filteredQuestion.length > 0 ? (
+                          filteredQuestion.map((q, idx) => (
+                            <CTableRow key={idx}>
+                              {showCheck && (
+                                <CTableDataCell>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input checkboxes"
+                                    id={q._id}
+                                    value={q._id}
+                                    onChange={(e) => handleCheckboxChange(e)}
+                                    // checked={
+                                    //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                                    // }
+                                  />
+                                </CTableDataCell>
+                              )}
+                              <CTableHeaderCell className="cursor-pointer">
+                                <span
                                   id={q._id}
-                                  value={q._id}
-                                  onChange={(e) => handleCheckboxChange(e)}
-                                  // checked={
-                                  //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
-                                  // }
-                                />
-                              </CTableDataCell>
-                            )}
-                            <CTableHeaderCell className="cursor-pointer">
-                              <span
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDetailModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html:
-                                    q.question.length > 100
-                                      ? q.question.substring(0, 100) + '...'
-                                      : q.question,
-                                }}
-                              >
-                                {/* {q.question.length > 100
+                                  onClick={(e) => {
+                                    setDetailModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      q.question.length > 100
+                                        ? q.question.substring(0, 100) + '...'
+                                        : q.question,
+                                  }}
+                                >
+                                  {/* {q.question.length > 100
                                 ? q.question.substring(0, 100) + '...'
                                 : q.question} */}
-                              </span>
-                            </CTableHeaderCell>
-                            <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                            <CTableDataCell>{q.USMLE}</CTableDataCell>
-                            {/* <CTableDataCell>
+                                </span>
+                              </CTableHeaderCell>
+                              <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                              <CTableDataCell>{q.USMLE}</CTableDataCell>
+                              {/* <CTableDataCell>
                             <img
                               src={`${API_URL}uploads/${q.image}`}
                               alt="mcq img"
                               className="w-6 h-6 rounded-full"
                             />
                           </CTableDataCell> */}
-                            <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                            {/* <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell> */}
-                            <CTableDataCell className="flex justify-start items-center">
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setViewModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                }}
-                                title="View"
-                              >
-                                <RiEyeLine className="my-1" />
-                              </CButton>
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setApproveModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                                title="Approve"
-                              >
-                                <RiCheckDoubleLine className="my-1" />
-                              </CButton>
-                              <CButton
-                                color="info"
-                                className="text-white mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setAddModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                              >
-                                <CIcon icon={cilPencil} />
-                              </CButton>
-                              <CButton
-                                color="danger"
-                                className="text-white my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDeleteModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                              >
-                                <CIcon icon={cilTrash} />
+                              <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                              {/* <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell> */}
+                              <CTableDataCell className="flex justify-start items-center">
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setViewModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  title="View"
+                                >
+                                  <RiEyeLine className="my-1" />
+                                </CButton>
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setApproveModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                  title="Approve"
+                                >
+                                  <RiCheckDoubleLine className="my-1" />
+                                </CButton>
+                                <CButton
+                                  color="info"
+                                  className="text-white mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setAddModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilPencil} />
+                                </CButton>
+                                <CButton
+                                  color="danger"
+                                  className="text-white my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setDeleteModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilTrash} />
+                                </CButton>
+                              </CTableDataCell>
+                            </CTableRow>
+                          ))
+                        ) : (
+                          <CTableRow>
+                            <CTableDataCell className="text-center" colSpan={6}>
+                              No records found <br />
+                              <CButton color="link" onClick={() => setShowFilteredResult(false)}>
+                                Show All
                               </CButton>
                             </CTableDataCell>
                           </CTableRow>
-                        ))
-                      ) : (
-                        <CTableRow>
-                          <CTableDataCell className="text-center" colSpan={6}>
-                            No records found <br />
-                            <CButton color="link" onClick={() => setShowFilteredResult(false)}>
-                              Show All
-                            </CButton>
-                          </CTableDataCell>
-                        </CTableRow>
-                      )
-                    ) : allQuestion.filter((q) => q.isApproved == false).length > 0 ? (
-                      allQuestion
-                        .filter((q) => q.isApproved == false)
-                        .map((q, idx) => (
-                          <CTableRow key={idx}>
-                            {showCheck && (
-                              <CTableDataCell>
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input checkboxes"
+                        )
+                      ) : allQuestion.filter((q) => q.isApproved == false).length > 0 ? (
+                        allQuestion
+                          .filter((q) => q.isApproved == false)
+                          .map((q, idx) => (
+                            <CTableRow key={idx}>
+                              {showCheck && (
+                                <CTableDataCell>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input checkboxes"
+                                    id={q._id}
+                                    value={q._id}
+                                    onChange={(e) => handleCheckboxChange(e)}
+                                    // checked={
+                                    //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                                    // }
+                                  />
+                                </CTableDataCell>
+                              )}
+                              <CTableDataCell>{q.user?.firstName}</CTableDataCell>
+                              <CTableDataCell className="cursor-pointer">
+                                <span
                                   id={q._id}
-                                  value={q._id}
-                                  onChange={(e) => handleCheckboxChange(e)}
-                                  // checked={
-                                  //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
-                                  // }
-                                />
-                              </CTableDataCell>
-                            )}
-                            <CTableDataCell>{q.user?.firstName}</CTableDataCell>
-                            <CTableDataCell className="cursor-pointer">
-                              <span
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDetailModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html:
-                                    q.question.length > 100
-                                      ? q.question.substring(0, 100) + '...'
-                                      : q.question,
-                                }}
-                              >
-                                {/* {q.question.length > 100
+                                  onClick={(e) => {
+                                    setDetailModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      q.question.length > 100
+                                        ? q.question.substring(0, 100) + '...'
+                                        : q.question,
+                                  }}
+                                >
+                                  {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                              </span>
-                            </CTableDataCell>
-                            <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                            <CTableDataCell>{q.USMLE}</CTableDataCell>
-                            {/* <CTableDataCell>
+                                </span>
+                              </CTableDataCell>
+                              <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                              <CTableDataCell>{q.USMLE}</CTableDataCell>
+                              {/* <CTableDataCell>
                           <img
                             src={`${API_URL}uploads/${q.image}`}
                             alt="mcq img"
                             className="w-6 h-6 rounded-full"
                           />
                         </CTableDataCell> */}
-                            <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                            {/* <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell> */}
-                            <CTableDataCell className="flex justify-start items-center">
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setApproveModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                                title="Approve"
-                              >
-                                {/* <RiCheckDoubleLine className="my-1" /> */}
-                                Approve
-                              </CButton>
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setViewModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                }}
-                                title="View"
-                              >
-                                <RiEyeLine className="my-1" />
-                              </CButton>
-                              <CButton
-                                color="info"
-                                className="text-white mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setAddModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                              >
-                                <CIcon icon={cilPencil} />
-                              </CButton>
-                              <CButton
-                                color="danger"
-                                className="text-white my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDeleteModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                              >
-                                <CIcon icon={cilTrash} />
-                              </CButton>
-                            </CTableDataCell>
-                          </CTableRow>
-                        ))
+                              <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                              {/* <CTableDataCell>{q.isApproved ? 'Approved' : 'Pending'}</CTableDataCell> */}
+                              <CTableDataCell className="flex justify-start items-center">
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setApproveModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                  title="Approve"
+                                >
+                                  {/* <RiCheckDoubleLine className="my-1" /> */}
+                                  Approve
+                                </CButton>
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setViewModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  title="View"
+                                >
+                                  <RiEyeLine className="my-1" />
+                                </CButton>
+                                <CButton
+                                  color="info"
+                                  className="text-white mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setAddModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilPencil} />
+                                </CButton>
+                                <CButton
+                                  color="danger"
+                                  className="text-white my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setDeleteModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilTrash} />
+                                </CButton>
+                              </CTableDataCell>
+                            </CTableRow>
+                          ))
+                      ) : (
+                        <CTableRow>
+                          <CTableDataCell className="text-center" colSpan={6}>
+                            No Questions Found
+                          </CTableDataCell>
+                        </CTableRow>
+                      )
                     ) : (
                       <CTableRow>
                         <CTableDataCell className="text-center" colSpan={6}>
                           No Questions Found
                         </CTableDataCell>
                       </CTableRow>
-                    )
-                  ) : (
-                    <CTableRow>
-                      <CTableDataCell className="text-center" colSpan={6}>
-                        No Questions Found
-                      </CTableDataCell>
-                    </CTableRow>
-                  )}
-                </CTableBody>
-              </CTable>
-              {/* )} */}
-            </CCardBody>
-          </CCard>
-        )}
+                    )}
+                  </>
+                )}
+              </CTableBody>
+            </CTable>
+            {/* )} */}
+          </CCardBody>
+        </CCard>
         {/* edit modal */}
         <CModal
           alignment="center"

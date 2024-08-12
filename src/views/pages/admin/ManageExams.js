@@ -388,47 +388,42 @@ const ManageExams = () => {
   return (
     <AdminLayout>
       <>
-        {loader ? (
-          <div>
-            <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
-              <div className="lds-spinner -ml-8">
-                {[...Array(12)].map((_, index) => (
-                  <div key={index}></div>
-                ))}
+        {showAllExams && (
+          <CCard className="mb-4 mx-4">
+            <CCardHeader className="flex justify-between items-center">
+              <div className="flex">
+                <div className="flex flex-col">
+                  <strong>Manage Exams</strong>
+                  {!loader && allExam.length > 0 && (
+                    <span className="text-sm">Total {allExam.length} exams added</span>
+                  )}
+                </div>
               </div>
-              {/* <div className="text-sm font-medium text-gray-500 mt-2">
-                <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
-                get`s completed...
-              </div>
-              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
-            </div>
-          </div>
-        ) : (
-          <>
-            {showAllExams && (
-              <CCard className="mb-4 mx-4">
-                <CCardHeader className="flex justify-between items-center">
-                  <div className="flex">
-                    <div className="flex flex-col">
-                      <strong>Manage Exams</strong>
-                      {!loader && allExam.length > 0 && (
-                        <span className="text-sm">Total {allExam.length} exams added</span>
-                      )}
-                    </div>
-                  </div>
-                </CCardHeader>
-                <CCardBody>
-                  <CTable striped className="admin-tables">
-                    <CTableHead>
-                      <CTableRow>
-                        <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Usmle Step</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Created At</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                      </CTableRow>
-                    </CTableHead>
-                    <CTableBody>
+            </CCardHeader>
+            <CCardBody>
+              <CTable striped className="admin-tables">
+                <CTableHead>
+                  <CTableRow>
+                    <CTableHeaderCell scope="col">Exam Name</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Usmle Step</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Total Questions</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Created At</CTableHeaderCell>
+                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {loader ? (
+                    <CTableRow>
+                      <CTableDataCell className="text-center" colSpan={6}>
+                        <div className="lds-spinner mt-1 mb-4">
+                          {[...Array(12)].map((_, index) => (
+                            <div key={index}></div>
+                          ))}
+                        </div>
+                      </CTableDataCell>
+                    </CTableRow>
+                  ) : (
+                    <>
                       {allExam && allExam.length > 0 ? (
                         allExam.map((exam, idx) => (
                           <CTableRow key={idx}>
@@ -481,158 +476,160 @@ const ManageExams = () => {
                           </CTableDataCell>
                         </CTableRow>
                       )}
-                    </CTableBody>
-                  </CTable>
-                  {/* )} */}
-                </CCardBody>
-              </CCard>
-            )}
-            {examDetail && (
-              <CCard className="mb-4 mx-4">
-                <CCardHeader className="flex justify-between items-center">
-                  <div className="flex">
-                    <div className="flex flex-col">
-                      <strong>Exam Detail</strong>
-                    </div>
-                  </div>
-                  <CButton
-                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
-                    onClick={() => {
-                      setExamDetail(false)
-                      setShowAllExams(true)
-                    }}
-                  >
-                    Back to Exams
-                  </CButton>
-                </CCardHeader>
-                <CCardBody>
-                  {detailLoader ? (
-                    <center>
-                      <CSpinner color="primary" variant="grow" />
-                    </center>
-                  ) : (
-                    <>
-                      {/* {allSections &&
+                    </>
+                  )}
+                </CTableBody>
+              </CTable>
+              {/* )} */}
+            </CCardBody>
+          </CCard>
+        )}
+        {examDetail && (
+          <CCard className="mb-4 mx-4">
+            <CCardHeader className="flex justify-between items-center">
+              <div className="flex">
+                <div className="flex flex-col">
+                  <strong>Exam Detail</strong>
+                </div>
+              </div>
+              <CButton
+                className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0]"
+                onClick={() => {
+                  setExamDetail(false)
+                  setShowAllExams(true)
+                }}
+              >
+                Back to Exams
+              </CButton>
+            </CCardHeader>
+            <CCardBody>
+              {detailLoader ? (
+                <center>
+                  <CSpinner color="primary" variant="grow" />
+                </center>
+              ) : (
+                <>
+                  {/* {allSections &&
                         allSections.length > 0 &&
                         allSections.map((section, index) => (
                           <div key={index}>
                             <p className="text-xl font-semibold">{section.section}</p> */}
-                      <CTable striped className="admin-tables" responsive>
-                        <CTableHead>
-                          <CTableRow>
-                            <CTableHeaderCell scope="col">No</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                            <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                            {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                            {/* <CTableHeaderCell scope="col">Section</CTableHeaderCell> */}
-                            <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
-                          </CTableRow>
-                        </CTableHead>
-                        <CTableBody>
-                          {allQuestions && allQuestions.length > 0 ? (
-                            allQuestions.map((q, idx) => (
-                              <>
-                                {idx + 1 == 1 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 1
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 41 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 2
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 81 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 3
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 121 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 4
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 161 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 5
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 201 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 6
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 241 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 7
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                {idx + 1 == 281 && (
-                                  <CTableRow>
-                                    <CTableDataCell className="text-center section-bg" colSpan={4}>
-                                      Section 8
-                                    </CTableDataCell>
-                                  </CTableRow>
-                                )}
-                                <CTableRow key={idx}>
-                                  <CTableDataCell>{idx + 1}</CTableDataCell>
-                                  <CTableHeaderCell className="cursor-pointer">
-                                    <span
-                                      dangerouslySetInnerHTML={{
-                                        __html:
-                                          q.question?.length > 100
-                                            ? q.question?.substring(0, 100) + '...'
-                                            : q.question,
-                                      }}
-                                    >
-                                      {/* {q.question.length > 100
+                  <CTable striped className="admin-tables" responsive>
+                    <CTableHead>
+                      <CTableRow>
+                        <CTableHeaderCell scope="col">No</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                        <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                        {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                        {/* <CTableHeaderCell scope="col">Section</CTableHeaderCell> */}
+                        <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                      </CTableRow>
+                    </CTableHead>
+                    <CTableBody>
+                      {allQuestions && allQuestions.length > 0 ? (
+                        allQuestions.map((q, idx) => (
+                          <>
+                            {idx + 1 == 1 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 1
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 41 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 2
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 81 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 3
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 121 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 4
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 161 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 5
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 201 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 6
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 241 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 7
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            {idx + 1 == 281 && (
+                              <CTableRow>
+                                <CTableDataCell className="text-center section-bg" colSpan={4}>
+                                  Section 8
+                                </CTableDataCell>
+                              </CTableRow>
+                            )}
+                            <CTableRow key={idx}>
+                              <CTableDataCell>{idx + 1}</CTableDataCell>
+                              <CTableHeaderCell className="cursor-pointer">
+                                <span
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      q.question?.length > 100
+                                        ? q.question?.substring(0, 100) + '...'
+                                        : q.question,
+                                  }}
+                                >
+                                  {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                                    </span>
-                                  </CTableHeaderCell>
-                                  <CTableDataCell>{usmleStep}</CTableDataCell>
-                                  <CTableDataCell className="flex justify-start items-center">
-                                    <CButton
-                                      className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                      id={q._id}
-                                      onClick={(e) => {
-                                        setViewModal(true)
-                                        // setQuestionId(e.target.id)
-                                        getQuestion(q._id)
-                                      }}
-                                      title="View"
-                                    >
-                                      <RiEyeLine className="my-1" />
-                                    </CButton>
-                                    <CButton
-                                      color="info"
-                                      className="text-white mr-3 my-2"
-                                      id={q._id}
-                                      onClick={(e) => {
-                                        setEditModal(true)
-                                        // setQuestionId(e.target.id)
-                                        getQuestion(q._id)
-                                        setErrorr(false)
-                                        setErrorMsg('')
-                                      }}
-                                    >
-                                      <CIcon icon={cilPencil} />
-                                    </CButton>
-                                    {/* <CButton
+                                </span>
+                              </CTableHeaderCell>
+                              <CTableDataCell>{usmleStep}</CTableDataCell>
+                              <CTableDataCell className="flex justify-start items-center">
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setViewModal(true)
+                                    // setQuestionId(e.target.id)
+                                    getQuestion(q._id)
+                                  }}
+                                  title="View"
+                                >
+                                  <RiEyeLine className="my-1" />
+                                </CButton>
+                                <CButton
+                                  color="info"
+                                  className="text-white mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setEditModal(true)
+                                    // setQuestionId(e.target.id)
+                                    getQuestion(q._id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilPencil} />
+                                </CButton>
+                                {/* <CButton
                                         color="danger"
                                         className="text-white my-2"
                                         id={q._id}
@@ -645,20 +642,20 @@ const ManageExams = () => {
                                       >
                                         <CIcon icon={cilTrash} />
                                       </CButton> */}
-                                  </CTableDataCell>
-                                </CTableRow>
-                              </>
-                            ))
-                          ) : (
-                            <CTableRow>
-                              <CTableDataCell className="text-center" colSpan={4}>
-                                No Questions Found
                               </CTableDataCell>
                             </CTableRow>
-                          )}
-                        </CTableBody>
-                      </CTable>
-                      {/* {section.questions?.map((q, index) => (
+                          </>
+                        ))
+                      ) : (
+                        <CTableRow>
+                          <CTableDataCell className="text-center" colSpan={4}>
+                            No Questions Found
+                          </CTableDataCell>
+                        </CTableRow>
+                      )}
+                    </CTableBody>
+                  </CTable>
+                  {/* {section.questions?.map((q, index) => (
                             <ReviewExamAccordion
                               key={index}
                               id={q}
@@ -685,14 +682,12 @@ const ManageExams = () => {
                               isapproved={false}
                             />
                           ))} */}
-                      {/* </div>
+                  {/* </div>
                         ))} */}
-                    </>
-                  )}
-                </CCardBody>
-              </CCard>
-            )}
-          </>
+                </>
+              )}
+            </CCardBody>
+          </CCard>
         )}
         {/* edit modal */}
         <CModal

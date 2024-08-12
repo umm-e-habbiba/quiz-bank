@@ -123,6 +123,10 @@ const ManageTesterQues = () => {
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [pageSize, setPageSize] = useState(0)
+  const [filtercurrentPage, setfilterCurrentPage] = useState(1)
+  const [filtertotal, setfilterTotal] = useState(0)
+  const [filtertotalPages, setfilterTotalPages] = useState(0)
+  const [filterpageSize, setfilterPageSize] = useState(0)
   const [userId, setUserId] = useState(localStorage.getItem('userId') || '')
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
@@ -553,10 +557,10 @@ const ManageTesterQues = () => {
           if (result.success == true) {
             setShowFilteredResult(true)
             setFilteredQuestion(result.data)
-            setCurrentPage(result.pagination?.page)
-            setTotal(result.pagination?.total)
-            setTotalPages(result.pagination?.totalPages)
-            setPageSize(result.pagination?.limit)
+            setfilterCurrentPage(result.pagination?.page)
+            setfilterTotal(result.pagination?.total)
+            setfilterTotalPages(result.pagination?.totalPages)
+            setfilterPageSize(result.pagination?.limit)
           }
         })
         .catch((error) => {
@@ -713,6 +717,8 @@ const ManageTesterQues = () => {
   const showNextButton = currentPage - 1 !== totalPages - 1
   const showPrevButton = currentPage - 1 !== 0
 
+  const showFilterNextButton = filtercurrentPage - 1 !== filtertotalPages - 1
+  const showFilterPrevButton = filtercurrentPage - 1 !== 0
   return (
     <div>
       <TesterSidebar />
@@ -720,24 +726,8 @@ const ManageTesterQues = () => {
         <AppHeader />
         <div className="body flex-grow-1">
           <>
-            {loader ? (
-              <div>
-                <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
-                  <div className="lds-spinner -ml-8">
-                    {[...Array(12)].map((_, index) => (
-                      <div key={index}></div>
-                    ))}
-                  </div>
-                  {/* <div className="text-sm font-medium text-gray-500 mt-2">
-                    <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while
-                    it get`s completed...
-                  </div>
-                  <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
-                </div>
-              </div>
-            ) : (
-              <CCard className="mb-4 mx-4">
-                {/* <div>
+            <CCard className="mb-4 mx-4">
+              {/* <div>
                   <div>
                     {loader ? (
                       <p>Loading...</p>
@@ -756,87 +746,87 @@ const ManageTesterQues = () => {
                     )}
                   </div>
                 </div> */}
-                <CCardHeader>
-                  <div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center">
-                    <div className="flex justify-start items-center">
-                      <div className="flex flex-col">
-                        <strong>Manage Questions</strong>
-                        {!loader &&
-                          allQuestion.length > 0 &&
-                          (showFilteredResult ? (
-                            <span className="text-sm">Total {total} questions found</span>
-                          ) : (
-                            <span className="text-sm">Total {total} questions found</span>
-                          ))}
-                      </div>
-                      <div>
-                        {(stepsAllowed === 'all' ||
-                          allowedSteps.includes('1') ||
-                          allowedSteps.includes('2') ||
-                          allowedSteps.includes('3')) && (
-                          <div className="flex ml-0 lg:ml-2 justify-center items-center w-full lg:w-[550px] flex-col lg:flex-row mt-2 lg:mt-0">
-                            <CFormSelect
-                              aria-label="usmle step"
-                              id="usmleStep"
-                              options={[
-                                { label: 'USMLE Step', value: '' },
-                                ...(allowedSteps.includes('1')
-                                  ? [{ label: 'Step 1', value: '1' }]
-                                  : []),
-                                ...(allowedSteps.includes('2')
-                                  ? [{ label: 'Step 2', value: '2' }]
-                                  : []),
-                                ...(allowedSteps.includes('3')
-                                  ? [{ label: 'Step 3', value: '3' }]
-                                  : []),
-                              ]}
-                              value={filterUsmle}
-                              onChange={(e) => {
-                                setFilterUsmle(e.target.value)
-                                setFilterCategory('')
-                              }}
-                              className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
-                            />
-                            <CFormSelect
-                              aria-label="usmle category"
-                              id="usmleCategory"
-                              defaultValue=""
-                              className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
-                              value={filterCategory}
-                              onChange={(e) => setFilterCategory(e.target.value)}
-                            >
-                              <option>USMLE Category</option>
-                              {getAllowedCategories().map((category, idx) => (
-                                <option key={idx} value={category}>
-                                  {category}
-                                </option>
-                              ))}
-                            </CFormSelect>
-                            <CButton
-                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
-                              onClick={() => {
-                                getFilteredQuestions(currentPage)
-                              }}
-                            >
-                              <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
-                            </CButton>
-                            {(filterUsmle || filterCategory) && (
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-0 lg:ml-3 mb-2 lg:mb-0 w-full lg:w-auto flex justify-center items-center"
-                                onClick={() => {
-                                  setFilterUsmle('')
-                                  setFilterCategory('')
-                                  setShowFilteredResult(false)
-                                }}
-                              >
-                                Clear
-                              </CButton>
-                            )}
-                          </div>
-                        )}
-                      </div>
+              <CCardHeader>
+                <div className="flex flex-col lg:flex-row justify-center lg:justify-between items-center">
+                  <div className="flex justify-start items-center">
+                    <div className="flex flex-col">
+                      <strong>Manage Questions</strong>
+                      {!loader &&
+                        allQuestion.length > 0 &&
+                        (showFilteredResult ? (
+                          <span className="text-sm">Total {filtertotal} questions found</span>
+                        ) : (
+                          <span className="text-sm">Total {total} questions found</span>
+                        ))}
                     </div>
-                    {/* {totalPages > 1 && (
+                    <div>
+                      {(stepsAllowed === 'all' ||
+                        allowedSteps.includes('1') ||
+                        allowedSteps.includes('2') ||
+                        allowedSteps.includes('3')) && (
+                        <div className="flex ml-0 lg:ml-2 justify-center items-center w-full lg:w-[550px] flex-col lg:flex-row mt-2 lg:mt-0">
+                          <CFormSelect
+                            aria-label="usmle step"
+                            id="usmleStep"
+                            options={[
+                              { label: 'USMLE Step', value: '' },
+                              ...(allowedSteps.includes('1')
+                                ? [{ label: 'Step 1', value: '1' }]
+                                : []),
+                              ...(allowedSteps.includes('2')
+                                ? [{ label: 'Step 2', value: '2' }]
+                                : []),
+                              ...(allowedSteps.includes('3')
+                                ? [{ label: 'Step 3', value: '3' }]
+                                : []),
+                            ]}
+                            value={filterUsmle}
+                            onChange={(e) => {
+                              setFilterUsmle(e.target.value)
+                              setFilterCategory('')
+                            }}
+                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
+                          />
+                          <CFormSelect
+                            aria-label="usmle category"
+                            id="usmleCategory"
+                            defaultValue=""
+                            className="mr-0 lg:mr-3 mb-2 lg:mb-0 w-full"
+                            value={filterCategory}
+                            onChange={(e) => setFilterCategory(e.target.value)}
+                          >
+                            <option>USMLE Category</option>
+                            {getAllowedCategories().map((category, idx) => (
+                              <option key={idx} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </CFormSelect>
+                          <CButton
+                            className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
+                            onClick={() => {
+                              getFilteredQuestions(currentPage)
+                            }}
+                          >
+                            <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
+                          </CButton>
+                          {(filterUsmle || filterCategory) && (
+                            <CButton
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] ml-0 lg:ml-3 mb-2 lg:mb-0 w-full lg:w-auto flex justify-center items-center"
+                              onClick={() => {
+                                setFilterUsmle('')
+                                setFilterCategory('')
+                                setShowFilteredResult(false)
+                              }}
+                            >
+                              Clear
+                            </CButton>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {/* {totalPages > 1 && (
                       <CFormSelect
                         aria-label="Select Page"
                         id="page"
@@ -861,42 +851,162 @@ const ManageTesterQues = () => {
                         ))}
                       </CFormSelect>
                     )} */}
-                  </div>
-                </CCardHeader>
-                <CCardBody>
-                  {/* {loader ? (
+                </div>
+              </CCardHeader>
+              <CCardBody>
+                {/* {loader ? (
               <div className="text-center"> 
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : ( */}
-                  <CTable striped className="admin-tables text-sm lg:text-base" responsive>
-                    <CTableHead className="text-sm lg:text-base">
+                <CTable striped className="admin-tables text-sm lg:text-base" responsive>
+                  <CTableHead className="text-sm lg:text-base">
+                    <CTableRow>
+                      {showCheck && (
+                        <CTableHeaderCell scope="col">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            // id={q._id}
+                            // value={q._id}
+                            onChange={(e) => handleCheckboxChangeAll(e)}
+                          />
+                        </CTableHeaderCell>
+                      )}
+                      <CTableHeaderCell scope="col">Sr No</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                      {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                      <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                      <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                    </CTableRow>
+                  </CTableHead>
+                  <CTableBody>
+                    {loader ? (
                       <CTableRow>
-                        {showCheck && (
-                          <CTableHeaderCell scope="col">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              // id={q._id}
-                              // value={q._id}
-                              onChange={(e) => handleCheckboxChangeAll(e)}
-                            />
-                          </CTableHeaderCell>
-                        )}
-                        <CTableHeaderCell scope="col">Sr No</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
-                        {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                        <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                        <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                        <CTableDataCell className="text-center" colSpan={6}>
+                          <div className="lds-spinner mt-1 mb-4">
+                            {[...Array(12)].map((_, index) => (
+                              <div key={index}></div>
+                            ))}
+                          </div>
+                        </CTableDataCell>
                       </CTableRow>
-                    </CTableHead>
-                    <CTableBody>
-                      {allQuestion && allQuestion.length > 0 ? (
-                        showFilteredResult ? (
-                          filteredQuestion && filteredQuestion.length > 0 ? (
-                            filteredQuestion.map((q, idx) => (
+                    ) : (
+                      <>
+                        {allQuestion && allQuestion.length > 0 ? (
+                          showFilteredResult ? (
+                            filteredQuestion && filteredQuestion.length > 0 ? (
+                              filteredQuestion.map((q, idx) => (
+                                <CTableRow key={idx}>
+                                  {showCheck && (
+                                    <CTableDataCell>
+                                      <input
+                                        type="checkbox"
+                                        className="form-check-input checkboxes"
+                                        id={q._id}
+                                        value={q._id}
+                                        onChange={(e) => handleCheckboxChange(e)}
+                                        // checked={
+                                        //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                                        // }
+                                      />
+                                    </CTableDataCell>
+                                  )}
+                                  <CTableDataCell>{q.srNo}</CTableDataCell>
+                                  <CTableHeaderCell className="cursor-pointer">
+                                    <span
+                                      id={q._id}
+                                      onClick={(e) => {
+                                        setDetailModal(true)
+                                        setQuestionId(e.currentTarget.id)
+                                      }}
+                                      dangerouslySetInnerHTML={{
+                                        __html:
+                                          q.question.length > 100
+                                            ? q.question.substring(0, 100) + '...'
+                                            : q.question,
+                                      }}
+                                    >
+                                      {/* {q.question.length > 100
+                                ? q.question.substring(0, 100) + '...'
+                                : q.question} */}
+                                    </span>
+                                  </CTableHeaderCell>
+                                  <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                                  <CTableDataCell>{q.USMLE}</CTableDataCell>
+                                  {/* <CTableDataCell>
+                            <img
+                              src={`${API_URL}uploads/${q.image}`}
+                              alt="mcq img"
+                              className="w-6 h-6 rounded-full"
+                            />
+                          </CTableDataCell> */}
+                                  <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+
+                                  <CTableDataCell className="flex justify-start items-center">
+                                    <CTooltip
+                                      key={q._id}
+                                      content={
+                                        q.isCorrect
+                                          ? 'Question already checked'
+                                          : 'Question checked'
+                                      }
+                                    >
+                                      <CButton
+                                        className={`text-white ${q.isCorrect ? 'bg-[#259110] opacity-30 hover:bg-[#259110] hover:cursor-not-allowed' : 'bg-[#259110] hover:bg-[#19693a]'} mr-3 my-2`}
+                                        id={q._id}
+                                        onClick={(e) => {
+                                          if (!q.isCorrect) {
+                                            setQuestionId(e.currentTarget.id)
+                                            markCorrect(e.currentTarget.id)
+                                          }
+                                        }}
+                                      >
+                                        {q.isCorrect ? (
+                                          <FaCheckDouble className="my-1" />
+                                        ) : (
+                                          <FaCheck className="my-1" />
+                                        )}
+                                        {/* <IoCheckmarkDoneSharp className="my-1" /> */}
+                                      </CButton>
+                                    </CTooltip>
+
+                                    <CTooltip content="Edit Question">
+                                      <CButton
+                                        color="info"
+                                        className="text-white mr-3 my-2"
+                                        id={q._id}
+                                        onClick={(e) => {
+                                          setAddModal(true)
+                                          setQuestionId(e.currentTarget.id)
+                                          setSrNo(q.srNo)
+                                          setErrorr(false)
+                                          setErrorMsg('')
+                                        }}
+                                      >
+                                        <CIcon icon={cilPencil} />
+                                      </CButton>
+                                    </CTooltip>
+                                  </CTableDataCell>
+                                </CTableRow>
+                              ))
+                            ) : (
+                              <CTableRow>
+                                <CTableDataCell className="text-center" colSpan={6}>
+                                  No records found <br />
+                                  <CButton
+                                    color="link"
+                                    onClick={() => setShowFilteredResult(false)}
+                                  >
+                                    Show All
+                                  </CButton>
+                                </CTableDataCell>
+                              </CTableRow>
+                            )
+                          ) : (
+                            allQuestion.map((q, idx) => (
                               <CTableRow key={idx}>
                                 {showCheck && (
                                   <CTableDataCell>
@@ -928,21 +1038,20 @@ const ManageTesterQues = () => {
                                     }}
                                   >
                                     {/* {q.question.length > 100
-                                ? q.question.substring(0, 100) + '...'
-                                : q.question} */}
+                              ? q.question.substring(0, 100) + '...'
+                              : q.question} */}
                                   </span>
                                 </CTableHeaderCell>
                                 <CTableDataCell>{q.usmleStep}</CTableDataCell>
                                 <CTableDataCell>{q.USMLE}</CTableDataCell>
                                 {/* <CTableDataCell>
-                            <img
-                              src={`${API_URL}uploads/${q.image}`}
-                              alt="mcq img"
-                              className="w-6 h-6 rounded-full"
-                            />
-                          </CTableDataCell> */}
+                          <img
+                            src={`${API_URL}uploads/${q.image}`}
+                            alt="mcq img"
+                            className="w-6 h-6 rounded-full"
+                          />
+                        </CTableDataCell> */}
                                 <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-
                                 <CTableDataCell className="flex justify-start items-center">
                                   <CTooltip
                                     key={q._id}
@@ -977,9 +1086,9 @@ const ManageTesterQues = () => {
                                       onClick={(e) => {
                                         setAddModal(true)
                                         setQuestionId(e.currentTarget.id)
-                                        setSrNo(q.srNo)
                                         setErrorr(false)
                                         setErrorMsg('')
+                                        setSrNo(q.srNo)
                                       }}
                                     >
                                       <CIcon icon={cilPencil} />
@@ -988,163 +1097,109 @@ const ManageTesterQues = () => {
                                 </CTableDataCell>
                               </CTableRow>
                             ))
-                          ) : (
-                            <CTableRow>
-                              <CTableDataCell className="text-center" colSpan={6}>
-                                No records found <br />
-                                <CButton color="link" onClick={() => setShowFilteredResult(false)}>
-                                  Show All
-                                </CButton>
-                              </CTableDataCell>
-                            </CTableRow>
                           )
                         ) : (
-                          allQuestion.map((q, idx) => (
-                            <CTableRow key={idx}>
-                              {showCheck && (
-                                <CTableDataCell>
-                                  <input
-                                    type="checkbox"
-                                    className="form-check-input checkboxes"
-                                    id={q._id}
-                                    value={q._id}
-                                    onChange={(e) => handleCheckboxChange(e)}
-                                    // checked={
-                                    //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
-                                    // }
-                                  />
-                                </CTableDataCell>
-                              )}
-                              <CTableDataCell>{q.srNo}</CTableDataCell>
-                              <CTableHeaderCell className="cursor-pointer">
-                                <span
-                                  id={q._id}
-                                  onClick={(e) => {
-                                    setDetailModal(true)
-                                    setQuestionId(e.currentTarget.id)
-                                  }}
-                                  dangerouslySetInnerHTML={{
-                                    __html:
-                                      q.question.length > 100
-                                        ? q.question.substring(0, 100) + '...'
-                                        : q.question,
-                                  }}
-                                >
-                                  {/* {q.question.length > 100
-                              ? q.question.substring(0, 100) + '...'
-                              : q.question} */}
-                                </span>
-                              </CTableHeaderCell>
-                              <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                              <CTableDataCell>{q.USMLE}</CTableDataCell>
-                              {/* <CTableDataCell>
-                          <img
-                            src={`${API_URL}uploads/${q.image}`}
-                            alt="mcq img"
-                            className="w-6 h-6 rounded-full"
-                          />
-                        </CTableDataCell> */}
-                              <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                              <CTableDataCell className="flex justify-start items-center">
-                                <CTooltip
-                                  key={q._id}
-                                  content={
-                                    q.isCorrect ? 'Question already checked' : 'Question checked'
-                                  }
-                                >
-                                  <CButton
-                                    className={`text-white ${q.isCorrect ? 'bg-[#259110] opacity-30 hover:bg-[#259110] hover:cursor-not-allowed' : 'bg-[#259110] hover:bg-[#19693a]'} mr-3 my-2`}
-                                    id={q._id}
-                                    onClick={(e) => {
-                                      if (!q.isCorrect) {
-                                        setQuestionId(e.currentTarget.id)
-                                        markCorrect(e.currentTarget.id)
-                                      }
-                                    }}
+                          <CTableRow>
+                            <CTableDataCell className="text-center" colSpan={6}>
+                              No Questions Found
+                            </CTableDataCell>
+                          </CTableRow>
+                        )}
+                        {total > pageSize && !showFilteredResult && (
+                          <CTableRow>
+                            <CTableDataCell className="text-center" colSpan={6}>
+                              <ReactPaginate
+                                breakLabel={
+                                  <span className="w-9 h-9 border border-solid">
+                                    <span className="flex justify-center items-center">...</span>
+                                  </span>
+                                }
+                                marginPagesDisplayed={2}
+                                nextLabel={
+                                  <span
+                                    className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
                                   >
-                                    {q.isCorrect ? (
-                                      <FaCheckDouble className="my-1" />
-                                    ) : (
-                                      <FaCheck className="my-1" />
-                                    )}
-                                    {/* <IoCheckmarkDoneSharp className="my-1" /> */}
-                                  </CButton>
-                                </CTooltip>
-
-                                <CTooltip content="Edit Question">
-                                  <CButton
-                                    color="info"
-                                    className="text-white mr-3 my-2"
-                                    id={q._id}
-                                    onClick={(e) => {
-                                      setAddModal(true)
-                                      setQuestionId(e.currentTarget.id)
-                                      setErrorr(false)
-                                      setErrorMsg('')
-                                      setSrNo(q.srNo)
-                                    }}
+                                    <RiArrowRightSLine />
+                                  </span>
+                                }
+                                // onPageChange={handlePageClick}
+                                onPageChange={(event) => {
+                                  setCurrentPage(event.selected + 1)
+                                  getAllQuest(event.selected + 1)
+                                }}
+                                pageRangeDisplayed={3}
+                                pageCount={totalPages}
+                                previousLabel={
+                                  <span
+                                    className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
                                   >
-                                    <CIcon icon={cilPencil} />
-                                  </CButton>
-                                </CTooltip>
-                              </CTableDataCell>
-                            </CTableRow>
-                          ))
-                        )
-                      ) : (
-                        <CTableRow>
-                          <CTableDataCell className="text-center" colSpan={6}>
-                            No Questions Found
-                          </CTableDataCell>
-                        </CTableRow>
-                      )}
-                    </CTableBody>
-                  </CTable>
-                  {total <= pageSize ? (
-                    ''
-                  ) : (
-                    <ReactPaginate
-                      breakLabel={
-                        <span className="w-10 h-10 border border-solid">
-                          <span className="flex justify-center items-center">...</span>
-                        </span>
-                      }
-                      nextLabel={
-                        <span
-                          className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
-                        >
-                          <RiArrowRightSLine />
-                        </span>
-                      }
-                      // onPageChange={handlePageClick}
-                      onPageChange={(event) => {
-                        setCurrentPage(event.selected + 1)
-                        showFilteredResult
-                          ? getFilteredQuestions(event.selected + 1)
-                          : getAllQuest(event.selected + 1)
-                      }}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={3}
-                      pageCount={totalPages}
-                      previousLabel={
-                        <span
-                          className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-10 h-10 flex items-center justify-center border border-solid`}
-                        >
-                          <RiArrowLeftSLine />
-                        </span>
-                      }
-                      containerClassName={'flex items-center justify-center mt-8 mb-4 pagination'}
-                      pageClassName={
-                        'block border border-solid page-no border-lightGray hover:bg-lightGray w-10 h-10 flex items-center justify-center'
-                      }
-                      activeClassName={'active-page-no text-white'}
-                      forcePage={currentPage - 1}
-                    />
-                  )}
-                  {/* )} */}
-                </CCardBody>
-              </CCard>
-            )}
+                                    <RiArrowLeftSLine />
+                                  </span>
+                                }
+                                containerClassName={
+                                  'flex justify-center items-center pagination mr-3'
+                                }
+                                pageClassName={
+                                  'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                                }
+                                activeClassName={'active-page-no text-white'}
+                                forcePage={currentPage - 1}
+                                // initialPage={currentPage}
+                              />
+                            </CTableDataCell>
+                          </CTableRow>
+                        )}
+                        {filtertotal > filterpageSize && showFilteredResult && (
+                          <CTableRow>
+                            <CTableDataCell className="text-center" colSpan={6}>
+                              <ReactPaginate
+                                breakLabel={
+                                  <span className="w-9 h-9 border border-solid">
+                                    <span className="flex justify-center items-center">...</span>
+                                  </span>
+                                }
+                                marginPagesDisplayed={3}
+                                nextLabel={
+                                  <span
+                                    className={`${showFilterNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                                  >
+                                    <RiArrowRightSLine />
+                                  </span>
+                                }
+                                // onPageChange={handlePageClick}
+                                onPageChange={(event) => {
+                                  setfilterCurrentPage(event.selected + 1)
+                                  getFilteredQuestions(event.selected + 1)
+                                }}
+                                pageRangeDisplayed={3}
+                                pageCount={filtertotalPages}
+                                previousLabel={
+                                  <span
+                                    className={`${showFilterPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                                  >
+                                    <RiArrowLeftSLine />
+                                  </span>
+                                }
+                                containerClassName={
+                                  'flex justify-center items-center pagination mr-3'
+                                }
+                                pageClassName={
+                                  'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                                }
+                                activeClassName={'active-page-no text-white'}
+                                forcePage={filtercurrentPage - 1}
+                                // initialPage={currentPage}
+                              />
+                            </CTableDataCell>
+                          </CTableRow>
+                        )}
+                      </>
+                    )}
+                  </CTableBody>
+                </CTable>
+                {/* )} */}
+              </CCardBody>
+            </CCard>
             {/* add / edit modal */}
             <CModal
               alignment="center"

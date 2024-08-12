@@ -124,6 +124,10 @@ const ManageQuiz = () => {
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [pageSize, setPageSize] = useState(0)
+  const [filtercurrentPage, setfilterCurrentPage] = useState(1)
+  const [filtertotal, setfilterTotal] = useState(0)
+  const [filtertotalPages, setfilterTotalPages] = useState(0)
+  const [filterpageSize, setfilterPageSize] = useState(0)
   const expmodules = {
     toolbar: [['bold', 'italic', 'underline', 'image']],
   }
@@ -723,10 +727,10 @@ const ManageQuiz = () => {
           if (result.data) {
             setShowFilteredResult(true)
             setFilteredQuestion(result.data)
-            setCurrentPage(result.pagination?.page)
-            setTotal(result.pagination?.total)
-            setTotalPages(result.pagination?.totalPages)
-            setPageSize(result.pagination?.limit)
+            setfilterCurrentPage(result.pagination?.page)
+            setfilterTotal(result.pagination?.total)
+            setfilterTotalPages(result.pagination?.totalPages)
+            setfilterPageSize(result.pagination?.limit)
           }
         })
         .catch((error) => {
@@ -788,269 +792,398 @@ const ManageQuiz = () => {
   }
   const showNextButton = currentPage - 1 !== totalPages - 1
   const showPrevButton = currentPage - 1 !== 0
+  const showFilterNextButton = filtercurrentPage - 1 !== filtertotalPages - 1
+  const showFilterPrevButton = filtercurrentPage - 1 !== 0
   return (
     <AdminLayout>
       <>
-        {loader ? (
-          <div>
-            <div className="flex flex-col gap-10 items-center mt-[25vh] mx-[15%]">
-              <div className="lds-spinner -ml-8">
-                {[...Array(12)].map((_, index) => (
-                  <div key={index}></div>
-                ))}
-              </div>
-              {/* <div className="text-sm font-medium text-gray-500 mt-2">
-                <span className="text-[#6261CC]">{progress}%</span> Completed, Please wait while it
-                get`s completed...
-              </div>
-              <CProgress color="primary" value={progress} className="my-3 w-full"></CProgress> */}
-            </div>
-          </div>
-        ) : (
-          <CCard className="mb-4 mx-4">
-            <CCardHeader>
-              <div className="flex flex-col mb-2">
-                <strong>Manage Questions</strong>
-                {!loader &&
-                  allQuestion.length > 0 &&
-                  (showFilteredResult ? (
-                    <span className="text-sm">Total {total} questions found</span>
-                  ) : (
-                    <span className="text-sm">
-                      Total {allQuestion.length + 2000} questions added
-                    </span>
-                  ))}
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex justify-between items-center">
-                  <CFormSelect
-                    aria-label="usmle step"
-                    id="usmleStep"
-                    options={[
-                      { label: 'USMLE Step', value: '' },
-                      { label: 'Step 1', value: '1' },
-                      { label: 'Step 2', value: '2' },
-                      { label: 'Step 3', value: '3' },
-                    ]}
-                    value={filterUsmle}
-                    onChange={(e) => {
-                      setFilterUsmle(e.target.value)
-                      setFilterCategory('')
-                    }}
-                    className="mr-3 w-full"
-                  />
-                  <CFormSelect
-                    aria-label="usmle category"
-                    id="usmleCategory"
-                    defaultValue={getValues('usmleCategory')}
-                    className="mr-3 w-full"
-                    // options={
-                    //   filterUsmle == '1'
-                    //     ? [
-                    //         { label: 'USMLE Category', value: '' },
-                    //         { label: 'Microbiology', value: 'Microbiology' },
-                    //         { label: 'Immunology', value: 'Immunology' },
-                    //         { label: 'Histology', value: 'Histology' },
-                    //         { label: 'Anatomy', value: 'Anatomy' },
-                    //         { label: 'Physiology', value: 'Physiology' },
-                    //         { label: 'Embryology', value: 'Embryology' },
-                    //         { label: 'Biochemistry', value: 'Biochemistry' },
-                    //       ]
-                    //     : filterUsmle == '2'
-                    //       ? [
-                    //           { label: 'USMLE Category', value: '' },
-                    //           { label: 'Internal Medicine', value: 'Internal Medicine' },
-                    //           { label: 'Surgery', value: 'Surgery' },
-                    //           { label: 'Pediatrics', value: 'Pediatrics' },
-                    //           {
-                    //             label: 'Obstetrics and Gynecology',
-                    //             value: 'Obstetrics and Gynecology',
-                    //           },
-                    //           { label: 'Psychiatry', value: 'Psychiatry' },
-                    //           { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                    //           { label: 'Family Medicine', value: 'Family Medicine' },
-                    //         ]
-                    //       : filterUsmle == '3'
-                    //         ? [
-                    //             { label: 'USMLE Category', value: '' },
-                    //             { label: 'Internal Medicine', value: 'Internal Medicine' },
-                    //             { label: 'Surgery', value: 'Surgery' },
-                    //             { label: 'Pediatrics', value: 'Pediatrics' },
-                    //             {
-                    //               label: 'Obstetrics and Gynecology',
-                    //               value: 'Obstetrics and Gynecology',
-                    //             },
-                    //             { label: 'Psychiatry', value: 'Psychiatry' },
-                    //             { label: 'Preventive Medicine', value: 'Preventive Medicine' },
-                    //             { label: 'Family Medicine', value: 'Family Medicine' },
-                    //           ]
-                    //         : [{ label: 'USMLE Category', value: '' }]
-                    // }
-                    value={filterCategory}
-                    onChange={(e) => setFilterCategory(e.target.value)}
-                  >
-                    <option>USMLE Category</option>
-                    {filterUsmle == '1' ? (
-                      step1Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))
-                    ) : filterUsmle == '2' ? (
-                      step2Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))
-                    ) : filterUsmle == '3' ? (
-                      step3Categories.map((category, idx) => (
-                        <option key={idx} value={category}>
-                          {category}
-                        </option>
-                      ))
-                    ) : (
-                      <option>Select USMLE Category</option>
-                    )}
-                  </CFormSelect>
-                  <CButton
-                    // disabled={filterUsmle || filterCategory ? false : true}
-                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
-                    onClick={() => {
-                      getFilteredQuestions(currentPage)
-                    }}
-                  >
-                    <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
-                  </CButton>
-                  {filterUsmle || filterCategory ? (
-                    <CButton
-                      className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] ml-3 flex"
-                      onClick={() => {
-                        setFilterUsmle('')
-                        setFilterCategory('')
-                        setShowFilteredResult(false)
-                      }}
-                    >
-                      Clear
-                    </CButton>
-                  ) : (
-                    ''
-                  )}
-                </div>
-                {total <= pageSize ? (
-                  ''
+        <CCard className="mb-4 mx-4">
+          <CCardHeader>
+            <div className="flex flex-col mb-2">
+              <strong>Manage Questions</strong>
+              {!loader &&
+                allQuestion.length > 0 &&
+                (showFilteredResult ? (
+                  <span className="text-sm">Total {filtertotal} questions found</span>
                 ) : (
-                  <ReactPaginate
-                    breakLabel={
-                      <span className="w-9 h-9 border border-solid">
-                        <span className="flex justify-center items-center">...</span>
-                      </span>
-                    }
-                    marginPagesDisplayed={1}
-                    nextLabel={
-                      <span
-                        className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
-                      >
-                        <RiArrowRightSLine />
-                      </span>
-                    }
-                    // onPageChange={handlePageClick}
-                    onPageChange={(event) => {
-                      setCurrentPage(event.selected + 1)
-                      showFilteredResult
-                        ? getFilteredQuestions(event.selected + 1)
-                        : getAllQuest(event.selected + 1)
-                    }}
-                    pageRangeDisplayed={1}
-                    pageCount={totalPages}
-                    previousLabel={
-                      <span
-                        className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
-                      >
-                        <RiArrowLeftSLine />
-                      </span>
-                    }
-                    containerClassName={'flex justify-center items-center pagination mr-3'}
-                    pageClassName={
-                      'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
-                    }
-                    activeClassName={'active-page-no text-white'}
-                    forcePage={currentPage - 1}
-                    // initialPage={currentPage}
-                  />
-                )}
-                <div className="flex justify-end items-center w-[305px]">
-                  {!showCheck && (
-                    <CButton
-                      className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3 w-full"
-                      onClick={() => {
-                        setShowCheck(true)
-                      }}
-                    >
-                      Select to Delete
-                    </CButton>
+                  <span className="text-sm">Total {total + 2000} questions added</span>
+                ))}
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center">
+                <CFormSelect
+                  aria-label="usmle step"
+                  id="usmleStep"
+                  options={[
+                    { label: 'USMLE Step', value: '' },
+                    { label: 'Step 1', value: '1' },
+                    { label: 'Step 2', value: '2' },
+                    { label: 'Step 3', value: '3' },
+                  ]}
+                  value={filterUsmle}
+                  onChange={(e) => {
+                    setFilterUsmle(e.target.value)
+                    setFilterCategory('')
+                  }}
+                  className="mr-3 w-full"
+                />
+                <CFormSelect
+                  aria-label="usmle category"
+                  id="usmleCategory"
+                  defaultValue={getValues('usmleCategory')}
+                  className="mr-3 w-full"
+                  // options={
+                  //   filterUsmle == '1'
+                  //     ? [
+                  //         { label: 'USMLE Category', value: '' },
+                  //         { label: 'Microbiology', value: 'Microbiology' },
+                  //         { label: 'Immunology', value: 'Immunology' },
+                  //         { label: 'Histology', value: 'Histology' },
+                  //         { label: 'Anatomy', value: 'Anatomy' },
+                  //         { label: 'Physiology', value: 'Physiology' },
+                  //         { label: 'Embryology', value: 'Embryology' },
+                  //         { label: 'Biochemistry', value: 'Biochemistry' },
+                  //       ]
+                  //     : filterUsmle == '2'
+                  //       ? [
+                  //           { label: 'USMLE Category', value: '' },
+                  //           { label: 'Internal Medicine', value: 'Internal Medicine' },
+                  //           { label: 'Surgery', value: 'Surgery' },
+                  //           { label: 'Pediatrics', value: 'Pediatrics' },
+                  //           {
+                  //             label: 'Obstetrics and Gynecology',
+                  //             value: 'Obstetrics and Gynecology',
+                  //           },
+                  //           { label: 'Psychiatry', value: 'Psychiatry' },
+                  //           { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                  //           { label: 'Family Medicine', value: 'Family Medicine' },
+                  //         ]
+                  //       : filterUsmle == '3'
+                  //         ? [
+                  //             { label: 'USMLE Category', value: '' },
+                  //             { label: 'Internal Medicine', value: 'Internal Medicine' },
+                  //             { label: 'Surgery', value: 'Surgery' },
+                  //             { label: 'Pediatrics', value: 'Pediatrics' },
+                  //             {
+                  //               label: 'Obstetrics and Gynecology',
+                  //               value: 'Obstetrics and Gynecology',
+                  //             },
+                  //             { label: 'Psychiatry', value: 'Psychiatry' },
+                  //             { label: 'Preventive Medicine', value: 'Preventive Medicine' },
+                  //             { label: 'Family Medicine', value: 'Family Medicine' },
+                  //           ]
+                  //         : [{ label: 'USMLE Category', value: '' }]
+                  // }
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                >
+                  <option>USMLE Category</option>
+                  {filterUsmle == '1' ? (
+                    step1Categories.map((category, idx) => (
+                      <option key={idx} value={category}>
+                        {category}
+                      </option>
+                    ))
+                  ) : filterUsmle == '2' ? (
+                    step2Categories.map((category, idx) => (
+                      <option key={idx} value={category}>
+                        {category}
+                      </option>
+                    ))
+                  ) : filterUsmle == '3' ? (
+                    step3Categories.map((category, idx) => (
+                      <option key={idx} value={category}>
+                        {category}
+                      </option>
+                    ))
+                  ) : (
+                    <option>Select USMLE Category</option>
                   )}
-                  {deleteIds && deleteIds.length > 0 && (
-                    <CButton
-                      className="text-white bg-red-600  hover:bg-red-700 mr-3 w-full"
-                      onClick={() => {
-                        setBulkDeleteModal(true)
-                        setErrorr(false)
-                        setErrorMsg('')
-                      }}
-                    >
-                      Delete Questions
-                    </CButton>
-                  )}
+                </CFormSelect>
+                <CButton
+                  // disabled={filterUsmle || filterCategory ? false : true}
+                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
+                  onClick={() => {
+                    getFilteredQuestions(currentPage)
+                  }}
+                >
+                  <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter
+                </CButton>
+                {filterUsmle || filterCategory ? (
                   <CButton
-                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] w-full"
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] ml-3 flex"
                     onClick={() => {
-                      setAddModal(true)
-                      setIsLoading(false)
-                      reset({})
-                      setQuestionId('')
+                      setFilterUsmle('')
+                      setFilterCategory('')
+                      setShowFilteredResult(false)
+                    }}
+                  >
+                    Clear
+                  </CButton>
+                ) : (
+                  ''
+                )}
+              </div>
+              {total > pageSize && !showFilteredResult && !loader && (
+                <ReactPaginate
+                  breakLabel={
+                    <span className="w-9 h-9 border border-solid">
+                      <span className="flex justify-center items-center">...</span>
+                    </span>
+                  }
+                  marginPagesDisplayed={1}
+                  nextLabel={
+                    <span
+                      className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                    >
+                      <RiArrowRightSLine />
+                    </span>
+                  }
+                  // onPageChange={handlePageClick}
+                  onPageChange={(event) => {
+                    setCurrentPage(event.selected + 1)
+                    getAllQuest(event.selected + 1)
+                  }}
+                  pageRangeDisplayed={1}
+                  pageCount={totalPages}
+                  previousLabel={
+                    <span
+                      className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                    >
+                      <RiArrowLeftSLine />
+                    </span>
+                  }
+                  containerClassName={'flex justify-center items-center pagination mr-3'}
+                  pageClassName={
+                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                  }
+                  activeClassName={'active-page-no text-white'}
+                  forcePage={currentPage - 1}
+                  // initialPage={currentPage}
+                />
+              )}
+              {filtertotal > filterpageSize && showFilteredResult && (
+                <ReactPaginate
+                  breakLabel={
+                    <span className="w-9 h-9 border border-solid">
+                      <span className="flex justify-center items-center">...</span>
+                    </span>
+                  }
+                  marginPagesDisplayed={1}
+                  nextLabel={
+                    <span
+                      className={`${showFilterNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                    >
+                      <RiArrowRightSLine />
+                    </span>
+                  }
+                  // onPageChange={handlePageClick}
+                  onPageChange={(event) => {
+                    setfilterCurrentPage(event.selected + 1)
+                    getFilteredQuestions(event.selected + 1)
+                  }}
+                  pageRangeDisplayed={1}
+                  pageCount={filtertotalPages}
+                  previousLabel={
+                    <span
+                      className={`${showFilterPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                    >
+                      <RiArrowLeftSLine />
+                    </span>
+                  }
+                  containerClassName={'flex justify-center items-center pagination mr-3'}
+                  pageClassName={
+                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                  }
+                  activeClassName={'active-page-no text-white'}
+                  forcePage={filtercurrentPage - 1}
+                  // initialPage={currentPage}
+                />
+              )}
+              <div className="flex justify-end items-center w-[305px]">
+                {!showCheck && (
+                  <CButton
+                    className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] mr-3 w-full"
+                    onClick={() => {
+                      setShowCheck(true)
+                    }}
+                  >
+                    Select to Delete
+                  </CButton>
+                )}
+                {deleteIds && deleteIds.length > 0 && (
+                  <CButton
+                    className="text-white bg-red-600  hover:bg-red-700 mr-3 w-full"
+                    onClick={() => {
+                      setBulkDeleteModal(true)
                       setErrorr(false)
                       setErrorMsg('')
                     }}
                   >
-                    Add Question
+                    Delete Questions
                   </CButton>
-                </div>
+                )}
+                <CButton
+                  className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] w-full"
+                  onClick={() => {
+                    setAddModal(true)
+                    setIsLoading(false)
+                    reset({})
+                    setQuestionId('')
+                    setErrorr(false)
+                    setErrorMsg('')
+                  }}
+                >
+                  Add Question
+                </CButton>
               </div>
-            </CCardHeader>
-            <CCardBody>
-              {/* {loader ? (
+            </div>
+          </CCardHeader>
+          <CCardBody>
+            {/* {loader ? (
               <div className="text-center">
                 <CSpinner className="bg-[#6261CC]" variant="grow" />
               </div>
             ) : ( */}
-              <CTable striped className="admin-tables">
-                <CTableHead>
+            <CTable striped className="admin-tables">
+              <CTableHead>
+                <CTableRow>
+                  {showCheck && (
+                    <CTableHeaderCell scope="col">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        // id={q._id}
+                        // value={q._id}
+                        onChange={(e) => handleCheckboxChangeAll(e)}
+                      />
+                    </CTableHeaderCell>
+                  )}
+                  <CTableHeaderCell>Sr No</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                  {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                  <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {loader ? (
                   <CTableRow>
-                    {showCheck && (
-                      <CTableHeaderCell scope="col">
-                        <input
-                          type="checkbox"
-                          className="form-check-input"
-                          // id={q._id}
-                          // value={q._id}
-                          onChange={(e) => handleCheckboxChangeAll(e)}
-                        />
-                      </CTableHeaderCell>
-                    )}
-                    <CTableHeaderCell>Sr No</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
-                    {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                    <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                    <CTableDataCell className="text-center" colSpan={6}>
+                      <div className="lds-spinner mt-1 mb-4">
+                        {[...Array(12)].map((_, index) => (
+                          <div key={index}></div>
+                        ))}
+                      </div>
+                    </CTableDataCell>
                   </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {allQuestion && allQuestion.length > 0 ? (
-                    showFilteredResult ? (
-                      filteredQuestion && filteredQuestion.length > 0 ? (
-                        filteredQuestion.map((q, idx) => (
+                ) : (
+                  <>
+                    {allQuestion && allQuestion.length > 0 ? (
+                      showFilteredResult ? (
+                        filteredQuestion && filteredQuestion.length > 0 ? (
+                          filteredQuestion.map((q, idx) => (
+                            <CTableRow key={idx}>
+                              {showCheck && (
+                                <CTableDataCell>
+                                  <input
+                                    type="checkbox"
+                                    className="form-check-input checkboxes"
+                                    id={q._id}
+                                    value={q._id}
+                                    onChange={(e) => handleCheckboxChange(e)}
+                                    // checked={
+                                    //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
+                                    // }
+                                  />
+                                </CTableDataCell>
+                              )}
+                              <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
+                              <CTableDataCell className="cursor-pointer">
+                                <span
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setDetailModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  dangerouslySetInnerHTML={{
+                                    __html:
+                                      q.question.length > 100
+                                        ? q.question.substring(0, 100) + '...'
+                                        : q.question,
+                                  }}
+                                >
+                                  {/* {q.question.length > 100
+                                ? q.question.substring(0, 100) + '...'
+                                : q.question} */}
+                                </span>
+                              </CTableDataCell>
+                              <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                              <CTableDataCell>{q.USMLE}</CTableDataCell>
+                              {/* <CTableDataCell>
+                            <img
+                              src={`${API_URL}uploads/${q.image}`}
+                              alt="mcq img"
+                              className="w-6 h-6 rounded-full"
+                            />
+                          </CTableDataCell> */}
+                              <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                              <CTableDataCell className="flex justify-start items-center">
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setViewModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  title="View"
+                                >
+                                  <RiEyeLine className="my-1" />
+                                </CButton>
+                                <CButton
+                                  color="info"
+                                  className="text-white mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setAddModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                    setSrNo(q.srNo)
+                                  }}
+                                >
+                                  <CIcon icon={cilPencil} />
+                                </CButton>
+                                <CButton
+                                  color="danger"
+                                  className="text-white my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setDeleteModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilTrash} />
+                                </CButton>
+                              </CTableDataCell>
+                            </CTableRow>
+                          ))
+                        ) : (
+                          <CTableRow>
+                            <CTableDataCell className="text-center" colSpan={6}>
+                              No records found <br />
+                              <CButton color="link" onClick={() => setShowFilteredResult(false)}>
+                                Show All
+                              </CButton>
+                            </CTableDataCell>
+                          </CTableRow>
+                        )
+                      ) : (
+                        allQuestion.map((q, idx) => (
                           <CTableRow key={idx}>
                             {showCheck && (
                               <CTableDataCell>
@@ -1082,19 +1215,19 @@ const ManageQuiz = () => {
                                 }}
                               >
                                 {/* {q.question.length > 100
-                                ? q.question.substring(0, 100) + '...'
-                                : q.question} */}
+                              ? q.question.substring(0, 100) + '...'
+                              : q.question} */}
                               </span>
                             </CTableDataCell>
                             <CTableDataCell>{q.usmleStep}</CTableDataCell>
                             <CTableDataCell>{q.USMLE}</CTableDataCell>
                             {/* <CTableDataCell>
-                            <img
-                              src={`${API_URL}uploads/${q.image}`}
-                              alt="mcq img"
-                              className="w-6 h-6 rounded-full"
-                            />
-                          </CTableDataCell> */}
+                          <img
+                            src={`${API_URL}uploads/${q.image}`}
+                            alt="mcq img"
+                            className="w-6 h-6 rounded-full"
+                          />
+                        </CTableDataCell> */}
                             <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center">
                               <CButton
@@ -1138,161 +1271,105 @@ const ManageQuiz = () => {
                             </CTableDataCell>
                           </CTableRow>
                         ))
-                      ) : (
-                        <CTableRow>
-                          <CTableDataCell className="text-center" colSpan={6}>
-                            No records found <br />
-                            <CButton color="link" onClick={() => setShowFilteredResult(false)}>
-                              Show All
-                            </CButton>
-                          </CTableDataCell>
-                        </CTableRow>
                       )
                     ) : (
-                      allQuestion.map((q, idx) => (
-                        <CTableRow key={idx}>
-                          {showCheck && (
-                            <CTableDataCell>
-                              <input
-                                type="checkbox"
-                                className="form-check-input checkboxes"
-                                id={q._id}
-                                value={q._id}
-                                onChange={(e) => handleCheckboxChange(e)}
-                                // checked={
-                                //   deleteIds.filter((id) => id == q.id).length > 0 ? true : false
-                                // }
-                              />
-                            </CTableDataCell>
-                          )}
-                          <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
-                          <CTableDataCell className="cursor-pointer">
-                            <span
-                              id={q._id}
-                              onClick={(e) => {
-                                setDetailModal(true)
-                                setQuestionId(e.currentTarget.id)
-                              }}
-                              dangerouslySetInnerHTML={{
-                                __html:
-                                  q.question.length > 100
-                                    ? q.question.substring(0, 100) + '...'
-                                    : q.question,
-                              }}
-                            >
-                              {/* {q.question.length > 100
-                              ? q.question.substring(0, 100) + '...'
-                              : q.question} */}
-                            </span>
-                          </CTableDataCell>
-                          <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                          <CTableDataCell>{q.USMLE}</CTableDataCell>
-                          {/* <CTableDataCell>
-                          <img
-                            src={`${API_URL}uploads/${q.image}`}
-                            alt="mcq img"
-                            className="w-6 h-6 rounded-full"
+                      <CTableRow>
+                        <CTableDataCell className="text-center" colSpan={6}>
+                          No Questions Found
+                        </CTableDataCell>
+                      </CTableRow>
+                    )}
+                    {total > pageSize && !showFilteredResult && (
+                      <CTableRow>
+                        <CTableDataCell className="text-center" colSpan={6}>
+                          <ReactPaginate
+                            breakLabel={
+                              <span className="w-9 h-9 border border-solid">
+                                <span className="flex justify-center items-center">...</span>
+                              </span>
+                            }
+                            marginPagesDisplayed={1}
+                            nextLabel={
+                              <span
+                                className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                              >
+                                <RiArrowRightSLine />
+                              </span>
+                            }
+                            // onPageChange={handlePageClick}
+                            onPageChange={(event) => {
+                              setCurrentPage(event.selected + 1)
+                              getAllQuest(event.selected + 1)
+                            }}
+                            pageRangeDisplayed={1}
+                            pageCount={totalPages}
+                            previousLabel={
+                              <span
+                                className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                              >
+                                <RiArrowLeftSLine />
+                              </span>
+                            }
+                            containerClassName={'flex justify-center items-center pagination mr-3'}
+                            pageClassName={
+                              'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                            }
+                            activeClassName={'active-page-no text-white'}
+                            forcePage={currentPage - 1}
+                            // initialPage={currentPage}
                           />
-                        </CTableDataCell> */}
-                          <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                          <CTableDataCell className="flex justify-start items-center">
-                            <CButton
-                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                              id={q._id}
-                              onClick={(e) => {
-                                setViewModal(true)
-                                setQuestionId(e.currentTarget.id)
-                              }}
-                              title="View"
-                            >
-                              <RiEyeLine className="my-1" />
-                            </CButton>
-                            <CButton
-                              color="info"
-                              className="text-white mr-3 my-2"
-                              id={q._id}
-                              onClick={(e) => {
-                                setAddModal(true)
-                                setQuestionId(e.currentTarget.id)
-                                setErrorr(false)
-                                setErrorMsg('')
-                                setSrNo(q.srNo)
-                              }}
-                            >
-                              <CIcon icon={cilPencil} />
-                            </CButton>
-                            <CButton
-                              color="danger"
-                              className="text-white my-2"
-                              id={q._id}
-                              onClick={(e) => {
-                                setDeleteModal(true)
-                                setQuestionId(e.currentTarget.id)
-                                setErrorr(false)
-                                setErrorMsg('')
-                              }}
-                            >
-                              <CIcon icon={cilTrash} />
-                            </CButton>
-                          </CTableDataCell>
-                        </CTableRow>
-                      ))
-                    )
-                  ) : (
-                    <CTableRow>
-                      <CTableDataCell className="text-center" colSpan={6}>
-                        No Questions Found
-                      </CTableDataCell>
-                    </CTableRow>
-                  )}
-                </CTableBody>
-              </CTable>
-              {total <= pageSize ? (
-                ''
-              ) : (
-                <ReactPaginate
-                  breakLabel={
-                    <span className="w-9 h-9 border border-solid">
-                      <span className="flex justify-center items-center">...</span>
-                    </span>
-                  }
-                  marginPagesDisplayed={1}
-                  nextLabel={
-                    <span
-                      className={`${showNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
-                    >
-                      <RiArrowRightSLine />
-                    </span>
-                  }
-                  // onPageChange={handlePageClick}
-                  onPageChange={(event) => {
-                    setCurrentPage(event.selected + 1)
-                    showFilteredResult
-                      ? getFilteredQuestions(event.selected + 1)
-                      : getAllQuest(event.selected + 1)
-                  }}
-                  pageRangeDisplayed={1}
-                  pageCount={totalPages}
-                  previousLabel={
-                    <span
-                      className={`${showPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
-                    >
-                      <RiArrowLeftSLine />
-                    </span>
-                  }
-                  containerClassName={'flex justify-center items-center pagination mr-3'}
-                  pageClassName={
-                    'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
-                  }
-                  activeClassName={'active-page-no text-white'}
-                  forcePage={currentPage - 1}
-                  // initialPage={currentPage}
-                />
-              )}
-              {/* )} */}
-            </CCardBody>
-          </CCard>
-        )}
+                        </CTableDataCell>
+                      </CTableRow>
+                    )}
+                    {filtertotal > filterpageSize && showFilteredResult && (
+                      <CTableRow className="my-2">
+                        <CTableDataCell className="text-center" colSpan={6}>
+                          <ReactPaginate
+                            breakLabel={
+                              <span className="w-9 h-9 border border-solid">
+                                <span className="flex justify-center items-center">...</span>
+                              </span>
+                            }
+                            marginPagesDisplayed={1}
+                            nextLabel={
+                              <span
+                                className={`${showFilterNextButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-r-md`}
+                              >
+                                <RiArrowRightSLine />
+                              </span>
+                            }
+                            // onPageChange={handlePageClick}
+                            onPageChange={(event) => {
+                              setfilterCurrentPage(event.selected + 1)
+                              getFilteredQuestions(event.selected + 1)
+                            }}
+                            pageRangeDisplayed={1}
+                            pageCount={filtertotalPages}
+                            previousLabel={
+                              <span
+                                className={`${showFilterPrevButton ? 'page-no cursor-pointer' : 'cursor-disabled opacity-50'} w-9 h-9 flex justify-center items-center border border-solid rounded-l-md`}
+                              >
+                                <RiArrowLeftSLine />
+                              </span>
+                            }
+                            containerClassName={'flex justify-center items-center pagination mr-3'}
+                            pageClassName={
+                              'block border border-solid page-no border-lightGray hover:bg-lightGray w-9 h-9 flex justify-center items-center '
+                            }
+                            activeClassName={'active-page-no text-white'}
+                            forcePage={filtercurrentPage - 1}
+                            // initialPage={currentPage}
+                          />
+                        </CTableDataCell>
+                      </CTableRow>
+                    )}
+                  </>
+                )}
+              </CTableBody>
+            </CTable>
+            {/* )} */}
+          </CCardBody>
+        </CCard>
         {/* add / edit modal */}
         <CModal
           alignment="center"

@@ -198,7 +198,7 @@ const Notifications = () => {
                         className="relative border border-gray-200 rounded-lg shadow-lg"
                       >
                         {notification.isViewed == false && (
-                          <span className="absolute flex justify-center items-center text-white w-10 h-4 me-3 bg-red-500 rounded-full -top-1 -left-1 text-xs">
+                          <span className="absolute flex justify-center items-center w-10 h-4 me-3 bg-red-500 rounded-full -top-1 -left-1 text-xs">
                             New
                           </span>
                         )}
@@ -216,22 +216,22 @@ const Notifications = () => {
                         </button>
                         <div className="flex justify-between items-center p-4">
                           <div className="flex w-full">
-                            <div className="bg-[#5856D6] w-8 h-8 rounded-full hidden lg:flex justify-center items-center text-white">
+                            <div className="bg-[#5856D6] w-8 h-8 rounded-full hidden lg:flex justify-center items-center">
                               AJ
                             </div>
                             <div className="ml-3 overflow-hidden">
-                              <div className="bg-[#5856D6] w-8 h-8 rounded-full flex lg:hidden justify-center items-center text-white">
+                              <div className="bg-[#5856D6] w-8 h-8 rounded-full flex lg:hidden justify-center items-center">
                                 AJ
                               </div>
-                              <p className="font-medium text-gray-900 dark:text-white">
+                              <p className="font-medium">
                                 {notification.notification?.notificationTitle}
                               </p>
-                              <p className="text-sm text-gray-500 dark:text-white">
+                              <p className="text-sm opacity-50">
                                 {notification.notification?.notificationBody}
                               </p>
                             </div>
                           </div>
-                          <p className="text-sm text-gray-500 ml-3 dark:text-gray-200">
+                          <p className="text-sm ml-3 text-opacity-80">
                             {moment(notification.notification?.createdAt).fromNow()}
                           </p>
                         </div>

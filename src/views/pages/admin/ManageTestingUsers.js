@@ -333,55 +333,68 @@ const ManageTestingUsers = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {users.length > 0 ? (
-                  users.map((user) => (
-                    <CTableRow key={user._id}>
-                      <CTableDataCell className="font-semibold pt-3 text-center">
-                        {user.firstName}
-                      </CTableDataCell>
-                      <CTableDataCell className="font-semibold pt-3 text-center">
-                        {user.lastName}
-                      </CTableDataCell>
-                      <CTableDataCell className="font-semibold pt-3 text-center">
-                        {user.email}
-                      </CTableDataCell>
-                      <CTableDataCell className="font-semibold pt-3 text-center">
-                        {user.stepsAllowed}
-                      </CTableDataCell>
-                      <CTableDataCell className="font-semibold pt-3 text-center">
-                        {user.numberOfQuestionsUpdated} out of {user.totalNumbersOfQuestionsAllowed}
-                      </CTableDataCell>
-                      <CTableDataCell className="flex justify-center items-center">
-                        <CButton
-                          className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                          onClick={() => handleView(user)}
-                          title="View"
-                        >
-                          <RiEyeLine className="my-1" />
-                        </CButton>
-                        <CButton
-                          color="info"
-                          className="text-white mr-3 my-2"
-                          onClick={() => handleEdit(user)}
-                        >
-                          <CIcon icon={cilPencil} />
-                        </CButton>
-                        <CButton
-                          color="danger"
-                          className="text-white my-2"
-                          onClick={() => handleDelete(user)}
-                        >
-                          <CIcon icon={cilTrash} />
-                        </CButton>
-                      </CTableDataCell>
-                    </CTableRow>
-                  ))
-                ) : (
+                {loader ? (
                   <CTableRow>
                     <CTableDataCell className="text-center" colSpan={6}>
-                      No Users Found
+                      <div className="text-center">
+                        <CSpinner color="success" variant="grow" />
+                      </div>
                     </CTableDataCell>
                   </CTableRow>
+                ) : (
+                  <>
+                    {users.length > 0 ? (
+                      users.map((user) => (
+                        <CTableRow key={user._id}>
+                          <CTableDataCell className="font-semibold pt-3 text-center">
+                            {user.firstName}
+                          </CTableDataCell>
+                          <CTableDataCell className="font-semibold pt-3 text-center">
+                            {user.lastName}
+                          </CTableDataCell>
+                          <CTableDataCell className="font-semibold pt-3 text-center">
+                            {user.email}
+                          </CTableDataCell>
+                          <CTableDataCell className="font-semibold pt-3 text-center">
+                            {user.stepsAllowed}
+                          </CTableDataCell>
+                          <CTableDataCell className="font-semibold pt-3 text-center">
+                            {user.numberOfQuestionsUpdated} out of{' '}
+                            {user.totalNumbersOfQuestionsAllowed}
+                          </CTableDataCell>
+                          <CTableDataCell className="flex justify-center items-center">
+                            <CButton
+                              className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                              onClick={() => handleView(user)}
+                              title="View"
+                            >
+                              <RiEyeLine className="my-1" />
+                            </CButton>
+                            <CButton
+                              color="info"
+                              className="text-white mr-3 my-2"
+                              onClick={() => handleEdit(user)}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                            <CButton
+                              color="danger"
+                              className="text-white my-2"
+                              onClick={() => handleDelete(user)}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))
+                    ) : (
+                      <CTableRow>
+                        <CTableDataCell className="text-center" colSpan={6}>
+                          No Users Found
+                        </CTableDataCell>
+                      </CTableRow>
+                    )}
+                  </>
                 )}
               </CTableBody>
             </CTable>

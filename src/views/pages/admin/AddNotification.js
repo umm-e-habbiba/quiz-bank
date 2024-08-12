@@ -252,15 +252,11 @@ const AddNotification = () => {
                             AJ
                           </CAvatar>
                           <div className="ml-3  overflow-hidden">
-                            <p className="font-medium text-gray-900 dark:text-white">
-                              {notification.notificationTitle}
-                            </p>
-                            <p className="text-sm text-gray-500 dark:text-white">
-                              {notification.notificationBody}
-                            </p>
+                            <p className="font-medium">{notification.notificationTitle}</p>
+                            <p className="text-sm opacity-50">{notification.notificationBody}</p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500 ml-3 dark:text-white">
+                        <p className="text-sm ml-3 text-opacity-80">
                           {moment(notification.createdAt).fromNow()}
                         </p>
                       </div>

@@ -465,6 +465,8 @@ table th {
 // pagination
 .pagination {
   display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .pagination li a {
   // color: #000;

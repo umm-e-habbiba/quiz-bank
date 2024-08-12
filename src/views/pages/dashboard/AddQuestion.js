@@ -167,9 +167,7 @@ const AddQuestion = () => {
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
               <div className="rounded-t  mb-0 px-6 py-6">
                 <div className="text-center flex justify-between">
-                  <h6 className="text-xl font-bold dark:text-slate-200 text-slate-600">
-                    Add Question
-                  </h6>
+                  <h6 className="text-xl font-bold">Add Question</h6>
                   {/* <button
                     className="bg-pink-500 text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
                     type="button"
@@ -178,7 +176,7 @@ const AddQuestion = () => {
                   </button> */}
                 </div>
                 <hr className="mt-6 border-b-1 border-slate-600" />
-                <p className=" dark:text-slate-200 text-slate-600 text-base mt-3 mb-6">
+                <p className="text-base mt-3 mb-6">
                   Feel free to add your own question to the ZAP-70 Q-Bank! You may want to use AI to
                   polish up the language. Please recognize that you will be greatly helping us reach
                   our project&apos;s completion faster by contributing, and you will definitely be
@@ -191,14 +189,12 @@ const AddQuestion = () => {
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <CForm onSubmit={handleSubmit(addQuestion)}>
-                  <h6 className="dark:text-slate-200 text-slate-600 text-sm mt-3 mb-6 font-bold uppercase">
-                    Question Details
-                  </h6>
+                  <h6 className="text-sm mt-3 mb-6 font-bold uppercase">Question Details</h6>
                   <div className="flex flex-wrap">
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
+                          className="block uppercase text-xs font-bold mb-2"
                           htmlFor="usmleStep"
                         >
                           USMLE Step
@@ -223,7 +219,7 @@ const AddQuestion = () => {
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
+                          className="block uppercase text-xs font-bold mb-2"
                           htmlFor="usmleCategory"
                         >
                           USMLE Category
@@ -265,7 +261,7 @@ const AddQuestion = () => {
                     <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
+                          className="block uppercase text-xs font-bold mb-2"
                           htmlFor="question"
                         >
                           Question
@@ -285,15 +281,11 @@ const AddQuestion = () => {
                   </div>
 
                   <hr className="mt-6 border-b-1 border-slate-600" />
-                  <h6 className=" dark:text-slate-200 text-slate-600 text-sm mt-3 mb-6 font-bold uppercase">
-                    Options
-                  </h6>
+                  <h6 className="text-sm mt-3 mb-6 font-bold uppercase">Options</h6>
                   <div className="flex flex-wrap">
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
-                          Option One
-                        </label>
+                        <label className="block uppercase text-xs font-bold mb-2">Option One</label>
                         <CFormInput
                           type="text"
                           {...register('op1', { required: true })}
@@ -306,7 +298,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Option Two
                         </label>
                         <CFormInput
@@ -321,7 +313,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Option Three
                         </label>
                         <CFormInput
@@ -336,7 +328,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Option Four
                         </label>
                         <CFormInput
@@ -351,7 +343,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Option Five
                         </label>
                         <CFormInput
@@ -366,7 +358,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Option Six
                         </label>
                         <CFormInput
@@ -380,14 +372,12 @@ const AddQuestion = () => {
                     </div>
                   </div>
                   <hr className="mt-6 border-b-1 border-slate-600" />
-                  <h6 className="dark:text-slate-200 text-slate-600 text-sm mt-3 mb-6 font-bold uppercase">
-                    Correct Answer
-                  </h6>
+                  <h6 className=" text-sm mt-3 mb-6 font-bold uppercase">Correct Answer</h6>
                   <div className="flex flex-wrap">
                     <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
+                          className="block uppercase  text-xs font-bold mb-2"
                           htmlFor="correct"
                         >
                           Correct Answer
@@ -426,14 +416,12 @@ const AddQuestion = () => {
                   </div>
                   <hr className="mt-6 border-b-1 border-slate-600" />
 
-                  <h6 className="dark:text-slate-200 text-slate-600 text-sm mt-3 mb-6 font-bold uppercase">
-                    Explanation
-                  </h6>
+                  <h6 className=" text-sm mt-3 mb-6 font-bold uppercase">Explanation</h6>
                   <div className="flex flex-wrap">
                     <div className="w-full px-0 lg:px-4">
                       <div className="relative w-full mb-3">
                         <label
-                          className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2"
+                          className="block uppercase  text-xs font-bold mb-2"
                           htmlFor="question"
                         >
                           Question Explanation
@@ -452,7 +440,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option One
                         </label>
                         <CFormInput
@@ -466,7 +454,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option Two
                         </label>
                         <CFormInput
@@ -480,7 +468,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option Three
                         </label>
                         <CFormInput
@@ -494,7 +482,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option Four
                         </label>
                         <CFormInput
@@ -508,7 +496,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option Five
                         </label>
                         <CFormInput
@@ -522,7 +510,7 @@ const AddQuestion = () => {
                     </div>
                     <div className="w-full lg:w-6/12 px-0 lg:px-4">
                       <div className="relative w-full mb-3">
-                        <label className="block uppercase dark:text-slate-200 text-slate-600 text-xs font-bold mb-2">
+                        <label className="block uppercase  text-xs font-bold mb-2">
                           Explain Option Six
                         </label>
                         <CFormInput

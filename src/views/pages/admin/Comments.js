@@ -457,112 +457,118 @@ const Comments = () => {
       <>
         <CCard className="mb-4 mx-4">
           <CCardHeader className="flex justify-between items-center">
-            <strong>Manage Questions</strong>
+            <strong>Manage Quiz Comments</strong>
           </CCardHeader>
           <CCardBody>
-            {loader ? (
-              <div className="text-center">
-                <CSpinner color="success" variant="grow" />
-              </div>
-            ) : (
-              <CTable striped className="admin-tables">
-                <CTableHead>
+            <CTable striped className="admin-tables">
+              <CTableHead>
+                <CTableRow>
+                  <CTableHeaderCell scope="col">Question</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
+                  {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
+                  <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
+                  <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                </CTableRow>
+              </CTableHead>
+              <CTableBody>
+                {loader ? (
                   <CTableRow>
-                    <CTableHeaderCell scope="col">Question</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Step</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">USMLE Category</CTableHeaderCell>
-                    {/* <CTableHeaderCell scope="col">Image</CTableHeaderCell> */}
-                    <CTableHeaderCell scope="col">Correct Answer</CTableHeaderCell>
-                    <CTableHeaderCell scope="col">Actions</CTableHeaderCell>
+                    <CTableDataCell className="text-center" colSpan={5}>
+                      <div className="text-center">
+                        <CSpinner color="success" variant="grow" />
+                      </div>
+                    </CTableDataCell>
                   </CTableRow>
-                </CTableHead>
-                <CTableBody>
-                  {allQuestion && allQuestion.length > 0 ? (
-                    allQuestion.map((q, idx) => (
-                      <CTableRow key={idx}>
-                        <CTableHeaderCell>
-                          <span
-                            // id={q._id}
-                            // onClick={(e) => {
-                            //   setDetailModal(true)
-                            //   setComments(q.comments)
-                            //   setQuestionId(e.currentTarget.id)
-                            // }}
-                            dangerouslySetInnerHTML={{
-                              __html:
-                                q.question.length > 100
-                                  ? q.question.substring(0, 100) + '...'
-                                  : q.question,
-                            }}
-                          >
-                            {/* {q.question.length > 100
+                ) : (
+                  <>
+                    {allQuestion && allQuestion.length > 0 ? (
+                      allQuestion.map((q, idx) => (
+                        <CTableRow key={idx}>
+                          <CTableHeaderCell>
+                            <span
+                              // id={q._id}
+                              // onClick={(e) => {
+                              //   setDetailModal(true)
+                              //   setComments(q.comments)
+                              //   setQuestionId(e.currentTarget.id)
+                              // }}
+                              dangerouslySetInnerHTML={{
+                                __html:
+                                  q.question.length > 100
+                                    ? q.question.substring(0, 100) + '...'
+                                    : q.question,
+                              }}
+                            >
+                              {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
                               : q.question} */}
-                          </span>
-                        </CTableHeaderCell>
-                        <CTableDataCell>{q.usmleStep}</CTableDataCell>
-                        <CTableDataCell>{q.USMLE}</CTableDataCell>
-                        {/* <CTableDataCell>
+                            </span>
+                          </CTableHeaderCell>
+                          <CTableDataCell>{q.usmleStep}</CTableDataCell>
+                          <CTableDataCell>{q.USMLE}</CTableDataCell>
+                          {/* <CTableDataCell>
                           <img
                             src={`${API_URL}uploads/${q.image}`}
                             alt="mcq img"
                             className="w-6 h-6 rounded-full"
                           />
                         </CTableDataCell> */}
-                        <CTableDataCell>{q.correctAnswer}</CTableDataCell>
-                        <CTableDataCell className="flex justify-start items-center">
-                          <CButton
-                            color="primary"
-                            className="text-white my-2 mr-2 py-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setDetailModal(true)
-                              setComments(q.comments)
-                              setQuestionId(e.currentTarget.id)
-                              // console.log('view called', questionId, 'id', e.currentTarget.id)
-                            }}
-                          >
-                            <RiEyeLine className="text-[20px]" />
-                          </CButton>
-                          <CButton
-                            color="info"
-                            className="text-white mr-1 my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setAddModal(true)
-                              setQuestionId(e.currentTarget.id)
-                              setError(false)
-                              setErrorMsg('')
-                            }}
-                          >
-                            <CIcon icon={cilPencil} />
-                          </CButton>
-                          <CButton
-                            color="danger"
-                            className="text-white my-2"
-                            id={q._id}
-                            onClick={(e) => {
-                              setDeleteModal(true)
-                              setQuestionId(e.currentTarget.id)
-                              setError(false)
-                              setErrorMsg('')
-                            }}
-                          >
-                            <CIcon icon={cilTrash} />
-                          </CButton>
+                          <CTableDataCell>{q.correctAnswer}</CTableDataCell>
+                          <CTableDataCell className="flex justify-start items-center">
+                            <CButton
+                              color="primary"
+                              className="text-white my-2 mr-2 py-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setDetailModal(true)
+                                setComments(q.comments)
+                                setQuestionId(e.currentTarget.id)
+                                // console.log('view called', questionId, 'id', e.currentTarget.id)
+                              }}
+                            >
+                              <RiEyeLine className="text-[20px]" />
+                            </CButton>
+                            <CButton
+                              color="info"
+                              className="text-white mr-1 my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setAddModal(true)
+                                setQuestionId(e.currentTarget.id)
+                                setError(false)
+                                setErrorMsg('')
+                              }}
+                            >
+                              <CIcon icon={cilPencil} />
+                            </CButton>
+                            <CButton
+                              color="danger"
+                              className="text-white my-2"
+                              id={q._id}
+                              onClick={(e) => {
+                                setDeleteModal(true)
+                                setQuestionId(e.currentTarget.id)
+                                setError(false)
+                                setErrorMsg('')
+                              }}
+                            >
+                              <CIcon icon={cilTrash} />
+                            </CButton>
+                          </CTableDataCell>
+                        </CTableRow>
+                      ))
+                    ) : (
+                      <CTableRow>
+                        <CTableDataCell className="text-center" colSpan={5}>
+                          No Questions Found
                         </CTableDataCell>
                       </CTableRow>
-                    ))
-                  ) : (
-                    <CTableRow>
-                      <CTableDataCell className="text-center" colSpan={5}>
-                        No Questions Found
-                      </CTableDataCell>
-                    </CTableRow>
-                  )}
-                </CTableBody>
-              </CTable>
-            )}
+                    )}
+                  </>
+                )}
+              </CTableBody>
+            </CTable>
           </CCardBody>
         </CCard>
         {/* add / edit modal */}
