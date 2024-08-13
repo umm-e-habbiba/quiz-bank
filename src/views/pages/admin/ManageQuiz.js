@@ -1610,6 +1610,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op1Explain ? true : false}
                           onChange={(e) => setOp1Exp(e.target.value)}
                           value={op1Exp}
+                          disabled={op1Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -1634,6 +1635,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op2Explain ? true : false}
                           onChange={(e) => setOp2Exp(e.target.value)}
                           value={op2Exp}
+                          disabled={op2Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -1658,6 +1660,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op3Explain ? true : false}
                           onChange={(e) => setOp3Exp(e.target.value)}
                           value={op3Exp}
+                          disabled={op3Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -1684,6 +1687,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op4Explain ? true : false}
                           onChange={(e) => setOp4Exp(e.target.value)}
                           value={op4Exp}
+                          disabled={op4Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -1710,6 +1714,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op5Explain ? true : false}
                           onChange={(e) => setOp5Exp(e.target.value)}
                           value={op5Exp}
+                          disabled={op5Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -1730,6 +1735,7 @@ const ManageQuiz = () => {
                           type="text"
                           onChange={(e) => setOp6Exp(e.target.value)}
                           value={op6Exp}
+                          disabled={op6Exp == '' && questionId == '' ? false : true}
                           className="mb-2"
                         />
                       </CCol>
@@ -2087,7 +2093,7 @@ const ManageQuiz = () => {
               <CCol md={10}>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: getValues('explaination'),
+                    __html: getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option'),
                   }}
                 >
                   {/* {getValues('explaination')} */}
@@ -2160,7 +2166,7 @@ const ManageQuiz = () => {
               </CRow>
             )}
           </CModalBody>
-          <CModalFooter>
+          {/* <CModalFooter>
             <CButton
               color="secondary"
               onClick={() => {
@@ -2173,7 +2179,7 @@ const ManageQuiz = () => {
             >
               Close
             </CButton>
-          </CModalFooter>
+          </CModalFooter> */}
         </CModal>
         {/* view quiz modal */}
         <CModal
