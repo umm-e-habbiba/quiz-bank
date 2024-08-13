@@ -904,7 +904,8 @@ const ManageQuiz = () => {
                   // disabled={filterUsmle || filterCategory ? false : true}
                   className="text-white bg-[#6261CC]  hover:bg-[#4f4ea0] flex justify-center items-center"
                   onClick={() => {
-                    getFilteredQuestions(currentPage)
+                    setfilterCurrentPage(1)
+                    getFilteredQuestions(1)
                   }}
                 >
                   <CIcon icon={cilFilter} className="mr-1 mt-1" /> Filter

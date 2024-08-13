@@ -805,7 +805,8 @@ const ManageTesterQues = () => {
                           <CButton
                             className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] w-full lg:w-auto flex justify-center items-center mb-2 lg:mb-0"
                             onClick={() => {
-                              getFilteredQuestions(currentPage)
+                              setfilterCurrentPage(1)
+                              getFilteredQuestions(1)
                             }}
                           >
                             <CIcon icon={cilFilter} className="mr-0 lg:mr-1" /> Filter
