@@ -542,7 +542,10 @@ const ReviewQuiz = () => {
                         className="mb-3 mt-4"
                         dangerouslySetInnerHTML={{
                           __html: allQuestion[currentQuestion]
-                            ? allQuestion[currentQuestion].questionId.questionExplanation
+                            ? allQuestion[currentQuestion].questionId.questionExplanation.replace(
+                                /\(Choice/g,
+                                '<br/><br/>• (Choice',
+                              )
                             : '',
                         }}
                       >
@@ -568,7 +571,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionOneExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice A)</span>{' '}
+                          <span className="">(Option A)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionOneExplanation
                             : ''}
@@ -579,7 +582,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionTwoExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice B)</span>{' '}
+                          <span className="">(Option B)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionTwoExplanation
                             : ''}
@@ -590,7 +593,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionThreeExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice C)</span>{' '}
+                          <span className="">(Option C)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionThreeExplanation
                             : ''}
@@ -601,7 +604,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionFourExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice D)</span>{' '}
+                          <span className="">(Option D)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionFourExplanation
                             : ''}
@@ -612,7 +615,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionFiveExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice E)</span>{' '}
+                          <span className="">(Option E)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionFiveExplanation
                             : ''}
@@ -623,7 +626,7 @@ const ReviewQuiz = () => {
                       {allQuestion[currentQuestion] &&
                       allQuestion[currentQuestion].questionId.optionSixExplanation ? (
                         <p className="mb-3">
-                          <span className="font-bold">(Choice F)</span>{' '}
+                          <span className="">(Option F)</span>{' '}
                           {allQuestion[currentQuestion]
                             ? allQuestion[currentQuestion].questionId.optionSixExplanation
                             : ''}

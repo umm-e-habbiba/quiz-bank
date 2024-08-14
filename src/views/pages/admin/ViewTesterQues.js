@@ -2101,49 +2101,53 @@ const ViewTesterQues = () => {
                 </span>
               </CCol>
             </CRow>
-            <CRow className="mb-2">
-              <CCol md={2}>
-                <strong>Explained Options</strong>
-              </CCol>
-              <CCol md={10}>
-                {op1Exp && (
-                  <>
-                    <span>A. {op1Exp}</span>
-                    <br />
-                  </>
-                )}
-                {op2Exp && (
-                  <>
-                    <span>B. {op2Exp}</span>
-                    <br />
-                  </>
-                )}
-                {op3Exp && (
-                  <>
-                    <span>C. {op3Exp}</span>
-                    <br />
-                  </>
-                )}
-                {op4Exp && (
-                  <>
-                    <span>D. {op4Exp}</span>
-                    <br />
-                  </>
-                )}
-                {op5Exp && (
-                  <>
-                    <span>E. {op5Exp}</span>
-                    <br />
-                  </>
-                )}
-                {op6Exp && (
-                  <>
-                    <span>F. {op6Exp}</span>
-                    <br />
-                  </>
-                )}
-              </CCol>
-            </CRow>
+            {op1Exp || op2Exp || op3Exp || op4Exp || op5Exp || op6Exp ? (
+              <CRow className="mb-2">
+                <CCol md={2}>
+                  <strong>Explained Options</strong>
+                </CCol>
+                <CCol md={10}>
+                  {op1Exp && (
+                    <>
+                      <span>A. {op1Exp}</span>
+                      <br />
+                    </>
+                  )}
+                  {op2Exp && (
+                    <>
+                      <span>B. {op2Exp}</span>
+                      <br />
+                    </>
+                  )}
+                  {op3Exp && (
+                    <>
+                      <span>C. {op3Exp}</span>
+                      <br />
+                    </>
+                  )}
+                  {op4Exp && (
+                    <>
+                      <span>D. {op4Exp}</span>
+                      <br />
+                    </>
+                  )}
+                  {op5Exp && (
+                    <>
+                      <span>E. {op5Exp}</span>
+                      <br />
+                    </>
+                  )}
+                  {op6Exp && (
+                    <>
+                      <span>F. {op6Exp}</span>
+                      <br />
+                    </>
+                  )}
+                </CCol>
+              </CRow>
+            ) : (
+              ''
+            )}
             <CRow className="mb-2">
               <CCol md={2}>
                 <strong>Answer</strong>
