@@ -641,7 +641,7 @@ const ExamComments = () => {
                     <label className="form-label">Explanation</label>
                     <JoditEditor
                       ref={editor}
-                      value={getValues('explaination')}
+                      value={getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option')}
                       config={config}
                       tabIndex={1}
                       onChange={(e) => setValue('explaination', e.toString())}
@@ -1056,7 +1056,7 @@ const ExamComments = () => {
               <CCol md={10}>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: getValues('explaination'),
+                    __html: getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option'),
                   }}
                 ></span>
               </CCol>

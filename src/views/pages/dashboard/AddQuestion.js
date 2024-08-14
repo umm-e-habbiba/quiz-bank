@@ -429,7 +429,10 @@ const AddQuestion = () => {
                         <CFormTextarea
                           id="explanation"
                           rows={4}
-                          defaultValue={getValues('explaination')}
+                          defaultValue={getValues('explaination')?.replace(
+                            /\(Choice/g,
+                            '<br/>• (Option',
+                          )}
                           {...register('explaination', { required: true })}
                           feedback="Please enter question explanation."
                           invalid={errors.explaination ? true : false}

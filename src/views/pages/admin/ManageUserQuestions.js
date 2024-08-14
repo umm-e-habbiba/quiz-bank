@@ -1264,7 +1264,7 @@ const ManageUserQuestions = () => {
                     /> */}
                     <JoditEditor
                       ref={editor}
-                      value={getValues('explaination')}
+                      value={getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option')}
                       config={config}
                       tabIndex={1}
                       onChange={(e) => setValue('explaination', e.toString())}
@@ -1753,7 +1753,7 @@ const ManageUserQuestions = () => {
               <CCol md={10}>
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: getValues('explaination'),
+                    __html: getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option'),
                   }}
                 >
                   {/* {getValues('explaination')} */}

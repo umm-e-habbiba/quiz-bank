@@ -1375,7 +1375,10 @@ const ManageQuiz = () => {
         <CModal
           alignment="center"
           visible={addModal}
-          onClose={() => setAddModal(false)}
+          onClose={() => {
+            setAddModal(false)
+            setQuestionId('')
+          }}
           aria-labelledby="VerticallyCenteredExample"
           // scrollable={true}
           size="lg"
@@ -1575,7 +1578,7 @@ const ManageQuiz = () => {
                     /> */}
                     <JoditEditor
                       ref={editor}
-                      value={getValues('explaination')}
+                      value={getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option')}
                       config={config}
                       tabIndex={1}
                       onChange={(e) => setValue('explaination', e.toString())}
@@ -1610,7 +1613,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op1Explain ? true : false}
                           onChange={(e) => setOp1Exp(e.target.value)}
                           value={op1Exp}
-                          disabled={op1Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op1Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1635,7 +1638,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op2Explain ? true : false}
                           onChange={(e) => setOp2Exp(e.target.value)}
                           value={op2Exp}
-                          disabled={op2Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op2Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1660,7 +1663,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op3Explain ? true : false}
                           onChange={(e) => setOp3Exp(e.target.value)}
                           value={op3Exp}
-                          disabled={op3Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op3Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1687,7 +1690,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op4Explain ? true : false}
                           onChange={(e) => setOp4Exp(e.target.value)}
                           value={op4Exp}
-                          disabled={op4Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op4Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1714,7 +1717,7 @@ const ManageQuiz = () => {
                           // invalid={errors.op5Explain ? true : false}
                           onChange={(e) => setOp5Exp(e.target.value)}
                           value={op5Exp}
-                          disabled={op5Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op5Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1735,7 +1738,7 @@ const ManageQuiz = () => {
                           type="text"
                           onChange={(e) => setOp6Exp(e.target.value)}
                           value={op6Exp}
-                          disabled={op6Exp == '' && questionId == '' ? false : true}
+                          disabled={questionId ? (op6Exp ? false : true) : false}
                           className="mb-2"
                         />
                       </CCol>
@@ -1952,7 +1955,13 @@ const ManageQuiz = () => {
               {error && <p className="mt-3 text-base text-red-700">{errorMsg}</p>}
             </CModalBody>
             <CModalFooter>
-              <CButton color="secondary" onClick={() => setAddModal(false)}>
+              <CButton
+                color="secondary"
+                onClick={() => {
+                  setAddModal(false)
+                  setQuestionId('')
+                }}
+              >
                 Close
               </CButton>
               {questionId ? (

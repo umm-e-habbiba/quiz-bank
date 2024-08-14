@@ -722,7 +722,7 @@ const ManageExams = () => {
                     <label className="form-label">Explanation</label>
                     <JoditEditor
                       ref={editor}
-                      value={getValues('explaination')}
+                      value={getValues('explaination')?.replace(/\(Choice/g, '<br/>• (Option')}
                       config={config}
                       tabIndex={1}
                       onChange={(e) => setValue('explaination', e.toString())}
