@@ -28,6 +28,7 @@ import {
   CAlert,
   CFormCheck,
   CProgress,
+  CTooltip,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilFilter, cilPencil, cilTrash } from '@coreui/icons'
@@ -45,6 +46,8 @@ import { Player } from 'video-react'
 import DropBox from 'src/components/admin/DropBox'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import ReactPaginate from 'react-paginate'
+import { FaCheck, FaCheckDouble, FaCross } from 'react-icons/fa'
+import { ImCross } from 'react-icons/im'
 const ManageQuiz = () => {
   const editor = useRef(null)
   const options = ['bold', 'italic', 'underline', 'image', 'table']
@@ -790,6 +793,103 @@ const ManageQuiz = () => {
       }, this)
     }
   }
+  const markCorrect = (id) => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({ userId: 'a1b2c3d4e5f6g7h8i9j0k1l2', testerName: 'admin' }),
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'admin/mark-correct/' + id, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('result', result, 'ques array', allQuestion)
+        // getAllQuest()
+        if (result.success) {
+          if (showFilteredResult) {
+            setSuccessMsg(result.message)
+
+            setFilteredQuestion(
+              filteredQuestion.map((ques) => {
+                if (ques._id === id) {
+                  // Create a *new* object with changes
+                  return { ...ques, isCorrect: true }
+                } else {
+                  // No changes
+                  return ques
+                }
+              }),
+            )
+          } else {
+            setAllQuestion(
+              allQuestion.map((ques) => {
+                if (ques._id === id) {
+                  // Create a *new* object with changes
+                  return { ...ques, isCorrect: true }
+                } else {
+                  // No changes
+                  return ques
+                }
+              }),
+            )
+          }
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
+  const unMarkCorrect = (id) => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({ userId: 'a1b2c3d4e5f6g7h8i9j0k1l2', testerName: 'admin' }),
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'admin/unmark-correct/' + id, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('result', result)
+        // getAllQuest()
+        if (result.success) {
+          if (showFilteredResult) {
+            setFilteredQuestion(
+              filteredQuestion.map((ques) => {
+                if (ques._id === id) {
+                  // Create a *new* object with changes
+                  return { ...ques, isCorrect: false }
+                } else {
+                  // No changes
+                  return ques
+                }
+              }),
+            )
+          } else {
+            setAllQuestion(
+              allQuestion.map((ques) => {
+                if (ques._id === id) {
+                  // Create a *new* object with changes
+                  return { ...ques, isCorrect: false }
+                } else {
+                  // No changes
+                  return ques
+                }
+              }),
+            )
+          }
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
+
   const showNextButton = currentPage - 1 !== totalPages - 1
   const showPrevButton = currentPage - 1 !== 0
   const showFilterNextButton = filtercurrentPage - 1 !== filtertotalPages - 1
@@ -1101,7 +1201,9 @@ const ManageQuiz = () => {
                                   />
                                 </CTableDataCell>
                               )}
-                              <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
+                              <CTableHeaderCell>
+                                <div className={q.isCorrect ? 'text-green-600' : ''}>{q.srNo}</div>
+                              </CTableHeaderCell>
                               <CTableDataCell className="cursor-pointer">
                                 <span
                                   id={q._id}
@@ -1132,44 +1234,79 @@ const ManageQuiz = () => {
                           </CTableDataCell> */}
                               <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                               <CTableDataCell className="flex justify-start items-center">
-                                <CButton
-                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                  id={q._id}
-                                  onClick={(e) => {
-                                    setViewModal(true)
-                                    setQuestionId(e.currentTarget.id)
-                                  }}
-                                  title="View"
+                                <CTooltip content="View Question">
+                                  <CButton
+                                    className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                    id={q._id}
+                                    onClick={(e) => {
+                                      setViewModal(true)
+                                      setQuestionId(e.currentTarget.id)
+                                    }}
+                                    title="View"
+                                  >
+                                    <RiEyeLine className="my-1" />
+                                  </CButton>
+                                </CTooltip>
+                                <CTooltip
+                                  key={q._id}
+                                  content={q.isCorrect ? 'Uncheck Question' : 'Check Question'}
                                 >
-                                  <RiEyeLine className="my-1" />
-                                </CButton>
-                                <CButton
-                                  color="info"
-                                  className="text-white mr-3 my-2"
-                                  id={q._id}
-                                  onClick={(e) => {
-                                    setAddModal(true)
-                                    setQuestionId(e.currentTarget.id)
-                                    setErrorr(false)
-                                    setErrorMsg('')
-                                    setSrNo(q.srNo)
-                                  }}
-                                >
-                                  <CIcon icon={cilPencil} />
-                                </CButton>
-                                <CButton
-                                  color="danger"
-                                  className="text-white my-2"
-                                  id={q._id}
-                                  onClick={(e) => {
-                                    setDeleteModal(true)
-                                    setQuestionId(e.currentTarget.id)
-                                    setErrorr(false)
-                                    setErrorMsg('')
-                                  }}
-                                >
-                                  <CIcon icon={cilTrash} />
-                                </CButton>
+                                  <CButton
+                                    className={
+                                      q.isCorrect
+                                        ? 'text-white bg-green-800 hover:bg-green-600 mr-3 my-2'
+                                        : 'text-white bg-green-600 hover:bg-green-800 mr-3 my-2'
+                                    }
+                                    id={q._id}
+                                    onClick={(e) => {
+                                      if (q.isCorrect) {
+                                        setQuestionId(e.currentTarget.id)
+                                        unMarkCorrect(e.currentTarget.id)
+                                      } else {
+                                        setQuestionId(e.currentTarget.id)
+                                        markCorrect(e.currentTarget.id)
+                                      }
+                                    }}
+                                  >
+                                    {q.isCorrect ? (
+                                      <ImCross className="my-1" />
+                                    ) : (
+                                      <FaCheck className="my-1" />
+                                    )}
+                                    {/* <IoCheckmarkDoneSharp className="my-1" /> */}
+                                  </CButton>
+                                </CTooltip>
+                                <CTooltip content="View Question">
+                                  <CButton
+                                    color="info"
+                                    className="text-white mr-3 my-2"
+                                    id={q._id}
+                                    onClick={(e) => {
+                                      setAddModal(true)
+                                      setQuestionId(e.currentTarget.id)
+                                      setErrorr(false)
+                                      setErrorMsg('')
+                                      setSrNo(q.srNo)
+                                    }}
+                                  >
+                                    <CIcon icon={cilPencil} />
+                                  </CButton>
+                                </CTooltip>
+                                <CTooltip content="Delete Question">
+                                  <CButton
+                                    color="danger"
+                                    className="text-white my-2"
+                                    id={q._id}
+                                    onClick={(e) => {
+                                      setDeleteModal(true)
+                                      setQuestionId(e.currentTarget.id)
+                                      setErrorr(false)
+                                      setErrorMsg('')
+                                    }}
+                                  >
+                                    <CIcon icon={cilTrash} />
+                                  </CButton>
+                                </CTooltip>
                               </CTableDataCell>
                             </CTableRow>
                           ))
@@ -1200,7 +1337,10 @@ const ManageQuiz = () => {
                                 />
                               </CTableDataCell>
                             )}
-                            <CTableHeaderCell>{q.srNo}</CTableHeaderCell>
+                            <CTableHeaderCell>
+                              {' '}
+                              <div className={q.isCorrect ? 'text-green-600' : ''}>{q.srNo}</div>
+                            </CTableHeaderCell>
                             <CTableDataCell className="cursor-pointer">
                               <span
                                 id={q._id}
@@ -1214,6 +1354,9 @@ const ManageQuiz = () => {
                                       ? q.question.substring(0, 100) + '...'
                                       : q.question,
                                 }}
+                                // className={
+                                //   q.isCorrect ? 'text-green-600 font-semibold' : 'font-semibold'
+                                // }
                               >
                                 {/* {q.question.length > 100
                               ? q.question.substring(0, 100) + '...'
@@ -1231,44 +1374,79 @@ const ManageQuiz = () => {
                         </CTableDataCell> */}
                             <CTableDataCell>{q.correctAnswer}</CTableDataCell>
                             <CTableDataCell className="flex justify-start items-center">
-                              <CButton
-                                className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setViewModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                }}
-                                title="View"
+                              <CTooltip content="View Question">
+                                <CButton
+                                  className="text-white bg-[#6261CC] hover:bg-[#4f4ea0] mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setViewModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                  }}
+                                  title="View"
+                                >
+                                  <RiEyeLine className="my-1" />
+                                </CButton>
+                              </CTooltip>
+                              <CTooltip
+                                key={q._id}
+                                content={q.isCorrect ? 'Uncheck Question' : 'Check Question'}
                               >
-                                <RiEyeLine className="my-1" />
-                              </CButton>
-                              <CButton
-                                color="info"
-                                className="text-white mr-3 my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setAddModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                  setSrNo(q.srNo)
-                                }}
-                              >
-                                <CIcon icon={cilPencil} />
-                              </CButton>
-                              <CButton
-                                color="danger"
-                                className="text-white my-2"
-                                id={q._id}
-                                onClick={(e) => {
-                                  setDeleteModal(true)
-                                  setQuestionId(e.currentTarget.id)
-                                  setErrorr(false)
-                                  setErrorMsg('')
-                                }}
-                              >
-                                <CIcon icon={cilTrash} />
-                              </CButton>
+                                <CButton
+                                  className={
+                                    q.isCorrect
+                                      ? 'text-white bg-green-800 hover:bg-green-600 mr-3 my-2'
+                                      : 'text-white bg-green-600 hover:bg-green-800 mr-3 my-2'
+                                  }
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    if (q.isCorrect) {
+                                      setQuestionId(e.currentTarget.id)
+                                      unMarkCorrect(e.currentTarget.id)
+                                    } else {
+                                      setQuestionId(e.currentTarget.id)
+                                      markCorrect(e.currentTarget.id)
+                                    }
+                                  }}
+                                >
+                                  {q.isCorrect ? (
+                                    <ImCross className="my-1" />
+                                  ) : (
+                                    <FaCheck className="my-1" />
+                                  )}
+                                  {/* <IoCheckmarkDoneSharp className="my-1" /> */}
+                                </CButton>
+                              </CTooltip>
+                              <CTooltip content="View Question">
+                                <CButton
+                                  color="info"
+                                  className="text-white mr-3 my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setAddModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                    setSrNo(q.srNo)
+                                  }}
+                                >
+                                  <CIcon icon={cilPencil} />
+                                </CButton>
+                              </CTooltip>
+                              <CTooltip content="Delete Question">
+                                <CButton
+                                  color="danger"
+                                  className="text-white my-2"
+                                  id={q._id}
+                                  onClick={(e) => {
+                                    setDeleteModal(true)
+                                    setQuestionId(e.currentTarget.id)
+                                    setErrorr(false)
+                                    setErrorMsg('')
+                                  }}
+                                >
+                                  <CIcon icon={cilTrash} />
+                                </CButton>
+                              </CTooltip>
                             </CTableDataCell>
                           </CTableRow>
                         ))

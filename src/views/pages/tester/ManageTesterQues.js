@@ -51,6 +51,7 @@ import DropBox from 'src/components/admin/DropBox'
 import { step1Categories, step2Categories, step3Categories } from 'src/usmleData'
 import { FaCheck, FaCheckDouble } from 'react-icons/fa'
 import { IoCheckmarkDoneSharp } from 'react-icons/io5'
+import { ImCross } from 'react-icons/im'
 
 const ManageTesterQues = () => {
   const editor = useRef(null)
@@ -657,6 +658,60 @@ const ManageTesterQues = () => {
       })
       .catch((error) => console.log('error', error))
   }
+  const unMarkCorrect = (id) => {
+    const myHeaders = new Headers()
+    myHeaders.append('Authorization', token)
+    myHeaders.append('Content-Type', 'application/json')
+    const testerName = localStorage.getItem('testerName')
+    if (!userId) {
+      console.error('User ID is not found in session storage.')
+      return
+    }
+    if (!testerName) {
+      console.error('Tester Name is not found in session storage.')
+      return
+    }
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: JSON.stringify({ userId, testerName }),
+      redirect: 'follow',
+    }
+
+    fetch(API_URL + 'tester/unmark-correct/' + id, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log('result', result, 'ques array', allQuestion)
+        // getAllQuest()
+        if (showFilteredResult) {
+          setFilteredQuestion(
+            filteredQuestion.map((ques) => {
+              if (ques._id === id) {
+                // Create a *new* object with changes
+                return { ...ques, isCorrect: false }
+              } else {
+                // No changes
+                return ques
+              }
+            }),
+          )
+        } else {
+          setAllQuestion(
+            allQuestion.map((ques) => {
+              if (ques._id === id) {
+                // Create a *new* object with changes
+                return { ...ques, isCorrect: false }
+              } else {
+                // No changes
+                return ques
+              }
+            }),
+          )
+        }
+      })
+      .catch((error) => console.log('error', error))
+  }
 
   const [stepsAllowed, setStepsAllowed] = useState('')
   const [subjectsAllowed, setSubjectsAllowed] = useState([])
@@ -915,7 +970,15 @@ const ManageTesterQues = () => {
                                       />
                                     </CTableDataCell>
                                   )}
-                                  <CTableDataCell>{q.srNo}</CTableDataCell>
+                                  <CTableDataCell>
+                                    <div
+                                      className={
+                                        q.isCorrect ? 'text-green-600 font-bold' : 'font-bold'
+                                      }
+                                    >
+                                      {q.srNo}
+                                    </div>
+                                  </CTableDataCell>
                                   <CTableHeaderCell className="cursor-pointer">
                                     <span
                                       id={q._id}
@@ -949,24 +1012,27 @@ const ManageTesterQues = () => {
                                   <CTableDataCell className="flex justify-start items-center">
                                     <CTooltip
                                       key={q._id}
-                                      content={
-                                        q.isCorrect
-                                          ? 'Question already checked'
-                                          : 'Question checked'
-                                      }
+                                      content={q.isCorrect ? 'Uncheck Question' : 'Check Question'}
                                     >
                                       <CButton
-                                        className={`text-white ${q.isCorrect ? 'bg-[#259110] opacity-30 hover:bg-[#259110] hover:cursor-not-allowed' : 'bg-[#259110] hover:bg-[#19693a]'} mr-3 my-2`}
+                                        className={
+                                          q.isCorrect
+                                            ? 'text-white bg-green-800 hover:bg-green-600 mr-3 my-2'
+                                            : 'text-white bg-green-600 hover:bg-green-800 mr-3 my-2'
+                                        }
                                         id={q._id}
                                         onClick={(e) => {
-                                          if (!q.isCorrect) {
+                                          if (q.isCorrect) {
+                                            setQuestionId(e.currentTarget.id)
+                                            unMarkCorrect(e.currentTarget.id)
+                                          } else {
                                             setQuestionId(e.currentTarget.id)
                                             markCorrect(e.currentTarget.id)
                                           }
                                         }}
                                       >
                                         {q.isCorrect ? (
-                                          <FaCheckDouble className="my-1" />
+                                          <ImCross className="my-1" />
                                         ) : (
                                           <FaCheck className="my-1" />
                                         )}
@@ -1023,7 +1089,15 @@ const ManageTesterQues = () => {
                                     />
                                   </CTableDataCell>
                                 )}
-                                <CTableDataCell>{q.srNo}</CTableDataCell>
+                                <CTableDataCell>
+                                  <div
+                                    className={
+                                      q.isCorrect ? 'text-green-600 font-bold' : 'font-bold'
+                                    }
+                                  >
+                                    {q.srNo}
+                                  </div>
+                                </CTableDataCell>
                                 <CTableHeaderCell className="cursor-pointer">
                                   <span
                                     id={q._id}
@@ -1056,22 +1130,27 @@ const ManageTesterQues = () => {
                                 <CTableDataCell className="flex justify-start items-center">
                                   <CTooltip
                                     key={q._id}
-                                    content={
-                                      q.isCorrect ? 'Question already checked' : 'Question checked'
-                                    }
+                                    content={q.isCorrect ? 'Uncheck Question' : 'Check Question'}
                                   >
                                     <CButton
-                                      className={`text-white ${q.isCorrect ? 'bg-[#259110] opacity-30 hover:bg-[#259110] hover:cursor-not-allowed' : 'bg-[#259110] hover:bg-[#19693a]'} mr-3 my-2`}
+                                      className={
+                                        q.isCorrect
+                                          ? 'text-white bg-green-800 hover:bg-green-600 mr-3 my-2'
+                                          : 'text-white bg-green-600 hover:bg-green-800 mr-3 my-2'
+                                      }
                                       id={q._id}
                                       onClick={(e) => {
-                                        if (!q.isCorrect) {
+                                        if (q.isCorrect) {
+                                          setQuestionId(e.currentTarget.id)
+                                          unMarkCorrect(e.currentTarget.id)
+                                        } else {
                                           setQuestionId(e.currentTarget.id)
                                           markCorrect(e.currentTarget.id)
                                         }
                                       }}
                                     >
                                       {q.isCorrect ? (
-                                        <FaCheckDouble className="my-1" />
+                                        <ImCross className="my-1" />
                                       ) : (
                                         <FaCheck className="my-1" />
                                       )}
